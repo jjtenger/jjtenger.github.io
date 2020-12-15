@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="在本章稍后的内容中，你会看到如何借助Java和XML来进行Spring装配。尽管你会发现这些显式装配技术非常有用，但是在便利性方面，最强大的还是Spring的自动化配置。如果Spring能够进行自动化装配的话，那何苦还要显式地将这些bean装配在一起呢？Spring从两个角度来实现自动化装配： 组件扫描（component scanning）：Spring会自动发现应用上下文中所创建的bean。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;06-%E8%87%AA%E5%8A%A8%E5%8C%96%E8%A3%85%E9%85%8Dbean.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="在本章稍后的内容中，你会看到如何借助Java和XML来进行Spring装配。尽管你会发现这些显式装配技术非常有用，但是在便利性方面，最强大的还是Spring的自动化配置。如果Spring能够进行自动化装配的话，那何苦还要显式地将这些bean装配在一起呢？Spring从两个角度来实现自动化装配： 组件扫描（component scanning）：Spring会自动发现应用上下文中所创建的bean。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791416_20200321194514050_13440.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791416_20200321194513836_5024.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791416_20200321194513520_30364.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791416_20200321194513309_10082.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791415_20200321194513098_4012.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791415_20200321194512785_14512.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791415_20200321194512576_4362.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791414_20200321194512366_18573.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791414_20200321194512155_29965.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791414_20200321194511946_20668.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791414_20200321194511634_20296.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791414_20200321194511317_6428.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791414_20200321194511104_5013.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791413_20200321194510895_17954.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791413_20200321194510586_17045.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791413_20200321194510373_23018.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791413_20200321194510164_1660.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791412_20200321194509954_26800.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791412_20200321194509745_16752.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791412_20200321194509536_31413.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791412_20200321194509325_20161.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791411_20200321194509117_20696.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791411_20200321194508906_21179.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791411_20200321194508696_20079.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791411_20200321194508487_30960.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791411_20200321194508278_31266.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791410_20200321194507969_32542.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791410_20200321194507752_10452.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.036Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584791416_20200321194514050_13440.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/06-%E8%87%AA%E5%8A%A8%E5%8C%96%E8%A3%85%E9%85%8Dbean">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>06-自动化装配BEAN</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>在本章稍后的内容中，你会看到如何借助Java和XML来进行Spring装配。尽管你会发现这些显式装配技术非常有用，但是在便利性方面，最强大的还是Spring的自动化配置。如果Spring能够进行自动化装配的话，那何苦还要显式地将这些bean装配在一起呢？</p><p>Spring从两个角度来实现自动化装配：</p><ul>
+<li>组件扫描（component scanning）：Spring会自动发现应用上下文中所创建的bean。</li>
+<li>自动装配（autowiring）：Spring自动满足bean之间的依赖。</li>
+</ul><a id="more"></a>
+
+
+<p>组件扫描和自动装配组合在一起就能发挥出强大的威力，它们能够将你的显式配置降低到最少。</p>
+<h1>创建可被发现的bean</h1>
+<h2 id="Component注解">@Component注解</h2>
+<p>程序清单：CompactDisc接口在Java中定义了CD的概念</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791416_20200321194514050_13440.png" alt></p>
+<p>程序清单：带有@Component注解的CompactDisc实现类SgtPeppers</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791416_20200321194513836_5024.png" alt></p>
+<p>注意的就是SgtPeppers类上使用了@Component注解。这个简单的注解表明该类会作为组件类，并告知Spring要为这个类创建bean。没有必要显式配置SgtPeppersbean，因为这个类使用了@Component注解，所以Spring会为你把事情处理妥当。</p>
+<h3 id="为组件扫描的bean命名">为组件扫描的bean命名</h3>
+<p>Spring应用上下文中所有的bean都会给定一个ID。在前面的例子中，尽管我们没有明确地为SgtPeppersbean设置ID，但Spring会根据类名为其指定一个ID。具体来讲，这个bean所给定的ID为sgtPeppers，也就是将类名的第一个字母变为小写。</p>
+<p>如果想为这个bean设置不同的ID，你所要做的就是将期望的ID作为值传递给@Component注解。比如说，如果想将这个bean标识为lonelyHeartsClub，那么你需要将SgtPeppers类的@Component注解配置为如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791416_20200321194513520_30364.png" alt></p>
+<h2 id="Named">@Named</h2>
+<p>Spring支持使用Java依赖注入规范（Java Dependency Injection）中所提供的@Named注解作为@Component注解的替代方案。两者之间有一些细微的差异，但是在大多数场景中，它们是可以互相替换的。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791416_20200321194513309_10082.png" alt></p>
+<p>话虽如此，我更加强烈地喜欢@Component注解，而对于@Named……怎么说呢，我感觉它的名字起得很不好。它并没有像@Component那样清楚地表明它是做什么的。因此在本书及其示例代码中，我不会再使用@Named。</p>
+<h1>启用组件扫描</h1>
+<h2 id="ComponentScan注解">@ComponentScan注解</h2>
+<p>组件扫描默认是不启用的。我们还需要显式配置一下Spring，从而命令它去寻找带有@Component注解的类，并为其创建bean。</p>
+<p>程序清单：@ComponentScan注解启用了组件扫描</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791415_20200321194513098_4012.png" alt></p>
+<p>如果没有其他配置的话，@ComponentScan默认会扫描与配置类相同的包。因为CDPlayerConfig类位于soundsystem包中，因此Spring将会扫描这个包以及这个包下的所有子包，查找带有@Component注解的类。这样的话，就能发现CompactDisc，并且会在Spring中自动为其创建一个bean。</p>
+<h3 id="设置组件扫描的基础包">设置组件扫描的基础包</h3>
+<p>如果我们想要将配置类放在单独的包中，使其与其他的应用代码区分开来。如果是这样的话，那默认的基础包就不能满足要求了。</p>
+<p>要满足这样的需求其实也完全没有问题！为了指定不同的基础包，你所需要做的就是在@ComponentScan的value属性中指明包的名称：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791415_20200321194512785_14512.png" alt></p>
+<p>如果你想更加清晰地表明你所设置的是基础包，那么你可以通过basePackages属性进行配置：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791415_20200321194512576_4362.png" alt></p>
+<p>可能你已经注意到了basePackages属性使用的是复数形式。如果你揣测这是不是意味着可以设置多个基础包，那么恭喜你猜对了。如果想要这么做的话，只需要将basePackages属性设置为要扫描包的一个数组即可：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791414_20200321194512366_18573.png" alt></p>
+<p>在上面的例子中，所设置的基础包是以String类型表示的。我认为这是可以的，但这种方法是类型不安全（not type-safe）的。如果你重构代码的话，那么所指定的基础包可能就会出现错误了。</p>
+<p>除了将包设置为简单的String类型之外，@ComponentScan还提供了另外一种方法，那就是将其指定为包中所包含的类或接口：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791414_20200321194512155_29965.png" alt></p>
+<p>可以看到，basePackages属性被替换成了basePackageClasses。同时，我们不是再使用String类型的名称来指定包，为basePackageClasses属性所设置的数组中包含了类。<strong>这些类所在的包将会作为组件扫描的基础包。</strong></p>
+<p>尽管在样例中，我为basePackageClasses设置的是组件类，但是你可以考虑在包中创建一个用来进行扫描的空标记接口（marker interface）。通过标记接口的方式，你依然能够保持对重构友好的接口引用，但是可以避免引用任何实际的应用程序代码（在稍后重构中，这些应用代码有可能会从想要扫描的包中移除掉）。</p>
+<h2 id="XML中-context-component-scan-标签">XML中 <code>&lt;context:component-scan&gt;</code> 标签</h2>
+<p>如果你更倾向于使用XML来启用组件扫描的话，那么可以使用Spring context命名空间的 <code>&lt;context:component-scan&gt;</code> 元素。</p>
+<p>作用：扫描classpath下带有注解的类，注册成spring bean，如@Component(组件)，@Service（服务），@Controller（控制器），@Repository（数据仓库）等。</p>
+<p>程序清单展示了启用组件扫描的最简洁XML配置。</p>
+<p>程序清单：通过XML启用组件扫描</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791414_20200321194511946_20668.png" alt></p>
+<p>以下是一个比较具体的 <code>&lt;context:component-scan&gt;</code> 配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"> <span class="tag">&lt;<span class="name">context:component-scan</span> </span></span><br><span class="line">      base-package="com.wjx.betalot" &lt;!-- 扫描的基本包路径 --&gt;</span><br><span class="line">      annotation-config="true" <span class="comment">&lt;!-- 是否激活属性注入注解 --&gt;</span></span><br><span class="line">      name-generator="org.springframework.context.annotation.AnnotationBeanNameGenerator"  <span class="comment">&lt;!-- Bean的ID策略生成器 --&gt;</span></span><br><span class="line">      resource-pattern="**/*.class" <span class="comment">&lt;!-- 对资源进行筛选的正则表达式，这边是个大的范畴，具体细分在include-filter与exclude-filter中进行 --&gt;</span></span><br><span class="line">      scope-resolver="org.springframework.context.annotation.AnnotationScopeMetadataResolver" <span class="comment">&lt;!-- scope解析器 ，与scoped-proxy只能同时配置一个 --&gt;</span></span><br><span class="line">      scoped-proxy="no" <span class="comment">&lt;!-- scope代理，与scope-resolver只能同时配置一个 --&gt;</span></span><br><span class="line">      use-default-filters="false" <span class="comment">&lt;!-- 是否使用默认的过滤器，默认值true --&gt;</span></span><br><span class="line">&gt;</span><br><span class="line"></span><br><span class="line">      <span class="comment">&lt;!-- 注意：若使用include-filter去定制扫描内容，要在use-default-filters="false"的情况下，不然会“失效”，被默认的过滤机制所覆盖 --&gt;</span>                   </span><br><span class="line">      <span class="comment">&lt;!-- annotation是对注解进行扫描 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">context:include-filter</span> <span class="attr">type</span>=<span class="string">"annotation"</span> <span class="attr">expression</span>=<span class="string">"org.springframework.stereotype.Component"</span>/&gt;</span> </span><br><span class="line">      <span class="comment">&lt;!-- assignable是对类或接口进行扫描 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">context:include-filter</span> <span class="attr">type</span>=<span class="string">"assignable"</span> <span class="attr">expression</span>=<span class="string">"com.wjx.betalot.performer.Performer"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">context:include-filter</span> <span class="attr">type</span>=<span class="string">"assignable"</span> <span class="attr">expression</span>=<span class="string">"com.wjx.betalot.performer.impl.Sonnet"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">&lt;!-- 注意：在use-default-filters="false"的情况下，exclude-filter是针对include-filter里的内容进行排除 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">context:exclude-filter</span> <span class="attr">type</span>=<span class="string">"annotation"</span> <span class="attr">expression</span>=<span class="string">"org.springframework.stereotype.Controller"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">context:exclude-filter</span> <span class="attr">type</span>=<span class="string">"assignable"</span> <span class="attr">expression</span>=<span class="string">"com.wjx.betalot.performer.impl.RainPoem"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">context:exclude-filter</span> <span class="attr">type</span>=<span class="string">"regex"</span> <span class="attr">expression</span>=<span class="string">".service.*"</span>/&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">context:component-scan</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>以上配置注释已经很详细了，当然因为这些注释，你若是想复制去验证，你得删掉注释。我们具体再说明一下这些注释：</p>
+<h3 id="back-package">back-package</h3>
+<p>标识了 <code>&lt;context:component-scan&gt;</code> 元素所扫描的包，可以使用一些通配符进行配置。</p>
+<h3 id="annotation-config">annotation-config</h3>
+<p><code>&lt;context:component-scan&gt;</code> 元素也完成了 <code>&lt;context:annotation-config&gt;</code> 元素的工作，开关就是这个属性，false则关闭属性注入注解功能。</p>
+<h3 id="bean的ID生成策略：name-generator">bean的ID生成策略：name-generator</h3>
+<p>这个属性指定你的构造注解注册为Bean的ID生成策略，这个生成器基于接口BeanNameGenerator实现generateBeanName方法，你可以自己写个类去自定义策略。默认使用org.springframework.context.annotation.AnnotationBeanNameGenerator生成器，也就是类名首字符小写的策略，如Performer类，它注册的Bean的ID为performer。并且可以自定义ID，如@Component(“Joy”)。这边简单贴出这个默认生成器的实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">generateBeanName</span><span class="params">(BeanDefinition definition, BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (definition <span class="keyword">instanceof</span> AnnotatedBeanDefinition) &#123;</span><br><span class="line">            String beanName = determineBeanNameFromAnnotation((AnnotatedBeanDefinition) definition);</span><br><span class="line">            <span class="keyword">if</span> (StringUtils.hasText(beanName)) &#123;</span><br><span class="line">                <span class="comment">// Explicit bean name found.</span></span><br><span class="line">                <span class="keyword">return</span> beanName;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Fallback: generate a unique default bean name.</span></span><br><span class="line">        <span class="keyword">return</span> buildDefaultBeanName(definition, registry);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Spring除了实现了AnnotationBeanNameGenerator生成器外，还有个org.springframework.beans.factory.support.DefaultBeanNameGenerator生成器，它为了防止Bean的ID重复，它的生成策略是类路径+分隔符+序号，如com.wjx.betalot.performer.impl.Sonnet注册为Bean的ID是com.wjx.betalot.performer.impl.Sonnet#0，这个生成器不支持自定义ID，否则抛出异常。同样贴出代码，有兴趣的可以去看下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">generateBeanName</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            BeanDefinition definition, BeanDefinitionRegistry registry, <span class="keyword">boolean</span> isInnerBean)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> BeanDefinitionStoreException </span>&#123;</span><br><span class="line">        String generatedBeanName = definition.getBeanClassName();</span><br><span class="line">        <span class="keyword">if</span> (generatedBeanName == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (definition.getParentName() != <span class="keyword">null</span>) &#123;</span><br><span class="line">                generatedBeanName = definition.getParentName() + <span class="string">"$child"</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (definition.getFactoryBeanName() != <span class="keyword">null</span>) &#123;</span><br><span class="line">                generatedBeanName = definition.getFactoryBeanName() + <span class="string">"$created"</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!StringUtils.hasText(generatedBeanName)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> BeanDefinitionStoreException(<span class="string">"Unnamed bean definition specifies neither "</span> +</span><br><span class="line">                    <span class="string">"'class' nor 'parent' nor 'factory-bean' - can't generate bean name"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        String id = generatedBeanName;</span><br><span class="line">        <span class="keyword">if</span> (isInnerBean) &#123;</span><br><span class="line">            <span class="comment">// Inner bean: generate identity hashcode suffix.</span></span><br><span class="line">            id = generatedBeanName + GENERATED_BEAN_NAME_SEPARATOR + ObjectUtils.getIdentityHexString(definition);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// Top-level bean: use plain class name.</span></span><br><span class="line">            <span class="comment">// Increase counter until the id is unique.</span></span><br><span class="line">            <span class="keyword">int</span> counter = -<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> (counter == -<span class="number">1</span> || registry.containsBeanDefinition(id)) &#123;</span><br><span class="line">                counter++;</span><br><span class="line">                id = generatedBeanName + GENERATED_BEAN_NAME_SEPARATOR + counter;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="资源过滤">资源过滤</h3>
+<p><strong>resource-pattern</strong>：对资源进行筛选的正则表达式，这边是个大的范畴，具体细分在include-filter与exclude-filter中进行。</p>
+<p><strong>use-default-filters</strong>：是否使用默认的扫描过滤。</p>
+<p><strong><code>&lt;context:include-filter&gt;</code></strong>：用来告知哪些类需要注册成Spring Bean，使用type和expression属性一起协作来定义组件扫描策略。type有以下5种：</p>
+<table>
+<thead>
+<tr>
+<th>过滤器类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>annotation</td>
+<td>过滤器扫描使用注解所标注的那些类，通过expression属性指定要扫描的注释</td>
+</tr>
+<tr>
+<td>assignable</td>
+<td>过滤器扫描派生于expression属性所指定类型的那些类</td>
+</tr>
+<tr>
+<td>aspectj</td>
+<td>过滤器扫描与expression属性所指定的AspectJ表达式所匹配的那些类</td>
+</tr>
+<tr>
+<td>custom</td>
+<td>使用自定义的org.springframework.core.type.TypeFliter实现类，该类由expression属性指定</td>
+</tr>
+<tr>
+<td>regex</td>
+<td>过滤器扫描类的名称与expression属性所指定正则表示式所匹配的那些类</td>
+</tr>
+</tbody>
+</table>
+<p>要注意的是：若使用include-filter去定制扫描内容，要在use-default-filters=&quot;<strong>false</strong>&quot;的情况下，不然会“失效”，被默认的过滤机制所覆盖。</p>
+<p><strong><code>&lt;context:exclude-filter&gt;</code></strong>：与 <code>&lt;context:include-filter&gt;</code>  相反,用来告知哪些类不需要注册成Spring Bean，同样注意的是：在use-default-filters=&quot;false&quot;的情况下，exclude-filter是针对include-filter里的内容进行排除。</p>
+<h3 id="scope代理">scope代理</h3>
+<p><strong>scoped-proxy</strong>：scope代理，有三个值选项，no(默认值)，interfaces(接口代理)，targetClass（类代理），那什么时候需要用到scope代理呢，举个例子，我们知道Bean的作用域scope有singleton，prototype，request,session，那有这么一种情况，当你把一个session或者request的Bean注入到singleton的Bean中时，因为singleton的Bean在容器启动时就会创建A，而session的Bean在用户访问时才会创建B，那么当A中要注入B时，有可能B还未创建，这个时候就会出问题，那么代理的时候来了，B如果是个接口，就用interfaces代理，是个类则用targetClass代理。</p>
+<p><strong>scope-resolver</strong>：这个属性跟name-generator有点类似，它是基于接口ScopeMetadataResolver的，实现resolveScopeMetadata方法，目的是为了将@Scope(value=“”,<a href="http://proxyMode=ScopedProxyMode.NO" target="_blank" rel="noopener">proxyMode=ScopedProxyMode.NO</a>,scopeName=“”)的配置解析成为一个ScopeMetadata对象，Spring这里也提供了两个实现，我们一起看下。首先是org.springframework.context.annotation.AnnotationScopeMetadataResolver中，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ScopeMetadata <span class="title">resolveScopeMetadata</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">        ScopeMetadata metadata = <span class="keyword">new</span> ScopeMetadata();</span><br><span class="line">        <span class="keyword">if</span> (definition <span class="keyword">instanceof</span> AnnotatedBeanDefinition) &#123;</span><br><span class="line">            AnnotatedBeanDefinition annDef = (AnnotatedBeanDefinition) definition;</span><br><span class="line">            AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(annDef.getMetadata(), <span class="keyword">this</span>.scopeAnnotationType);</span><br><span class="line">            <span class="keyword">if</span> (attributes != <span class="keyword">null</span>) &#123;</span><br><span class="line">                metadata.setScopeName(attributes.getAliasedString(<span class="string">"value"</span>, <span class="keyword">this</span>.scopeAnnotationType, definition.getSource()));</span><br><span class="line">                ScopedProxyMode proxyMode = attributes.getEnum(<span class="string">"proxyMode"</span>);</span><br><span class="line">                <span class="keyword">if</span> (proxyMode == <span class="keyword">null</span> || proxyMode == ScopedProxyMode.DEFAULT) &#123;</span><br><span class="line">                    proxyMode = <span class="keyword">this</span>.defaultProxyMode;</span><br><span class="line">                &#125;</span><br><span class="line">                metadata.setScopedProxyMode(proxyMode);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> metadata;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>对比一下org.springframework.context.annotation.Jsr330ScopeMetadataResolver中的实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ScopeMetadata <span class="title">resolveScopeMetadata</span><span class="params">(BeanDefinition definition)</span> </span>&#123;</span><br><span class="line">        ScopeMetadata metadata = <span class="keyword">new</span> ScopeMetadata();</span><br><span class="line">        metadata.setScopeName(BeanDefinition.SCOPE_PROTOTYPE);</span><br><span class="line">        <span class="keyword">if</span> (definition <span class="keyword">instanceof</span> AnnotatedBeanDefinition) &#123;</span><br><span class="line">            AnnotatedBeanDefinition annDef = (AnnotatedBeanDefinition) definition;</span><br><span class="line">            Set&lt;String&gt; annTypes = annDef.getMetadata().getAnnotationTypes();</span><br><span class="line">            String found = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">for</span> (String annType : annTypes) &#123;</span><br><span class="line">                Set&lt;String&gt; metaAnns = annDef.getMetadata().getMetaAnnotationTypes(annType);</span><br><span class="line">                <span class="keyword">if</span> (metaAnns.contains(<span class="string">"javax.inject.Scope"</span>)) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (found != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Found ambiguous scope annotations on bean class ["</span> +</span><br><span class="line">                                definition.getBeanClassName() + <span class="string">"]: "</span> + found + <span class="string">", "</span> + annType);</span><br><span class="line">                    &#125;</span><br><span class="line">                    found = annType;</span><br><span class="line">                    String scopeName = resolveScopeName(annType);</span><br><span class="line">                    <span class="keyword">if</span> (scopeName == <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">                                <span class="string">"Unsupported scope annotation - not mapped onto Spring scope name: "</span> + annType);</span><br><span class="line">                    &#125;</span><br><span class="line">                    metadata.setScopeName(scopeName);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> metadata;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>ps:scope-resolver与scoped-proxy只能配置一个，配置了scope-resolver后你要使用代理，可以配置@Scope总的proxyMode属性项。</p>
+<h1>实现自动装配</h1>
+<p>简单来说，自动装配就是让Spring自动满足bean依赖的一种方法，在满足依赖的过程中，会在Spring应用上下文中寻找匹配某个bean需求的其他bean。</p>
+<h2 id="Autowired">@Autowired</h2>
+<p>为了声明要进行自动装配，我们可以借助Spring的@Autowired注解。</p>
+<p>比方说，考虑程序清单中的CDPlayer类。它的构造器上添加了@Autowired注解，这表明当Spring创建CDPlayerbean的时候，会通过这个构造器来进行实例化并且会传入一个可设置给CompactDisc类型的bean。</p>
+<p>程序清单：通过自动装配，将一个CompactDisc注入到CDPlayer之中</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791414_20200321194511634_20296.png" alt></p>
+<p>@Autowired注解不仅能够用在构造器上，还能用在属性的Setter方法上。比如说，如果CDPlayer有一个setCompactDisc()方法，那么可以采用如下的注解形式进行自动装配：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791414_20200321194511317_6428.png" alt></p>
+<p>在Spring初始化bean之后，它会尽可能得去满足bean的依赖，在本例中，依赖是通过带有@Autowired注解的方法进行声明的，也就是setCompactDisc()。</p>
+<p>实际上，Setter方法并没有什么特殊之处。@Autowired注解可以用在类的任何方法上。假设CDPlayer类有一个insertDisc()方法，那么@Autowired能够像在setCompactDisc()上那样，发挥完全相同的作用：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791414_20200321194511104_5013.png" alt></p>
+<p>不管是构造器、Setter方法还是其他的方法，Spring都会尝试满足方法参数上所声明的依赖。假如有且只有一个bean匹配依赖需求的话，那么这个bean将会被装配进来。</p>
+<p>如果没有匹配的bean，那么在应用上下文创建的时候，Spring会抛出一个异常。为了避免异常的出现，你可以将@Autowired的required属性设置为false：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791413_20200321194510895_17954.png" alt></p>
+<p>将required属性设置为false时，Spring会尝试执行自动装配，但是如果没有匹配的bean的话，Spring将会让这个bean处于未装配的状态。但是，把required属性设置为false时，你需要谨慎对待。如果在你的代码中没有进行null检查的话，这个处于未装配状态的属性有可能会出现NullPointerException。</p>
+<p>如果有多个bean都能满足依赖关系的话，Spring将会抛出一个异常，表明没有明确指定要选择哪个bean进行自动装配。在第3章中，我们会进一步讨论自动装配中的歧义性。</p>
+<h2 id="Inject">@Inject</h2>
+<p>@Autowired是Spring特有的注解。如果你不愿意在代码中到处使用Spring的特定注解来完成自动装配任务的话，那么你可以考虑将其替换为@Inject：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791413_20200321194510586_17045.png" alt></p>
+<p>@Inject注解来源于Java依赖注入规范，该规范同时还为我们定义了@Named注解。在自动装配中，Spring同时支持@Inject和@Autowired。尽管@Inject和@Autowired之间有着一些细微的差别，但是在大多数场景下，它们都是可以互相替换的。</p>
+<h2 id="Spring中Constructor、-Autowired、-PostConstruct的顺序">Spring中Constructor、@Autowired、@PostConstruct的顺序</h2>
+<p>其实从依赖注入的字面意思就可以知道，要将对象p注入到对象a，那么首先就必须得生成对象p与对象a，才能执行注入。所以，如果一个类A中有个成员变量p被@Autowired注解，那么**@Autowired注入是发生在A的构造方法执行完之后的。**</p>
+<p>如果想在生成对象时候完成某些初始化操作，而偏偏这些初始化操作又依赖于依赖注入，那么就无法在构造函数中实现。为此，可以使用@PostConstruct注解一个方法来完成初始化，<strong>@PostConstruct注解的方法将会在依赖注入完成后被自动调用。</strong></p>
+<p><strong>Constructor &gt;&gt; @Autowired &gt;&gt; @PostConstruct</strong></p>
+<p>举个例子:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Class AAA &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> BBB b;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AAA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"此时b还未被注入: b = "</span> + b);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"@PostConstruct将在依赖注入完成后被自动调用: b = "</span> + b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>处理自动装配的歧义性</h1>
+<p>在前面，我们已经看到如何使用自动装配让Spring完全负责将bean引用注入到构造参数和属性中。自动装配能够提供很大的帮助，因为它会减少装配应用程序组件时所需要的显式配置的数量。</p>
+<p>不过，仅有一个bean匹配所需的结果时，自动装配才是有效的。如果不仅有一个bean能够匹配结果的话，这种歧义性会阻碍Spring自动装配属性、构造器参数或方法参数。当确实发生歧义性的时候，Spring提供了多种可选方案来解决这样的问题。你可以将可选bean中的某一个设为首选（primary）的bean，或者使用限定符（qualifier）来帮助Spring将可选的bean的范围缩小到只有一个bean。</p>
+<h2 id="标示首选的bean：-Primary">标示首选的bean：@Primary</h2>
+<p>如果你像我一样，喜欢所有类型的甜点，如蛋糕、饼干、冰激凌……它们都很美味。但如果只能在其中选择一种甜点的话，那你最喜欢的是哪一种呢？</p>
+<p>在声明bean的时候，通过将其中一个可选的bean设置为首选（primary）bean能够避免自动装配时的歧义性。当遇到歧义性的时候，Spring将会使用首选的bean，而不是其他可选的bean。实际上，你所声明就是“最喜欢”的bean。</p>
+<p>假设冰激凌就是你最喜欢的甜点。在Spring中，可以通过@Primary来表达最喜欢的方案。@Primary能够与@Component组合用在组件扫描的bean上，也可以与@Bean组合用在Java配置的bean声明中。比如，下面的代码展现了如何将@Component注解的IceCream bean声明为首选的bean：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791413_20200321194510373_23018.png" alt></p>
+<p>或者，如果你通过Java配置显式地声明IceCream，那么@Bean方法应该如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791413_20200321194510164_1660.png" alt></p>
+<p>如果你使用XML配置bean的话，同样可以实现这样的功能。 <code>&lt;bean&gt;</code> 元素有一个primary属性用来指定首选的bean：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791412_20200321194509954_26800.png" alt></p>
+<p>不管你采用什么方式来标示首选bean，效果都是一样的，都是告诉Spring在遇到歧义性的时候要选择首选的bean。</p>
+<p>但是，如果你标示了两个或更多的首选bean，那么它就无法正常工作了。比如，假设Cake类如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791412_20200321194509745_16752.png" alt></p>
+<p>现在，有两个首选的Dessert bean：Cake和IceCream。这带来了新的歧义性问题。就像Spring无法从多个可选的bean中做出选择一样，它也无法从多个首选的bean中做出选择。显然，如果不止一个bean被设置成了首选bean，那实际上也就是没有首选bean了。</p>
+<h2 id="限定自动装配的bean：-Qualifier">限定自动装配的bean：@Qualifier</h2>
+<p>设置首选bean的局限性在于@Primary无法将可选方案的范围限定到唯一一个无歧义性的选项中。它只能标示一个优先的可选方案。当首选bean的数量超过一个时，我们并没有其他的方法进一步缩小可选范围。</p>
+<p>与之相反，Spring的限定符能够在所有可选的bean上进行缩小范围的操作，最终能够达到只有一个bean满足所规定的限制条件。如果将所有的限定符都用上后依然存在歧义性，那么你可以继续使用更多的限定符来缩小选择范围。</p>
+<p>@Qualifier注解是使用限定符的主要方式。它可以与@Autowired和@Inject协同使用，在注入的时候指定想要注入进去的是哪个bean。例如，我们想要确保要将IceCream注入到setDessert()之中：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791412_20200321194509536_31413.png" alt></p>
+<p>这是使用限定符的最简单的例子。为@Qualifier注解所设置的参数就是想要注入的bean的ID。所有使用@Component注解声明的类都会创建为bean，并且bean的ID为首字母变为小写的类名。因此，@Qualifier(“iceCream”)指向的是组件扫描时所创建的bean，并且这个bean是IceCream类的实例。</p>
+<p>实际上，还有一点需要补充一下。更准确地讲，<strong>@Qualifier(“iceCream”)所引用的bean要具有String类型的“iceCream”作为限定符。如果没有指定其他的限定符的话，所有的bean都会给定一个默认的限定符，这个限定符与bean的ID相同</strong>。因此，框架会将具有“iceCream”限定符的bean注入到setDessert()方法中。这恰巧就是ID为iceCream的bean，它是IceCream类在组件扫描的时候创建的。</p>
+<p>基于默认的bean ID作为限定符是非常简单的，但这有可能会引入一些问题。如果你重构了IceCream类，将其重命名为Gelato的话，那此时会发生什么情况呢？如果这样的话，bean的ID和默认的限定符会变为gelato，这就无法匹配setDessert()方法中的限定符。自动装配会失败。</p>
+<p>这里的问题在于setDessert()方法上所指定的限定符与要注入的bean的名称是紧耦合的。对类名称的任意改动都会导致限定符失效。</p>
+<h3 id="自定义限定符">自定义限定符</h3>
+<p>我们可以为bean设置自己的限定符，而不是依赖于将bean ID作为限定符。在这里所需要做的就是在bean声明上添加@Qualifier注解。例如，它可以与@Component组合使用，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791412_20200321194509325_20161.png" alt></p>
+<p>在这种情况下，cold限定符分配给了IceCreambean。因为它没有耦合类名，因此你可以随意重构IceCream的类名，而不必担心会破坏自动装配。在注入的地方，只要引用cold限定符就可以了：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791411_20200321194509117_20696.png" alt></p>
+<p>值得一提的是，当通过Java配置显式定义bean的时候，@Qualifier也可以与@Bean注解一起使用：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791411_20200321194508906_21179.png" alt></p>
+<p>当使用自定义的@Qualifier值时，最佳实践是为bean选择特征性或描述性的术语，而不是使用随意的名字。在本例中，我将IceCream bean描述为“cold”bean。在注入的时候，可以将这个需求理解为“给我一个凉的甜点”，这其实就是描述的IceCream。类似地，我可以将Cake描述为“soft”，将Cookie描述为“crispy”。</p>
+<h3 id="自定义限定符注解">自定义限定符注解</h3>
+<p>面向特性的限定符要比基于bean ID的限定符更好一些。但是，如果多个bean都具备相同的限定名时，这种做法也会出现问题，我们会再次遇到了歧义性的问题，需要使用更多的限定符来将可选范围限定到只有一个bean。</p>
+<p>可能想到的解决方案就是在注入点和bean定义的地方同时再添加另外一个@Qualifier注解。IceCream类大致就会如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791411_20200321194508696_20079.png" alt></p>
+<p>但是有一个问题：Java不允许在同一个条目上重复出现相同类型的多个注解。<a href="https://www.neat-reader.cn/webapp#anchor31" target="_blank" rel="noopener">[1]</a>如果你试图这样做的话，编译器会提示错误。在这里，使用@Qualifier注解并没有办法（至少没有直接的办法）将自动装配的可选bean缩小范围至仅有一个可选的bean。</p>
+<p>但是，我们可以创建自定义的限定符注解，借助这样的注解来表达bean所希望限定的特性。这里所需要做的就是创建一个注解，它本身要使用@Qualifier注解来标注。这样我们将不再使用@Qualifier(“cold”)，而是使用自定义的@Cold注解，该注解的定义如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791411_20200321194508487_30960.png" alt></p>
+<p>同样，你可以创建一个新的@Creamy注解来代替@Qualifier(“creamy”)：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791411_20200321194508278_31266.png" alt></p>
+<p>当你不想用@Qualifier注解的时候，可以类似地创建@Soft、@Crispy和@Fruity。通过在定义时添加@Qualifier注解，它们就具有了@Qualifier注解的特性。它们本身实际上就成为了限定符注解。</p>
+<p>现在，我们可以重新看一下IceCream，并为其添加@Cold和@Creamy注解，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791410_20200321194507969_32542.png" alt></p>
+<p>最终，在注入点，我们使用必要的限定符注解进行任意组合，从而将可选范围缩小到只有一个bean满足需求。为了得到IceCream bean，setDessert()方法可以这样使用注解：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584791410_20200321194507752_10452.png" alt></p>
+<p>通过声明自定义的限定符注解，我们可以同时使用多个限定符，不会再有Java编译器的限制或错误。与此同时，相对于使用原始的@Qualifier并借助String类型来指定限定符，自定义的注解也更为类型安全。</p>
+<p>让我们近距离观察一下setDessert()方法以及它的注解，这里并没有在任何地方明确指定要将IceCream自动装配到该方法中。相反，我们使用所需bean的特性来进行指定，即@Cold和@Creamy。因此，setDessert()方法依然能够与特定的Dessert实现保持解耦。任意满足这些特征的bean都是可以的。在当前选择Dessert实现时，恰好如此，IceCream是唯一能够与之匹配的bean。</p>
+<p>在本节和前面的节中，我们讨论了几种通过自定义注解扩展Spring的方式。为了创建自定义的条件化注解，我们创建一个新的注解并在这个注解上添加了@Conditional。为了创建自定义的限定符注解，我们创建一个新的注解并在这个注解上添加了@Qualifier。这种技术可以用到很多的Spring注解中，从而能够将它们组合在一起形成特定目标的自定义注解。</p>
+<h1>XML配置实现自动装配</h1>
+<p>XML配置中，无需配置 <code>&lt;property&gt;</code> ，自动装配Bean中字段值。</p>
+<p>通过配置 <code>&lt;bean&gt;</code> 标签的<strong>autowire属性</strong>值来改变自动装配方式，其中：</p>
+<ul>
+<li>&quot;<strong>default</strong>&quot;表示使用默认的自动装配配置，<strong>默认的自动装配需要在<code>&lt;beans&gt;</code>标签中使用default-autowire属性指定</strong>；</li>
+<li>&quot;<strong>no</strong>&quot;表示不支持自动装配，必须明确指定依赖；</li>
+<li>setter注入中：&quot;<strong>byName</strong>&quot;指定根据名字自动装配，&quot;<strong>byType</strong>&quot;指定根据类型自动装配；</li>
+<li>构造器注入中：&quot;<strong>constructor</strong>&quot;指定根据类型自动装配（必须使用构造器注入的方式）；</li>
+<li>&quot;<strong>autodetect</strong>&quot;表示自动检测是使用&quot;constructor&quot;还是&quot;byType&quot;自动装配方式，已不推荐使用，推荐使用@Autowired注解方式代替。</li>
+</ul>
+<p><strong>根据类型自动装配[byType]中的候选者匹配规则</strong>：</p>
+<ul>
+<li>配置 <code>&lt;bean&gt;</code> 标签的primary属性为true指定当前Bean为首选；</li>
+<li>配置 <code>&lt;bean&gt;</code> 标签的autowire-candidate属性为false把当前Bean从自动装配候选者中移除；</li>
+<li><strong>配置<code>&lt;beans&gt;</code>标签的default-autowire-candidates属性指定用来筛选候选者的匹配字符串</strong>；</li>
+<li>对于集合和数组类型，将注入匹配到的所有候选者；</li>
+<li>简单类型不能自动装配，包括Object、基本数据类型、字符串、Date等。</li>
+</ul>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> model.ListTestBean;</span><br><span class="line"><span class="keyword">import</span> model.HelloApi;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AutowireBeanTest</span> </span>&#123;</span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testAutowireByName</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       ClassPathXmlApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"autowireInjection.xml"</span>);</span><br><span class="line">       HelloApi helloApi = context.getBean(<span class="string">"testBean1"</span>, HelloApi.class);</span><br><span class="line">       helloApi.sayHello();</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testAutowireByType</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       ClassPathXmlApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"autowireInjection.xml"</span>);</span><br><span class="line">       HelloApi helloApi = context.getBean(<span class="string">"testBean2"</span>, HelloApi.class);</span><br><span class="line">       helloApi.sayHello();</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testAutowireByConstructor</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       ClassPathXmlApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"autowireInjection.xml"</span>);</span><br><span class="line">       HelloApi helloApi = context.getBean(<span class="string">"testBean3"</span>, HelloApi.class);</span><br><span class="line">       helloApi.sayHello();</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testAutowireList</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       ClassPathXmlApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"autowireInjection.xml"</span>);</span><br><span class="line">       ListTestBean listTestBean = context.getBean(<span class="string">"listTestBean"</span>, ListTestBean.class);</span><br><span class="line">       <span class="keyword">for</span> (HelloApi helloApi : listTestBean.getValues())&#123;</span><br><span class="line">           helloApi.sayHello();</span><br><span class="line">           System.out.println(<span class="string">""</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Spring容器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">default-autowire</span>=<span class="string">"byType"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 一、default：表示使用默认的自动装配，</span></span><br><span class="line"><span class="comment">      默认的自动装配需要在&lt;beans&gt;标签中使用default-autowire属性指定，其支持“no”、“byName ”、“byType”、“constructor”四种自动装配。--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 二、no：意思是不支持自动装配，必须明确指定依赖。--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 三、byName：通过设置Bean定义属性autowire="byName"，意思是根据名字进行自动装配，只能用于setter注入。</span></span><br><span class="line"><span class="comment">      比如我们有方法“setHelloApi”，则“byName”方式Spring容器将查找名字为helloApi的Bean并注入，如果找不到指定的Bean，将什么也不注入。--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloApi"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl"</span> <span class="attr">autowire-candidate</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"testBean1"</span> <span class="attr">class</span>=<span class="string">"model.HelloApiDecorator"</span> <span class="attr">autowire</span>=<span class="string">"byName"</span> <span class="attr">autowire-candidate</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--  四、“byType”：根据类型注入，用于setter注入。</span></span><br><span class="line"><span class="comment">      比如如果指定自动装配方式为“byType”，而“setHelloApi”方法需要注入HelloApi类型数据，则Spring容器将查找HelloApi类型数据，</span></span><br><span class="line"><span class="comment">      如果找到一个则注入该Bean，如果找不到将什么也不注入--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 当找到多个Bean时，对于集合类型注入（如List、Set）将注入所有匹配的候选者 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"listTestBean"</span> <span class="attr">class</span>=<span class="string">"model.ListTestBean"</span> <span class="attr">autowire</span>=<span class="string">"byType"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 对于其他类型注入：可以使用“autowire-candidate”属性为false来让指定的Bean放弃作为自动装配的候选者，</span></span><br><span class="line"><span class="comment">      或使用“primary”属性为true来指定某个Bean为首选Bean。如果仍然找到多个Bean时，将抛出异常--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 注意: 当前Bean的自身类会被排除在候选者之外--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloBean2"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl2"</span> <span class="attr">primary</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloBean3"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl3"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">"message"</span> <span class="attr">value</span>=<span class="string">"helloImpl3"</span>/&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">"index"</span> <span class="attr">value</span>=<span class="string">"1"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- “&lt;beans&gt;”标签的default-autowire-candidates属性可以指定的自动装配的匹配模式，不匹配的将不能作为自动装配的候选者，</span></span><br><span class="line"><span class="comment">      例如指定“*Service，*Dao”，将只把匹配这些模式的Bean作为候选者，而不匹配的不会作为候选者--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 根据以上配置，注入的是helloBean2--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"testBean2"</span> <span class="attr">class</span>=<span class="string">"model.HelloApiDecorator"</span> <span class="attr">autowire</span>=<span class="string">"byType"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 五、“constructor”：根据类型注入构造器参数，功能和“byType”功能一样，只是用于构造器注入方式--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 根据以上配置，注入的是helloBean2--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"testBean3"</span> <span class="attr">class</span>=<span class="string">"model.HelloApiDecorator"</span> <span class="attr">autowire</span>=<span class="string">"constructor"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 六、autodetect：自动检测是使用“constructor”还是“byType”自动装配方式，已不推荐使用。</span></span><br><span class="line"><span class="comment">      如果Bean有空构造器那么将采用“byType”自动装配方式，否则使用“constructor”自动装配方式。--&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>06-自动化装配BEAN</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">创建可被发现的bean</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Component注解"><span class="nav-text">@Component注解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为组件扫描的bean命名"><span class="nav-text">为组件扫描的bean命名</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Named"><span class="nav-text">@Named</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">启用组件扫描</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ComponentScan注解"><span class="nav-text">@ComponentScan注解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#设置组件扫描的基础包"><span class="nav-text">设置组件扫描的基础包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XML中-context-component-scan-标签"><span class="nav-text">XML中 &lt;context:component-scan&gt; 标签</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#back-package"><span class="nav-text">back-package</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#annotation-config"><span class="nav-text">annotation-config</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bean的ID生成策略：name-generator"><span class="nav-text">bean的ID生成策略：name-generator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源过滤"><span class="nav-text">资源过滤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scope代理"><span class="nav-text">scope代理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">实现自动装配</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Autowired"><span class="nav-text">@Autowired</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inject"><span class="nav-text">@Inject</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring中Constructor、-Autowired、-PostConstruct的顺序"><span class="nav-text">Spring中Constructor、@Autowired、@PostConstruct的顺序</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">处理自动装配的歧义性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#标示首选的bean：-Primary"><span class="nav-text">标示首选的bean：@Primary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#限定自动装配的bean：-Qualifier"><span class="nav-text">限定自动装配的bean：@Qualifier</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义限定符"><span class="nav-text">自定义限定符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义限定符注解"><span class="nav-text">自定义限定符注解</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">XML配置实现自动装配</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

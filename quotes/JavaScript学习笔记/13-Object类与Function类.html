@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Object类Object类的函数以及构造函数在没有特别理由的情况下，建议通过字面量来生成对象，而不要使用Object类的函数或构造函数调用。Object类的属性Object类的属性。可以以形如Object.seal(obj)的方式使用。上图中，keys方法和getOwnPropertyNames方法会返回一个数组，是由对象o的直接属性的名称组成的。其中key方法仅返回enumerable属性为真">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;13-Object%E7%B1%BB%E4%B8%8EFunction%E7%B1%BB.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Object类Object类的函数以及构造函数在没有特别理由的情况下，建议通过字面量来生成对象，而不要使用Object类的函数或构造函数调用。Object类的属性Object类的属性。可以以形如Object.seal(obj)的方式使用。上图中，keys方法和getOwnPropertyNames方法会返回一个数组，是由对象o的直接属性的名称组成的。其中key方法仅返回enumerable属性为真">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584596588_20200319134041214_18979.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584596588_20200319134041003_9824.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584596588_20200319134040490_5157.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584596587_20200319134040076_21478.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584596587_20200319134038367_25852.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584596587_20200319134038159_27789.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584596587_20200319134037751_30411.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584596586_20200319134037544_19978.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584596586_20200319134037434_20353.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584596586_20200319134037123_4220.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.016Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584596588_20200319134041214_18979.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/13-Object%E7%B1%BB%E4%B8%8EFunction%E7%B1%BB">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVASCRIPT学习笔记</a></li>
+            <li>13-OBJECT类与FUNCTION类</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>Object类</h1><h2 id="Object类的函数以及构造函数">Object类的函数以及构造函数</h2><p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584596588_20200319134041214_18979.png" alt></p><p>在没有特别理由的情况下，建议通过字面量来生成对象，而不要使用Object类的函数或构造函数调用。</p><h2 id="Object类的属性">Object类的属性</h2><p>Object类的属性。可以以形如Object.seal(obj)的方式使用。</p><p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584596588_20200319134041003_9824.png" alt></p><p>上图中，keys方法和getOwnPropertyNames方法会返回一个数组，是由对象o的直接属性的名称组成的。其中key方法仅返回enumerable属性为真的属性，它得到的结果与通过for in语句中的通过hasOwnProperty方法判断得到的是相同的。而getOwnPropertyNames方法则是在返回属性名时无视enumerable属性。（对于属性的enumerable属性可以通过propertyIsEnumerable方法来判断）</p><a id="more"></a>
+
+
+
+
+
+
+
+<h3 id="create-方法">create()方法</h3>
+<p>create方法，是除了对象字面量与new表达式之外的第三种官方的对象生成方法。它的第一个参数指定一个原型对象，第二个参数是一个关联数组，其键为属性名，值为属性描述符。属性描述符指的是属性对象及属性的属性（表一）中由属性的属性组成的关联数组。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123; <span class="attr">x</span>:<span class="number">2</span>, <span class="attr">y</span>:<span class="number">3</span> &#125;;</span><br><span class="line"><span class="comment">// 与下面的代码等价</span></span><br><span class="line"><span class="keyword">var</span> obj = <span class="built_in">Object</span>.create(<span class="built_in">Object</span>.prototype,</span><br><span class="line">         &#123; <span class="attr">x</span>: &#123;<span class="attr">value</span>:<span class="number">2</span>, <span class="attr">writable</span>:<span class="literal">true</span>, <span class="attr">enumerable</span>:<span class="literal">true</span>, <span class="attr">configurable</span>:<span class="literal">true</span>&#125;,</span><br><span class="line">         y: &#123;<span class="attr">value</span>:<span class="number">3</span>, <span class="attr">writable</span>:<span class="literal">true</span>, <span class="attr">enumerable</span>:<span class="literal">true</span>, <span class="attr">configurable</span>:<span class="literal">true</span>&#125; &#125;);</span><br></pre></td></tr></table></figure>
+<p>如果将一个null作为原型对象传递给create方法，则会生成一个没有进行原型继承的对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 未原型继承于Object类的对象</span></span><br><span class="line">js&gt; <span class="keyword">var</span> obj = <span class="built_in">Object</span>.create(<span class="literal">null</span>);</span><br><span class="line">js&gt; print(<span class="built_in">Object</span>.getPrototypeOf(obj));</span><br><span class="line"><span class="literal">null</span></span><br><span class="line"> </span><br><span class="line">js&gt; <span class="string">'toString'</span> <span class="keyword">in</span> obj;                  <span class="comment">// 对没有继承toString进行确认</span></span><br><span class="line"><span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<h2 id="prototype对象的属性">prototype对象的属性</h2>
+<p>Object.prototype对象的属性</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584596588_20200319134040490_5157.png" alt></p>
+<h1>属性对象</h1>
+<p>在ECMAScript中，属性是名称（属性名）和多个属性的集合（对象）。其中属性值被定位为“值属性”这样一种属性对象的属性。</p>
+<p>如表一所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584596587_20200319134040076_21478.png" alt></p>
+<p>其中，如果属性的configurable属性为true，则可以更改包括值在内的所有属性，反之如果为false，则不能。</p>
+<h2 id="Object类中对属性对象的操作">Object类中对属性对象的操作</h2>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584596587_20200319134038367_25852.png" alt></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = <span class="built_in">Object</span>.create(<span class="built_in">Object</span>.prototype, &#123; <span class="attr">x</span>:&#123;<span class="attr">value</span>:<span class="number">2</span>&#125; &#125;);</span><br><span class="line"><span class="comment">// 除了显式指定的属性，其他的值都为false（value的默认值为undefined）</span></span><br><span class="line"> </span><br><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(obj, <span class="string">'x'</span>);</span><br><span class="line"><span class="comment">// (&#123;value:2, writable:false, enumerable:false, configurable,false&#125;)</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">// 新增属性y</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">'y'</span>, &#123;<span class="attr">value</span>:<span class="number">3</span>, <span class="attr">enumerable</span>:<span class="literal">true</span>&#125;);</span><br><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(obj, <span class="string">'y'</span>);       <span class="comment">// 确认</span></span><br><span class="line"><span class="comment">// (&#123;value:3, writable:false, enumerable:true, configurable,false&#125;)</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">// 新增属性z</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperties(obj, &#123; <span class="attr">z</span>:&#123;<span class="attr">value</span>:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; print(<span class="string">'z called'</span>); &#125;, <span class="attr">enumerable</span>:<span class="literal">true</span> &#125; &#125;);</span><br><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(obj, <span class="string">'z'</span>);        <span class="comment">// 确认</span></span><br><span class="line"><span class="comment">//(&#123;value:(function ()&#123;print("z called");&#125;), writable:false, enumerable:true,configurable:false&#125;)</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">// 确认enumerable属性（也可以通过Object.keys实现）</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> obj) &#123;</span><br><span class="line">    print(key);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// y</span></span><br><span class="line"><span class="comment">// z</span></span><br></pre></td></tr></table></figure>
+<h2 id="访问器属性：get、set">访问器属性：get、set</h2>
+<p>只要将get属性与set属性指定为相应的函数，就能够定义一个只能够通过访问器getter和setter来访问值的属性。</p>
+<p>访问器与value属性是相互排斥的，也就是说，如果指定了value属性的值，访问器（同时包括get和set）就会失效；反之，如果指定了访问器（get或set中的某一个），value属性就会失效。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = <span class="built_in">Object</span>.create(<span class="built_in">Object</span>.prototype,</span><br><span class="line">       &#123; <span class="attr">x</span>:&#123; <span class="attr">get</span>:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; print(<span class="string">'get called'</span>);&#125;,</span><br><span class="line">             <span class="keyword">set</span>:function()&#123; print(<span class="string">'set called'</span>);&#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line">print(obj.x);      <span class="comment">// 当要读取属性时，将会调用getter函数</span></span><br><span class="line"><span class="comment">// get called</span></span><br><span class="line"><span class="comment">// undefined    </span></span><br><span class="line"><span class="comment">// 返回getter函数的返回值（由于上面的代码中没有return任何值，因此结果为undefined值</span></span><br><span class="line">obj.x = <span class="number">1</span>;         <span class="comment">// 在写入属性值时将调用setter函数</span></span><br><span class="line"><span class="comment">// set called</span></span><br><span class="line">print(obj.x);      <span class="comment">// 如上所示，此处的setter函数不会对属性做任何更改</span></span><br><span class="line"><span class="comment">// get called</span></span><br><span class="line"><span class="comment">// undefined</span></span><br><span class="line"><span class="comment">//通过对象字面量来表述，同上面代码</span></span><br><span class="line"><span class="keyword">var</span> obj = &#123; <span class="keyword">get</span> x()&#123; print(<span class="string">'get called'</span>); &#125;,</span><br><span class="line">           <span class="keyword">set</span> x(v) &#123; print(<span class="string">'set called'</span>); &#125; &#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="不可变对象操作">不可变对象操作</h2>
+<p>所谓不可变对象，指的是在被生成之后状态（值）不能再被改变的对象，比如Javasript中的字符串对象。</p>
+<p>在JavaScript中可以通过以下方式实现对象的不可变：</p>
+<ul>
+<li>
+<p>将属性（状态）隐藏，不提供变更操作。（通过闭包的方法）</p>
+</li>
+<li>
+<p>灵活运用writable属性、configurable属性以及setter和getter。</p>
+</li>
+<li>
+<p>灵活运用ECMAScript第5版中提供的Object类中的以下方法：</p>
+</li>
+</ul>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584596587_20200319134038159_27789.png" alt></p>
+<p>上表中的方法通过Object.preventExtensions(obj)这种方式调用。其中，freeze可以向下兼容seal，seal可以向下兼容preventExtensions。这里的向下兼容，指的是比后者有更为严格的限制。</p>
+<p>此外，有以下几点需要注意。</p>
+<ul>
+<li>
+<p>对象一旦更改就无法还原。</p>
+</li>
+<li>
+<p>如果想让原型继承中的被继承方也不可变化，需要对其进行显式的操作。</p>
+</li>
+<li>
+<p>从内部实现来看，seal的作用是将属性的configurable属性置为假，而freeze是将writable属性置为假。如果在生成对象时，对这些属性的属性进行显式地设置，也能够取得相同的效果。同样灵活运用属性的属性，还能够实现只有getter方法而没有setter方法的不可变对象。</p>
+</li>
+</ul>
+<p>建议尽可能不使用不可变对象。</p>
+<h1>Function类</h1>
+<p>Function类是用于构造函数对象的类。</p>
+<h2 id="Function类的函数以及构造函数调用">Function类的函数以及构造函数调用</h2>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584596587_20200319134037751_30411.png" alt></p>
+<h2 id="Function类的属性">Function类的属性</h2>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584596586_20200319134037544_19978.png" alt></p>
+<h2 id="Function-prototype对象的属性">Function.prototype对象的属性</h2>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584596586_20200319134037434_20353.png" alt></p>
+<h2 id="Function类的实例属性">Function类的实例属性</h2>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584596586_20200319134037123_4220.png" alt></p>
+<h3 id="函数对象属性与内部变量的区别">函数对象属性与内部变量的区别</h3>
+<p>函数的属性来自于函数对象本身，或者继承自Function.prototype对象的属性，比如：length、name属性和apply()和call()方法。而函数内部变量是其内部可执行代码的一部分，可以看作调用函数时被隐式生成的对象（Call对象）的属性。前者作为函数对象的属性，外部可以访问；后者作为局部变量，在其函数作用域内，外部无法访问。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> o = <span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">  &#125;</span><br><span class="line">  o.c = <span class="number">3</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">"a"</span> <span class="keyword">in</span> o;</span><br><span class="line">&#125;</span><br><span class="line">test2();</span><br></pre></td></tr></table></figure>
+<p>注意：Function类本身也是Function类的对象实例。它们之间具有如下自我引用的关系。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>===<span class="built_in">Function</span>.constructor;</span><br><span class="line"><span class="comment">//true</span></span><br><span class="line"><span class="built_in">Function</span>._proto_== <span class="built_in">Function</span>.prototype;</span><br><span class="line"><span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+<p>这就意味着，对于一个函数，其原型继承于Function对象（Function类）的，可以读取访问Function.prototype对象的所有属性（或是对其进行方法调用）。</p>
+<h2 id="apply与call方法">apply与call方法</h2>
+<p>Function对象中包含apply与call这两种方法，用来显式地指定接收方对象。即通过它们调用的函数的this引用，可以指向任意特定的对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span>&#123; print(<span class="keyword">this</span>.x); &#125;</span><br><span class="line"><span class="keyword">var</span> obj = &#123; <span class="attr">x</span>:<span class="number">4</span> &#125;;</span><br><span class="line">f.apply(obj);              <span class="comment">// 通过apply调用函数f。函数内的this引用引用了对象obj</span></span><br><span class="line"><span class="comment">//4</span></span><br><span class="line">f.call(obj);               <span class="comment">// 通过call调用函数f。函数内的this引用引用了对象obj</span></span><br><span class="line"><span class="comment">//4</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将接收方对象指定为另一个对象并进行方法调用</span></span><br><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">   x:<span class="number">3</span>,</span><br><span class="line">   doit: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; print(<span class="string">'method is called.'</span>+<span class="keyword">this</span>.x ); &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> obj2 = &#123; <span class="attr">x</span>:<span class="number">4</span> &#125;;</span><br><span class="line">obj.doit.apply(obj2);    <span class="comment">// 通过apply调用obj.doit方法。方法内的this引用引用了对象obj2</span></span><br><span class="line"><span class="comment">//method is called. 4</span></span><br></pre></td></tr></table></figure>
+<p>apply与call方法中，this引用的是作为apply/call的第一个参数被传递的对象。而apply与call之间的不同之处在于两者对其他参数的传递方式。对于apply来说，剩余的参数将通过数组来传递，而call是直接按原样传递形参。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">a, b</span>) </span>&#123; print(<span class="string">'this.x = '</span>+<span class="keyword">this</span>.x+<span class="string">', a = '</span>+a+<span class="string">', b = '</span>+b); &#125;</span><br><span class="line">f.apply(&#123;<span class="attr">x</span>:<span class="number">4</span>&#125;, [<span class="number">1</span>, <span class="number">2</span>]);    <span class="comment">// 作为第2个参数的数列中的元素都是函数f的参数</span></span><br><span class="line"><span class="comment">//this.x = 4, a = 1, b = 2</span></span><br><span class="line">f.call(&#123;<span class="attr">x</span>:<span class="number">4</span>&#125;, <span class="number">1</span>, <span class="number">2</span>);       <span class="comment">// 从第2个参数起的参数都是函数f的参数</span></span><br><span class="line"><span class="comment">//this.x = 4, a =1 , b = 2</span></span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVASCRIPT学习笔记</a></li>
+            <li>13-OBJECT类与FUNCTION类</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Object类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Object类的函数以及构造函数"><span class="nav-text">Object类的函数以及构造函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Object类的属性"><span class="nav-text">Object类的属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#create-方法"><span class="nav-text">create()方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prototype对象的属性"><span class="nav-text">prototype对象的属性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">属性对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Object类中对属性对象的操作"><span class="nav-text">Object类中对属性对象的操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问器属性：get、set"><span class="nav-text">访问器属性：get、set</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不可变对象操作"><span class="nav-text">不可变对象操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Function类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Function类的函数以及构造函数调用"><span class="nav-text">Function类的函数以及构造函数调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Function类的属性"><span class="nav-text">Function类的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Function-prototype对象的属性"><span class="nav-text">Function.prototype对象的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Function类的实例属性"><span class="nav-text">Function类的实例属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#函数对象属性与内部变量的区别"><span class="nav-text">函数对象属性与内部变量的区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#apply与call方法"><span class="nav-text">apply与call方法</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

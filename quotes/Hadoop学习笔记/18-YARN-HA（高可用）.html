@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="http:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;r2.7.3&#x2F;hadoop-yarn&#x2F;hadoop-yarn-site&#x2F;ResourceManagerHA.htmlResourceManager（RM）负责跟踪群集中的资源，并调度应用程序（例如MapReduce作业）。在Hadoop 2.4之前，ResourceManager是YARN集群中的单点故障。高可用性功能以活动&#x2F;待机资源管理">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;18-YARN-HA%EF%BC%88%E9%AB%98%E5%8F%AF%E7%94%A8%EF%BC%89.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="http:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;r2.7.3&#x2F;hadoop-yarn&#x2F;hadoop-yarn-site&#x2F;ResourceManagerHA.htmlResourceManager（RM）负责跟踪群集中的资源，并调度应用程序（例如MapReduce作业）。在Hadoop 2.4之前，ResourceManager是YARN集群中的单点故障。高可用性功能以活动&#x2F;待机资源管理">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584886095_20200322220644002_24519.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584886095_20200322220643790_4588.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584886095_20200322220643359_10419.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584886094_20200322220643039_30734.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584886095_20200322220644002_24519.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/18-YARN-HA%EF%BC%88%E9%AB%98%E5%8F%AF%E7%94%A8%EF%BC%89">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>18-YARN-HA（高可用）</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p><a href="http://hadoop.apache.org/docs/r2.7.3/hadoop-yarn/hadoop-yarn-site/ResourceManagerHA.html" target="_blank" rel="noopener">http://hadoop.apache.org/docs/r2.7.3/hadoop-yarn/hadoop-yarn-site/ResourceManagerHA.html</a></p><p>ResourceManager（RM）负责跟踪群集中的资源，并调度应用程序（例如MapReduce作业）。在Hadoop 2.4之前，ResourceManager是YARN集群中的单点故障。高可用性功能以活动/待机资源管理器对的形式添加冗余，以消除此单一故障点。</p><a id="more"></a>
+
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584886095_20200322220644002_24519.png" alt></p>
+<p>YARN高可用，也就是ResourceManager高可用，规划如下</p>
+<table>
+<thead>
+<tr>
+<th>IP</th>
+<th>nodename</th>
+<th>RM</th>
+<th>NM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>192.168.80.131</td>
+<td>node1</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>192.168.80.132</td>
+<td>node2</td>
+<td></td>
+<td>Y</td>
+</tr>
+<tr>
+<td>192.168.80.133</td>
+<td>node3</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+</tbody>
+</table>
+<h1>YARN HA配置</h1>
+<h2 id="yarn-site-xml">yarn-site.xml</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop]# vi yarn-site.xml</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>mapreduce_shuffle<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">description</span>&gt;</span>NodeManager上运行的附属服务（运行MapReduce程序）<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.ha.enabled<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">description</span>&gt;</span>启用RM高可用性<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.cluster-id<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">description</span>&gt;</span>YARN集群ID<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.ha.rm-ids<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>rm1,rm2<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">description</span>&gt;</span>启用HA时，群集中的RM节点列表<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.hostname.rm1<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>node1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">description</span>&gt;</span>第1个resourcemanager<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.hostname.rm2<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>node3<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">description</span>&gt;</span>第2个resourcemanager<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.zk-address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>node1:2181,node2:2181,node3:2181<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">description</span>&gt;</span>Zookeeper列表<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="yarn-env-sh"><a href="http://yarn-env.sh" target="_blank" rel="noopener">yarn-env.sh</a></h2>
+<p>编译yarn-env.sh文件，增加PID文件存放目录。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop]# vi yarn-env.sh</span><br></pre></td></tr></table></figure>
+<p>添加一行，内容如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export YARN_PID_DIR=/var/run</span><br></pre></td></tr></table></figure>
+<h2 id="分发配置文件">分发配置文件</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop]# scp yarn-site.xml node2:/opt/hadoop-2.7.3/etc/hadoop/</span><br><span class="line">yarn-site.xml                             100%  841     0.8KB/s   00:00    </span><br><span class="line">[root@node1 hadoop]# scp yarn-site.xml node3:/opt/hadoop-2.7.3/etc/hadoop/</span><br><span class="line">yarn-site.xml                             100%  841     0.8KB/s   00:00     </span><br><span class="line">[root@node1 hadoop]# scp yarn-env.sh node2:/opt/hadoop-2.7.3/etc/hadoop/</span><br><span class="line">yarn-env.sh                               100% 4595     4.5KB/s   00:00    </span><br><span class="line">[root@node1 hadoop]# scp yarn-env.sh node3:/opt/hadoop-2.7.3/etc/hadoop/</span><br><span class="line">yarn-env.sh                               100% 4595     4.5KB/s   00:00    </span><br><span class="line">[root@node1 hadoop]#</span><br></pre></td></tr></table></figure>
+<h1>YARN HA运行</h1>
+<h2 id="YARN-HA启动">YARN HA启动</h2>
+<p>首先启动HDFS：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# start-dfs.sh</span><br></pre></td></tr></table></figure>
+<p>然后启动YARN：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop]# start-yarn.sh</span><br><span class="line">starting yarn daemons</span><br><span class="line">starting resourcemanager, logging to /opt/hadoop-2.7.3/logs/yarn-root-resourcemanager-node1.out</span><br><span class="line">node2: starting nodemanager, logging to /opt/hadoop-2.7.3/logs/yarn-root-nodemanager-node2.out</span><br><span class="line">node3: starting nodemanager, logging to /opt/hadoop-2.7.3/logs/yarn-root-nodemanager-node3.out</span><br><span class="line">node1: starting nodemanager, logging to /opt/hadoop-2.7.3/logs/yarn-root-nodemanager-node1.out</span><br><span class="line">[root@node1 hadoop]#</span><br></pre></td></tr></table></figure>
+<p>node1</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop]# jps</span><br><span class="line">4337 Jps</span><br><span class="line">4036 NodeManager</span><br><span class="line">3189 DataNode</span><br><span class="line">3529 NameNode</span><br><span class="line">3402 DFSZKFailoverController</span><br><span class="line">3931 ResourceManager</span><br><span class="line">3310 JournalNode</span><br><span class="line">[root@node1 hadoop]#</span><br></pre></td></tr></table></figure>
+<p>node2</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node2 ~]# jps</span><br><span class="line">4306 Jps</span><br><span class="line">3828 DFSZKFailoverController</span><br><span class="line">3670 JournalNode</span><br><span class="line">4200 NodeManager</span><br><span class="line">3449 DataNode</span><br><span class="line">3947 NameNode</span><br><span class="line">[root@node2 ~]#</span><br></pre></td></tr></table></figure>
+<p>node3</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# jps</span><br><span class="line">2643 JournalNode</span><br><span class="line">2771 NodeManager</span><br><span class="line">2549 DataNode</span><br><span class="line">2871 Jps</span><br></pre></td></tr></table></figure>
+<p>最后注意，备用resourcemanager需要单独启用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# yarn-daemon.sh start resourcemanager</span><br><span class="line">starting resourcemanager, logging to /opt/hadoop-2.7.3/logs/yarn-root-resourcemanager-node3.out</span><br><span class="line">[root@node3 ~]# jps</span><br><span class="line">2643 JournalNode</span><br><span class="line">2771 NodeManager</span><br><span class="line">2900 ResourceManager</span><br><span class="line">2932 Jps</span><br><span class="line">2549 DataNode</span><br><span class="line">[root@node3 ~]#</span><br></pre></td></tr></table></figure>
+<h2 id="YARN-HA-测试">YARN HA 测试</h2>
+<p>通过浏览器打开</p>
+<p><a href="http://192.168.80.131:8088/" target="_blank" rel="noopener">http://192.168.80.131:8088</a></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584886095_20200322220643790_4588.png" alt></p>
+<p>通过浏览器打开</p>
+<p><a href="http://192.168.80.133:8088/" target="_blank" rel="noopener">http://192.168.80.133:8088</a></p>
+<p>跳转到<a href="http://node1:8088/" target="_blank" rel="noopener">http://node1:8088/</a></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584886095_20200322220643359_10419.png" alt></p>
+<p>实际上<a href="http://node1:8088/" target="_blank" rel="noopener">http://node1:8088/</a>就是<a href="http://192.168.80.133:8088/" target="_blank" rel="noopener">http://192.168.80.133:8088</a>，是因为物理机Windows系统的hosts文件没有配置node1而已。</p>
+<p>结束node1的ResourceManager进程：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop]# jps</span><br><span class="line">4337 Jps</span><br><span class="line">4036 NodeManager</span><br><span class="line">3189 DataNode</span><br><span class="line">3529 NameNode</span><br><span class="line">3402 DFSZKFailoverController</span><br><span class="line">3931 ResourceManager</span><br><span class="line">3310 JournalNode</span><br><span class="line">[root@node1 hadoop]# kill 3931</span><br><span class="line">[root@node1 hadoop]#</span><br></pre></td></tr></table></figure>
+<p>这时再次打开<a href="http://192.168.80.133:8088/" target="_blank" rel="noopener">http://192.168.80.133:8088</a></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584886094_20200322220643039_30734.png" alt></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>18-YARN-HA（高可用）</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">YARN HA配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#yarn-site-xml"><span class="nav-text">yarn-site.xml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yarn-env-sh"><span class="nav-text">yarn-env.sh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分发配置文件"><span class="nav-text">分发配置文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">YARN HA运行</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#YARN-HA启动"><span class="nav-text">YARN HA启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YARN-HA-测试"><span class="nav-text">YARN HA 测试</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

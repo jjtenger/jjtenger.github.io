@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Hive查询语言（Hive QL，可以简称HQL）的语法和SQL非常相似，实际上HQL基本上实现了SQL-92标准，并做了一些扩展。但是仍然存在一些差异，比如不支持行级操作，不支持事务处理。HQL更接近MySQL的SQL方言，对于熟悉SQL语言的开发者而言，HQL很容易上手。进入Hive Shell首先启动HDFS和YARN。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;03-HQL-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E8%A1%A8%E6%93%8D%E4%BD%9C.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Hive查询语言（Hive QL，可以简称HQL）的语法和SQL非常相似，实际上HQL基本上实现了SQL-92标准，并做了一些扩展。但是仍然存在一些差异，比如不支持行级操作，不支持事务处理。HQL更接近MySQL的SQL方言，对于熟悉SQL语言的开发者而言，HQL很容易上手。进入Hive Shell首先启动HDFS和YARN。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.016Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/03-HQL-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E8%A1%A8%E6%93%8D%E4%BD%9C">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HIVE学习笔记</a></li>
+            <li>03-HQL-数据库和表操作</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>Hive查询语言（Hive QL，可以简称HQL）的语法和SQL非常相似，实际上HQL基本上实现了SQL-92标准，并做了一些扩展。但是仍然存在一些差异，比如不支持行级操作，不支持事务处理。HQL更接近MySQL的SQL方言，对于熟悉SQL语言的开发者而言，HQL很容易上手。</p><h1>进入Hive Shell</h1><p>首先启动HDFS和YARN。</p><a id="more"></a>
+
+
+<p>Hive Shell即是Hive的CLI交互模式，输入hive回车即可进入。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# hive</span><br><span class="line">SLF4J: Class path contains multiple SLF4J bindings.</span><br><span class="line">SLF4J: Found binding in [jar:file:/opt/hive-2.1.1/lib/log4j-slf4j-impl-2.4.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]</span><br><span class="line">SLF4J: Found binding in [jar:file:/opt/hadoop-2.7.3/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]</span><br><span class="line">SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.</span><br><span class="line">SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]</span><br><span class="line">Logging initialized using configuration in jar:file:/opt/hive-2.1.1/lib/hive-common-2.1.1.jar!/hive-log4j2.properties Async: true</span><br><span class="line">Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>输入“quit;”即可退出HiveShell</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> quit;</span></span><br><span class="line">[root@node3 ~]#</span><br></pre></td></tr></table></figure>
+<h1>操作数据库</h1>
+<h2 id="查看所有数据库">查看所有数据库</h2>
+<p>Hive数据库本质上就是表的目录，或者说命名空间。如果创建数据表没有指定数据库，则使用默认数据库default。与MySQL一样，可以通过show databases命令查看已经存在的数据库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> show databases;</span></span><br><span class="line">OK</span><br><span class="line">default</span><br><span class="line">Time taken: 1.451 seconds, Fetched: 1 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h2 id="创建数据库">创建数据库</h2>
+<p>使用create database语句创建数据库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> create database <span class="built_in">test</span>;</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 0.414 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> show databases;</span></span><br><span class="line">OK</span><br><span class="line">default</span><br><span class="line">test</span><br><span class="line">Time taken: 0.021 seconds, Fetched: 2 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h2 id="查看数据库结构">查看数据库结构</h2>
+<p>describe 命令(可以简写desc)来查看数据库定义，包括：数据库名称、数据库在 HDFS 目录、HDFS</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> desc database <span class="built_in">test</span>;</span></span><br><span class="line">OK</span><br><span class="line">test        hdfs://cetc/user/hive/warehouse/test.db root    USER    </span><br><span class="line">Time taken: 0.223 seconds, Fetched: 1 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>Hive会为每个创建的数据库在HDFS上创建一个目录，该数据库的表会以子目录形式存储，表中的数据会以表目录下的文件形式存储。对于default数据库，默认的缺省数据库没有自己的目录，default数据库下的表默认存放在/user/hive/warehouse目录下。</p>
+<h2 id="切换当前数据库">切换当前数据库</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> use <span class="built_in">test</span>;</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 1.217 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h1>操作表</h1>
+<h2 id="创建表">创建表</h2>
+<p>在默认default数据库下创建表users</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> create table users(id int,name char(20));</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 0.481 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>在test数据库下创建表tb1</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> create table test.tb1(</span></span><br><span class="line">    &gt; id int,</span><br><span class="line">    &gt; name string,</span><br><span class="line">    &gt; price double</span><br><span class="line">    &gt; );</span><br><span class="line">OK</span><br><span class="line">Time taken: 2.044 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h2 id="查看表">查看表</h2>
+<p>显示default数据库下的所有表：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> show tables;</span></span><br><span class="line">OK</span><br><span class="line">users</span><br><span class="line">Time taken: 0.231 seconds, Fetched: 1 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>查看test数据库下的数据表：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> use <span class="built_in">test</span>;</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 0.037 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> show tables;</span></span><br><span class="line">OK</span><br><span class="line">tb1</span><br><span class="line">Time taken: 0.036 seconds, Fetched: 1 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>也可以通过下面命令实现上面功能：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> show tables <span class="keyword">in</span> <span class="built_in">test</span>;</span></span><br><span class="line">OK</span><br><span class="line">tb1</span><br><span class="line">Time taken: 0.04 seconds, Fetched: 1 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h2 id="查看表结构">查看表结构</h2>
+<p>查看表结构：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> desc users;</span></span><br><span class="line">OK</span><br><span class="line">id                      int                                         </span><br><span class="line">name                    char(20)                                    </span><br><span class="line">Time taken: 0.171 seconds, Fetched: 2 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>查看tb1表结构：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> desc tb1;</span></span><br><span class="line">OK</span><br><span class="line">id                      int                                         </span><br><span class="line">name                    string                                      </span><br><span class="line">price                   double                                      </span><br><span class="line">Time taken: 0.138 seconds, Fetched: 3 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h2 id="清空表">清空表</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> truncate table users;</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 0.273 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> select * from users;</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 0.243 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h2 id="删除表">删除表</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> drop table users;</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 2.025 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h2 id="修改表">修改表</h2>
+<p>修改表名：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> show tables;</span></span><br><span class="line">OK</span><br><span class="line">employees</span><br><span class="line">tb1</span><br><span class="line">Time taken: 0.045 seconds, Fetched: 2 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> alter table tb1 rename to demo;</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 0.448 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> show tables;</span></span><br><span class="line">OK</span><br><span class="line">demo</span><br><span class="line">employees</span><br><span class="line">Time taken: 0.031 seconds, Fetched: 2 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>增加列</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> desc demo;</span></span><br><span class="line">OK</span><br><span class="line">id                      int                                         </span><br><span class="line">name                    string                                      </span><br><span class="line">Time taken: 0.136 seconds, Fetched: 2 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> alter table demo add columns(age int);</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 0.461 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> desc demo;</span></span><br><span class="line">OK</span><br><span class="line">id                      int                                         </span><br><span class="line">name                    string                                      </span><br><span class="line">age                     int                                         </span><br><span class="line">Time taken: 0.192 seconds, Fetched: 3 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>修改列</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> alter table demo change column name username varchar(20);</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 0.407 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> desc demo;</span></span><br><span class="line">OK</span><br><span class="line">id                      int                                         </span><br><span class="line">username                varchar(20)                                 </span><br><span class="line">age                     int                                         </span><br><span class="line">Time taken: 0.112 seconds, Fetched: 3 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h2 id="分区表">分区表</h2>
+<p>Hive 查询一般是扫描整个表目录，但是有时候我们关心的数据只是集中在某一部分数据上，比如我们执行一个员工表查询，往往是只是查询某一部门的数据（类似的，查询学生表，往往关心查询某一班级或专业的学生），这样的情况下，可以使用分区表来优化，一个部门是一个分区，查询时候，Hive 只扫描指定部门分区的数据即可。</p>
+<p>普通表和分区表的区别在于：一个 Hive 表在 HDFS 上是有一个对应的目录来存储数据，普通表的数据直接存储在这个目录下，而分区表数据存储时，是再划分子目录来存储的。一个分区一个子目录。主要作用是来优化查询性能。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# mkdir hql</span><br><span class="line">[root@node3 ~]# vi hql/emp.hql</span><br><span class="line">[root@node3 ~]# cat hql/emp.hql </span><br><span class="line">--切换数据库</span><br><span class="line">use test;</span><br><span class="line">--创建表</span><br><span class="line">create table if not exists emp(</span><br><span class="line">    eid     int,</span><br><span class="line">    ename       string,</span><br><span class="line">    job         string,</span><br><span class="line">    mgr         int,</span><br><span class="line">    hiredate    date,   </span><br><span class="line">    sal         double,</span><br><span class="line">    comm        double</span><br><span class="line">)</span><br><span class="line">partitioned by(did int) </span><br><span class="line">row format delimited fields terminated by ',';</span><br><span class="line">[root@node3 ~]#</span><br></pre></td></tr></table></figure>
+<p>其中，if not exists表示如果不存在表才创建。emp表以 did 字段分区，注意did是个虚拟的字段，该字段不存储数据，而是用来分区的。实际数据存储时，did字段值一样的数据存入同一个子目录中，插入数据或者导入数据时，同部门的数据 did字段赋值一样，这样就实现数据按did部门分区存储了。</p>
+<p>向Hive中导入HQL脚本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# hive -f /root/hql/emp.hql</span><br><span class="line">SLF4J: Class path contains multiple SLF4J bindings.</span><br><span class="line">SLF4J: Found binding in [jar:file:/opt/hive-2.1.1/lib/log4j-slf4j-impl-2.4.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]</span><br><span class="line">SLF4J: Found binding in [jar:file:/opt/hadoop-2.7.3/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]</span><br><span class="line">SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.</span><br><span class="line">SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]</span><br><span class="line">Logging initialized using configuration in jar:file:/opt/hive-2.1.1/lib/hive-common-2.1.1.jar!/hive-log4j2.properties Async: true</span><br><span class="line">OK</span><br><span class="line">Time taken: 2.591 seconds</span><br><span class="line">OK</span><br><span class="line">Time taken: 1.357 seconds</span><br><span class="line">[root@node3 ~]# </span><br><span class="line"> </span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> desc test.emp;</span></span><br><span class="line">OK</span><br><span class="line">eid                     int                                         </span><br><span class="line">ename                   string                                      </span><br><span class="line">job                     string                                      </span><br><span class="line">mgr                     int                                         </span><br><span class="line">hiredate                date                                        </span><br><span class="line">sal                     double                                      </span><br><span class="line">comm                    double                                      </span><br><span class="line">did                     int                                         </span><br><span class="line"><span class="meta">#</span><span class="bash"> Partition Information      </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> col_name              data_type               comment             </span></span><br><span class="line">did                     int                                         </span><br><span class="line">Time taken: 1.946 seconds, Fetched: 13 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>再次强调，<strong>所谓分区，这是将满足某些条件的记录打包，做个记号，在查询时提高效率，相当于按文件夹对文件进行分类，文件夹名可类比分区字段。这个分区字段形式上存在于数据表中，在查询时会显示到客户端上，但并不真正在存储在数据表文件中，是所谓伪列。所以，千万不要以为是对属性表中真正存在的列按照属性值的异同进行分区。</strong></p>
+<p>分区表中插入数据必须指定分区字段：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">insert into emp partition(did=10) values(8888,CLARK,MANAGER,7839,1981-06-09,2450,0,10);</span><br><span class="line">FAILED: SemanticException [Error 10293]: Unable to create temp file for insert values Expression of type TOK_TABLE_OR_COL not supported in insert/values</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> insert into emp partition(did=10) values(8888,CLARK,MANAGER,7839,1981-06-09,2450,0);</span></span><br><span class="line">FAILED: SemanticException [Error 10293]: Unable to create temp file for insert values Expression of type TOK_TABLE_OR_COL not supported in insert/values</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> insert into emp partition(did=10) values(8888,<span class="string">'CLARK'</span>,<span class="string">'MANAGER'</span>,7839,<span class="string">'1981-06-09'</span>,2450,0);</span></span><br><span class="line">WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.</span><br><span class="line">Query ID = jjt_20180731102932_0939efb2-1c2f-4232-803b-d94bfa6f9a54</span><br><span class="line">Total jobs = 3</span><br><span class="line">Launching Job 1 out of 3</span><br><span class="line">Number of reduce tasks is set to 0 since there's no reduce operator</span><br><span class="line">Starting Job = job_1532915572213_0016, Tracking URL = http://node:8088/proxy/application_1532915572213_0016/</span><br><span class="line">Kill Command = /opt/hadoop/bin/hadoop job  -kill job_1532915572213_0016</span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0</span><br><span class="line">2018-07-31 10:29:38,665 Stage-1 map = 0%,  reduce = 0%</span><br><span class="line">2018-07-31 10:29:43,903 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.58 sec</span><br><span class="line">MapReduce Total cumulative CPU time: 1 seconds 580 msec</span><br><span class="line">Ended Job = job_1532915572213_0016</span><br><span class="line">Stage-4 is selected by condition resolver.</span><br><span class="line">Stage-3 is filtered out by condition resolver.</span><br><span class="line">Stage-5 is filtered out by condition resolver.</span><br><span class="line">Moving data to directory hdfs://node:9000/user/hive/warehouse/test.db/emp/did=10/.hive-staging_hive_2018-07-31_10-29-32_881_7505856442100173884-1/-ext-10000</span><br><span class="line">Loading data to table test.emp partition (did=10)</span><br><span class="line">MapReduce Jobs Launched:</span><br><span class="line">Stage-Stage-1: Map: 1   Cumulative CPU: 1.58 sec   HDFS Read: 5536 HDFS Write: 117 SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: 1 seconds 580 msec</span><br><span class="line">OK</span><br><span class="line">Time taken: 12.383 seconds</span><br></pre></td></tr></table></figure>
+<h2 id="桶">桶</h2>
+<p>对于每一个数据表或者分区表， Hive可以进一步组织成桶，也就是说桶是更为细粒度的数据范围划分。</p>
+<p>Hive表可以针对某一列进行桶的组织。Hive采用对列值哈希计算，然后除以桶的个数求余的方式决定该条记录存放在哪个桶当中。比如要安装name属性分为3个桶，就是对name属性值的hash值对3取摸，按照取模结果对数据分桶。如取模结果为0的数据记录存放到一个文件，取模为1的数据存放到一个文件，取模为2的数据存放到一个文件。</p>
+<p><strong>（1）为什么需要桶？</strong></p>
+<p>获得更高的查询处理效率。桶为表加上了额外的结构，Hive在处理有些查询时能利用这个结构。具体而言，连接两个在（包含连接列的）相同列上划分了桶的表，可以使用Map端连接 （Map-side join）高效的实现。比如JOIN操作。对于JOIN操作两个表有一个相同的列，如果对这两个表都进行了桶操作。那么将保存相同列值的桶进行JOIN操作就可以，可以大大较少JOIN的数据量。</p>
+<p>使取样（sampling）更高效。在处理大规模数据集时，在开发和修改查询的阶段，如果能在数据集的一小部分数据上试运行查询，会带来很多方便。</p>
+<p><strong>（2）创建带桶的表</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> create table users(id int,name string)</span></span><br><span class="line">    &gt; clustered by (id) sorted by(name) into 4 buckets</span><br><span class="line">    &gt; row format delimited fields terminated by '\t' </span><br><span class="line">    &gt; stored as textfile; </span><br><span class="line">OK</span><br><span class="line">Time taken: 0.231 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>使用clustered by子句来指定划分桶所用的列和要划分的桶的个数。</p>
+<h1>数据导入导出</h1>
+<h2 id="导入数据">导入数据</h2>
+<h3 id="普通表装导入数据">普通表装导入数据</h3>
+<p>一次性向Hive表导入（装载）大量数据命令load data，语法如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">load data [local] inpath 'path' [overwrite] into table tableName</span><br></pre></td></tr></table></figure>
+<p>说明：</p>
+<p>可选项local表示将本地文件装载到Hive表，不加local选项表示将HDFS文件加载到Hive表（实际上将HDFS上的文件 <strong>移动</strong> 到指定目录）。</p>
+<p>overwrite 关键字表示如果 hive 表中存在数据，就会覆盖掉原有的数据。如果省略overwrite，则默认是追加数据。</p>
+<p>示例如下：</p>
+<p>（1）准备数据和目标表</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# cat data/user1.txt </span><br><span class="line">1   qiang</span><br><span class="line">2   root</span><br><span class="line">3   test</span><br><span class="line">[root@node3 ~]# cat data/user2.txt </span><br><span class="line">4   aa</span><br><span class="line">5   bb</span><br><span class="line">6   cc</span><br><span class="line">[root@node3 ~]#</span><br></pre></td></tr></table></figure>
+<p>上传user2.txt到HDFS</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# hdfs dfs -put data/user2.txt input</span><br></pre></td></tr></table></figure>
+<p>确认HDFS上的user2.txt文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# hdfs dfs -ls input</span><br><span class="line">Found 2 items</span><br><span class="line">-rw-r--r--   3 root supergroup    2287354 2017-08-05 05:30 input/mydata.txt</span><br><span class="line">-rw-r--r--   3 root supergroup         15 2017-08-13 05:25 input/user2.txt</span><br><span class="line">[root@node3 ~]#</span><br></pre></td></tr></table></figure>
+<p>创建目标表：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create table users(id int,name string) row format delimited fields terminated by '\t'</span><br></pre></td></tr></table></figure>
+<p>（2）装载本地文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> load data <span class="built_in">local</span> inpath <span class="string">'/root/data/user1.txt'</span> into table users;</span></span><br><span class="line">Loading data to table default.users</span><br><span class="line">OK</span><br><span class="line">Time taken: 1.461 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> select * from users;</span></span><br><span class="line">OK</span><br><span class="line">1   qiang</span><br><span class="line">2   root</span><br><span class="line">3   test</span><br><span class="line">Time taken: 0.271 seconds, Fetched: 3 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>（3）覆盖装载</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> load data inpath <span class="string">'input/user2.txt'</span> overwrite into table users;</span></span><br><span class="line">Loading data to table default.users</span><br><span class="line">OK</span><br><span class="line">Time taken: 0.822 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> select * from users;</span></span><br><span class="line">OK</span><br><span class="line">4   aa</span><br><span class="line">5   bb</span><br><span class="line">6   cc</span><br><span class="line">Time taken: 0.212 seconds, Fetched: 3 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>查询HDFS，发现user2.txt文件已经不在了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> dfs -ls input;</span></span><br><span class="line">Found 1 items</span><br><span class="line">-rw-r--r--   3 root supergroup    2287354 2017-08-05 05:30 input/mydata.txt</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h3 id="分区表装载数据">分区表装载数据</h3>
+<p>准备3个数据文件，内容如下。注意对于时间数据，格式是yyyy-mm-dd。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# cat data/emp10</span><br><span class="line">7782,CLARK,MANAGER,7839,1981-06-09,2450,0,10</span><br><span class="line">7839,KING,PRESIDENT,0,1981-11-17,5000,0,10</span><br><span class="line">7934,MILLER,CLERK,7782,1982-01-23,1300,0,10</span><br><span class="line">[root@node1 ~]# cat data/emp20</span><br><span class="line">7369,SMITH,CLERK,7902,1980-12-17,800,0,20</span><br><span class="line">7566,JONES,MANAGER,7839,1981-04-02,2975,0,20</span><br><span class="line">7902,FORD,ANALYST,7566,1981-12-03,3000,0,20</span><br><span class="line">[root@node1 ~]# cat data/emp30</span><br><span class="line">7499,ALLEN,SALESMAN,7698,1981-02-20,1600,300,30</span><br><span class="line">7521,WARD,SALESMAN,7698,1981-02-22,1250,500,30</span><br><span class="line">7654,MARTIN,SALESMAN,7698,1981-09-28,1250,1400,30</span><br><span class="line">7698,BLAKE,MANAGER,7839,1981-05-01,2850,0,30</span><br><span class="line">7844,TURNER,SALESMAN,7698,1981-09-08,1500,0,30</span><br><span class="line">7900,JAMES,CLERK,7698,1981-12-03,950,0,30</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+<p>上传到HDFS</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# hdfs dfs -put data/emp10 input</span><br><span class="line">[root@node1 ~]# hdfs dfs -put data/emp20 input</span><br><span class="line">[root@node1 ~]# hdfs dfs -put data/emp30 input</span><br></pre></td></tr></table></figure>
+<p>在Hive环境中，有时需要查看HDFS。不需要退出Hive，<strong>可以直接在Hive环境中使用dfs命令。</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> dfs -ls input;</span></span><br><span class="line">Found 4 items</span><br><span class="line">-rw-r--r--   3 root supergroup        133 2017-08-12 09:03 input/emp10</span><br><span class="line">-rw-r--r--   3 root supergroup        133 2017-08-12 09:03 input/emp20</span><br><span class="line">-rw-r--r--   3 root supergroup        280 2017-08-12 09:04 input/emp30</span><br><span class="line">-rw-r--r--   3 root supergroup    2287354 2017-08-05 05:30 input/mydata.txt</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>创建目标表：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">--切换数据库</span><br><span class="line">use test;</span><br><span class="line"> </span><br><span class="line">--创建表</span><br><span class="line">create table if not exists emp(</span><br><span class="line">   eid     int,</span><br><span class="line">   ename       string,</span><br><span class="line">   job         string,</span><br><span class="line">   mgr         int,</span><br><span class="line">   hiredate    date,   </span><br><span class="line">   sal         double,</span><br><span class="line">   comm        double</span><br><span class="line">)</span><br><span class="line">partitioned by(did int)</span><br><span class="line">row format delimited fields terminated by ',';</span><br></pre></td></tr></table></figure>
+<p>导入分区数据</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> load data inpath <span class="string">'input/emp10'</span> into table test.emp partition(did=10);</span></span><br><span class="line">Loading data to table test.emp partition (did=10)</span><br><span class="line">OK</span><br><span class="line">Time taken: 5.912 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> load data inpath <span class="string">'input/emp20'</span> into table test.emp partition(did=20);</span></span><br><span class="line">Loading data to table test.emp partition (did=20)</span><br><span class="line">OK</span><br><span class="line">Time taken: 3.536 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> load data inpath <span class="string">'input/emp30'</span> into table test.emp partition(did=30);</span></span><br><span class="line">Loading data to table test.emp partition (did=30)</span><br><span class="line">OK</span><br><span class="line">Time taken: 4.176 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> </span></span><br><span class="line"> </span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> select * from test.emp;</span></span><br><span class="line">OK</span><br><span class="line">7782    CLARK   MANAGER 7839    1981-06-09  2450.0  0.0 10</span><br><span class="line">7839    KING    PRESIDENT   0   1981-11-17  5000.0  0.0 10</span><br><span class="line">7934    MILLER  CLERK   7782    1982-01-23  1300.0  0.0 10</span><br><span class="line">7369    SMITH   CLERK   7902    1980-12-17  800.0   0.0 20</span><br><span class="line">7566    JONES   MANAGER 7839    1981-04-02  2975.0  0.0 20</span><br><span class="line">7902    FORD    ANALYST 7566    1981-12-03  3000.0  0.0 20</span><br><span class="line">7499    ALLEN   SALESMAN    7698    1981-02-20  1600.0  300.0   30</span><br><span class="line">7521    WARD    SALESMAN    7698    1981-02-22  1250.0  500.0   30</span><br><span class="line">7654    MARTIN  SALESMAN    7698    1981-09-28  1250.0  1400.0  30</span><br><span class="line">7698    BLAKE   MANAGER 7839    1981-05-01  2850.0  0.0 30</span><br><span class="line">7844    TURNER  SALESMAN    7698    1981-09-08  1500.0  0.0 30</span><br><span class="line">7900    JAMES   CLERK   7698    1981-12-03  950.0   0.0 30</span><br><span class="line">Time taken: 1.881 seconds, Fetched: 12 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> </span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> dfs -ls /user/hive/warehouse/test.db;</span></span><br><span class="line">Found 2 items</span><br><span class="line">drwxr-xr-x   - root supergroup          0 2017-08-12 09:08 /user/hive/warehouse/test.db/emp</span><br><span class="line">drwxr-xr-x   - root supergroup          0 2017-08-10 09:39 /user/hive/warehouse/test.db/tb1</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> dfs -ls /user/hive/warehouse/test.db/emp;</span></span><br><span class="line">Found 3 items</span><br><span class="line">drwxr-xr-x   - root supergroup          0 2017-08-12 09:08 /user/hive/warehouse/test.db/emp/did=10</span><br><span class="line">drwxr-xr-x   - root supergroup          0 2017-08-12 09:08 /user/hive/warehouse/test.db/emp/did=20</span><br><span class="line">drwxr-xr-x   - root supergroup          0 2017-08-12 09:08 /user/hive/warehouse/test.db/emp/did=30</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h3 id="复制表">复制表</h3>
+<p>（1）复制表数据，得到普通表（非分区表）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> use default;</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 0.035 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> create table emp as select * from test.emp;</span></span><br><span class="line">WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.</span><br><span class="line">Query ID = root_20170816085512_041f0653-7e3c-4fd2-894c-a364f56a7462</span><br><span class="line">Total jobs = 3</span><br><span class="line">Launching Job 1 out of 3</span><br><span class="line">Number of reduce tasks is set to 0 since there's no reduce operator</span><br><span class="line">Starting Job = job_1502887685471_0002, Tracking URL = http://node1:8088/proxy/application_1502887685471_0002/</span><br><span class="line">Kill Command = /opt/hadoop-2.7.3/bin/hadoop job  -kill job_1502887685471_0002</span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0</span><br><span class="line">2017-08-16 08:55:28,942 Stage-1 map = 0%,  reduce = 0%</span><br><span class="line">2017-08-16 08:55:42,681 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.83 sec</span><br><span class="line">MapReduce Total cumulative CPU time: 1 seconds 830 msec</span><br><span class="line">Ended Job = job_1502887685471_0002</span><br><span class="line">Stage-4 is selected by condition resolver.</span><br><span class="line">Stage-3 is filtered out by condition resolver.</span><br><span class="line">Stage-5 is filtered out by condition resolver.</span><br><span class="line">Moving data to directory hdfs://cetc/user/hive/warehouse/.hive-staging_hive_2017-08-16_08-55-12_391_2156611965186432614-1/-ext-10002</span><br><span class="line">Moving data to directory hdfs://cetc/user/hive/warehouse/emp</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-Stage-1: Map: 1   Cumulative CPU: 1.83 sec   HDFS Read: 5548 HDFS Write: 658 SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: 1 seconds 830 msec</span><br><span class="line">OK</span><br><span class="line">Time taken: 32.073 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> create table emp as select * from test.emp;</span></span><br><span class="line">WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.</span><br><span class="line">Query ID = root_20170816085512_041f0653-7e3c-4fd2-894c-a364f56a7462</span><br><span class="line">Total jobs = 3</span><br><span class="line">Launching Job 1 out of 3</span><br><span class="line">Number of reduce tasks is set to 0 since there's no reduce operator</span><br><span class="line">Starting Job = job_1502887685471_0002, Tracking URL = http://node1:8088/proxy/application_1502887685471_0002/</span><br><span class="line">Kill Command = /opt/hadoop-2.7.3/bin/hadoop job  -kill job_1502887685471_0002</span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0</span><br><span class="line">2017-08-16 08:55:28,942 Stage-1 map = 0%,  reduce = 0%</span><br><span class="line">2017-08-16 08:55:42,681 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.83 sec</span><br><span class="line">MapReduce Total cumulative CPU time: 1 seconds 830 msec</span><br><span class="line">Ended Job = job_1502887685471_0002</span><br><span class="line">Stage-4 is selected by condition resolver.</span><br><span class="line">Stage-3 is filtered out by condition resolver.</span><br><span class="line">Stage-5 is filtered out by condition resolver.</span><br><span class="line">Moving data to directory hdfs://cetc/user/hive/warehouse/.hive-staging_hive_2017-08-16_08-55-12_391_2156611965186432614-1/-ext-10002</span><br><span class="line">Moving data to directory hdfs://cetc/user/hive/warehouse/emp</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-Stage-1: Map: 1   Cumulative CPU: 1.83 sec   HDFS Read: 5548 HDFS Write: 658 SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: 1 seconds 830 msec</span><br><span class="line">OK</span><br><span class="line">Time taken: 32.073 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>查看副本表emp结构，发现是普通表，非分区表。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> desc emp;</span></span><br><span class="line">OK</span><br><span class="line">eid                     int                                         </span><br><span class="line">ename                   string                                      </span><br><span class="line">job                     string                                      </span><br><span class="line">mgr                     int                                         </span><br><span class="line">hiredate                date                                        </span><br><span class="line">sal                     double                                      </span><br><span class="line">comm                    double                                      </span><br><span class="line">did                     int                                         </span><br><span class="line">Time taken: 0.113 seconds, Fetched: 8 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> select * from emp;</span></span><br><span class="line">OK</span><br><span class="line">7782    CLARK   MANAGER 7839    1981-06-09  2450.0  0.0 10</span><br><span class="line">7839    KING    PRESIDENT   0   1981-11-17  5000.0  0.0 10</span><br><span class="line">7934    MILLER  CLERK   7782    1982-01-23  1300.0  0.0 10</span><br><span class="line">7369    SMITH   CLERK   7902    1980-12-17  800.0   0.0 20</span><br><span class="line">7566    JONES   MANAGER 7839    1981-04-02  2975.0  0.0 20</span><br><span class="line">7902    FORD    ANALYST 7566    1981-12-03  3000.0  0.0 20</span><br><span class="line">7499    ALLEN   SALESMAN    7698    1981-02-20  1600.0  300.0   30</span><br><span class="line">7521    WARD    SALESMAN    7698    1981-02-22  1250.0  500.0   30</span><br><span class="line">7654    MARTIN  SALESMAN    7698    1981-09-28  1250.0  1400.0  30</span><br><span class="line">7698    BLAKE   MANAGER 7839    1981-05-01  2850.0  0.0 30</span><br><span class="line">7844    TURNER  SALESMAN    7698    1981-09-08  1500.0  0.0 30</span><br><span class="line">7900    JAMES   CLERK   7698    1981-12-03  950.0   0.0 30</span><br><span class="line">Time taken: 0.226 seconds, Fetched: 12 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> </span></span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>（2）复制表结构</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> create table empBak like test.emp;</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 0.161 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> desc test.emp;</span></span><br><span class="line">OK</span><br><span class="line">eid                     int                                         </span><br><span class="line">ename                   string                                      </span><br><span class="line">job                     string                                      </span><br><span class="line">mgr                     int                                         </span><br><span class="line">hiredate                date                                        </span><br><span class="line">sal                     double                                      </span><br><span class="line">comm                    double                                      </span><br><span class="line">did                     int                                         </span><br><span class="line"><span class="meta">#</span><span class="bash"> Partition Information      </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> col_name              data_type               comment             </span></span><br><span class="line">did                     int                                         </span><br><span class="line">Time taken: 0.077 seconds, Fetched: 13 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> select * from empBak;</span></span><br><span class="line">OK</span><br><span class="line">Time taken: 0.203 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h2 id="导出数据">导出数据</h2>
+<p>（1）导出到HDFS</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> insert overwrite directory <span class="string">'input/emp.bak'</span></span></span><br><span class="line">    &gt; select * from test.emp;</span><br><span class="line">WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.</span><br><span class="line">Query ID = root_20170813093308_2bc4a189-000f-490b-8f9c-2451cfc86355</span><br><span class="line">Total jobs = 3</span><br><span class="line">Launching Job 1 out of 3</span><br><span class="line">Number of reduce tasks is set to 0 since there's no reduce operator</span><br><span class="line">Starting Job = job_1502614100973_0002, Tracking URL = http://node1:8088/proxy/application_1502614100973_0002/</span><br><span class="line">Kill Command = /opt/hadoop-2.7.3/bin/hadoop job  -kill job_1502614100973_0002</span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0</span><br><span class="line">2017-08-13 09:33:31,834 Stage-1 map = 0%,  reduce = 0%</span><br><span class="line">2017-08-13 09:33:45,724 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.14 sec</span><br><span class="line">MapReduce Total cumulative CPU time: 2 seconds 140 msec</span><br><span class="line">Ended Job = job_1502614100973_0002</span><br><span class="line">Stage-3 is selected by condition resolver.</span><br><span class="line">Stage-2 is filtered out by condition resolver.</span><br><span class="line">Stage-4 is filtered out by condition resolver.</span><br><span class="line">Moving data to directory hdfs://cetc/user/root/input/emp.bak/.hive-staging_hive_2017-08-13_09-33-08_728_3968927259689334332-1/-ext-10000</span><br><span class="line">Moving data to directory input/emp.bak</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-Stage-1: Map: 1   Cumulative CPU: 2.14 sec   HDFS Read: 5515 HDFS Write: 590 SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: 2 seconds 140 msec</span><br><span class="line">OK</span><br><span class="line">Time taken: 39.39 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br><span class="line"> </span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> dfs -ls input;</span></span><br><span class="line">Found 2 items</span><br><span class="line">drwxr-xr-x   - root supergroup          0 2017-08-13 09:33 input/emp.bak</span><br><span class="line">-rw-r--r--   3 root supergroup    2287354 2017-08-05 05:30 input/mydata.txt</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> dfs -ls input/emp.bak;</span></span><br><span class="line">Found 1 items</span><br><span class="line">-rwxr-xr-x   3 root supergroup        590 2017-08-13 09:33 input/emp.bak/000000_0</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> dfs -cat input/emp.bak/000000_0;</span></span><br><span class="line">7782CLARKMANAGER78391981-06-092450.00.010</span><br><span class="line">7839KINGPRESIDENT01981-11-175000.00.010</span><br><span class="line">7934MILLERCLERK77821982-01-231300.00.010</span><br><span class="line">7369SMITHCLERK79021980-12-17800.00.020</span><br><span class="line">7566JONESMANAGER78391981-04-022975.00.020</span><br><span class="line">7902FORDANALYST75661981-12-033000.00.020</span><br><span class="line">7499ALLENSALESMAN76981981-02-201600.0300.030</span><br><span class="line">7521WARDSALESMAN76981981-02-221250.0500.030</span><br><span class="line">7654MARTINSALESMAN76981981-09-281250.01400.030</span><br><span class="line">7698BLAKEMANAGER78391981-05-012850.00.030</span><br><span class="line">7844TURNERSALESMAN76981981-09-081500.00.030</span><br><span class="line">7900JAMESCLERK76981981-12-03950.00.030</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>（2）导出到本地</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> insert overwrite <span class="built_in">local</span> directory <span class="string">'/root/data/emp.bak'</span></span></span><br><span class="line">    &gt; select * from test.emp;</span><br><span class="line">WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.</span><br><span class="line">Query ID = root_20170813094410_5d7bbe80-9cc3-430a-b1bc-f22d9c8bd990</span><br><span class="line">Total jobs = 1</span><br><span class="line">Launching Job 1 out of 1</span><br><span class="line">Number of reduce tasks is set to 0 since there's no reduce operator</span><br><span class="line">Starting Job = job_1502614100973_0003, Tracking URL = http://node1:8088/proxy/application_1502614100973_0003/</span><br><span class="line">Kill Command = /opt/hadoop-2.7.3/bin/hadoop job  -kill job_1502614100973_0003</span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0</span><br><span class="line">2017-08-13 09:44:25,516 Stage-1 map = 0%,  reduce = 0%</span><br><span class="line">2017-08-13 09:44:36,939 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.01 sec</span><br><span class="line">MapReduce Total cumulative CPU time: 2 seconds 10 msec</span><br><span class="line">Ended Job = job_1502614100973_0003</span><br><span class="line">Moving data to local directory /root/data/emp.bak</span><br><span class="line">MapReduce Jobs Launched: </span><br><span class="line">Stage-Stage-1: Map: 1   Cumulative CPU: 2.01 sec   HDFS Read: 5632 HDFS Write: 590 SUCCESS</span><br><span class="line">Total MapReduce CPU Time Spent: 2 seconds 10 msec</span><br><span class="line">OK</span><br><span class="line">Time taken: 28.015 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> quit;</span></span><br><span class="line">[root@node3 ~]#</span><br><span class="line"> </span><br><span class="line">[root@node3 ~]# cat /root/data/emp.bak/</span><br><span class="line">000000_0       .000000_0.crc  </span><br><span class="line">[root@node3 ~]# ls /root/data/emp.bak/</span><br><span class="line">000000_0</span><br><span class="line">[root@node3 ~]# cat /root/data/emp.bak/000000_0</span><br><span class="line">7782CLARKMANAGER78391981-06-092450.00.010</span><br><span class="line">7839KINGPRESIDENT01981-11-175000.00.010</span><br><span class="line">7934MILLERCLERK77821982-01-231300.00.010</span><br><span class="line">7369SMITHCLERK79021980-12-17800.00.020</span><br><span class="line">7566JONESMANAGER78391981-04-022975.00.020</span><br><span class="line">7902FORDANALYST75661981-12-033000.00.020</span><br><span class="line">7499ALLENSALESMAN76981981-02-201600.0300.030</span><br><span class="line">7521WARDSALESMAN76981981-02-221250.0500.030</span><br><span class="line">7654MARTINSALESMAN76981981-09-281250.01400.030</span><br><span class="line">7698BLAKEMANAGER78391981-05-012850.00.030</span><br><span class="line">7844TURNERSALESMAN76981981-09-081500.00.030</span><br><span class="line">7900JAMESCLERK76981981-12-03950.00.030</span><br><span class="line">[root@node3 ~]#</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HIVE学习笔记</a></li>
+            <li>03-HQL-数据库和表操作</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">进入Hive Shell</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">操作数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看所有数据库"><span class="nav-text">查看所有数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建数据库"><span class="nav-text">创建数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看数据库结构"><span class="nav-text">查看数据库结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#切换当前数据库"><span class="nav-text">切换当前数据库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">操作表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建表"><span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看表"><span class="nav-text">查看表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看表结构"><span class="nav-text">查看表结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#清空表"><span class="nav-text">清空表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除表"><span class="nav-text">删除表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改表"><span class="nav-text">修改表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分区表"><span class="nav-text">分区表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#桶"><span class="nav-text">桶</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">数据导入导出</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#导入数据"><span class="nav-text">导入数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#普通表装导入数据"><span class="nav-text">普通表装导入数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区表装载数据"><span class="nav-text">分区表装载数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制表"><span class="nav-text">复制表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导出数据"><span class="nav-text">导出数据</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

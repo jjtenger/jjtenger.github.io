@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="准备工作因为前面我们已经配置启动了普通的Hadoop相关服务，需要先停止相关服务并清除数据。（1）停止Hadoop服务首先停止YARN，然后停止HDFS服务。12stop-yarn.shstop-dfs.sh（2）删除HDFS数据12rm -rf &#x2F;var&#x2F;data&#x2F;hadooprm -rf &#x2F;tmp&#x2F;*">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;14-HDFS-HA%E8%BF%90%E8%A1%8C.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="准备工作因为前面我们已经配置启动了普通的Hadoop相关服务，需要先停止相关服务并清除数据。（1）停止Hadoop服务首先停止YARN，然后停止HDFS服务。12stop-yarn.shstop-dfs.sh（2）删除HDFS数据12rm -rf &#x2F;var&#x2F;data&#x2F;hadooprm -rf &#x2F;tmp&#x2F;*">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885098_20200322214937345_26950.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885097_20200322214937021_16644.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885097_20200322214936694_8391.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885097_20200322214936369_9181.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885096_20200322214936045_1767.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885098_20200322214937345_26950.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/14-HDFS-HA%E8%BF%90%E8%A1%8C">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>14-HDFS-HA运行</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>准备工作</h1><p>因为前面我们已经配置启动了普通的Hadoop相关服务，需要先停止相关服务并清除数据。</p><p>（1）停止Hadoop服务</p><p>首先停止YARN，然后停止HDFS服务。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stop-yarn.sh</span><br><span class="line">stop-dfs.sh</span><br></pre></td></tr></table></figure><p>（2）删除HDFS数据</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rm -rf /var/data/hadoop</span><br><span class="line">rm -rf /tmp/*</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+
+
+
+<h1>HA节点规划</h1>
+<table>
+<thead>
+<tr>
+<th>节点</th>
+<th>IP</th>
+<th>Zookeeper</th>
+<th>NameNode</th>
+<th>JournalNode</th>
+<th>DataNode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node1</td>
+<td>192.168.80.131</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>192.168.80.132</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>node3</td>
+<td>192.168.80.133</td>
+<td>Y</td>
+<td></td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+</tbody>
+</table>
+<h1>启动Zookeeper集群</h1>
+<p>启动Zookeeper集群。在每个节点上启动Zookeeper服务并确定状态正确：</p>
+<p>在每个节点上执行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zkServer.sh start</span><br><span class="line">zkServer.sh status</span><br></pre></td></tr></table></figure>
+<h1>初始化HDFS HA（第一次运行）</h1>
+<h2 id="启动JournalNode">启动JournalNode</h2>
+<p>第一次格式化HDFS的过程中，HA需要journalnode通讯，所以需要先把三个节点的journalnode启动。</p>
+<p><a href="http://xn--node1hadoop-daemons-9c83aiz9j3y1cb30dbhvexi4a.sh" target="_blank" rel="noopener">在node1节点上执行hadoop-daemons.sh</a> start journalnode。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# hadoop-daemons.sh start journalnode</span><br><span class="line">node1: starting journalnode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-journalnode-node1.out</span><br><span class="line">node2: starting journalnode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-journalnode-node2.out</span><br><span class="line">node3: starting journalnode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-journalnode-node3.out</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+<p>发现node2和node3节点上的JournalNode也连带被启动了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# jps</span><br><span class="line">2146 QuorumPeerMain</span><br><span class="line">2441 Jps</span><br><span class="line">2333 JournalNode</span><br><span class="line"> </span><br><span class="line">[root@node2 ~]# jps</span><br><span class="line">2372 JournalNode</span><br><span class="line">2458 Jps</span><br><span class="line">2143 QuorumPeerMain</span><br><span class="line"> </span><br><span class="line">[root@node3 ~]# jps</span><br><span class="line">2400 Jps</span><br><span class="line">2133 QuorumPeerMain</span><br><span class="line">2318 JournalNode</span><br></pre></td></tr></table></figure>
+<p>提示：<a href="http://xn--hadoop-daemon-921up4dpa340tcjcq507bomb.sh" target="_blank" rel="noopener">也可以通过命令hadoop-daemon.sh</a> start journalnode启动单个节点的JournalNode，<a href="http://xn--hadoop-daemon-vr6zk67cylz.sh" target="_blank" rel="noopener">注意是hadoop-daemon.sh</a>，<a href="http://xn--hadoop-daemons-pd7vn901a.sh" target="_blank" rel="noopener">不是hadoop-daemons.sh</a>，此时不会连带启动其他节点的JournalNode。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# hadoop-daemon.sh start journalnode</span><br><span class="line">starting journalnode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-journalnode-node1.out</span><br><span class="line">[root@node1 ~]# jps</span><br><span class="line">2309 JournalNode</span><br><span class="line">2358 Jps</span><br><span class="line">2142 QuorumPeerMain</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+<h2 id="nameNode格式化（HDFS-HA）">nameNode格式化（HDFS HA）</h2>
+<p>在其中一个namenode <strong>（任选1个）</strong> 上格式化，比如此处选择在node1节点上格式化namenode。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# hdfs namenode -format</span><br><span class="line">17/07/22 06:02:16 INFO namenode.NameNode: STARTUP_MSG:</span><br><span class="line">/************************************************************</span><br><span class="line">STARTUP_MSG: Starting NameNode</span><br><span class="line">STARTUP_MSG:   host = node1/192.168.80.131</span><br><span class="line">STARTUP_MSG:   args = [-format]</span><br><span class="line">.....</span><br><span class="line">17/07/22 06:02:21 INFO common.Storage: Storage directory /hadoop/dfs/name has been successfully formatted.</span><br><span class="line">17/07/22 06:02:22 INFO namenode.FSImageFormatProtobuf: Saving image file /hadoop/dfs/name/current/fsimage.ckpt_0000000000000000000 using no compression</span><br><span class="line">17/07/22 06:02:22 INFO namenode.FSImageFormatProtobuf: Image file /hadoop/dfs/name/current/fsimage.ckpt_0000000000000000000 of size 351 bytes saved in 0 seconds.</span><br><span class="line">17/07/22 06:02:22 INFO namenode.NNStorageRetentionManager: Going to retain 1 images with txid &gt;= 0</span><br><span class="line">17/07/22 06:02:22 INFO util.ExitUtil: Exiting with status 0</span><br><span class="line">17/07/22 06:02:22 INFO namenode.NameNode: SHUTDOWN_MSG:</span><br><span class="line">/************************************************************</span><br><span class="line">SHUTDOWN_MSG: Shutting down NameNode at node1/192.168.80.131</span><br><span class="line">************************************************************/</span><br><span class="line">[root@node1 ~]#</span><br><span class="line"> </span><br><span class="line">namenode格式化结果中出现has been successfully formatted.说明格式化成功了。</span><br></pre></td></tr></table></figure>
+<h2 id="Active-Namenode启动（HDFS-HA）">Active Namenode启动（HDFS HA）</h2>
+<p><a href="http://xn--node1hadoop-daemon-0c85ak21mu3xd407d721a.sh" target="_blank" rel="noopener">在node1节点执行hadoop-daemon.sh</a> start namenode命令（单独操作一个节点），启动一个namenode作为Active Namenode：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# hadoop-daemon.sh start namenode</span><br><span class="line">starting namenode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-namenode-node1.out</span><br><span class="line">[root@node1 ~]# jps</span><br><span class="line">2528 Jps</span><br><span class="line">2309 JournalNode</span><br><span class="line">2455 NameNode</span><br><span class="line">2142 QuorumPeerMain</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+<p>注意：这时如果查看namenode日志，可能存在错误“java.net.ConnectException: Connection refused”和“StandbyException”等，因为HA模式还没有搭建完成。</p>
+<h2 id="NameNode同步">NameNode同步</h2>
+<p>按照规划，另一个namenode位于node2，所以需要在node2节点上进行namenode同步操作（实际上就是将namenode数据复制到node2节点）。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">[root@node2 ~]# hdfs namenode -bootstrapStandby</span><br><span class="line">17/07/22 06:07:16 INFO namenode.NameNode: STARTUP_MSG:</span><br><span class="line">/************************************************************</span><br><span class="line">STARTUP_MSG: Starting NameNode</span><br><span class="line">STARTUP_MSG:   host = node2/192.168.80.132</span><br><span class="line">STARTUP_MSG:   args = [-bootstrapStandby]</span><br><span class="line">STARTUP_MSG:   version = 2.7.3</span><br><span class="line">STARTUP_MSG:   classpath = /opt/hadoop-2.7.3/etc/hadoop:/opt/hadoop-2.7.3/share/hadoop/common/lib/jsr305-3.0.0.jar:/opt/hadoop-2.7.3/share/hadoop/common/lib/commons-cli-1.2.jar:/opt/hadoop-2.7.3/share/hadoop/common/lib/commons-math3-3.1.1.jar:/opt/hadoop-2.7.3/share/hadoop/common/lib/xmlenc-0.52.jar:/opt/hadoop-2.7.3/share/hadoop/common/lib/commons-httpclient-3.1.jar:/opt/hadoop-2.7.3/share/hadoop/common/lib/commons-logging-1.1.3.jar:/opt/hadoop-2.7.3/share/hadoop/common/lib/commons-codec-1.4.jar:/opt/hadoop-2.7.3/share/hadoop/common/lib/commons-io-2.4.jar:/opt/hadoop-2.7.3/share/hadoop/common/lib/commons-net-3.1.jar:/opt/hadoop-</span><br><span class="line">......</span><br><span class="line">2.7.3/share/hadoop/mapreduce/hadoop-mapreduce-client-hs-2.7.3.jar:/opt/hadoop-2.7.3/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.3.jar:/opt/hadoop-2.7.3/share/hadoop/mapreduce/hadoop-mapreduce-client-hs-plugins-2.7.3.jar:/opt/hadoop-2.7.3/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.3.jar:/opt/hadoop-2.7.3/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.3-tests.jar:/opt/hadoop-2.7.3/contrib/capacity-scheduler/*.jar</span><br><span class="line">STARTUP_MSG:   build = https://git-wip-us.apache.org/repos/asf/hadoop.git -r baa91f7c6bc9cb92be5982de4719c1c8af91ccff; compiled by 'root' on 2016-08-18T01:41Z</span><br><span class="line">STARTUP_MSG:   java = 1.8.0_112</span><br><span class="line">************************************************************/</span><br><span class="line">17/07/22 06:07:16 INFO namenode.NameNode: registered UNIX signal handlers for [TERM, HUP, INT]</span><br><span class="line">17/07/22 06:07:16 INFO namenode.NameNode: createNameNode [-bootstrapStandby]</span><br><span class="line">=====================================================</span><br><span class="line">About to bootstrap Standby ID nn2 from:</span><br><span class="line">          Nameservice ID: cetc</span><br><span class="line">       Other Namenode ID: nn1</span><br><span class="line"> Other NN's HTTP address: http://node1:50070</span><br><span class="line"> Other NN's IPC  address: node1/192.168.80.131:8020</span><br><span class="line">            Namespace ID: 876549235</span><br><span class="line">           Block pool ID: BP-1179450700-192.168.80.131-1500717741509</span><br><span class="line">              Cluster ID: CID-a421f4a5-32bc-4937-b89e-10ee124c71bc</span><br><span class="line">          Layout version: -63</span><br><span class="line">      isUpgradeFinalized: true</span><br><span class="line">=====================================================</span><br><span class="line">17/07/22 06:07:19 INFO common.Storage: Storage directory /hadoop/dfs/name has been successfully formatted.</span><br><span class="line">17/07/22 06:07:20 INFO namenode.TransferFsImage: Opening connection to http://node1:50070/imagetransfer?getimage=1&amp;txid=0&amp;storageInfo=-63:876549235:0:CID-a421f4a5-32bc-4937-b89e-10ee124c71bc</span><br><span class="line">17/07/22 06:07:20 INFO namenode.TransferFsImage: Image Transfer timeout configured to 60000 milliseconds</span><br><span class="line">17/07/22 06:07:21 INFO namenode.TransferFsImage: Transfer took 0.01s at 0.00 KB/s</span><br><span class="line">17/07/22 06:07:21 INFO namenode.TransferFsImage: Downloaded file fsimage.ckpt_0000000000000000000 size 351 bytes.</span><br><span class="line">17/07/22 06:07:21 INFO util.ExitUtil: Exiting with status 0</span><br><span class="line">17/07/22 06:07:21 INFO namenode.NameNode: SHUTDOWN_MSG:</span><br><span class="line">/************************************************************</span><br><span class="line">SHUTDOWN_MSG: Shutting down NameNode at node2/192.168.80.132</span><br><span class="line">************************************************************/</span><br><span class="line">[root@node2 ~]#</span><br></pre></td></tr></table></figure>
+<h2 id="Standby-Namenode启动（HDFS-HA）">Standby Namenode启动（HDFS HA）</h2>
+<p>在node2节点上启动另外一个namenode，将成为Standby Namenode。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node2 ~]# hadoop-daemon.sh start namenode</span><br><span class="line">starting namenode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-namenode-node2.out</span><br><span class="line">[root@node2 ~]# jps</span><br><span class="line">2321 JournalNode</span><br><span class="line">2455 NameNode</span><br><span class="line">2140 QuorumPeerMain</span><br><span class="line">2495 Jps</span><br><span class="line">[root@node2 ~]#</span><br></pre></td></tr></table></figure>
+<h2 id="NameNode初始化ZKFC">NameNode初始化ZKFC</h2>
+<p>首先确保ZK服务已启动</p>
+<p>在其中一个namenode上初始化zkfc：hdfs zkfc -formatZK。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# hdfs zkfc -formatZK</span><br><span class="line">17/07/22 06:10:21 INFO tools.DFSZKFailoverController: Failover controller configured for NameNode NameNode at node1/192.168.80.131:8020</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:zookeeper.version=3.4.6-1569965, built on 02/20/2014 09:09 GMT</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:host.name=node1</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:java.version=1.8.0_112</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:java.vendor=Oracle Corporation</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:java.home=/opt/jdk1.8.0_112/jre</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:java.class.path=/opt/hadoop-2.7.3/etc/hadoop:/opt/hadoop-2.7.3/share/hadoop/common/lib/jsr305-3.0.0.jar:/opt/hadoop-2.7.3/share/hadoop/common/lib/commons-cli-1.2.jar:/opt/hadoop-2.7.3/share/hadoop/common/lib/commons-math3-3.1.1.jar:/opt/hadoop-2.7.3/share/hadoop/common/lib/xmlenc-0.52.jar:/opt/hadoop-</span><br><span class="line">.....</span><br><span class="line">2.7.3/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.7.3-tests.jar:/opt/hadoop-2.7.3/contrib/capacity-scheduler/*.jar</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:java.library.path=/opt/hadoop-2.7.3/lib/native</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:java.io.tmpdir=/tmp</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:java.compiler=&lt;NA&gt;</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:os.name=Linux</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:os.arch=amd64</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:os.version=3.10.0-514.el7.x86_64</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:user.name=root</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:user.home=/root</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Client environment:user.dir=/root</span><br><span class="line">17/07/22 06:10:21 INFO zookeeper.ZooKeeper: Initiating client connection, connectString=node1:2181,node2:2181,node2:2181 sessionTimeout=5000 watcher=org.apache.hadoop.ha.ActiveStandbyElector$WatcherWithClientRef@436813f3</span><br><span class="line">17/07/22 06:10:22 INFO zookeeper.ClientCnxn: Opening socket connection to server node2/192.168.80.132:2181. Will not attempt to authenticate using SASL (unknown error)</span><br><span class="line">17/07/22 06:10:22 INFO zookeeper.ClientCnxn: Socket connection established to node2/192.168.80.132:2181, initiating session</span><br><span class="line">17/07/22 06:10:22 INFO zookeeper.ClientCnxn: Session establishment complete on server node2/192.168.80.132:2181, sessionid = 0x25d69aece0b0000, negotiated timeout = 5000</span><br><span class="line">17/07/22 06:10:22 INFO ha.ActiveStandbyElector: Successfully created /hadoop-ha/cetc in ZK.</span><br><span class="line">17/07/22 06:10:22 INFO zookeeper.ZooKeeper: Session: 0x25d69aece0b0000 closed</span><br><span class="line">17/07/22 06:10:22 WARN ha.ActiveStandbyElector: Ignoring stale result from old client with sessionId 0x25d69aece0b0000</span><br><span class="line">17/07/22 06:10:22 INFO zookeeper.ClientCnxn: EventThread shut down</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+<p>结果中出现Successfully created /hadoop-ha/cetc in ZK.说明ZK格式化成功！</p>
+<h1>HDFS HA运行</h1>
+<h2 id="启动HDFS-HA">启动HDFS HA</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# start-dfs.sh</span><br><span class="line">Starting namenodes on [node1 node2]</span><br><span class="line">node2: starting namenode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-namenode-node2.out</span><br><span class="line">node1: starting namenode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-namenode-node1.out</span><br><span class="line">node3: starting datanode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-datanode-node3.out</span><br><span class="line">node1: starting datanode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-datanode-node1.out</span><br><span class="line">node2: starting datanode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-datanode-node2.out</span><br><span class="line">Starting journal nodes [node1 node2 node3]</span><br><span class="line">node3: starting journalnode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-journalnode-node3.out</span><br><span class="line">node1: starting journalnode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-journalnode-node1.out</span><br><span class="line">node2: starting journalnode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-journalnode-node2.out</span><br><span class="line">Starting ZK Failover Controllers on NN hosts [node1 node2]</span><br><span class="line">node1: starting zkfc, logging to /opt/hadoop-2.7.3/logs/hadoop-root-zkfc-node1.out</span><br><span class="line">node2: starting zkfc, logging to /opt/hadoop-2.7.3/logs/hadoop-root-zkfc-node2.out</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+<p>node1</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# jps</span><br><span class="line">3426 JournalNode</span><br><span class="line">3219 DataNode</span><br><span class="line">3595 DFSZKFailoverController</span><br><span class="line">3116 NameNode</span><br><span class="line">2142 QuorumPeerMain</span><br><span class="line">3662 Jps</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+<p>node2</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node2 ~]# jps</span><br><span class="line">2882 JournalNode</span><br><span class="line">2691 NameNode</span><br><span class="line">2760 DataNode</span><br><span class="line">2140 QuorumPeerMain</span><br><span class="line">2972 DFSZKFailoverController</span><br><span class="line">3020 Jps</span><br><span class="line">[root@node2 ~]#</span><br></pre></td></tr></table></figure>
+<p>node3</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# jps</span><br><span class="line">2562 Jps</span><br><span class="line">2503 JournalNode</span><br><span class="line">2409 DataNode</span><br><span class="line">2138 QuorumPeerMain</span><br><span class="line">[root@node3 ~]#</span><br></pre></td></tr></table></figure>
+<h2 id="停止已启动的HDFS-HA">停止已启动的HDFS HA</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# stop-dfs.sh</span><br><span class="line">Stopping namenodes on [node1 node2]</span><br><span class="line">node2: stopping namenode</span><br><span class="line">node1: stopping namenode</span><br><span class="line">node2: no datanode to stop</span><br><span class="line">node3: no datanode to stop</span><br><span class="line">node1: no datanode to stop</span><br><span class="line">Stopping journal nodes [node1 node2 node3]</span><br><span class="line">node2: stopping journalnode</span><br><span class="line">node3: stopping journalnode</span><br><span class="line">node1: stopping journalnode</span><br><span class="line">Stopping ZK Failover Controllers on NN hosts [node1 node2]</span><br><span class="line">node2: no zkfc to stop</span><br><span class="line">node1: no zkfc to stop</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+<p>可见停止HA的顺序：</p>
+<p>1)停止2个namenode</p>
+<p>2)停止所有datanode</p>
+<p>3)停止所有 journalnode</p>
+<p>4)停止2个zkfc</p>
+<h2 id="HDFS-HA-Web界面">HDFS HA Web界面</h2>
+<p><a href="http://192.168.80.131:50070/" target="_blank" rel="noopener">http://192.168.80.131:50070</a></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885098_20200322214937345_26950.png" alt></p>
+<p>注意到页面中有“active”，说明node1节点的namenode处于active态。</p>
+<p><a href="http://192.168.80.132:50070/" target="_blank" rel="noopener">http://192.168.80.132:50070</a></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885097_20200322214937021_16644.png" alt></p>
+<p>注意到页面中有“standby”，说明node2节点的namenode处于standby态(备用) 。</p>
+<h2 id="测试HA-html">测试HA.html</h2>
+<p>直接kill掉处于active状态的namenode（node1），测试另一处于standby状态的namenode(node2)是否能接管HDFS相关服务。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# jps</span><br><span class="line">3426 JournalNode</span><br><span class="line">3219 DataNode</span><br><span class="line">3595 DFSZKFailoverController</span><br><span class="line">3116 NameNode</span><br><span class="line">2142 QuorumPeerMain</span><br><span class="line">3662 Jps</span><br><span class="line">[root@node1 ~]# kill 3116</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885097_20200322214936694_8391.png" alt></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885097_20200322214936369_9181.png" alt></p>
+<p>重新启动node1节点上的namenode</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# hadoop-daemon.sh start namenode</span><br><span class="line">starting namenode, logging to /opt/hadoop-2.7.3/logs/hadoop-root-namenode-node1.out</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885096_20200322214936045_1767.png" alt></p>
+<p><strong>可能存在的问题</strong></p>
+<p>两个namenode状态不能自动切换，或者都处于standby状态。</p>
+<p>请认真检查hdfs-site.xml和core-site.xml配置文件，可能存在配置项错误，比如某一项参数我们认为配置正确了，可能某个单词拼写错了，或者缺少 <code>&lt;name&gt;</code> 元素。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>14-HDFS-HA运行</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HA节点规划</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">启动Zookeeper集群</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">初始化HDFS HA（第一次运行）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启动JournalNode"><span class="nav-text">启动JournalNode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nameNode格式化（HDFS-HA）"><span class="nav-text">nameNode格式化（HDFS HA）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Active-Namenode启动（HDFS-HA）"><span class="nav-text">Active Namenode启动（HDFS HA）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NameNode同步"><span class="nav-text">NameNode同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Standby-Namenode启动（HDFS-HA）"><span class="nav-text">Standby Namenode启动（HDFS HA）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NameNode初始化ZKFC"><span class="nav-text">NameNode初始化ZKFC</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HDFS HA运行</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启动HDFS-HA"><span class="nav-text">启动HDFS HA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#停止已启动的HDFS-HA"><span class="nav-text">停止已启动的HDFS HA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS-HA-Web界面"><span class="nav-text">HDFS HA Web界面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试HA-html"><span class="nav-text">测试HA.html</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

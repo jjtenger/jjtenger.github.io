@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="HBase安装 下载HBase软件包，上传到node1节点 HBase官方网址：http:&#x2F;&#x2F;hbase.apache.org&#x2F;解压缩软件包1[root@node1 ~]# tar -zxvf hbase-1.2.6-bin.tar.gz -C &#x2F;opt 然后在node1节点上进行HBase相关配置，最后分发到node2和node3节点上。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;02-HBase%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="HBase安装 下载HBase软件包，上传到node1节点 HBase官方网址：http:&#x2F;&#x2F;hbase.apache.org&#x2F;解压缩软件包1[root@node1 ~]# tar -zxvf hbase-1.2.6-bin.tar.gz -C &#x2F;opt 然后在node1节点上进行HBase相关配置，最后分发到node2和node3节点上。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887325_20200322222633451_27119.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887324_20200322222633124_5505.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887324_20200322222632698_17552.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887324_20200322222632272_7745.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887324_20200322222631947_16390.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887325_20200322222633451_27119.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/02-HBase%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HBASE学习笔记</a></li>
+            <li>02-HBASE安装与配置</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>HBase安装</h1><ol>
+<li>下载HBase软件包，上传到node1节点</li>
+</ol><p>HBase官方网址：<a href="http://hbase.apache.org/" target="_blank" rel="noopener">http://hbase.apache.org/</a></p><p>解压缩软件包</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# tar -zxvf hbase-1.2.6-bin.tar.gz -C /opt</span><br></pre></td></tr></table></figure><ol start="2">
+<li>然后在node1节点上进行HBase相关配置，最后分发到node2和node3节点上。</li>
+</ol><a id="more"></a>
+
+
+
+
+
+<h1>HBase集群模式配置</h1>
+<h2 id="设置HBase环境变量">设置HBase环境变量</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/profile.d/custom.sh</span><br></pre></td></tr></table></figure>
+<p>增加如下内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">Hbase path</span></span><br><span class="line">export HBASE_HOME=/opt/hbase-1.2.6</span><br><span class="line">export PATH=$PATH:$HBASE_HOME/bin</span><br></pre></td></tr></table></figure>
+<h2 id="hbase-env-sh"><a href="http://hbase-env.sh" target="_blank" rel="noopener">hbase-env.sh</a></h2>
+<p>（1）JAVA_HOME</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> The java implementation to use.  Java 1.7+ required.</span></span><br><span class="line">export JAVA_HOME=/opt/jdk1.8.0_112</span><br></pre></td></tr></table></figure>
+<p>（2）针对JDK8，移除下面两项</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Configure PermSize. Only needed <span class="keyword">in</span> JDK7. You can safely remove it <span class="keyword">for</span> JDK8+</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">export</span> HBASE_MASTER_OPTS=<span class="string">"<span class="variable">$HBASE_MASTER_OPTS</span> -XX:PermSize=128m -XX:MaxPermSize=128m"</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">export</span> HBASE_REGIONSERVER_OPTS=<span class="string">"<span class="variable">$HBASE_REGIONSERVER_OPTS</span> -XX:PermSize=128m -XX:MaxPermSize=128m"</span></span></span><br></pre></td></tr></table></figure>
+<p>（3）设置HBASE_PID_DIR</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> The directory <span class="built_in">where</span> pid files are stored. /tmp by default.</span></span><br><span class="line">export HBASE_PID_DIR=/var/run</span><br></pre></td></tr></table></figure>
+<p>（4） 不使用Hbase自带的zookeeper</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Tell HBase whether it should manage it<span class="string">'s own instance of Zookeeper or not.</span></span></span><br><span class="line">export HBASE_MANAGES_ZK=false</span><br></pre></td></tr></table></figure>
+<h2 id="hbase-site-xml">hbase-site.xml</h2>
+<p>示例如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">       <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">               这里必须跟core-site.xml中的配置一致</span></span><br><span class="line"><span class="comment">               namenode是HA时，hbase.rootdir=hdfs://nameservices/hbase</span></span><br><span class="line"><span class="comment">               namenode非HA时，hbase.rootdir=hdfs://namenode节点:9000/hbase</span></span><br><span class="line"><span class="comment">       --&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.rootdir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://cetc/hbase<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">       <span class="comment">&lt;!--指定Hbase是分布式的--&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.cluster.distributed<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">       <span class="comment">&lt;!--hbase.master:The port the HBase Master should bind to, Default 16000--&gt;</span></span><br><span class="line">       <span class="comment">&lt;!--hbase.master.info.port:The port for the HBase Master web UI. Default 16010--&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.support.append<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.zookeeper.quorum<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">value</span>&gt;</span>node1:2181,node2:2181,node3:2181<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.zookeeper.property.dataDir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">value</span>&gt;</span>/home/jjt/zookeeper<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="dfs-support-append">dfs.support.append</h3>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--开启HDFS的append功能--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.support.append<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>早期版本的HDFS不支持任何的文件更新操作，一旦一个文件创建、写完数据、并关闭之后，这个文件就再也不能被改变了。为什么这么设计？是为了与MapReduce完美配合，MapReduce的工作模式是接受一系列输入文件，经过map和reduce处理，直接产生一系列输出文件，而不是在原来的输入文件上做原位更新。为什么这么做？因为直接输出新文件比原位更新一个旧文件高效的多。</p>
+<p>在HDFS上，一个文件一直到它的close方法成功执行之后才会存在，才能被其他的client端所看见。如果某个client端在写文件时或者在close文件时失败了，那么这个文件就不会存在，就好像这个文件从来没写过，唯一恢复这个文件的方法，就是从头到尾重新再写一遍。</p>
+<p>Hadoop1.x版本一直都不支持文件的append功能，一直到Hadoop 2.x版本，append 功能才被添加到Hadoop Core中，允许向HDFS文件中追加写数据。为此，HDFS Core 也作出了一些重大的改变，以支持这一操作。append功能添加到HDFS经历了一番曲折和一段很长的时间（具体可以参考http://blog.cloudera.com/blog/2009/07/file-appends-in-hdfs/和 <a href="https://issues.apache.org/jira/browse/HADOOP-8230%EF%BC%89%E3%80%82" target="_blank" rel="noopener">https://issues.apache.org/jira/browse/HADOOP-8230）。</a></p>
+<h3 id="hbase-cluster-distributed">hbase.cluster.distributed</h3>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--指定Hbase是分布式的--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.cluster.distributed<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="hbase-rootdir">hbase.rootdir</h3>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">    这里必须跟core-site.xml中的配置一致</span></span><br><span class="line"><span class="comment">    namenode是HA时，hbase.rootdir=hdfs://nameservices/hbase</span></span><br><span class="line"><span class="comment">    namenode非HA时，hbase.rootdir=hdfs://namenode节点:9000/hbase</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.rootdir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://cetc/hbase<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="hbase-zookeeper-property-dataDir">hbase.zookeeper.property.dataDir</h3>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--zookeeper数据文件路径--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.zookeeper.property.dataDir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">value</span>&gt;</span>/var/lib/zookeeper<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意，该参数必须与Zookeeper的zoo.conf中的dataDir一致。</p>
+<h3 id="hbase-zookeeper-quorum">hbase.zookeeper.quorum</h3>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--zookeeper节点地址--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.zookeeper.quorum<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">value</span>&gt;</span>node1:2181,node2:2181,node3:2181<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="regionservers">regionservers</h3>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hbase-1.2.6]# vi conf/regionservers</span><br><span class="line">[root@node1 hbase-1.2.6]# cat conf/regionservers</span><br><span class="line">node1</span><br><span class="line">node2</span><br><span class="line">node3</span><br><span class="line">[root@node1 hbase-1.2.6]#</span><br></pre></td></tr></table></figure>
+<p>配置regionserver节点主机名。</p>
+<h3 id="分发文件">分发文件</h3>
+<p>（1）分发Hbase软件包</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# scp -r /opt/hbase-1.2.6/ node2:/opt</span><br><span class="line">[root@node1 ~]# scp -r /opt/hbase-1.2.6/ node3:/opt</span><br></pre></td></tr></table></figure>
+<p>（2）分发环境变量文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# scp /etc/profile.d/custom.sh node2:/etc/profile.d/</span><br><span class="line">custom.sh                                             100%  410     0.4KB/s   00:00    </span><br><span class="line">[root@node1 ~]# scp /etc/profile.d/custom.sh node3:/etc/profile.d/</span><br><span class="line">custom.sh</span><br></pre></td></tr></table></figure>
+<p>（3）source</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# source /etc/profile.d/custom.sh</span><br><span class="line">[root@node2 ~]# source /etc/profile.d/custom.sh</span><br><span class="line">[root@node3 ~]# source /etc/profile.d/custom.sh</span><br></pre></td></tr></table></figure>
+<h1>HBase运行</h1>
+<h2 id="启动HBase">启动HBase</h2>
+<p>HBase HA集群是基于Hadoop HA集群的，在搭建HBase HA集群之前需要先有1个运行正常的Hadoop HA集群环境。</p>
+<ol>
+<li>选择node1节点启动HBase：</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# start-hbase.sh</span><br><span class="line">starting master, logging to /opt/hbase-1.2.6/logs/hbase-root-master-node1.out</span><br><span class="line">node2: starting regionserver, logging to /opt/hbase-1.2.6/logs/hbase-root-regionserver-node2.out</span><br><span class="line">node3: starting regionserver, logging to /opt/hbase-1.2.6/logs/hbase-root-regionserver-node3.out</span><br><span class="line">node1: starting regionserver, logging to /opt/hbase-1.2.6/logs/hbase-root-regionserver-node1.out</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>然后选择另一个节点启动备份Hmaster（备份Hmaster须手动启动）：</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# hbase-daemon.sh start master</span><br><span class="line">starting master, logging to /opt/hbase-1.2.6/logs/hbase-root-master-node3.out</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>jps，查看进程</li>
+</ol>
+<p>node1</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# jps</span><br><span class="line">2176 QuorumPeerMain</span><br><span class="line">11488 HRegionServer</span><br><span class="line">3667 ResourceManager</span><br><span class="line">11908 Jps</span><br><span class="line">3542 NameNode</span><br><span class="line">11368 HMaster</span><br><span class="line">2764 JournalNode</span><br><span class="line">2924 DFSZKFailoverController</span><br><span class="line">3164 NodeManager</span><br><span class="line">2541 DataNode</span><br></pre></td></tr></table></figure>
+<p>node2</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@node2 ~]# jps</span><br><span class="line">2176 QuorumPeerMain</span><br><span class="line">2359 NameNode</span><br><span class="line">2423 DataNode</span><br><span class="line">2649 DFSZKFailoverController</span><br><span class="line">5817 HRegionServer</span><br><span class="line">6041 Jps</span><br><span class="line">2525 JournalNode</span><br><span class="line">2734 NodeManager</span><br></pre></td></tr></table></figure>
+<p>node3</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# jps</span><br><span class="line">2177 QuorumPeerMain</span><br><span class="line">2561 NodeManager</span><br><span class="line">3763 HMaster</span><br><span class="line">3911 Jps</span><br><span class="line">2460 JournalNode</span><br><span class="line">3532 HRegionServer</span><br><span class="line">2366 DataNode</span><br><span class="line">2703 ResourceManager</span><br></pre></td></tr></table></figure>
+<h2 id="Web界面与HA测试">Web界面与HA测试</h2>
+<h3 id="Web-UI地址">Web UI地址</h3>
+<p>node1:16010/master-status</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584887325_20200322222633451_27119.png" alt></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584887324_20200322222633124_5505.png" alt></p>
+<h3 id="测试HMaster高可用性">测试HMaster高可用性</h3>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# jps|grep HMaster</span><br><span class="line">11368 HMaster</span><br><span class="line">[root@node1 ~]# kill 11368</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584887324_20200322222632698_17552.png" alt></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584887324_20200322222632272_7745.png" alt></p>
+<p>node3现在是HMaster，重新启动node1节点：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# hbase-daemon.sh start master</span><br><span class="line">starting master, logging to /opt/hbase-1.2.6/logs/hbase-root-master-node1.out</span><br><span class="line">[root@node1 ~]# jps</span><br><span class="line">2176 QuorumPeerMain</span><br><span class="line">11488 HRegionServer</span><br><span class="line">3667 ResourceManager</span><br><span class="line">12579 HMaster</span><br><span class="line">3542 NameNode</span><br><span class="line">12647 Jps</span><br><span class="line">2764 JournalNode</span><br><span class="line">3164 NodeManager</span><br><span class="line">2541 DataNode</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584887324_20200322222631947_16390.png" alt></p>
+<h2 id="启动时报错：java-net-UnknownHostException-HadoopCluster">启动时报错：java.net.UnknownHostException: HadoopCluster</h2>
+<p>HBase没有识别HadoopCluster这个集群，解决方法：</p>
+<p>把Hadoop的2个配置文件（core-site.xml和hdfs-site.xml），放到HBase的conf目录下，让HBase能找到Hadoop的配置。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HBASE学习笔记</a></li>
+            <li>02-HBASE安装与配置</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HBase安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HBase集群模式配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#设置HBase环境变量"><span class="nav-text">设置HBase环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hbase-env-sh"><span class="nav-text">hbase-env.sh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hbase-site-xml"><span class="nav-text">hbase-site.xml</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dfs-support-append"><span class="nav-text">dfs.support.append</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hbase-cluster-distributed"><span class="nav-text">hbase.cluster.distributed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hbase-rootdir"><span class="nav-text">hbase.rootdir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hbase-zookeeper-property-dataDir"><span class="nav-text">hbase.zookeeper.property.dataDir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hbase-zookeeper-quorum"><span class="nav-text">hbase.zookeeper.quorum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#regionservers"><span class="nav-text">regionservers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分发文件"><span class="nav-text">分发文件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HBase运行</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启动HBase"><span class="nav-text">启动HBase</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Web界面与HA测试"><span class="nav-text">Web界面与HA测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Web-UI地址"><span class="nav-text">Web UI地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试HMaster高可用性"><span class="nav-text">测试HMaster高可用性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动时报错：java-net-UnknownHostException-HadoopCluster"><span class="nav-text">启动时报错：java.net.UnknownHostException: HadoopCluster</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

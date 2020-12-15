@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="基本介绍 Python语言及其应用-第8章数据存储（P23-24） 对于所有的关系型数据库而言， SQL 是不完全相同的，并且 DB-API 仅仅实现共有的部分。每一种数据库实现的是包含自己特征和哲学的方言。许多库函数用于消除它们之间的差异，最著名的跨数据库的 Python 库是 SQLAlchemy。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8&#x2F;35-SQLAlchemy.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="基本介绍 Python语言及其应用-第8章数据存储（P23-24） 对于所有的关系型数据库而言， SQL 是不完全相同的，并且 DB-API 仅仅实现共有的部分。每一种数据库实现的是包含自己特征和哲学的方言。许多库函数用于消除它们之间的差异，最著名的跨数据库的 Python 库是 SQLAlchemy。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584263333_2019-11-04-10-44-39.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.036Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584263333_2019-11-04-10-44-39.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/35-SQLAlchemy">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>35-SQLALCHEMY</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>基本介绍</h1><blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P23-24）</p>
+</blockquote><p>对于所有的关系型数据库而言， SQL 是不完全相同的，并且 DB-API 仅仅实现共有的部分。每一种数据库实现的是包含自己特征和哲学的方言。许多库函数用于消除它们之间的差异，最著名的跨数据库的 Python 库是 <a href="http://www.sqlalchemy.org" target="_blank" rel="noopener">SQLAlchemy</a>。</p><a id="more"></a>
+
+
+<p>它不在 Python 的标准库，但被广泛认可，使用者众多。在你的系统（Linux）中使用下面这条命令安装它：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip install sqlalchemy</span><br></pre></td></tr></table></figure>
+<p>你可以在以下层级上使用 SQLAlchemy：</p>
+<ul>
+<li>底层负责处理数据库连接池、执行 SQL 命令以及返回结果，这和 DB-API 相似；</li>
+<li>再往上是 SQL 表达式语言，更像 Python 的 SQL 生成器；</li>
+<li>较高级的是对象关系模型（ORM），使用 SQL 表达式语言，将应用程序代码和关系型数据结构结合起来。</li>
+</ul>
+<p>SQLAlchemy 实现在前面几节提到的数据库驱动程序的基础上。因此不需要导入驱动程序，初始化的连接字符串会作出分配，例如：<br>
+<code>dialect + driver :// user : password @ host : port / dbname</code></p>
+<p>字符串中的值代表如下含义。</p>
+<ul>
+<li>dialect：数据库类型。</li>
+<li>driver：使用该数据库的特定驱动程序。</li>
+<li>user 和 password：数据库认证字符串。</li>
+<li>host 和 port：数据库服务器的位置（只有特定情况下会使用端口号 :port）。</li>
+<li>dbname：初始连接到服务器中的数据库。</li>
+</ul>
+<p>下表列出了常见方言和对应的驱动程序。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584263333_2019-11-04-10-44-39.png" alt></p>
+<h1>引擎层使用</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P24-26）</p>
+</blockquote>
+<p>首先，我们试用一下 SQLAlchemy 的底层，它可以实现多于基本 DB-API 的功能。<br>
+以内置于 Python 的 SQLite 为例，连接字符串忽略 host、 port、 user 和 password。 dbname 表示存储 SQLite 数据库的文件，如果省去 dbname， SQLite 会在内存创建数据库。如果 dbname 以反斜线（/）开头，那么它是文件所在的绝对路径（Linux 和 OS X 是反斜线，而在 Windows 是例如 <code>C:\\</code> 的路径名）。否则它是当前目录下的相对路径。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"># 导入库函数， 使用了 import 的别名，用字符串 sa 指代 SQLAlchemy。</span><br><span class="line">&gt;&gt;&gt; import sqlalchemy as sa</span><br><span class="line"></span><br><span class="line"># 连接到数据库，并在内存中存储它（参数字符串 &apos;sqlite:///:memory:&apos; 也是可行的）：</span><br><span class="line">&gt;&gt;&gt; conn = sa.create_engine(&apos;sqlite://&apos;)</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; conn.execute(&apos;&apos;&apos;CREATE TABLE zoo</span><br><span class="line">...     (critter VARCHAR(20) PRIMARY KEY,</span><br><span class="line">...      count INT,</span><br><span class="line">...     damages FLOAT)&apos;&apos;&apos;)</span><br><span class="line">&lt;sqlalchemy.engine.result.ResultProxy object at 0x1017efb10&gt;</span><br><span class="line"># conn.execute() 返回到一个 SQLAlchemy 的对象 ResultProxy。</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; ins = &apos;INSERT INTO zoo (critter, count, damages) VALUES (?, ?, ?)&apos;</span><br><span class="line">&gt;&gt;&gt; conn.execute(ins, &apos;duck&apos;, 10, 0.0)</span><br><span class="line">&lt;sqlalchemy.engine.result.ResultProxy object at 0x1017efb50&gt;</span><br><span class="line">&gt;&gt;&gt; conn.execute(ins, &apos;bear&apos;, 2, 1000.0)</span><br><span class="line">&lt;sqlalchemy.engine.result.ResultProxy object at 0x1017ef090&gt;</span><br><span class="line">&gt;&gt;&gt; conn.execute(ins, &apos;weasel&apos;, 1, 2000.0)</span><br><span class="line">&lt;sqlalchemy.engine.result.ResultProxy object at 0x1017ef450&gt;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; rows = conn.execute(&apos;SELECT * FROM zoo&apos;)</span><br><span class="line"># SQLAlchemy 中， rows 不是一个列表，不能直接输出。</span><br><span class="line">&gt;&gt;&gt; print(rows)</span><br><span class="line">&lt;sqlalchemy.engine.result.ResultProxy object at 0x1017ef9d0&gt;</span><br><span class="line"></span><br><span class="line"># 但它可以像列表一样迭代，每次可以得到其中的一行。</span><br><span class="line">&gt;&gt;&gt; for row in rows:</span><br><span class="line">...     print(row)</span><br><span class="line">...</span><br><span class="line">(&apos;duck&apos;, 10, 0.0)</span><br><span class="line">(&apos;bear&apos;, 2, 1000.0)</span><br><span class="line">(&apos;weasel&apos;, 1, 2000.0)</span><br></pre></td></tr></table></figure>
+<p>这个例子几乎和 SQLite DB-API 提到的示例是一样的。一个优势是在程序开始时不需要导入数据库驱动程序， SQLAlchemy 从连接字符串（connection string）已经指定了。改变连接字符串就可以使得代码可移植到另一种数据库。另外一个优势是 SQLAlchemy 的连接池，如果想了解更多可以阅读它的<a href="http://docs.sqlalchemy.org/en/latest/core/pooling.html" target="_blank" rel="noopener">文档</a>。</p>
+<h1>SQL表达式语言</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P26）</p>
+</blockquote>
+<p>再往上一层是 SQLAlchemy 的 SQL 表达式语言。它介绍了创建多种 SQL 操作的函数。相比引擎层，它能处理更多 SQL 方言的差异， 对于关系型数据库应用是一种方便的中间层解决方案。<br>
+导入和连接同之前的完全一样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import sqlalchemy as sa</span><br><span class="line">&gt;&gt;&gt; conn = sa.create_engine(&apos;sqlite://&apos;)</span><br></pre></td></tr></table></figure>
+<p>在定义表单 zoo 时，开始使用一些表达式语言代替 SQL：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; meta = sa.MetaData()</span><br><span class="line">&gt;&gt;&gt; zoo = sa.Table(&apos;zoo&apos;, meta,</span><br><span class="line">...         sa.Column(&apos;critter&apos;, sa.String, primary_key=True),</span><br><span class="line">...         sa.Column(&apos;count&apos;, sa.Integer),</span><br><span class="line">...         sa.Column(&apos;damages&apos;, sa.Float)</span><br><span class="line">...     )</span><br><span class="line">&gt;&gt;&gt; meta.create_all(conn)</span><br></pre></td></tr></table></figure>
+<p>注意多行调用时的圆括号。 <code>Table()</code> 方法的调用结构和表单的结构相一致，此表单中包含三列，在 <code>Table()</code> 方法调用时括号内部也调用三次 <code>Column()</code>。同时， zoo 是连接 SQL 数据库和 Python 数据结构的一个对象。<br>
+使用表达式语言的更多函数插入数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; conn.execute(zoo.insert((&apos;bear&apos;, 2, 1000.0)))</span><br><span class="line">&lt;sqlalchemy.engine.result.ResultProxy object at 0x1017ea910&gt;</span><br><span class="line">&gt;&gt;&gt; conn.execute(zoo.insert((&apos;weasel&apos;, 1, 2000.0)))</span><br><span class="line">&lt;sqlalchemy.engine.result.ResultProxy object at 0x1017eab10&gt;</span><br><span class="line">&gt;&gt;&gt; conn.execute(zoo.insert((&apos;duck&apos;, 10, 0)))</span><br><span class="line">&lt;sqlalchemy.engine.result.ResultProxy object at 0x1017eac50&gt;</span><br></pre></td></tr></table></figure>
+<p>接下来创建 SELECT 语句（<code>zoo.select()</code> 会选择出 zoo 对象表单的所有项，和 <code>SELECT * FROM zoo</code> 在普通 SQL 做的相同）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; result = conn.execute(zoo.select())</span><br></pre></td></tr></table></figure>
+<p>最后得到结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; rows = result.fetchall()</span><br><span class="line">&gt;&gt;&gt; print(rows)</span><br><span class="line">[(&apos;bear&apos;, 2, 1000.0), (&apos;weasel&apos;, 1, 2000.0), (&apos;duck&apos;, 10, 0.0)]</span><br></pre></td></tr></table></figure>
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>35-SQLALCHEMY</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">基本介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">引擎层使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">SQL表达式语言</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

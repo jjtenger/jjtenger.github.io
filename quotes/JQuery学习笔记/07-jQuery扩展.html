@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="当我们使用jQuery对象的方法时，由于jQuery对象可以操作一组DOM，而且支持链式操作，所以用起来非常方便。但是jQuery内置的方法永远不可能满足所有的需求。比如，我们想要高亮显示某些DOM元素，用jQuery可以这么实现：12$(&amp;apos;span.hl&amp;apos;).css(&amp;apos;backgroundColor&amp;apos;, &amp;apos;#fffceb&amp;apos;).css(&amp;apos;color&amp;apos;, &amp;apos;#d85030&amp;apos;);$(&amp;apos;p a.hl&amp;apos;)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JQuery%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;07-jQuery%E6%89%A9%E5%B1%95.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="当我们使用jQuery对象的方法时，由于jQuery对象可以操作一组DOM，而且支持链式操作，所以用起来非常方便。但是jQuery内置的方法永远不可能满足所有的需求。比如，我们想要高亮显示某些DOM元素，用jQuery可以这么实现：12$(&amp;apos;span.hl&amp;apos;).css(&amp;apos;backgroundColor&amp;apos;, &amp;apos;#fffceb&amp;apos;).css(&amp;apos;color&amp;apos;, &amp;apos;#d85030&amp;apos;);$(&amp;apos;p a.hl&amp;apos;)">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.016Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JQuery%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/07-jQuery%E6%89%A9%E5%B1%95">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JQuery%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JQUERY学习笔记</a></li>
+            <li>07-JQUERY扩展</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>当我们使用jQuery对象的方法时，由于jQuery对象可以操作一组DOM，而且支持链式操作，所以用起来非常方便。</p><p>但是jQuery内置的方法永远不可能满足所有的需求。比如，我们想要高亮显示某些DOM元素，用jQuery可以这么实现：</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'span.hl'</span>).css(<span class="string">'backgroundColor'</span>, <span class="string">'#fffceb'</span>).css(<span class="string">'color'</span>, <span class="string">'#d85030'</span>);</span><br><span class="line">$(<span class="string">'p a.hl'</span>).css(<span class="string">'backgroundColor'</span>, <span class="string">'#fffceb'</span>).css(<span class="string">'color'</span>, <span class="string">'#d85030'</span>);</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+<p>总是写重复代码可不好，万一以后还要修改字体就更麻烦了，能不能统一起来，写个highlight()方法？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'span.hl'</span>).highlight();</span><br><span class="line">$(<span class="string">'p a.hl'</span>).highlight();</span><br></pre></td></tr></table></figure>
+<p>答案是肯定的。我们可以扩展jQuery来实现自定义方法。将来如果要修改高亮的逻辑，只需修改一处扩展代码。这种方式也称为编写jQuery插件。</p>
+<h1>编写jQuery插件</h1>
+<p>给jQuery对象绑定一个新方法是通过扩展$.fn对象实现的。让我们来编写第一个扩展——highlight1()：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- HTML结构 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"test-highlight1"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>什么是<span class="tag">&lt;<span class="name">span</span>&gt;</span>jQuery<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>jQuery<span class="tag">&lt;/<span class="name">span</span>&gt;</span>是目前最流行的<span class="tag">&lt;<span class="name">span</span>&gt;</span>JavaScript<span class="tag">&lt;/<span class="name">span</span>&gt;</span>库。<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$.fn.highlight1 = function () &#123;</span><br><span class="line">    // this已绑定为当前jQuery对象:</span><br><span class="line">    this.css(&apos;backgroundColor&apos;, &apos;#fffceb&apos;).css(&apos;color&apos;, &apos;#d85030&apos;);</span><br><span class="line">    return this;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">//调用插件方法</span><br><span class="line">$(&apos;#test-highlight1 span&apos;).highlight1();</span><br></pre></td></tr></table></figure>
+<p>注意到函数内部的this在调用时被绑定为jQuery对象，所以函数内部代码可以正常调用所有jQuery对象的方法。</p>
+<p>细心的童鞋可能发现了，为什么最后要return this;？因为jQuery对象支持链式操作，我们自己写的扩展方法也要能继续链式下去：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'span.hl'</span>).highlight1().slideDown();</span><br></pre></td></tr></table></figure>
+<p>不然，用户调用的时候，就不得不把上面的代码拆成两行。</p>
+<h2 id="自定义参数">自定义参数</h2>
+<p>但是这个版本并不完美。有的用户希望高亮的颜色能自己来指定，怎么办？</p>
+<p>我们可以给方法加个参数，让用户自己把参数用对象传进去。于是我们有了第二个版本的highlight2()：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$.fn.highlight2 = <span class="function"><span class="keyword">function</span> (<span class="params">options</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 要考虑到各种情况:</span></span><br><span class="line">    <span class="comment">// options为undefined</span></span><br><span class="line">    <span class="comment">// options只有部分key</span></span><br><span class="line">    <span class="keyword">var</span> bgcolor = options &amp;&amp; options.backgroundColor || <span class="string">'#fffceb'</span>;</span><br><span class="line">    <span class="keyword">var</span> color = options &amp;&amp; options.color || <span class="string">'#d85030'</span>;</span><br><span class="line">    <span class="keyword">this</span>.css(<span class="string">'backgroundColor'</span>, bgcolor).css(<span class="string">'color'</span>, color);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于默认值的处理，我们用了一个简单的&amp;&amp;和||短路操作符，总能得到一个有效的值。</p>
+<p>另一种方法是使用jQuery提供的辅助方<strong>法$.extend(target, obj1, obj2, …)</strong>，它把多个object对象的属性合并到第一个target对象中，遇到同名属性，总是使用靠后的对象的值，也就是越往后优先级越高：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 把默认值和用户传入的options合并到对象&#123;&#125;中并返回:</span></span><br><span class="line"><span class="keyword">var</span> opts = $.extend(&#123;&#125;, &#123;</span><br><span class="line">    backgroundColor: <span class="string">'#00a8e6'</span>,</span><br><span class="line">    color: <span class="string">'#ffffff'</span></span><br><span class="line">&#125;, options);</span><br></pre></td></tr></table></figure>
+<h2 id="设置默认值">设置默认值</h2>
+<p>紧接着用户对highlight2()提出了意见：每次调用都需要传入自定义的设置，能不能让我自己设定一个缺省值，以后的调用统一使用无参数的highlight2()？</p>
+<p>也就是说，我们设定的默认值应该能允许用户修改。</p>
+<p>那默认值放哪比较合适？放全局变量肯定不合适，最佳地点是$.fn.highlight2这个函数对象本身。</p>
+<p>于是最终版的highlight()终于诞生了：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$.fn.highlight = <span class="function"><span class="keyword">function</span> (<span class="params">options</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 合并默认值和用户设定值:</span></span><br><span class="line">    <span class="keyword">var</span> opts = $.extend(&#123;&#125;, $.fn.highlight.defaults, options);</span><br><span class="line">    <span class="keyword">this</span>.css(<span class="string">'backgroundColor'</span>, opts.backgroundColor).css(<span class="string">'color'</span>, opts.color);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 设定默认值:</span></span><br><span class="line">$.fn.highlight.defaults = &#123;</span><br><span class="line">    color: <span class="string">'#d85030'</span>,</span><br><span class="line">    backgroundColor: <span class="string">'#fff8de'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这次用户终于满意了。用户使用时，只需一次性设定默认值：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$.fn.highlight.defaults.color = <span class="string">'#fff'</span>;</span><br><span class="line">$.fn.highlight.defaults.backgroundColor = <span class="string">'#000'</span>;</span><br></pre></td></tr></table></figure>
+<p>然后就可以非常简单地调用highlight()了。</p>
+<p>最终，我们得出编写一个jQuery插件的原则：</p>
+<ul>
+<li>给$.fn绑定函数，实现插件的代码逻辑；</li>
+<li>插件函数最后要return this;以支持链式调用；</li>
+<li>插件函数要有默认值，绑定在$.fn. <code>&lt;pluginName&gt;</code> .defaults上；</li>
+<li>用户在调用时可传入设定值以便覆盖默认值。</li>
+</ul>
+<h1>针对特定元素的扩展</h1>
+<p>我们知道jQuery对象的有些方法只能作用在特定DOM元素上，比如submit()方法只能针对form。如果我们编写的扩展只能针对某些类型的DOM元素，应该怎么写？</p>
+<p>还记得jQuery的选择器支持filter()方法来过滤吗？我们可以借助这个方法来实现针对特定元素的扩展。</p>
+<p>举个例子，现在我们要给所有指向外链的超链接加上跳转提示，怎么做？</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- HTML结构 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"test-external"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>如何学习<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"http://jquery.com"</span>&gt;</span>jQuery<span class="tag">&lt;/<span class="name">a</span>&gt;</span>？<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>首先，你要学习<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000"</span>&gt;</span>JavaScript<span class="tag">&lt;/<span class="name">a</span>&gt;</span>，</span><br><span class="line">    并了解基本的<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"https://developer.mozilla.org/en-US/docs/Web/HTML"</span>&gt;</span>HTML<span class="tag">&lt;/<span class="name">a</span>&gt;</span>。<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>先写出用户调用的代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#test-external a'</span>).external();</span><br></pre></td></tr></table></figure>
+<p>然后按照上面的方法编写一个external扩展：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$.fn.external = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// return返回的each()返回结果，支持链式调用:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.filter(<span class="string">'a'</span>).each(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">// 注意: each()内部的回调函数的this绑定为DOM本身!</span></span><br><span class="line">        <span class="keyword">var</span> a = $(<span class="keyword">this</span>);</span><br><span class="line">        <span class="keyword">var</span> url = a.attr(<span class="string">'href'</span>);</span><br><span class="line">        <span class="keyword">if</span> (url &amp;&amp; (url.indexOf(<span class="string">'http://'</span>)===<span class="number">0</span> || url.indexOf(<span class="string">'https://'</span>)===<span class="number">0</span>)) &#123;</span><br><span class="line">            a.attr(<span class="string">'href'</span>, <span class="string">'#0'</span>)</span><br><span class="line">             .removeAttr(<span class="string">'target'</span>)</span><br><span class="line">             .append(<span class="string">' &lt;i class="uk-icon-external-link"&gt;&lt;/i&gt;'</span>)</span><br><span class="line">             .click(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(confirm(<span class="string">'你确定要前往'</span> + url + <span class="string">'？'</span>)) &#123;</span><br><span class="line">                    <span class="built_in">window</span>.open(url);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>小结</strong></p>
+<p>扩展jQuery对象的功能十分简单，但是我们要遵循jQuery的原则，编写的扩展方法能支持链式调用、具备默认值和过滤特定元素，使得扩展方法看上去和jQuery本身的方法没有什么区别。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JQuery%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JQUERY学习笔记</a></li>
+            <li>07-JQUERY扩展</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">编写jQuery插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义参数"><span class="nav-text">自定义参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置默认值"><span class="nav-text">设置默认值</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">针对特定元素的扩展</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

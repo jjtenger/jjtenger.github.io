@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="ZAB协议Zookeeper的核心是原子广播，这个机制保证了各个Server之间的同步。实现这个机制的协议叫做ZAB（Zookeeper Atomic Broadcast）协议。ZAB协议原理ZAB协议要求每个leader都要经历三个阶段，即发现，同步，广播。 发现：即要求zookeeper集群必须选择出一个leader进程，同时leader会维护一个follower可用列表。将来客户端可以这fo">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;02-Zookeeper%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="ZAB协议Zookeeper的核心是原子广播，这个机制保证了各个Server之间的同步。实现这个机制的协议叫做ZAB（Zookeeper Atomic Broadcast）协议。ZAB协议原理ZAB协议要求每个leader都要经历三个阶段，即发现，同步，广播。 发现：即要求zookeeper集群必须选择出一个leader进程，同时leader会维护一个follower可用列表。将来客户端可以这fo">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584896454_20200323005553472_4097.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584896454_20200323005553148_26616.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584896453_20200323005552932_2548.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584896452_20200323005552719_14873.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584896451_20200323005552403_2324.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584896450_20200323005552087_26094.jpg">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.044Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584896454_20200323005553472_4097.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/02-Zookeeper%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ZOOKEEPER学习笔记</a></li>
+            <li>02-ZOOKEEPER基本原理</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>ZAB协议</h1><p>Zookeeper的核心是原子广播，这个机制保证了各个Server之间的同步。实现这个机制的协议叫做ZAB（Zookeeper Atomic Broadcast）协议。</p><h2 id="ZAB协议原理">ZAB协议原理</h2><p>ZAB协议要求每个leader都要经历三个阶段，即发现，同步，广播。</p><ul>
+<li>发现：即要求zookeeper集群必须选择出一个leader进程，同时leader会维护一个follower可用列表。将来客户端可以这follower中的节点进行通信。</li>
+<li>同步：leader要负责将本身的数据与follower完成同步，做到多副本存储。这样也是体现了CAP中高可用和分区容错。follower将队列中未处理完的请求消费完成后，写入本地事物日志中。</li>
+<li>广播：leader可以接受客户端新的proposal请求，将新的proposal请求广播给所有的follower。</li>
+</ul><a id="more"></a>
+
+
+
+
+<h2 id="ZAB协议基本模式">ZAB协议基本模式</h2>
+<p>ZAB协议包括两种基本的模式： <strong>崩溃恢复和消息广播。</strong></p>
+<ol>
+<li>
+<p>当整个服务框架在启动过程中，或是当leader服务器出现网络中断崩溃退出与重启等异常情况时，ZAB就会进入恢复模式并选举产生新的leader服务器。</p>
+</li>
+<li>
+<p>当选举产生了新的leader服务器，同时集群中已经有过半的机器与该leader服务器完成了状态同步之后，ZAB协议就会退出崩溃恢复模式，进入消息广播模式。</p>
+</li>
+<li>
+<p>当有新的服务器加入到集群中去，如果此时集群中已经存在一个leader服务器在负责进行消息广播，那么新加入的服务器会自动进入数据恢复模式，找到leader服务器，并与其进行数据同步，然后一起参与到消息广播流程中去。</p>
+</li>
+</ol>
+<p>以上大致经历了三个步骤：</p>
+<ol>
+<li>
+<p>崩溃恢复（发现）：主要就是leader选举过程；</p>
+</li>
+<li>
+<p>数据同步：leader服务器与其他服务器进行数据同步；</p>
+</li>
+<li>
+<p>消息广播：leader服务器将数据发送给其他服务器。</p>
+</li>
+</ol>
+<h1>投票（Vote）</h1>
+<p>每个投票中包含了两个最基本的信息，所推举服务器的SID和ZXID，投票（Vote）在Zookeeper中包含字段如下：</p>
+<ul>
+<li><strong>id</strong> ：被推举的Leader的SID。（ <strong>SID</strong> 为在配置server时，给定的服务器的标识id）</li>
+<li><strong>zxid</strong> ：被推举的Leader事务ID。</li>
+<li><strong>electionEpoch</strong> ：逻辑时钟，用来判断多个投票是否在同一轮选举周期中，该值在服务端是一个自增序列，每次进入新一轮的投票后，都会对该值进行加1操作。</li>
+<li><strong>peerEpoch</strong> ：被推举的Leader的epoch。</li>
+<li><strong>state</strong> ：当前服务器的状态。</li>
+</ul>
+<h1>leader选举</h1>
+<p>在3.4.0后的Zookeeper的版本只保留了TCP版本的FastLeaderElection选举算法。</p>
+<p>具体的FAST算法流程如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584896454_20200323005553472_4097.png" alt></p>
+<p>当一台机器进入leader选举时，当前集群可能会处于以下两种状态：</p>
+<ul>
+<li>集群中已经存在leader。</li>
+<li>集群中不存在leader。</li>
+</ul>
+<p>对于集群中已经存在leader而言，此种情况一般都是某台机器启动得较晚，在其启动之前，集群已经在正常工作，对这种情况，该机器试图去选举leader时，会被告知当前服务器的leader信息，对于该机器而言，仅仅需要和leader机器建立起连接，并进行状态同步即可。（如流程13-19）</p>
+<p>当集群中不存在Leader的情况下，zk进入恢复模式，需要重新选举出一个新的leader，让所有的server都恢复到一个正确的状态。</p>
+<h2 id="Leader选举的基本流程">Leader选举的基本流程</h2>
+<p>0、自增选举轮次。Zookeeper规定所有有效的投票都必须在同一轮次中，在开始新一轮投票时，会首先对logicalclock进行自增操作。</p>
+<p>1、初始化选票。在开始进行新一轮投票之前，每个服务器都会初始化自身的选票，并且 <strong>在初始化阶段，每台服务器都会将自己推举为Leader</strong> 。</p>
+<p>2、发送初始化选票。完成选票的初始化后，服务器就会发起第一次投票。Zookeeper会将刚刚初始化好的选票放入sendqueue中，由发送器WorkerSender负责发送出去。</p>
+<p>3-4、接收外部投票。每台服务器会不断地从recvqueue队列中获取外部选票。如果服务器发现无法获取到任何外部投票，那么就会立即确认自己是否和集群中其他服务器保持着有效的连接，如果没有连接，则马上建立连接，如果已经建立了连接，则再次发送自己当前的内部投票。</p>
+<p>5、收到集群中其他服务器返回的信息，此时要分为两类：外部服务器处于looking状态，或者其他状态。</p>
+<p>（1）外部服务器处于looking状态</p>
+<p>6-7、判断选举轮次。在发送完初始化选票之后，接着开始处理外部投票。在处理外部投票时，会根据选举轮次来进行不同的处理。</p>
+<ul>
+<li>外部投票的选举轮次大于内部投票：会立即更新自己的选举轮次(logicalclock)，并且清空所有已经收到的投票，然后使用初始化的投票来进行PK以确定是否变更内部投票。最终再将内部投票发送出去。</li>
+<li>外部投票的选举轮次小于内部投票：直接忽略该外部投票，不做任何处理，并返回步骤3。</li>
+<li>外部投票的选举轮次等于内部投票：此时可以开始进行选票PK。</li>
+</ul>
+<p>8、选票PK。在进行选票PK时，符合任意一个条件就需要变更投票。</p>
+<ul>
+<li>首先对比两者的ZXID，若外部投票的ZXID大，那么需要变更投票。</li>
+<li>若两者的ZXID一致，那么就对比两者的SID，若外部投票的SID大，那么就需要变更投票。</li>
+</ul>
+<p><strong>经过PK后，若确定了外部投票优于内部投票，那么就变更投票，即使用外部投票的选票信息来覆盖内部投票。</strong></p>
+<p>9、<strong>将自身最新的内部投票广播出去（3-9实际上是接收外部投票然后回复自身推荐的过程，一轮投票中可能有多个这个过程，直到选出Leader）。</strong></p>
+<p>10、选票归档。无论是否变更了投票，都会将刚刚收到的那份外部投票放入选票集合recvset中进行归档。recvset用于记录当前服务器在本轮次的Leader选举中收到的所有外部投票（按照服务队的SID区别，如{(1, vote1), (2, vote2)…}）。</p>
+<p>11、统计投票。完成选票归档后，就可以开始统计投票，统计投票是为了统计集群中是否已经有过半的服务器认可了当前的内部投票，如果确定已经有过半服务器认可了该投票，则终止投票。否则返回步骤3。</p>
+<p>12、更新服务器状态。若已经确定可以终止投票，那么就开始更新服务器状态，服务器首选判断当前被过半服务器认可的投票所对应的Leader服务器是否是自己，若是自己，则将自己的服务器状态更新为LEADING，若不是，则根据具体情况来确定自己是FOLLOWING或是OBSERVING。</p>
+<p>（2）外部服务器处于其他状态（Following, Leading）</p>
+<p>13-16、如果逻辑时钟Epoch相同，将该数据保存到recvset，如果所接收服务器宣称自己是leader，那么将判断是不是有半数以上的服务器选举它，如果是则设置选举状态退出选举过程。</p>
+<p>17-19、否则这是一条与当前逻辑时钟不符合的消息，那么说明在另一个选举过程中已经有了选举结果，于是将该选举结果加入到outofelection集合中，再根据outofelection来判断是否可以结束选举，如果可以也是保存逻辑时钟，设置选举状态，退出选举过程。</p>
+<p>以上步骤就是FastLeaderElection的核心，其中步骤3-11会经过几轮循环，直到有Leader选举产生。</p>
+<h1>数据同步</h1>
+<p>在zookeeper集群中新的leader选举成功之后，需要进行数据同步（数据更新或者数据回退）操作，最终目的要保证集群中所有节点的数据副本保持一致。其中有2个问题需要解决：</p>
+<ol>
+<li>
+<p>ZAB协议需要确保那些已经在leader服务器上提交的事务，最终被所有服务器都提交；</p>
+</li>
+<li>
+<p>ZAB协议需要确保丢弃那些只在上一个leader服务器上被提交的事务。</p>
+</li>
+</ol>
+<p>针对以上两个问题，如果让leader选举算法能够保证新选出来的leader服务器拥有集群中所有机器最高编号(ZXID)的proposal，那么就可以保证这个新选出来的leader一定具有所有已经提交的提案；如果让具有最高编号的机器成为leader，就可以省去leader服务器检查proposal的提交和抛弃了。（见leader选举算法）</p>
+<p>对于第2个问题，事务编号ZXID被设计为一个64位的数字，低32位是一个简单的递增计数器，高32位是leader周期的epoch编码，每当选举产生一个新的leader服务器，就会从这个leader服务器上取出本地日志中最大事务proposal的ZXID，然后解析出高32位的epoch编号，进行加1，再将低32位的全部设置为0，产生全新的ZXID，再广播给其它learner。这样，ZAB协议通过epoch编号来区分leader周期变化的策略，来保证丢弃那些只在上一个leader服务器上被提交的事务。</p>
+<p>数据同步时，leader服务器会为每个follower服务器都准备一个队列，并将那些没有被各follower同步的事务以proposal消息的形式逐个发送给follower服务器，并在每个消息的后面发送一个commit消息，表示提交事务。等到同步完成之后，leader服务器会将该服务器加入到真正的可用follower列表中。</p>
+<p>具体步骤如下：</p>
+<ol>
+<li>
+<p>leader等待server连接；</p>
+</li>
+<li>
+<p>follower连接leader，将最大的zxid发送给leader；</p>
+</li>
+<li>
+<p>leader根据follower的zxid确定同步点；</p>
+</li>
+<li>
+<p>完成同步后通知follower 已经成为uptodate状态；</p>
+</li>
+<li>
+<p>follower收到uptodate消息后，又可以重新接受client的请求进行服务了。</p>
+</li>
+</ol>
+<p>流程图如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584896454_20200323005553148_26616.jpg" alt></p>
+<h1>消息广播</h1>
+<p>ZAB协议的消息广播过程使用的是一个原子广播协议，类似 <strong>二阶段提交</strong> (首先提出请求，然后再具体执行。见<a href="https://my.oschina.net/OutOfMemory/blog/801096" target="_blank" rel="noopener">2PC/3PC到底是啥</a>)，具体可以看来源网上的一张图片：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584896453_20200323005552932_2548.jpg" alt></p>
+<p>客户端的请求，leader服务器为其生成对应的事务(或提议proposal)，leader在数据写完之后，将向所有的follower节点发送数据广播请求(或数据复制)，等待所有的follower节点反馈。在ZAB协议中，只要超过半数follower节点反馈OK，leader节点就会向所有的follower服务器发送commit消息，即将leader节点上的数据同步到follower节点之上。</p>
+<p>在生成proposal时，leader会为这个proposal分配一个全局单调递增的唯一ID，称之为事务ID(ZXID)。由于ZAB协议需要保证每一个消息严格的因果关系，因此必须将每一个proposal按照其ZXID的先后顺序来进行排序与处理。具体做法是：leader为每一个follower都各自分配一个单独的队列，然后将需要广播的proposal依次放入队列中。</p>
+<p>如下图所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584896452_20200323005552719_14873.png" alt></p>
+<p>具体步骤如下：</p>
+<ol>
+<li>
+<p>客户端发起一个写操作请求；</p>
+</li>
+<li>
+<p>leader服务器将客户端的request请求转化为事务proposql提案，同时为每个proposal分配一个全局唯一的ID，即ZXID；</p>
+</li>
+<li>
+<p>leader服务器与每个follower之间都有一个队列，leader将消息发送到该队列；</p>
+</li>
+<li>
+<p>follower机器从队列中取出消息处理完(写入本地事务日志中)毕后，向leader服务器发送ACK确认；</p>
+</li>
+<li>
+<p>leader服务器收到半数以上的follower的ACK后，即认为可以发送commit；</p>
+</li>
+<li>
+<p>leader向所有的follower服务器发送commit消息；</p>
+</li>
+</ol>
+<p>zookeeper采用ZAB协议的核心就是只要有一台服务器提交了proposal，就要确保所有的服务器最终都能正确提交proposal。这也是CAP/BASE最终实现一致性的一个体现。</p>
+<p>leader服务器与每个follower之间都有一个单独的队列进行收发消息，使用队列消息可以做到异步解耦。leader和follower之间只要往队列中发送了消息即可。如果使用同步方式容易引起阻塞。性能上要下降很多。</p>
+<h1>leader工作流程</h1>
+<p>leader主要有三个功能：</p>
+<ol>
+<li>
+<p>恢复数据；</p>
+</li>
+<li>
+<p>维持与learner的心跳，接收learner请求并判断learner的请求消息类型；</p>
+</li>
+<li>
+<p>learner的消息类型主要有PING消息、REQUEST消息、ACK消息、REVALIDATE消息，根据不同的消息类型，进行不同的处理。</p>
+</li>
+</ol>
+<ul>
+<li>PING消息是指learner的心跳信息；</li>
+<li>REQUEST消息是Follower发送的提议信息，包括写请求及同步请求；</li>
+<li>ACK消息是对Follower的提议的回复，超过半数的Follower通过，则commit该提议；</li>
+<li>REVALIDATE消息是用来延长SESSION有效时间。</li>
+</ul>
+<p>leader的工作流程简图如下所示。在实际实现中，流程要比下图复杂得多，启动了三个线程来实现功能：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584896451_20200323005552403_2324.jpg" alt></p>
+<h1>follower工作流程</h1>
+<p>follower主要有四个功能：</p>
+<ol>
+<li>
+<p>向Leader发送请求（PING消息、REQUEST消息、ACK消息、REVALIDATE消息）；</p>
+</li>
+<li>
+<p>接收Leader消息并进行处理；</p>
+</li>
+<li>
+<p>接收Client的请求，如果为写请求，发送给Leader进行投票；</p>
+</li>
+<li>
+<p>返回Client结果。</p>
+</li>
+</ol>
+<p>follower循环处理如下几种来自Leader的消息：</p>
+<ol>
+<li>
+<p>PING消息： 心跳消息；</p>
+</li>
+<li>
+<p>PROPOSAL消息：Leader发起的提案，要求follower投票；</p>
+</li>
+<li>
+<p>COMMIT消息：服务器端最新一次提案的信息；</p>
+</li>
+<li>
+<p>UPTODATE消息：表明同步完成；</p>
+</li>
+<li>
+<p>REVALIDATE消息：根据Leader的REVALIDATE结果，关闭待revalidate的session还是允许其接受消息；</p>
+</li>
+<li>
+<p>SYNC消息：返回SYNC结果到客户端，这个消息最初由客户端发起，用来强制得到最新的更新。</p>
+</li>
+</ol>
+<p>follower的工作流程简图如下所示，在实际实现中，follower是通过5个线程来实现功能的。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584896450_20200323005552087_26094.jpg" alt></p>
+<p>对于observer的流程不再叙述，observer流程和follower的唯一不同的地方就是observer不会参加leader发起的投票。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ZOOKEEPER学习笔记</a></li>
+            <li>02-ZOOKEEPER基本原理</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">ZAB协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ZAB协议原理"><span class="nav-text">ZAB协议原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZAB协议基本模式"><span class="nav-text">ZAB协议基本模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">投票（Vote）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">leader选举</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Leader选举的基本流程"><span class="nav-text">Leader选举的基本流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">数据同步</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">消息广播</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">leader工作流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">follower工作流程</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

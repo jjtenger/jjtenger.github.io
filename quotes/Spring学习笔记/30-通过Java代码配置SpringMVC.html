@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="实现WebApplicationInitializer在Servlet 3.0环境中，容器会在类路径中查找实现javax.servlet.ServletContainerInitializer接口的类，如果能发现的话，就会用它来配置Servlet容器。Spring提供了这个接口的实现，名为SpringServletContainerInitializer，这个类反过来又会查找实现WebApplic">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;30-%E9%80%9A%E8%BF%87Java%E4%BB%A3%E7%A0%81%E9%85%8D%E7%BD%AESpringMVC.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="实现WebApplicationInitializer在Servlet 3.0环境中，容器会在类路径中查找实现javax.servlet.ServletContainerInitializer接口的类，如果能发现的话，就会用它来配置Servlet容器。Spring提供了这个接口的实现，名为SpringServletContainerInitializer，这个类反过来又会查找实现WebApplic">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584806613_20200322000131442_19685.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584806612_20200322000130528_4908.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584806612_20200322000130018_13962.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584806610_20200322000129706_4849.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584806608_20200322000128992_3618.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584806607_20200322000128579_25119.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584806602_20200322000128266_8304.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584806596_20200322000127537_14140.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.040Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584806613_20200322000131442_19685.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/30-%E9%80%9A%E8%BF%87Java%E4%BB%A3%E7%A0%81%E9%85%8D%E7%BD%AESpringMVC">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>30-通过JAVA代码配置SPRINGMVC</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>实现WebApplicationInitializer</h1><p>在Servlet 3.0环境中，容器会在类路径中查找实现javax.servlet.ServletContainerInitializer接口的类，如果能发现的话，就会用它来配置Servlet容器。</p><p>Spring提供了这个接口的实现，名为SpringServletContainerInitializer，这个类反过来又会查找实现<strong>WebApplicationInitializer</strong>的类并将配置的任务交给它们来完成。</p><a id="more"></a>
+
+
+<p>Spring 3.2引入了一个便利的WebApplicationInitializer基础实现，也就是AbstractAnnotationConfigDispatcherServletInitializer。</p>
+<p>因为我们的SpittrWebAppInitializer扩展了AbstractAnnotationConfigDispatcherServletInitializer（同时也就实现了WebApplicationInitializer），因此当部署到Servlet 3.0容器中的时候，容器会自动发现它，并用它来配置Servlet上下文。</p>
+<p>（详细原理查看：<a href="https://www.jianshu.com/p/57677a2c6ebd" target="_blank" rel="noopener">https://www.jianshu.com/p/57677a2c6ebd</a>）</p>
+<h2 id="使用AbstractAnnotationConfigDispatcherServletInitializer配置DispatcherServlet">使用AbstractAnnotationConfigDispatcherServletInitializer配置DispatcherServlet</h2>
+<p>此处使用Java将DispatcherServlet配置在Servlet容器中，而不会再使用web.xml文件。如下的程序清单展示了所需的Java类。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584806613_20200322000131442_19685.png" alt></p>
+<p>扩展AbstractAnnotationConfigDispatcherServletInitializer的任意类都会自动地配置DispatcherServlet和Spring应用上下文，Spring的应用上下文会位于应用程序的Servlet上下文之中。</p>
+<p>尽管它的名字很长，但是AbstractAnnotationConfigDispatcherServlet-Initializer使用起来很简便。在程序清单中，SpittrWebAppInitializer重写了三个方法。</p>
+<ul>
+<li>getServletMappings()：会将一个或多个路径映射到DispatcherServlet上。在本例中，它映射的是&quot;/&quot;，这表示它会是应用的默认Servlet。它会处理进入应用的所有请求。</li>
+<li>getServletConfigClasses()：指定DispatcherServlet加载应用上下文时使用的配置类（使用Java配置）。</li>
+<li>getRootConfigClasses()：指定ContextLoaderListener创建的应用上下文时使用的配置类。</li>
+</ul>
+<p>在Spring Web应用中通常会创建两个应用上下文，具体到此处，AbstractAnnotationConfigDispatcherServletInitializer会同时创建DispatcherServlet和ContextLoaderListener。</p>
+<ul>
+<li>首先，当DispatcherServlet启动的时候，它会创建Spring应用上下文，并加载配置文件或配置类中所声明的bean。程序的getServletConfigClasses()方法中，我们要求DispatcherServlet加载应用上下文时，使用定义在WebConfig配置类（使用Java配置）中的bean。</li>
+<li>此外，通常还会有另外一个应用上下文，是由ContextLoaderListener创建的。</li>
+</ul>
+<p>我们希望DispatcherServlet加载包含Web组件的bean，如控制器、视图解析器以及处理器映射，而ContextLoaderListener要加载应用中的其他bean。这些bean通常是驱动应用后端的中间层和数据层组件。</p>
+<p>通过AbstractAnnotationConfigDispatcherServletInitializer来配置DispatcherServlet是传统web.xml方式的替代方案。如果按照这种方式配置DispatcherServlet，而不是使用web.xml的话，那唯一问题在于它只能部署到支持Servlet 3.0的服务器中才能正常工作，如Tomcat 7或更高版本。</p>
+<h3 id="自定义DispatcherServlet配置">自定义DispatcherServlet配置</h3>
+<p>Abstract-AnnotationConfigDispatcherServletInitializer所完成的事情其实比看上去要多。在SpittrWebAppInitializer中我们所编写的三个方法仅仅是必须要重载的abstract方法。但实际上还有更多的方法可以进行重载，从而实现额外的配置。</p>
+<p>此类的方法之一就是<strong>customizeRegistration()</strong>。在AbstractAnnotationConfigDispatcherServletInitializer将DispatcherServlet注册到Servlet容器中之后，就会调用customizeRegistration()，并将Servlet注册后得到的Registration.Dynamic传递进来。通过重载customizeRegistration()方法，我们可以对DispatcherServlet进行额外的配置。</p>
+<p>例如，在本章稍后的内容中，我们将会看到如何在Spring MVC中处理multipart请求和文件上传。如果计划使用Servlet 3.0对multipart配置的支持，那么需要使用DispatcherServlet的registration来启用multipart请求。我们可以重载customizeRegistration()方法来设置MultipartConfigElement，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584806612_20200322000130528_4908.png" alt></p>
+<p>借助customizeRegistration()方法中的ServletRegistration.Dynamic，我们能够完成多项任务，包括：通过调用setLoadOnStartup()设置load-on-startup优先级，通过setInitParameter()设置初始化参数，通过调用setMultipartConfig()配置Servlet 3.0对multipart的支持。在前面的样例中，我们设置了对multipart的支持，将上传文件的临时存储目录设置在“/tmp/spittr/uploads”中。</p>
+<h3 id="注册Filter到DispatcherServlet">注册Filter到DispatcherServlet</h3>
+<p>如果你只是注册Filter，并且该Filter只会映射到DispatcherServlet上的话，那么在AbstractAnnotationConfigDispatcherServletInitializer中还有一种快捷方式。所需要做的仅仅是重载AbstractAnnotationConfigDispatcherServletInitializer的getServlet-Filters()方法。例如，在如下的代码中，重载了AbstractAnnotationConfig-DispatcherServletInitializer的getServletFilters()方法以注册Filter：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584806612_20200322000130018_13962.png" alt></p>
+<p>我们可以看到，这个方法返回的是一个javax.servlet.Filter的数组。在这里它只返回了一个Filter，但它实际上可以返回任意数量的Filter。在这里没有必要声明它的映射路径，getServletFilters()方法返回的所有Filter都会映射到DispatcherServlet上。</p>
+<h2 id="自定义WebApplicationInitializer实现">自定义WebApplicationInitializer实现</h2>
+<p>按照AbstractAnnotationConfigDispatcherServletInitializer的定义，它会创建DispatcherServlet和ContextLoaderListener。但是，如果你想注册其他的Servlet、Filter或Listener的话，那该怎么办呢？</p>
+<p>基于Java的初始化器（initializer）的一个好处就在于我们可以定义任意数量的初始化器类。因此，如果我们想往Web容器中注册其他组件的话，只需创建一个新的初始化器就可以了。最简单的方式就是实现Spring的WebApplicationInitializer接口。WebApplicationInitializer提供了一种通用的方式，实现在支持Servlet 3.0的容器中注册Servlet、Filter和Listener。</p>
+<p>例如，如下的程序清单展现了如何创建WebApplicationInitializer实现并注册一个Servlet。</p>
+<p><strong>程序清单 通过实现WebApplicationInitializer来注册Servlet</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584806610_20200322000129706_4849.png" alt></p>
+<p>上面程序清单是相当基础的Servlet注册初始化器类。它注册了一个Servlet并将其映射到一个路径上。我们也可以通过这种方式来手动注册DispatcherServlet。（但这并没有必要，因为AbstractAnnotationConfigDispatcherServletInitializer没用太多代码就将这项任务完成得很漂亮。）</p>
+<p>类似地，我们还可以创建新的WebApplicationInitializer实现来注册Listener和Filter。例如，如下的程序清单展现了如何注册Filter。</p>
+<p><strong>程序清单 注册Filter的WebApplicationInitializer</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584806608_20200322000128992_3618.png" alt></p>
+<h1>启用并配置SpringMVC</h1>
+<h2 id="EnableWebMvc：启用SpringMVC">@EnableWebMvc：启用SpringMVC</h2>
+<p>我们有多种方式来配置DispatcherServlet，与之类似，启用Spring MVC组件的方法也不仅一种。以前，Spring是使用XML进行配置的，你可以使用 <code>&lt;mvc:annotation-driven&gt;</code> 启用注解驱动的Spring MVC。</p>
+<p>现在我们会让Spring MVC的搭建过程尽可能简单并基于Java进行配置。我们所能创建的最简单的Spring MVC配置就是一个带有**@EnableWebMvc**注解的类：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584806607_20200322000128579_25119.png" alt></p>
+<p>这可以运行起来，它的确能够启用Spring MVC，但还有不少问题要解决：</p>
+<ul>
+<li>没有配置视图解析器。如果这样的话，Spring默认会使用BeanNameView-Resolver，这个视图解析器会查找ID与视图名称匹配的bean，并且查找的bean要实现View接口，它以这样的方式来解析视图。</li>
+<li>没有启用组件扫描。这样的结果就是，Spring只能找到显式声明在配置类中的控制器。</li>
+<li>这样配置的话，DispatcherServlet会映射为应用的默认Servlet，所以它会处理所有的请求，包括对静态资源的请求，如图片和样式表（在大多数情况下，这可能并不是你想要的效果）。</li>
+</ul>
+<p>因此，我们需要在WebConfig这个最小的Spring MVC配置上再加一些内容，从而让它变得真正有用。</p>
+<h2 id="自定义WebMvcConfigurerAdapter">自定义WebMvcConfigurerAdapter</h2>
+<p>如下程序清单中的WebConfig解决了上面所述的问题。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584806602_20200322000128266_8304.png" alt></p>
+<h3 id="启用组件扫描">启用组件扫描</h3>
+<p>在上面的程序清单中第一件需要注意的事情是WebConfig现在添加了**@Component-Scan**注解，因此将会扫描spitter.web包来查找组件。稍后你就会看到，我们所编写的控制器将会带有@Controller注解，这会使其成为组件扫描时的候选bean。因此，我们不需要在配置类中显式声明任何的控制器。</p>
+<h3 id="配置视图解析器">配置视图解析器</h3>
+<p>接下来，我们添加了一个<strong>ViewResolver</strong> bean。更具体来讲，是InternalResourceViewResolver。它会查找JSP文件，在查找的时候，它会在视图名称上加一个特定的前缀和后缀（例如，名为home的视图将会解析为/WEB-INF/views/home.jsp）。</p>
+<h3 id="配置静态资源处理">配置静态资源处理</h3>
+<p>最后，新的WebConfig类还<strong>扩展了WebMvcConfigurerAdapter并重写了其configureDefaultServletHandling()方法</strong>。通过调用DefaultServlet-HandlerConfigurer的enable()方法，我们要求DispatcherServlet将对静态资源的请求转发到Servlet容器中默认的Servlet上，而不是使用DispatcherServlet本身来处理此类请求。</p>
+<h1>web.xml中使用基于Java的配置</h1>
+<p>要在Spring MVC中使用基于Java的配置，我们需要告诉DispatcherServlet和ContextLoaderListener使用AnnotationConfigWebApplicationContext，这是一个WebApplicationContext的实现类，它会加载Java配置类，而不是使用XML。要实现这种配置，我们可以设置contextClass上下文参数以及DispatcherServlet的初始化参数。如下的程序清单展现了一个新的web.xml，在这个文件中，它所搭建的Spring MVC使用基于Java的Spring配置：</p>
+<p><strong>程序清单 web.xml中使用基于Java的配置</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584806596_20200322000127537_14140.png" alt></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>30-通过JAVA代码配置SPRINGMVC</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">实现WebApplicationInitializer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用AbstractAnnotationConfigDispatcherServletInitializer配置DispatcherServlet"><span class="nav-text">使用AbstractAnnotationConfigDispatcherServletInitializer配置DispatcherServlet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义DispatcherServlet配置"><span class="nav-text">自定义DispatcherServlet配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注册Filter到DispatcherServlet"><span class="nav-text">注册Filter到DispatcherServlet</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义WebApplicationInitializer实现"><span class="nav-text">自定义WebApplicationInitializer实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">启用并配置SpringMVC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#EnableWebMvc：启用SpringMVC"><span class="nav-text">@EnableWebMvc：启用SpringMVC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义WebMvcConfigurerAdapter"><span class="nav-text">自定义WebMvcConfigurerAdapter</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#启用组件扫描"><span class="nav-text">启用组件扫描</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置视图解析器"><span class="nav-text">配置视图解析器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置静态资源处理"><span class="nav-text">配置静态资源处理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">web.xml中使用基于Java的配置</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Query的选择器很强大，用起来又简单又灵活，但是搞了这么久，我拿到了jQuery对象，到底要干什么？答案当然是操作对应的DOM节点啦！回顾一下修改DOM的CSS、文本、设置HTML有多么麻烦，而且有的浏览器只有innerHTML，有的浏览器支持innerText，有了jQuery对象，不需要考虑浏览器差异了，全部统一操作！">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JQuery%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;03-DOM%E6%93%8D%E4%BD%9C.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Query的选择器很强大，用起来又简单又灵活，但是搞了这么久，我拿到了jQuery对象，到底要干什么？答案当然是操作对应的DOM节点啦！回顾一下修改DOM的CSS、文本、设置HTML有多么麻烦，而且有的浏览器只有innerHTML，有的浏览器支持innerText，有了jQuery对象，不需要考虑浏览器差异了，全部统一操作！">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.016Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JQuery%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/03-DOM%E6%93%8D%E4%BD%9C">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JQuery%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JQUERY学习笔记</a></li>
+            <li>03-DOM操作</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>Query的选择器很强大，用起来又简单又灵活，但是搞了这么久，我拿到了jQuery对象，到底要干什么？</p><p>答案当然是操作对应的DOM节点啦！</p><p>回顾一下修改DOM的CSS、文本、设置HTML有多么麻烦，而且有的浏览器只有innerHTML，有的浏览器支持innerText，有了jQuery对象，不需要考虑浏览器差异了，全部统一操作！</p><a id="more"></a>
+
+
+<h1>修改Text和HTML</h1>
+<p>jQuery对象的text()和html()方法分别获取节点的文本和原始HTML文本，例如，如下的HTML结构：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- HTML结构 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"test-ul"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"js"</span>&gt;</span>JavaScript<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">name</span>=<span class="string">"book"</span>&gt;</span>Java &amp; JavaScript<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>分别获取文本和HTML：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#test-ul li[name=book]'</span>).text(); <span class="comment">// 'Java &amp; JavaScript'</span></span><br><span class="line">$(<span class="string">'#test-ul li[name=book]'</span>).html(); <span class="comment">// 'Java &amp; JavaScript'</span></span><br></pre></td></tr></table></figure>
+<p>如何设置文本或HTML？</p>
+<p>jQuery的API设计非常巧妙：无参数调用text()是获取文本，传入参数就变成设置文本，HTML也是类似操作，自己动手试试：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> j1 = $(<span class="string">'#test-ul li.js'</span>);</span><br><span class="line"><span class="keyword">var</span> j2 = $(<span class="string">'#test-ul li[name=book]'</span>);</span><br><span class="line">j1.html(<span class="string">'&lt;span style="color: red"&gt;JavaScript&lt;/span&gt;'</span>);</span><br><span class="line">j2.text(<span class="string">'JavaScript &amp; ECMAScript'</span>);</span><br></pre></td></tr></table></figure>
+<p>一个jQuery对象可以包含0个或任意个DOM对象，它的方法实际上会作用在对应的每个DOM节点上。在上面的例子中试试：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#test-ul li'</span>).text(<span class="string">'JS'</span>); <span class="comment">// 是不是两个节点都变成了JS？</span></span><br></pre></td></tr></table></figure>
+<p>所以jQuery对象的另一个好处是我们可以执行一个操作，作用在对应的一组DOM节点上。即使选择器没有返回任何DOM节点，调用jQuery对象的方法仍然不会报错：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如果不存在id为not-exist的节点：</span></span><br><span class="line">$(<span class="string">'#not-exist'</span>).text(<span class="string">'Hello'</span>); <span class="comment">// 代码不报错，没有节点被设置为'Hello'</span></span><br></pre></td></tr></table></figure>
+<p>这意味着jQuery帮你免去了许多if语句。</p>
+<h1>修改CSS</h1>
+<p>jQuery对象有“批量操作”的特点，这用于修改CSS实在是太方便了。考虑下面的HTML结构：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- HTML结构 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"test-css"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"lang dy"</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>JavaScript<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"lang"</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>Java<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"lang dy"</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>Python<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"lang"</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>Swift<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"lang dy"</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>Scheme<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>要高亮显示动态语言，调用jQuery对象的css(‘name’, ‘value’)方法，我们用一行语句实现：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#test-css li.dy&gt;span'</span>).css(<span class="string">'background-color'</span>, <span class="string">'#ffd351'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);</span><br></pre></td></tr></table></figure>
+<p><em>注意</em>，jQuery对象的所有方法都返回一个jQuery对象（可能是新的也可能是自身），这样我们可以进行链式调用，非常方便。</p>
+<p>jQuery对象的css()方法也可以这么用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> div = $(<span class="string">'#test-div'</span>);</span><br><span class="line">div.css(<span class="string">'color'</span>); <span class="comment">// '#000033', 获取CSS属性</span></span><br><span class="line">div.css(<span class="string">'color'</span>, <span class="string">'#336699'</span>); <span class="comment">// 设置CSS属性</span></span><br><span class="line">div.css(<span class="string">'color'</span>, <span class="string">''</span>); <span class="comment">// 清除CSS属性</span></span><br></pre></td></tr></table></figure>
+<p>为了和JavaScript保持一致，CSS属性可以用’background-color’和’backgroundColor’两种格式。</p>
+<p>css()方法将作用于DOM节点的style属性，具有最高优先级。</p>
+<h1>修改class属性</h1>
+<p>如果要修改class属性，可以用jQuery提供的下列方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> div = $(<span class="string">'#test-div'</span>);</span><br><span class="line">div.hasClass(<span class="string">'highlight'</span>); <span class="comment">// false， class是否包含highlight</span></span><br><span class="line">div.addClass(<span class="string">'highlight'</span>); <span class="comment">// 添加highlight这个class</span></span><br><span class="line">div.removeClass(<span class="string">'highlight'</span>); <span class="comment">// 删除highlight这个class，如果没有传入参数，则该方法将从被选元素中删除所有类。</span></span><br></pre></td></tr></table></figure>
+<h1>显示和隐藏DOM</h1>
+<p>要隐藏一个DOM，我们可以设置CSS的display属性为none，利用css()方法就可以实现。不过，要显示这个DOM就需要恢复原有的display属性，这就得先记下来原有的display属性到底是block还是inline还是别的值。</p>
+<p>考虑到显示和隐藏DOM元素使用非常普遍，jQuery直接提供show()和hide()方法，我们不用关心它是如何修改display属性的，总之它能正常工作：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = $(<span class="string">'a[target=_blank]'</span>);</span><br><span class="line">a.hide(); <span class="comment">// 隐藏</span></span><br><span class="line">a.show(); <span class="comment">// 显示</span></span><br></pre></td></tr></table></figure>
+<p><em>注意</em>，隐藏DOM节点并未改变DOM树的结构，它只影响DOM节点的显示。这和删除DOM节点是不同的。</p>
+<h1>获取/设置高宽信息</h1>
+<p>利用jQuery对象的若干方法，我们直接可以获取DOM的高宽等信息，而无需针对不同浏览器编写特定代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 浏览器可视窗口大小:</span></span><br><span class="line">$(<span class="built_in">window</span>).width(); <span class="comment">// 800</span></span><br><span class="line">$(<span class="built_in">window</span>).height(); <span class="comment">// 600</span></span><br><span class="line"><span class="comment">// HTML文档大小:</span></span><br><span class="line">$(<span class="built_in">document</span>).width(); <span class="comment">// 800</span></span><br><span class="line">$(<span class="built_in">document</span>).height(); <span class="comment">// 3500</span></span><br><span class="line"><span class="comment">// 某个div的大小:</span></span><br><span class="line"><span class="keyword">var</span> div = $(<span class="string">'#test-div'</span>);</span><br><span class="line">div.width(); <span class="comment">// 600</span></span><br><span class="line">div.height(); <span class="comment">// 300</span></span><br><span class="line">div.width(<span class="number">400</span>); <span class="comment">// 设置CSS属性 width: 400px，是否生效要看CSS是否有效</span></span><br><span class="line">div.height(<span class="string">'200px'</span>); <span class="comment">// 设置CSS属性 height: 200px，是否生效要看CSS是否有效</span></span><br></pre></td></tr></table></figure>
+<h1>属性操作</h1>
+<p>attr()和removeAttr()方法用于操作DOM节点的属性：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &lt;div id="test-div" name="Test" start="1"&gt;...&lt;/div&gt;</span></span><br><span class="line"><span class="keyword">var</span> div = $(<span class="string">'#test-div'</span>);</span><br><span class="line">div.attr(<span class="string">'data'</span>); <span class="comment">// undefined, 属性不存在</span></span><br><span class="line">div.attr(<span class="string">'name'</span>); <span class="comment">// 'Test'</span></span><br><span class="line">div.attr(<span class="string">'name'</span>, <span class="string">'Hello'</span>); <span class="comment">// div的name属性变为'Hello'</span></span><br><span class="line">div.removeAttr(<span class="string">'name'</span>); <span class="comment">// 删除name属性</span></span><br><span class="line">div.attr(<span class="string">'name'</span>); <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+<p>prop()方法和attr()类似，但是HTML5规定有一种属性在DOM节点中可以没有值，只有出现与不出现两种，例如属性checked：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"test-radio"</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"test"</span> <span class="attr">checked</span> <span class="attr">value</span>=<span class="string">"1"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>等价于：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"test-radio"</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"test"</span> <span class="attr">checked</span>=<span class="string">"checked"</span> <span class="attr">value</span>=<span class="string">"1"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>attr()和prop()对于属性checked处理有所不同：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> radio = $(<span class="string">'#test-radio'</span>);</span><br><span class="line">radio.attr(<span class="string">'checked'</span>); <span class="comment">// 'checked'</span></span><br><span class="line">radio.prop(<span class="string">'checked'</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>prop()返回值更合理一些。不过，用is()方法判断更好：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> radio = $(<span class="string">'#test-radio'</span>);</span><br><span class="line">radio.is(<span class="string">':checked'</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>类似的属性还有selected，处理时最好用is(‘:selected’)。</p>
+<h1>表单操作</h1>
+<p>对于表单元素，jQuery对象统一提供val()方法获取和设置对应的value属性：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    &lt;input id="test-input" name="email" value=""&gt;</span></span><br><span class="line"><span class="comment">    &lt;select id="test-select" name="city"&gt;</span></span><br><span class="line"><span class="comment">        &lt;option value="BJ" selected&gt;Beijing&lt;/option&gt;</span></span><br><span class="line"><span class="comment">        &lt;option value="SH"&gt;Shanghai&lt;/option&gt;</span></span><br><span class="line"><span class="comment">        &lt;option value="SZ"&gt;Shenzhen&lt;/option&gt;</span></span><br><span class="line"><span class="comment">    &lt;/select&gt;</span></span><br><span class="line"><span class="comment">    &lt;textarea id="test-textarea"&gt;Hello&lt;/textarea&gt;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    input = $(<span class="string">'#test-input'</span>),</span><br><span class="line">    select = $(<span class="string">'#test-select'</span>),</span><br><span class="line">    textarea = $(<span class="string">'#test-textarea'</span>);</span><br><span class="line">input.val(); <span class="comment">// 'test'</span></span><br><span class="line">input.val(<span class="string">'abc@example.com'</span>); <span class="comment">// 文本框的内容已变为abc@example.com</span></span><br><span class="line">select.val(); <span class="comment">// 'BJ'</span></span><br><span class="line">select.val(<span class="string">'SH'</span>); <span class="comment">// 选择框已变为Shanghai</span></span><br><span class="line">textarea.val(); <span class="comment">// 'Hello'</span></span><br><span class="line">textarea.val(<span class="string">'Hi'</span>); <span class="comment">// 文本区域已更新为'Hi'</span></span><br></pre></td></tr></table></figure>
+<p>可见，一个val()就统一了各种输入框的取值和赋值的问题。</p>
+<h1>修改节点结构</h1>
+<p>要添加新的DOM节点，除了通过jQuery的html()这种暴力方法外，还可以用append()方法，例如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"test-div"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>JavaScript<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>Python<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>Swift<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如何向列表新增一个语言？首先要拿到 <code>&lt;ul&gt;</code> 节点：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ul = $(<span class="string">'#test-div&gt;ul'</span>);</span><br></pre></td></tr></table></figure>
+<p>然后，调用append()传入HTML片段：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ul.append(<span class="string">'&lt;li&gt;&lt;span&gt;Haskell&lt;/span&gt;&lt;/li&gt;'</span>);</span><br></pre></td></tr></table></figure>
+<p>除了接受字符串，append()还可以传入原始的DOM对象，jQuery对象和函数对象：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建DOM对象:</span></span><br><span class="line"><span class="keyword">var</span> ps = <span class="built_in">document</span>.createElement(<span class="string">'li'</span>);</span><br><span class="line">ps.innerHTML = <span class="string">'&lt;span&gt;Pascal&lt;/span&gt;'</span>;</span><br><span class="line"><span class="comment">// 添加DOM对象:</span></span><br><span class="line">ul.append(ps);</span><br><span class="line"><span class="comment">// 添加jQuery对象:</span></span><br><span class="line">ul.append($(<span class="string">'#scheme'</span>));</span><br><span class="line"><span class="comment">// 添加函数对象:</span></span><br><span class="line">ul.append(<span class="function"><span class="keyword">function</span> (<span class="params">index, html</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'&lt;li&gt;&lt;span&gt;Language - '</span> + index + <span class="string">'&lt;/span&gt;&lt;/li&gt;'</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>传入函数时，要求返回一个字符串、DOM对象或者jQuery对象。因为jQuery的append()可能作用于一组DOM节点，只有传入函数才能针对每个DOM生成不同的子节点。</p>
+<p>append()把DOM添加到最后，prepend()则把DOM添加到最前。</p>
+<p>另外注意，如果要添加的DOM节点已经存在于HTML文档中，它会首先从文档移除，然后再添加，也就是说，用append()，你可以移动一个DOM节点。</p>
+<p>如果要把新节点插入到指定位置，例如，JavaScript和Python之间，那么，可以先定位到JavaScript，然后用after()方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> js = $(<span class="string">'#test-div&gt;ul&gt;li:first-child'</span>);</span><br><span class="line">js.after(<span class="string">'&lt;li&gt;&lt;span&gt;Lua&lt;/span&gt;&lt;/li&gt;'</span>);</span><br></pre></td></tr></table></figure>
+<p>也就是说，同级节点可以用after()或者before()方法。</p>
+<p>要删除DOM节点，拿到jQuery对象后直接调用remove()方法就可以了。如果jQuery对象包含若干DOM节点，实际上可以一次删除多个DOM节点：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> li = $(<span class="string">'#test-div&gt;ul&gt;li'</span>);</span><br><span class="line">li.remove(); <span class="comment">// 所有&lt;li&gt;全被删除</span></span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JQuery%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JQUERY学习笔记</a></li>
+            <li>03-DOM操作</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">修改Text和HTML</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">修改CSS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">修改class属性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">显示和隐藏DOM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">获取/设置高宽信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">属性操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">表单操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">修改节点结构</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

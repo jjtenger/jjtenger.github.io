@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="浏览器由于JavaScript的出现就是为了能在浏览器中运行，所以，浏览器自然是JavaScript开发者必须要关注的。目前主流的浏览器分这么几种： IE 6~11：国内用得最多的IE浏览器，历来对W3C标准支持差。从IE10开始支持ES6标准； Chrome：Google出品的基于Webkit内核浏览器，内置了非常强悍的JavaScript引擎——V8。由于Chrome一经安装就时刻保持自升级，">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;23-%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AF%B9%E8%B1%A1BOM.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="浏览器由于JavaScript的出现就是为了能在浏览器中运行，所以，浏览器自然是JavaScript开发者必须要关注的。目前主流的浏览器分这么几种： IE 6~11：国内用得最多的IE浏览器，历来对W3C标准支持差。从IE10开始支持ES6标准； Chrome：Google出品的基于Webkit内核浏览器，内置了非常强悍的JavaScript引擎——V8。由于Chrome一经安装就时刻保持自升级，">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599244_20200319142007935_19467.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599244_20200319142007720_29370.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599243_20200319142007609_5915.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599243_20200319142007399_32112.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599243_20200319142007188_22965.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599243_20200319142006977_18591.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599242_20200319142006868_11854.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599242_20200319142006759_30102.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599242_20200319142006635_7848.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599242_20200319142006425_7455.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599241_20200319142006213_5453.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599241_20200319142006004_19328.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599241_20200319142005793_27853.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599241_20200319142005567_24875.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599240_20200319142005346_6182.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.020Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584599244_20200319142007935_19467.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/23-%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AF%B9%E8%B1%A1BOM">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVASCRIPT学习笔记</a></li>
+            <li>23-浏览器对象BOM</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>浏览器</h1><p>由于JavaScript的出现就是为了能在浏览器中运行，所以，浏览器自然是JavaScript开发者必须要关注的。</p><p>目前主流的浏览器分这么几种：</p><ul>
+<li>IE 6~11：国内用得最多的IE浏览器，历来对W3C标准支持差。从IE10开始支持ES6标准；</li>
+<li>Chrome：Google出品的基于Webkit内核浏览器，内置了非常强悍的JavaScript引擎——V8。由于Chrome一经安装就时刻保持自升级，所以不用管它的版本，最新版早就支持ES6了；</li>
+<li>Safari：Apple的Mac系统自带的基于Webkit内核的浏览器，从OS X 10.7 Lion自带的6.1版本开始支持ES6，目前最新的OS X 10.11 El Capitan自带的Safari版本是9.x，早已支持ES6；</li>
+<li>Firefox：Mozilla自己研制的Gecko内核和JavaScript引擎OdinMonkey。早期的Firefox按版本发布，后来终于聪明地学习Chrome的做法进行自升级，时刻保持最新；</li>
+<li>移动设备上目前iOS和Android两大阵营分别主要使用Apple的Safari和Google的Chrome，由于两者都是Webkit核心，结果HTML5首先在手机上全面普及（桌面绝对是Microsoft拖了后腿），对JavaScript的标准支持也很好，最新版本均支持ES6。</li>
+</ul><a id="more"></a>
+
+
+
+<p>其他浏览器如Opera等由于市场份额太小就被自动忽略了。</p>
+<p>另外还要注意识别各种国产浏览器，如某某安全浏览器，某某旋风浏览器，它们只是做了一个壳，其核心调用的是IE，也有号称同时支持IE和Webkit的“双核”浏览器。</p>
+<p>不同的浏览器对JavaScript支持的差异主要是，有些API的接口不一样，比如AJAX，File接口。对于ES6标准，不同的浏览器对各个特性支持也不一样。</p>
+<p>在编写JavaScript的时候，就要充分考虑到浏览器的差异，尽量让同一份JavaScript代码能运行在不同的浏览器中。</p>
+<h1>浏览器对象(BOM)</h1>
+<p>浏览器对象模型 (BOM)</p>
+<p>浏览器对象模型（Browser Object Model）尚无正式标准。</p>
+<p>由于现代浏览器已经（几乎）实现了 JavaScript 交互性方面的相同方法和属性，因此常被认为是 BOM 的方法和属性。</p>
+<h1>window对象</h1>
+<p>所有浏览器都支持window对象。它表示浏览器窗口。</p>
+<p>所有JavaScript全局对象、函数以及变量均自动成为window对象的成员。</p>
+<ul>
+<li>全局变量是window对象的属性。</li>
+<li>全局函数是window对象的方法。</li>
+</ul>
+<p>甚至HTML DOM的document也是window对象的属性之一：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.document.getElementById(<span class="string">"header"</span>);</span><br></pre></td></tr></table></figure>
+<p>与此相同：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">"header"</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>window对象方法</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599244_20200319142007935_19467.png" alt></p>
+<h2 id="alert-警告框">alert()警告框</h2>
+<p>我们在访问网站的时候，有时会突然弹出一个小窗口，上面写着一段提示信息文字。如果你不点击“确定”，就不能对网页做任何操作，这个小窗口就是使用alert实现的。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alert(字符串或变量);</span><br></pre></td></tr></table></figure>
+<p>看下面的代码:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">    <span class="keyword">var</span> mynum = <span class="number">30</span>;</span><br><span class="line">    alert(<span class="string">"hello!"</span>);</span><br><span class="line">    alert(mynum);</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注：alert弹出消息对话框(包含一个确定按钮)。</p>
+<p>结果：按顺序弹出消息框</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599244_20200319142007720_29370.png" alt></p>
+<p>注意:</p>
+<ol>
+<li>
+<p>在点击对话框&quot;确定&quot;按钮前，不能进行任何其它操作。</p>
+</li>
+<li>
+<p>消息对话框通常可以用于调试程序。</p>
+</li>
+<li>
+<p>alert输出内容，可以是字符串或变量，与document.write 相似。</p>
+</li>
+</ol>
+<h2 id="confirm-确认框">confirm()确认框</h2>
+<p>confirm消息对话框通常用于允许用户做选择的动作，如：“你对吗？”等。弹出对话框(包括一个确定按钮和一个取消按钮)。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">confirm(str);</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明:</strong></p>
+<p>str：在消息对话框中要显示的文本返回值: Boolean值</p>
+<p><strong>返回值:</strong></p>
+<p>当用户点击&quot;确定&quot;按钮时，返回true</p>
+<p>当用户点击&quot;取消&quot;按钮时，返回false</p>
+<p>注: 通过返回值可以判断用户点击了什么按钮</p>
+<p>看下面的代码:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line"><span class="keyword">var</span> mymessage=confirm(<span class="string">"你喜欢JavaScript吗?"</span>);</span><br><span class="line"><span class="keyword">if</span>(mymessage==<span class="literal">true</span>)&#123;</span><br><span class="line">   <span class="built_in">document</span>.write(<span class="string">"很好,加油!"</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">  <span class="built_in">document</span>.write(<span class="string">"JS功能强大，要学习噢!"</span>);   </span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599243_20200319142007609_5915.png" alt></p>
+<p>注: 消息对话框是排它的，即用户在点击对话框按钮前，不能进行任何其它操作。</p>
+<h2 id="prompt-输入框">prompt()输入框</h2>
+<p>prompt弹出消息对话框,通常用于询问一些需要与用户交互的信息。弹出消息对话框（包含一个确定按钮、取消按钮与一个文本输入框）。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prompt(str1, str2);</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明：</strong></p>
+<p>str1: 要显示在消息对话框中的文本，不可修改</p>
+<p>str2：文本框中的内容，可以修改</p>
+<p><strong>返回值:</strong></p>
+<ol>
+<li>
+<p>点击确定按钮，文本框中的内容将作为函数返回值</p>
+</li>
+<li>
+<p>点击取消按钮，将返回null</p>
+</li>
+</ol>
+<p>看看下面代码:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myname=prompt(<span class="string">"请输入你的姓名:"</span>);</span><br><span class="line"><span class="keyword">if</span>(myname!=<span class="literal">null</span>)</span><br><span class="line">&#123; alert(<span class="string">"你好"</span>+myname); &#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123; alert(<span class="string">"你好 my friend."</span>); &#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599243_20200319142007399_32112.png" alt></p>
+<p>注:在用户点击对话框的按钮前，不能进行任何其它操作。</p>
+<h2 id="open-打开新窗口">open()打开新窗口</h2>
+<p>open()方法可以查找一个已经存在或者新建的浏览器窗口。</p>
+<p><strong>语法</strong>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.open([URL], [窗口名称], [参数字符串])</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明</strong>:</p>
+<p>URL：可选参数，在窗口中要显示网页的网址或路径。如果省略这个参数，或者它的值是空字符串，那么窗口就不显示任何文档。窗口名称：可选参数，被打开窗口的名称。</p>
+<p>1.该名称由字母、数字和下划线字符组成。</p>
+<p>2.“_top”、“_blank”、&quot;_self&quot;具有特殊意义的名称。</p>
+<p>_blank：在新窗口显示目标网页</p>
+<p>_self：在当前窗口显示目标网页</p>
+<p>_top：框架网页中在上部窗口中显示目标网页</p>
+<p>3.相同 name 的窗口只能创建一个，要想创建多个窗口则 name 不能相同。</p>
+<p><a href="http://4.name" target="_blank" rel="noopener">4.name</a> 不能包含有空格。参数字符串：可选参数，设置窗口参数，各参数用逗号隔开。</p>
+<p><strong>参数表</strong>：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599243_20200319142007188_22965.png" alt></p>
+<p>例如:打开http://www.imooc.com网站，大小为300px * 200px，无菜单，无工具栏，无状态栏，有滚动条窗口：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line"><span class="built_in">window</span>.open(<span class="string">'http://www.imooc.com'</span>,<span class="string">'_blank'</span>,</span><br><span class="line"><span class="string">'width=300,height=200,menubar=no,toolbar=no, status=no,scrollbars=yes'</span>)</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意：运行结果考虑浏览器兼容问题。</p>
+<h2 id="close-关闭窗口">close()关闭窗口</h2>
+<p><strong>用法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.close(); <span class="comment">//关闭本窗口</span></span><br></pre></td></tr></table></figure>
+<p>或</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;窗口对象&gt;.close(); <span class="comment">//关闭指定的窗口</span></span><br></pre></td></tr></table></figure>
+<p>例如：关闭新建的窗口。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">    <span class="keyword">var</span> mywin=<span class="built_in">window</span>.open(<span class="string">'http://www.imooc.com'</span>); <span class="comment">//将新打的窗口对象，存储在变量mywin中</span></span><br><span class="line">    mywin.close();</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意:上面代码在打开新窗口的同时，关闭该窗口，看不到被打开的窗口。</p>
+<h2 id="计时器">计时器</h2>
+<p>在JavaScript中，我们可以在设定的时间间隔之后来执行代码，而不是在函数被调用后立即执行。</p>
+<p><strong>计时器类型</strong></p>
+<ul>
+<li>一次性计时器：仅在指定的延迟时间之后触发一次。</li>
+<li>间隔性触发计时器：每隔一定的时间间隔就触发一次。</li>
+</ul>
+<p><strong>计时器方法</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599243_20200319142006977_18591.png" alt></p>
+<h3 id="间隔性触发计时器">间隔性触发计时器</h3>
+<ul>
+<li><strong>setInterval()</strong></li>
+</ul>
+<p>在执行时,从载入页面后每隔指定的时间执行代码。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setInterval(代码,交互时间);</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明：</strong></p>
+<ol>
+<li>
+<p>代码：要调用的函数或要执行的代码串。</p>
+</li>
+<li>
+<p>交互时间：周期性执行或调用表达式之间的时间间隔，以毫秒计（1s=1000ms）。</p>
+</li>
+</ol>
+<p><strong>返回值:</strong></p>
+<p>一个可以传递给clearInterval()从而取消对&quot;代码&quot;的周期性执行的值。</p>
+<p>调用函数格式(假设有一个clock()函数):</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setInterval(<span class="string">"clock()"</span>,<span class="number">1000</span>)</span><br></pre></td></tr></table></figure>
+<p>或</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setInterval(clock,<span class="number">1000</span>)</span><br></pre></td></tr></table></figure>
+<p>我们设置一个计时器，每隔100毫秒调用clock()函数，并将时间显示出来，代码如下:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE HTML&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"Content-Type"</span> <span class="attr">content</span>=<span class="string">"text/html; charset=utf-8"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>计时器<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript">  <span class="keyword">var</span> int=setInterval(clock, <span class="number">100</span>)</span></span><br><span class="line"><span class="actionscript">  <span class="function"><span class="keyword">function</span> <span class="title">clock</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> time=<span class="keyword">new</span> <span class="built_in">Date</span>();</span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.getElementById(<span class="string">"clock"</span>).value = time;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">form</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"clock"</span> <span class="attr">size</span>=<span class="string">"50"</span>  /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>clearInterval()</strong></li>
+</ul>
+<p>clearInterval()方法可取消由setInterval()设置的交互时间。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clearInterval(id_of_setInterval)</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明：</strong></p>
+<p>id_of_setInterval：由setInterval()返回的ID值。</p>
+<p>每隔100毫秒调用clock()函数,并显示时间。当点击按钮时，停止时间，代码如下:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE HTML&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"Content-Type"</span> <span class="attr">content</span>=<span class="string">"text/html; charset=utf-8"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>计时器<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript">  <span class="function"><span class="keyword">function</span> <span class="title">clock</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> time=<span class="keyword">new</span> <span class="built_in">Date</span>();                     </span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.getElementById(<span class="string">"clock"</span>).value = time;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="actionscript"><span class="comment">//每隔100毫秒调用clock函数，并将返回值赋值给i</span></span></span><br><span class="line"><span class="actionscript">  <span class="keyword">var</span> i=setInterval(<span class="string">"clock()"</span>,<span class="number">100</span>);</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">form</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"clock"</span> <span class="attr">size</span>=<span class="string">"50"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"Stop"</span> <span class="attr">onclick</span>=<span class="string">"clearInterval(i)"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="一次性计时器">一次性计时器</h3>
+<ul>
+<li><strong>setTimeout()</strong></li>
+</ul>
+<p>setTimeout()计时器，在载入后延迟指定时间后，去执行一次表达式，仅执行一次。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(代码,延迟时间);</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明：</strong></p>
+<ol>
+<li>
+<p>要调用的函数或要执行的代码串。</p>
+</li>
+<li>
+<p>延时时间：在执行代码前需等待的时间，以毫秒为单位（1s=1000ms)。</p>
+</li>
+</ol>
+<p>当我们打开网页3秒后，在弹出一个提示框，代码如下:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE HTML&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript">    setTimeout(<span class="string">"alert('Hello!')"</span>,<span class="number">3000</span>);</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>当按钮start被点击时，setTimeout()调用函数，在5秒后弹出一个提示框。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE HTML&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript">  <span class="function"><span class="keyword">function</span> <span class="title">tinfo</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">var</span> t=setTimeout(<span class="string">"alert('Hello!')"</span>,<span class="number">5000</span>);</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"start"</span> <span class="attr">onClick</span>=<span class="string">"tinfo()"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>要创建一个运行于<strong>无穷循环</strong>中的计数器，我们需要编写一个函数来调用其自身。在下面的代码，当按钮被点击后，输入域便从0开始计数。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE HTML&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript">  <span class="keyword">var</span> num=<span class="number">0</span>;</span></span><br><span class="line"><span class="actionscript">  <span class="function"><span class="keyword">function</span> <span class="title">numCount</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.getElementById(<span class="string">'txt'</span>).value=num;</span></span><br><span class="line">    num=num+1;</span><br><span class="line"><span class="actionscript">    setTimeout(<span class="string">"numCount()"</span>,<span class="number">1000</span>);</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"txt"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"Start"</span> <span class="attr">onClick</span>=<span class="string">"numCount()"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>clearTimeout()</strong></li>
+</ul>
+<p>setTimeout()和clearTimeout()一起使用，停止计时器。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clearTimeout(id_of_setTimeout)</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明：</strong></p>
+<p>id_of_setTimeout：由setTimeout()返回的ID值。该值标识要取消的延迟执行代码块。</p>
+<p>下面的例子和上节的无穷循环的例子相似。唯一不同是，现在我们添加了一个 “Stop” 按钮来停止这个计数器：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE HTML&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript">  <span class="keyword">var</span> num=<span class="number">0</span>,i;</span></span><br><span class="line"><span class="actionscript">  <span class="function"><span class="keyword">function</span> <span class="title">timedCount</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.getElementById(<span class="string">'txt'</span>).value=num;</span></span><br><span class="line">    num=num+1;</span><br><span class="line">    i=setTimeout(timedCount,1000);</span><br><span class="line">  &#125;</span><br><span class="line">  setTimeout(timedCount,1000);</span><br><span class="line"><span class="actionscript">  <span class="function"><span class="keyword">function</span> <span class="title">stopCount</span><span class="params">()</span></span>&#123;</span></span><br><span class="line">    clearTimeout(i);</span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"txt"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"Stop"</span> <span class="attr">onClick</span>=<span class="string">"stopCount()"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="innerHeight与innerWidth">innerHeight与innerWidth</h2>
+<p>获得浏览器可视区域内容尺寸（浏览器的视窗，不包括工具栏和滚动条）的方法。</p>
+<p>对于IE9+、Chrome、Firefox、Opera 以及 Safari：</p>
+<ul>
+<li>window.innerHeight - 浏览器窗口的内部高度</li>
+<li>window.innerWidth - 浏览器窗口的内部宽度</li>
+</ul>
+<h1>history对象</h1>
+<p>history对象记录了用户曾经浏览过的页面(URL)，并可以实现浏览器前进与后退相似导航的功能。</p>
+<p>注意:从窗口被打开的那一刻开始记录，每个浏览器窗口、每个标签页乃至每个框架，都有自己的history对象与特定的window对象关联。</p>
+<p>这个对象属于历史遗留对象，对于现代Web页面来说，由于大量使用AJAX和页面交互，简单粗暴地调用history.back()可能会让用户感到非常愤怒。</p>
+<p>新手开始设计Web页面时喜欢在登录页登录成功时调用history.back()，试图回到登录前的页面。这是一种错误的方法。</p>
+<p>任何情况，你都不应该使用history这个对象了。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.history.[属性|方法]</span><br></pre></td></tr></table></figure>
+<p>注意：window可以省略。</p>
+<p><strong>history对象属性</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599242_20200319142006868_11854.png" alt></p>
+<p>使用length属性，当前窗口的浏览历史总长度，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">  <span class="keyword">var</span> HL = <span class="built_in">window</span>.history.length;</span><br><span class="line">  <span class="built_in">document</span>.write(HL);</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>history对象方法</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599242_20200319142006759_30102.png" alt></p>
+<ul>
+<li><strong>back()方法</strong></li>
+</ul>
+<p>加载history列表中的前一个URL。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.history.back();</span><br></pre></td></tr></table></figure>
+<p>注意：等同于点击浏览器的倒退按钮。</p>
+<p>back()相当于go(-1),代码如下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.history.go(<span class="number">-1</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>forward()方法</strong></li>
+</ul>
+<p>加载history列表中的下一个URL。</p>
+<p>如果倒退之后，再想回到倒退之前浏览的页面，则可以使用forward()方法,代码如下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.history.forward();</span><br></pre></td></tr></table></figure>
+<p>注意：等价点击前进按钮。</p>
+<p>forward()相当于go(1),代码如下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.history.go(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>go()方法</strong></li>
+</ul>
+<p>go()方法，根据当前所处的页面，加载history列表中的某个具体的页面。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.history.go(number);</span><br></pre></td></tr></table></figure>
+<p><strong>参数：</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599242_20200319142006635_7848.png" alt></p>
+<p>浏览器中，返回当前页面之前浏览过的第二个历史页面，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.history.go(<span class="number">-2</span>);</span><br></pre></td></tr></table></figure>
+<p>注意：和在浏览器中单击两次后退按钮操作一样。</p>
+<p>同理，返回当前页面之后浏览过的第三个历史页面，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.history.go(<span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+<h1>location对象</h1>
+<p>location对象表示当前页面的URL信息。例如，一个完整的URL：</p>
+<p><a href="http://www.example.com:8080/path/index.html?a=1&amp;b=2#TOP" target="_blank" rel="noopener">http://www.example.com:8080/path/index.html?a=1&amp;b=2#TOP</a></p>
+<p>可以用location.href获取。要获得URL各个部分的值，可以这么写：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">location.protocol; <span class="comment">// 'http'</span></span><br><span class="line">location.host; <span class="comment">// 'www.example.com'</span></span><br><span class="line">location.port; <span class="comment">// '8080'</span></span><br><span class="line">location.pathname; <span class="comment">// '/path/index.html'</span></span><br><span class="line">location.search; <span class="comment">// '?a=1&amp;b=2'</span></span><br><span class="line">location.hash; <span class="comment">// 'TOP'</span></span><br></pre></td></tr></table></figure>
+<p>要加载一个新页面，可以调用location.assign()。如果要重新加载当前页面，调用location.reload()方法非常方便。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (confirm(<span class="string">'重新加载当前页'</span> + location.href + <span class="string">'?'</span>)) &#123;</span><br><span class="line">   location.reload();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">   location.assign(<span class="string">'/'</span>); <span class="comment">// 设置一个新的URL地址</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>location对象属性</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599242_20200319142006425_7455.png" alt></p>
+<p><strong>location对象方法</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599241_20200319142006213_5453.png" alt></p>
+<h1>navigator对象</h1>
+<p>navigator对象包含有关浏览器的信息，通常用于检测浏览器与操作系统的版本。</p>
+<p><strong>对象属性</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599241_20200319142006004_19328.png" alt></p>
+<p>查看浏览器的名称和版本，代码如下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">  <span class="keyword">var</span> browser=navigator.appName;</span><br><span class="line">  <span class="keyword">var</span> b_version=navigator.appVersion;</span><br><span class="line">  <span class="built_in">document</span>.write(<span class="string">"Browser name"</span>+browser);</span><br><span class="line">  <span class="built_in">document</span>.write(<span class="string">"&lt;br&gt;"</span>);</span><br><span class="line">  <span class="built_in">document</span>.write(<span class="string">"Browser version"</span>+b_version);</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>请注意，navigator的信息可以很容易地被用户修改，所以JavaScript读取的值不一定是正确的。很多初学者为了针对不同浏览器编写不同的代码，喜欢用if判断浏览器版本，例如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> width;</span><br><span class="line"><span class="keyword">if</span> (getIEVersion(navigator.userAgent) &lt; <span class="number">9</span>) &#123;</span><br><span class="line">    width = <span class="built_in">document</span>.body.clientWidth;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    width = <span class="built_in">window</span>.innerWidth;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但这样既可能判断不准确，也很难维护代码。正确的方法是充分利用JavaScript对不存在属性返回undefined的特性，直接用短路运算符||计算：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> width = <span class="built_in">window</span>.innerWidth || <span class="built_in">document</span>.body.clientWidth;</span><br></pre></td></tr></table></figure>
+<h1>navigator.userAgent属性</h1>
+<p>userAgent：返回用户代理头的字符串表示(就是包括浏览器版本信息等的字符串)。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">navigator.userAgent</span><br></pre></td></tr></table></figure>
+<p>几种浏览的user_agent，像360的兼容模式用的是IE、极速模式用的是chrom的内核。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599241_20200319142005793_27853.png" alt></p>
+<p>使用userAgent判断使用的是什么浏览器(假设使用的是IE8浏览器),代码如下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">validB</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> u_agent = navigator.userAgent;</span><br><span class="line">  <span class="keyword">var</span> B_name=<span class="string">"Failed to identify the browser"</span>;</span><br><span class="line">  <span class="keyword">if</span>(u_agent.indexOf(<span class="string">"Firefox"</span>)&gt;<span class="number">-1</span>)&#123;</span><br><span class="line">    B_name=<span class="string">"Firefox"</span>;</span><br><span class="line">  &#125;<span class="keyword">else</span> <span class="keyword">if</span>(u_agent.indexOf(<span class="string">"Chrome"</span>)&gt;<span class="number">-1</span>)&#123;</span><br><span class="line">    B_name=<span class="string">"Chrome"</span>;</span><br><span class="line">  &#125;<span class="keyword">else</span> <span class="keyword">if</span>(u_agent.indexOf(<span class="string">"MSIE"</span>)&gt;<span class="number">-1</span>&amp;&amp;u_agent.indexOf(<span class="string">"Trident"</span>)&gt;<span class="number">-1</span>)&#123;</span><br><span class="line">    B_name=<span class="string">"IE(8-10)"</span>;  </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">document</span>.write(<span class="string">"B_name:"</span>+B_name+<span class="string">"&lt;br&gt;"</span>);</span><br><span class="line">  <span class="built_in">document</span>.write(<span class="string">"u_agent:"</span>+u_agent+<span class="string">"&lt;br&gt;"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果:</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599241_20200319142005567_24875.png" alt></p>
+<h1>screen对象</h1>
+<p>screen对象用于获取用户的屏幕信息。</p>
+<p><strong>语法</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.screen.属性</span><br></pre></td></tr></table></figure>
+<p><strong>对象属性</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584599240_20200319142005346_6182.png" alt></p>
+<h2 id="屏幕分辨率的高和宽">屏幕分辨率的高和宽</h2>
+<p>window.screen对象包含有关用户屏幕的信息：</p>
+<ol>
+<li>
+<p>screen.height返回屏幕分辨率的高</p>
+</li>
+<li>
+<p>screen.width返回屏幕分辨率的宽</p>
+</li>
+</ol>
+<p>注意:</p>
+<p>1.单位以像素计。</p>
+<ol start="2">
+<li>window.screen对象在编写时可以不使用window这个前缀。</li>
+</ol>
+<p>我们来获取屏幕的高和宽，代码如下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">  <span class="built_in">document</span>.write(<span class="string">"屏幕宽度："</span>+screen.width+<span class="string">"px&lt;br/&gt;"</span>);</span><br><span class="line">  <span class="built_in">document</span>.write(<span class="string">"屏幕高度："</span>+screen.height+<span class="string">"px&lt;br/&gt;"</span>);</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="屏幕可用高和宽度">屏幕可用高和宽度</h2>
+<p>屏幕可用高和宽度：</p>
+<ol>
+<li>
+<p>screen.availWidth属性返回访问者屏幕的宽度，以像素计，减去界面特性，比如任务栏。</p>
+</li>
+<li>
+<p>screen.availHeight属性返回访问者屏幕的高度，以像素计，减去界面特性，比如任务栏。</p>
+</li>
+</ol>
+<p>注意：</p>
+<p>不同系统的任务栏默认高度不一样，及任务栏的位置可在屏幕上下左右任何位置，所以有可能可用宽度和高度不一样。</p>
+<p>我们来获取屏幕的可用高和宽度，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">  <span class="built_in">document</span>.write(<span class="string">"可用宽度："</span> + screen.availWidth);</span><br><span class="line">  <span class="built_in">document</span>.write(<span class="string">"可用高度："</span> + screen.availHeight);</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意:根据屏幕的不同显示值不同。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVASCRIPT学习笔记</a></li>
+            <li>23-浏览器对象BOM</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">浏览器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">浏览器对象(BOM)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">window对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#alert-警告框"><span class="nav-text">alert()警告框</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#confirm-确认框"><span class="nav-text">confirm()确认框</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prompt-输入框"><span class="nav-text">prompt()输入框</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#open-打开新窗口"><span class="nav-text">open()打开新窗口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#close-关闭窗口"><span class="nav-text">close()关闭窗口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计时器"><span class="nav-text">计时器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#间隔性触发计时器"><span class="nav-text">间隔性触发计时器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一次性计时器"><span class="nav-text">一次性计时器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#innerHeight与innerWidth"><span class="nav-text">innerHeight与innerWidth</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">history对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">location对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">navigator对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">navigator.userAgent属性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">screen对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#屏幕分辨率的高和宽"><span class="nav-text">屏幕分辨率的高和宽</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#屏幕可用高和宽度"><span class="nav-text">屏幕可用高和宽度</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

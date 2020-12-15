@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="其实就Timer来讲就是一个调度器，而TimerTask呢只是一个实现了run方法的一个类，具体的TimerTask需要由你自己来实现，例如这样：1234567Timer timer = new Timer(); timer.schedule(new TimerTask() &amp;#123;        public void run() &amp;#123;            System.out.p">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;45-Timer%E5%92%8CTimerTask.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="其实就Timer来讲就是一个调度器，而TimerTask呢只是一个实现了run方法的一个类，具体的TimerTask需要由你自己来实现，例如这样：1234567Timer timer = new Timer(); timer.schedule(new TimerTask() &amp;#123;        public void run() &amp;#123;            System.out.p">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584757574_20200321102316935_917.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584757574_20200321102316623_2569.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584757574_20200321102316313_2657.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.028Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584757574_20200321102316935_917.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/45-Timer%E5%92%8CTimerTask">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVA学习笔记</a></li>
+            <li>45-TIMER和TIMERTASK</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>其实就Timer来讲就是一个调度器，而TimerTask呢只是一个实现了run方法的一个类，具体的TimerTask需要由你自己来实现，例如这样：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Timer timer = <span class="keyword">new</span> Timer();</span><br><span class="line"> </span><br><span class="line">timer.schedule(<span class="keyword">new</span> TimerTask() &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"abc"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;, <span class="number">200000</span> , <span class="number">1000</span>);</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+<p>这里直接实现一个TimerTask，然后编写run方法，20s后开始执行，每秒执行一次。</p>
+<p>当然你也可以通过一个timer对象来操作多个timerTask，其实timerTask本身没什么意义，只是和timer集合操作的一个对象，实现它就必然有对应的run方法，以被调用，它甚至于根本不需要实现Runnable，因为这样往往混淆视听了，为什么呢？也是本文要说的重点。</p>
+<h1>Timer的常见方法</h1>
+<p>Timer里面的一些常见方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">schedule</span><span class="params">(TimerTask task, <span class="keyword">long</span> delay)</span></span></span><br><span class="line"><span class="function"><span class="comment">//调度一个task，经过delay(ms)后开始进行调度，仅仅调度一次。</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">schedule</span><span class="params">(TimerTask task, Date time)</span></span></span><br><span class="line"><span class="function"><span class="comment">//在指定的时间点time上调度，仅仅调度一次。</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">schedule</span><span class="params">(TimerTask task, <span class="keyword">long</span> delay, <span class="keyword">long</span> period)</span></span></span><br><span class="line"><span class="function"><span class="comment">//调度一个task，在delay（ms）后开始调度，每次调度完后，最少等待period（ms）后才开始调度。</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">schedule</span><span class="params">(TimerTask task, Date firstTime, <span class="keyword">long</span> period)</span></span></span><br><span class="line"><span class="function"><span class="comment">//和上一个方法类似，唯一的区别就是传入的第二个参数为第一次调度的时间。</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scheduleAtFixedRate</span><span class="params">(TimerTask task, <span class="keyword">long</span> delay, <span class="keyword">long</span> period)</span></span></span><br><span class="line"><span class="function"><span class="comment">//在固定的时间点调度一个task，在delay(ms)后开始调度，然后每经过period(ms)再次调度。</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scheduleAtFixedRate</span><span class="params">(TimerTask task, Date firstTime, <span class="keyword">long</span> period)</span></span></span><br><span class="line"><span class="function"><span class="comment">//方法同上，唯一的区别就是第一次调度时间设置为一个Date时间，而不是当前时间的一个时间片</span></span></span><br></pre></td></tr></table></figure>
+<p>scheduleAtFixedRate方法貌似和方法schedule是一样的，其实不然，后面你会根据源码看到，schedule在计算下一次执行的时间的时候，是通过当前时间（在任务执行前得到） + 时间片，而scheduleAtFixedRate方法是通过当前需要执行的时间（也就是计算出现在应该执行的时间）+ 时间片，<strong>前者是运行的实际时间，而后者是理论时间点</strong>，例如：schedule时间片是5s，那么理论上会在5、10、15、20这些时间片被调度，但是如果由于某些CPU征用导致未被调度，假如等到第8s才被第一次调度，那么schedule方法计算出来的下一次时间应该是第13s而不是第10s，这样有可能下次就越到20s后而被少调度一次或多次，而scheduleAtFixedRate方法就是每次理论计算出下一次需要调度的时间用以排序，若第8s被调度，那么计算出应该是第10s，所以它距离当前时间是2s，那么在调度队列排序中，会被优先调度，这样就会尽量减少漏掉调度的情况。</p>
+<h1>Timer的构造方法</h1>
+<p>Timer的构造方法有几种：</p>
+<p>构造方法1：无参构造方法，简单通过Timer为前缀构造一个线程名称：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Timer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(<span class="string">"Timer-"</span> + serialNumber());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>创建的线程不为主线程。主线程结束后，timer自动结束，而无需使用cancel来完成对timer的结束。</p>
+<p>构造方法2：传入是否为后台线程，后台线程当且仅当进程结束时，自动注销掉。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Timer</span><span class="params">(<span class="keyword">boolean</span> isDaemon)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(<span class="string">"Timer-"</span> + serialNumber(), isDaemon);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面两个构造方法分别是调用下面两个构造方法，负责传入参数并启动内部线程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Timer</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">    thread.setName(name);</span><br><span class="line">    thread.start();</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Timer</span><span class="params">(String name, <span class="keyword">boolean</span> isDaemon)</span> </span>&#123;</span><br><span class="line">    thread.setName(name);</span><br><span class="line">    thread.setDaemon(isDaemon);</span><br><span class="line">    thread.start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里有一个线程thread，被包装在了Timer类中。</p>
+<h1>Timer内部属性</h1>
+<h2 id="thread">thread</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> TimerThread thread = <span class="keyword">new</span> TimerThread(queue);</span><br></pre></td></tr></table></figure>
+<p>而TimerThread定义在Timer内部：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TimerThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+<p>看到这里知道了，Timer内部包装了一个线程，用来做独立于外部线程的调度，而TimerThread是一个default类型的，默认情况下是引用不到的，是被Timer自己所使用的。</p>
+<h2 id="queue">queue</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> TaskQueue queue = <span class="keyword">new</span> TaskQueue();</span><br></pre></td></tr></table></figure>
+<p>TaskQueue同样定义在Timer内部，看名字就知道是一个队列，队列里面可以先猜猜看是什么，那么大概应该是我要调度的任务吧。</p>
+<h2 id="threadReaper">threadReaper</h2>
+<p>Object类型，只是重写了finalize方法而已，是为了垃圾回收的时候，将相应的信息回收掉，做GC的回补，也就是当timer线程由于某种原因死掉了，而未被cancel，里面的队列中的信息需要清空掉，不过我们通常是不会考虑这个方法的，所以知道java写这个方法是干什么的就行了。</p>
+<h1>调度方法实现</h1>
+<p>方法一：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">schedule</span><span class="params">(TimerTask task, <span class="keyword">long</span> delay)</span></span></span><br></pre></td></tr></table></figure>
+<p>源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">schedule</span><span class="params">(TimerTask task, <span class="keyword">long</span> delay)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (delay &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Negative delay."</span>);</span><br><span class="line">    sched(task, System.currentTimeMillis() + delay, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里调用了另一个方法，将task传入，第一个参数传入<code>System.currentTimeMillis()+delay</code>可见为第一次需要执行的时间的时间点了（如果传入Date，就是<code>对象.getTime()</code>即可，所以传入Date的几个方法就不用多说了），而第三个参数传入了0，这里可以猜下要么是时间片，要么是次数啥的，不过等会就知道是什么了；另外关于方法：sched的内容我们不着急去看他，先看下重载的方法中是如何做的。</p>
+<p>方法二：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">schedule</span><span class="params">(TimerTask task, <span class="keyword">long</span> delay,<span class="keyword">long</span> period)</span></span></span><br></pre></td></tr></table></figure>
+<p>源码为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">schedule</span><span class="params">(TimerTask task, <span class="keyword">long</span> delay, <span class="keyword">long</span> period)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (delay &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Negative delay."</span>);</span><br><span class="line">    <span class="keyword">if</span> (period &lt;= <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Non-positive period."</span>);</span><br><span class="line">    sched(task, System.currentTimeMillis() + delay, -period);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看来也调用了方法sched来完成调度，和上面的方法唯一的调度时候的区别是增加了传入的period，而上面方法这个参数传入的是0，所以确定这个参数为时间片，而不是次数，注意这个里的period加了一个负数，也就是取反，也就是我们开始传入1000，在调用sched的时候会变成-1000，具体意义见下面。</p>
+<p>最后再看个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scheduleAtFixedRate</span><span class="params">(TimerTasktask,<span class="keyword">long</span> delay,<span class="keyword">long</span> period)</span></span></span><br></pre></td></tr></table></figure>
+<p>源码为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scheduleAtFixedRate</span><span class="params">(TimerTask task, <span class="keyword">long</span> delay, <span class="keyword">long</span> period)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (delay &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Negative delay."</span>);</span><br><span class="line">    <span class="keyword">if</span> (period &lt;= <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Non-positive period."</span>);</span><br><span class="line">    sched(task, System.currentTimeMillis() + delay, period);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>唯一的区别就是在period没有取反，其实你最终阅读完源码，上面的取反没有什么特殊的意义，老外不想增加一个参数来表示scheduleAtFixedRate，而scheduleAtFixedRate和schedule的大部分逻辑代码一致，因此用了参数的范围来作为区分方法，也就是当你传入的参数不是正数的时候，你调用schedule方法正好是得到scheduleAtFixedRate的功能，而调用scheduleAtFixedRate方法的时候得到的正好是schedule方法的功能。</p>
+<h2 id="sched方法">sched方法</h2>
+<p>sched方法的实现体：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sched</span><span class="params">(TimerTask task, <span class="keyword">long</span> time, <span class="keyword">long</span> period)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (time &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal execution time."</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">synchronized</span>(queue) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!thread.newTasksMayBeScheduled)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Timer already cancelled."</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">synchronized</span>(task.lock) &#123;</span><br><span class="line">            <span class="keyword">if</span> (task.state != TimerTask.VIRGIN)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">                    <span class="string">"Task already scheduled or cancelled"</span>);</span><br><span class="line">            task.nextExecutionTime = time;</span><br><span class="line">            task.period = period;</span><br><span class="line">            task.state = TimerTask.SCHEDULED;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        queue.add(task);</span><br><span class="line">        <span class="keyword">if</span> (queue.getMin() == task)</span><br><span class="line">            queue.notify();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>queue为一个队列，我们先不看他数据结构，看到他在做这个操作的时候，发生了同步，所以在timer级别，这个是线程安全的。</p>
+<p>然后将task相关参数赋值，主要包含nextExecutionTime（下一次执行时间），period（时间片），state（状态），再将它放入queue队列中，做一次notify操作，为什么要做notify操作呢？看了后面的代码你就知道了。</p>
+<p>简言之，这里就是讲task放入队列queue的过程。</p>
+<h2 id="TaskQueue">TaskQueue</h2>
+<p>此时，你可能对queue的结构有些兴趣，queue属性类型为TaskQueue，是Timer的内部类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TaskQueue</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> TimerTask[] queue = <span class="keyword">new</span> TimerTask[<span class="number">128</span>];</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> size = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p>可见，TaskQueue的结构很简单，为一个数组，加一个size，有点像ArrayList，是不是长度就128呢，当然不是，ArrayList可以扩容，它也可以，只是会造成内存拷贝而已。所以一个Timer来讲，只要内部的task个数不超过128是不会造成扩容的。</p>
+<p>TaskQueue内部方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(TimerTask task)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Grow backing store if necessary</span></span><br><span class="line">    <span class="keyword">if</span> (size + <span class="number">1</span> == queue.length)</span><br><span class="line">        queue = Arrays.copyOf(queue, <span class="number">2</span> * queue.length);</span><br><span class="line"></span><br><span class="line">    queue[++size] = task;</span><br><span class="line">    fixUp(size);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>（2）size()</strong> ：任务队列的长度</p>
+<p><strong>（3）getMin()</strong> ：获取当前排序后最近需要执行的一个任务，下标为1，队列头部0是不做任何操作的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">TimerTask <span class="title">getMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> queue[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>（4）get(int i)</strong> ：获取指定下标的数据，当然包括下标0。</p>
+<p><strong>（5）removeMin()</strong> ：为删除当前最近执行的任务，也就是第一个元素。通常只调度一次的任务，在执行完后，调用此方法，就可以将任务从队列中移除。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">removeMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    queue[<span class="number">1</span>] = queue[size];</span><br><span class="line">    queue[size--] = <span class="keyword">null</span>;  <span class="comment">// Drop extra reference to prevent memory leak</span></span><br><span class="line">    fixDown(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>（6）quickRmove(int i)</strong> ：删除指定的元素，一般来说是不会调用这个方法的，这个方法只有在Timer发生purge的时候，并且当对应的TimerTask调用了cancel方法的时候，才会被调用这个方法，也就是取消某个TimerTask，然后就会从队列中移除（注意如果任务在执行中是，还是仍然在执行中的，虽然在队列中被移除了），还有就是这个cancel方法并不是Timer的cancel方法而是TimerTask，一个是调度器的，一个是单个任务的，最后注意，这个quickRmove完成后，是将队列最后一个元素补充到这个位置，所以此时会造成顺序不一致的问题，后面会有方法进行修复。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">quickRemove</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">assert</span> i &lt;= size;</span><br><span class="line"></span><br><span class="line">    queue[i] = queue[size];</span><br><span class="line">    queue[size--] = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>（7）rescheduleMin(long newTime)</strong> ：是重新设置当前执行的任务的下一次执行时间，并在队列中将其从新排序到合适的位置，而调用的是fixDown(1)方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rescheduleMin</span><span class="params">(<span class="keyword">long</span> newTime)</span> </span>&#123;</span><br><span class="line">    queue[<span class="number">1</span>].nextExecutionTime = newTime;</span><br><span class="line">    fixDown(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>（8）fixUp</strong> 和<strong>fixDown</strong> 方法：前者是当新增一个task的时候，首先将元素放在队列的尾部，然后向前找是否有比自己还要晚执行的任务，如果有，就将两个任务的顺序进行交换一下。而fixDown正好相反，执行完第一个任务后，需要加上一个时间片得到下一次执行时间，然后将其顺序与后面的任务进行比较，放置到一个合适的位置。</p>
+<p>可以看下方法细节：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">fixUp</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (k &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> j = k &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (queue[j].nextExecutionTime &lt;= queue[k].nextExecutionTime)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        TimerTask tmp = queue[j];</span><br><span class="line">        queue[j] = queue[k];</span><br><span class="line">        queue[k] = tmp;</span><br><span class="line">        k = j;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">fixDown</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> j;</span><br><span class="line">    <span class="keyword">while</span> ((j = k &lt;&lt; <span class="number">1</span>) &lt;= size &amp;&amp; j &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (j &lt; size &amp;&amp; queue[j].nextExecutionTime &gt; queue[j + <span class="number">1</span>].nextExecutionTime)</span><br><span class="line">            j++; <span class="comment">// j indexes smallest kid</span></span><br><span class="line">        <span class="keyword">if</span> (queue[k].nextExecutionTime &lt;= queue[j].nextExecutionTime)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        TimerTask tmp = queue[j];</span><br><span class="line">        queue[j] = queue[k];</span><br><span class="line">        queue[k] = tmp;</span><br><span class="line">        k = j;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方式并非排序，而是找到一个合适的位置来交换，因为并不是通过队列逐个找的，而是每次移动一个二进制为，例如传入1的时候，接下来就是2、4、8、16这些位置，找到合适的位置放下即可，顺序未必是完全有序的，它只需要距离调度部分越近的有序性越强就可以了，这样即可以保证一定的顺序性，达到较好的性能。</p>
+<p><strong>（9）heapify()</strong> ：其实就是将队列的后半截，全部做一次fixeDown的操作，这个操作主要是为了回补quickRemove方法，当大量的quickRmove后，顺序被打乱后，此时将一半的区域做一次非常简单的排序即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">heapify</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = size / <span class="number">2</span>; i &gt;= <span class="number">1</span>; i--)</span><br><span class="line">        fixDown(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>简单来讲，TaskQueue提供了类似于ArrayList的东西来管理，内部有很多排序之类的处理逻辑。</p>
+<h2 id="TimerThread">TimerThread</h2>
+<p>TimerThread是定义在Timer内部的一个线程，所以执行的中心自然是run方法了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        mainLoop();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span>(queue) &#123;</span><br><span class="line">            newTasksMayBeScheduled = <span class="keyword">false</span>;</span><br><span class="line">            queue.clear();  <span class="comment">// Eliminate obsolete references</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>try很简单，就一个mainLoop，看名字知道是主循环程序，finally中将参数设为false，并将队列清空掉。</p>
+<p>那么最核心的就是mainLoop了，是的，看懂了mainLoop一切都懂了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">mainLoop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            TimerTask task;</span><br><span class="line">            <span class="keyword">boolean</span> taskFired;</span><br><span class="line">            <span class="keyword">synchronized</span>(queue) &#123;</span><br><span class="line">                <span class="comment">// Wait for queue to become non-empty</span></span><br><span class="line">                <span class="keyword">while</span> (queue.isEmpty() &amp;&amp; newTasksMayBeScheduled)</span><br><span class="line">                    queue.wait();</span><br><span class="line">                <span class="keyword">if</span> (queue.isEmpty())</span><br><span class="line">                    <span class="keyword">break</span>; <span class="comment">// Queue is empty and will forever remain; die</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// Queue nonempty; look at first evt and do the right thing</span></span><br><span class="line">                <span class="keyword">long</span> currentTime, executionTime;</span><br><span class="line">                task = queue.getMin();</span><br><span class="line">                <span class="keyword">synchronized</span>(task.lock) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (task.state == TimerTask.CANCELLED) &#123;</span><br><span class="line">                        queue.removeMin();</span><br><span class="line">                        <span class="keyword">continue</span>;  <span class="comment">// No action required, poll queue again</span></span><br><span class="line">                    &#125;</span><br><span class="line">                    currentTime = System.currentTimeMillis();</span><br><span class="line">                    executionTime = task.nextExecutionTime;</span><br><span class="line">                    <span class="keyword">if</span> (taskFired = (executionTime &lt;= currentTime)) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (task.period == <span class="number">0</span>) &#123; <span class="comment">// Non-repeating, remove</span></span><br><span class="line">                            queue.removeMin();</span><br><span class="line">                            task.state = TimerTask.EXECUTED;</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123; <span class="comment">// Repeating task, reschedule</span></span><br><span class="line">                            queue.rescheduleMin(</span><br><span class="line">                                task.period &lt; <span class="number">0</span> ? currentTime   - task.period</span><br><span class="line">                                : executionTime + task.period);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (!taskFired) <span class="comment">// Task hasn't yet fired; wait</span></span><br><span class="line">                    queue.wait(executionTime - currentTime);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (taskFired)  <span class="comment">// Task fired; run it, holding no locks</span></span><br><span class="line">                task.run();</span><br><span class="line">        &#125; <span class="keyword">catch</span>(InterruptedException e) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以发现这个timer是一个死循环程序，除非遇到不能捕获的异常或break才会跳出，首先注意这段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (queue.isEmpty() &amp;&amp;newTasksMayBeScheduled)</span><br><span class="line">   queue.wait();</span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> (queue.isEmpty())</span><br><span class="line">    <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
+<p>队列为空，并且newTasksMayBeScheduled状态为true时，线程进入等待状态，而wait就是在等待其他地方对queue发生notify操作。而发生add的时候notify会被调用，从而唤醒该线程。</p>
+<p>Timer的cancel()方法也会调用notify，但cancel方法调用notify之前清空了队列，所以在接下来的代码中跳出了循环，从而结束了线程。</p>
+<p>线程唤醒之后，如果队列不为空，再进行下面操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">task = queue.getMin();</span><br><span class="line"><span class="keyword">synchronized</span>(task.lock) &#123;</span><br><span class="line">    <span class="keyword">if</span> (task.state == TimerTask.CANCELLED) &#123;</span><br><span class="line">        queue.removeMin();</span><br><span class="line">        <span class="keyword">continue</span>;  <span class="comment">// No action required, poll queue again</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>获取当前排序后最近需要执行的一个任务，首先判断任务状态（注意是任务状态，不是Timer状态），</p>
+<p>如果任务已被取消，从队列中移除该任务。没有则继续执行下面代码。</p>
+<p>接下来是获取一个当前系统时间和上次预计的执行时间，如果预计执行的时间小于当前系统时间，那么就需要执行，此时判定时间片是否为0，如果为0，则调用removeMin方法将其移除，否则将task通过rescheduleMin设置最新时间并排序：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">currentTime = System.currentTimeMillis();</span><br><span class="line">executionTime = task.nextExecutionTime;</span><br><span class="line"><span class="keyword">if</span> (taskFired = (executionTime&lt;=currentTime)) &#123;</span><br><span class="line">      <span class="keyword">if</span> (task.period == <span class="number">0</span>) &#123; <span class="comment">// Non-repeating, remove</span></span><br><span class="line">           queue.removeMin();</span><br><span class="line">           task.state = TimerTask.EXECUTED;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123; <span class="comment">// Repeating task, reschedule</span></span><br><span class="line">           queue.rescheduleMin(task.period&lt;<span class="number">0</span> ? currentTime   - task.period : executionTime + task.period);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里可以看到，period为负数的时候，就会被认为是按照按照当前系统时间+一个时间片来计算下一次时间，就是前面说的schedule和scheduleAtFixedRate的区别了。同时你可以看到period为0，就是只执行一次，所以时间片正负0都用上了。</p>
+<p>再看看mainLoop接下来的部分：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!taskFired)<span class="comment">// Taskhasn't yet fired; wait</span></span><br><span class="line">    queue.wait(executionTime- currentTime);</span><br></pre></td></tr></table></figure>
+<p>这里是如果任务执行时间还未到，就等待一段时间，当然这个等待很可能会被其他线程调用add和cancel时唤醒，因为内部有notify方法，所以这个时间并不是完全准确。</p>
+<p>最后：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (taskFired) <span class="comment">// Task fired; run it, holding no locks</span></span><br><span class="line">    task.run();</span><br></pre></td></tr></table></figure>
+<p>如果线程需要执行，那么调用它的run方法，而并非启动一个新的线程或从线程池中获取一个线程来执行，所以TimerTask的run方法并不是多线程的run方法，虽然实现了Runnable，但是仅仅是为了表示它是可执行的，并不代表它必须通过线程的方式来执行的。</p>
+<h1>任务取消</h1>
+<p>无论是TimerTask类还是Timer类，其cancel()方法都是为了清除任务队列中的任务。虽然都是清除任务队列中的任务，却有一些不同：</p>
+<p>TimerTask类中的cancel()方法侧重的是将自身从任务队列中清除，其他任务不受影响，其实现代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">TimerTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">......</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">synchronized</span>(lock) &#123;</span><br><span class="line">           <span class="keyword">boolean</span> result = (state == SCHEDULED);</span><br><span class="line">           state = CANCELLED;</span><br><span class="line">           <span class="keyword">return</span> result;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">......    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而Timer类中的cancel()方法则是将任务队列中全部的任务清空。</p>
+<p>此外，再看下Timer中purge()方法，用于当你对很多TimerTask做了cancel操作后，通过调用purge()方法实现对这些cancel掉的类空间的回收，上面已经提到，此时会造成顺序混乱，所以需要调用队里的heapify方法来完成顺序的重排，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Timer</span> </span>&#123;</span><br><span class="line">......</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span>(queue) &#123;</span><br><span class="line">            thread.newTasksMayBeScheduled = <span class="keyword">false</span>;</span><br><span class="line">            queue.clear();</span><br><span class="line">            queue.notify();  <span class="comment">// In case queue was already empty.</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">purge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">         <span class="keyword">synchronized</span>(queue) &#123;</span><br><span class="line">             <span class="keyword">for</span> (<span class="keyword">int</span> i = queue.size(); i &gt; <span class="number">0</span>; i--) &#123;</span><br><span class="line">                 <span class="keyword">if</span> (queue.get(i).state == TimerTask.CANCELLED) &#123;</span><br><span class="line">                     queue.quickRemove(i);</span><br><span class="line">                     result++;</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;</span><br><span class="line">             <span class="keyword">if</span> (result != <span class="number">0</span>)</span><br><span class="line">                 queue.heapify();</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">return</span> result;</span><br><span class="line">     &#125;</span><br><span class="line">......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面以具体示例进行演示。</p>
+<p>TimerTask类中的cancel()方法测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Calendar;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.util.Timer;</span><br><span class="line"><span class="keyword">import</span> java.util.TimerTask;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"当前时间为："</span> + <span class="keyword">new</span> Date());</span><br><span class="line">        Calendar c = Calendar.getInstance();</span><br><span class="line">        Date runDate1 = c.getTime();</span><br><span class="line">        System.out.println(<span class="string">"计划时间为："</span> + runDate1);</span><br><span class="line">        MyTaskA task1 = <span class="keyword">new</span> MyTaskA();</span><br><span class="line">        MyTaskB task2 = <span class="keyword">new</span> MyTaskB();</span><br><span class="line">        Timer timer = <span class="keyword">new</span> Timer();</span><br><span class="line">        timer.schedule(task1, runDate1, <span class="number">4000</span>);</span><br><span class="line">        timer.schedule(task2, runDate1, <span class="number">4000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTaskA</span> <span class="keyword">extends</span> <span class="title">TimerTask</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"A run timer="</span> + <span class="keyword">new</span> Date());</span><br><span class="line">        <span class="keyword">this</span>.cancel();<span class="comment">// 调用的是TimerTask类中的cancel()方法</span></span><br><span class="line">        System.out.println(<span class="string">"A任务自己移除自己,B任务不受影响，继续运行"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTaskB</span> <span class="keyword">extends</span> <span class="title">TimerTask</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"B run timer="</span> + <span class="keyword">new</span> Date());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果如图所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584757574_20200321102316935_917.png" alt></p>
+<p>Timer类中的cancel()方法测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Calendar;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.util.Timer;</span><br><span class="line"><span class="keyword">import</span> java.util.TimerTask;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"当前时间为："</span> + <span class="keyword">new</span> Date());</span><br><span class="line">        Calendar c = Calendar.getInstance();</span><br><span class="line">        Date runDate1 = c.getTime();</span><br><span class="line">        System.out.println(<span class="string">"计划时间为："</span> + runDate1);</span><br><span class="line">        MyTaskA task1 = <span class="keyword">new</span> MyTaskA();</span><br><span class="line">        MyTaskB task2 = <span class="keyword">new</span> MyTaskB();</span><br><span class="line">        Timer timer = <span class="keyword">new</span> Timer();</span><br><span class="line">        timer.schedule(task1, runDate1, <span class="number">4000</span>);</span><br><span class="line">        timer.schedule(task2, runDate1, <span class="number">4000</span>);</span><br><span class="line">         Thread.sleep(<span class="number">12000</span>);</span><br><span class="line">         timer.cancel();</span><br><span class="line">         System.out.println(<span class="string">"A、B任务都移除了"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTaskA</span> <span class="keyword">extends</span> <span class="title">TimerTask</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"A run timer="</span> + <span class="keyword">new</span> Date());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTaskB</span> <span class="keyword">extends</span> <span class="title">TimerTask</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"B run timer="</span> + <span class="keyword">new</span> Date());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果如图所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584757574_20200321102316623_2569.png" alt></p>
+<p>注意：Timer类中的cancel()方法有时不一定会停止计划任务，而是正常执行。下面以一个示例进行说明：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Calendar;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.util.Timer;</span><br><span class="line"><span class="keyword">import</span> java.util.TimerTask;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">        Calendar c = Calendar.getInstance();</span><br><span class="line">        Date runDate1 = c.getTime();</span><br><span class="line">        System.out.println(<span class="string">"仍然有任务没有被移除"</span>);</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            Timer timer = <span class="keyword">new</span> Timer();</span><br><span class="line">            MyTaskA task1 = <span class="keyword">new</span> MyTaskA(i);</span><br><span class="line">            timer.schedule(task1, runDate1);</span><br><span class="line">            timer.cancel();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTaskA</span> <span class="keyword">extends</span> <span class="title">TimerTask</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> i;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyTaskA</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        <span class="keyword">this</span>.i = i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"第"</span> + i + <span class="string">"次没有被cancel取消"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行后部分结果如图所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584757574_20200321102316313_2657.png" alt></p>
+<p>原因是Timer类中的cancel()方法有时并没有抢到queue锁，则让TimerTask类中的任务正常执行。</p>
+<h1>Timer的使用场景</h1>
+<p>Timer和TimerTask的简单组合是多线程的嘛？不是，一个Timer内部包装了“一个Thread”和“一个Task”队列，这个队列按照一定的方式将任务排队处理，包含的线程在Timer的构造方法调用时被启动，这个Thread的run方法无限循环这个Task队列，若队列为空且没发生cancel操作，此时会一直等待，如果等待完成后，队列还是为空，则认为发生了cancel从而跳出死循环，结束任务；循环中如果发现任务需要执行的时间小于系统时间，则需要执行，那么根据任务的时间片从新计算下次执行时间，若时间片为0代表只执行一次，则直接移除队列即可。</p>
+<p>但是是否能实现多线程呢？可以，任何东西是否是多线程完全看个人意愿，多个Timer自然就是多线程的，每个Timer都有自己的线程处理逻辑，当然Timer从这里来看并不是很适合很多任务在短时间内的快速调度，至少不是很适合同一个timer上挂很多任务，在多线程的领域中我们更多是使用多线程中的：“使用Executors类创建线程池”</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executors.newScheduledThreadPool</span><br></pre></td></tr></table></figure>
+<p>来完成对调度队列中的线程池的处理。</p>
+<p>当然也可以调用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Executors.unconfigurableScheduledExecutorService</span><br></pre></td></tr></table></figure>
+<p>方法来创建一个DelegatedScheduledExecutorService。</p>
+<p>其实这个类就是包装了下下scheduleExecutor，也就是这只是一个壳，英文理解就是被委派的意思，被托管的意思。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVA学习笔记</a></li>
+            <li>45-TIMER和TIMERTASK</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Timer的常见方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Timer的构造方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Timer内部属性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#thread"><span class="nav-text">thread</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#queue"><span class="nav-text">queue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#threadReaper"><span class="nav-text">threadReaper</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">调度方法实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sched方法"><span class="nav-text">sched方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TaskQueue"><span class="nav-text">TaskQueue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TimerThread"><span class="nav-text">TimerThread</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">任务取消</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Timer的使用场景</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

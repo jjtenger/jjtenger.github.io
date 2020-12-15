@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="HiveServer是一种可选服务，允许远程客户端可以使用各种编程语言向Hive提交请求并检索结果。HiveServer是建立在Apache ThriftTM（http:&#x2F;&#x2F;thrift.apache.org&#x2F;） 之上的，因此有时会被称为Thrift Server，这可能会导致混乱，因为新服务HiveServer2也是建立在Thrift之上的．自从引入HiveServer2后，HiveServer">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;06-HiveServer2.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="HiveServer是一种可选服务，允许远程客户端可以使用各种编程语言向Hive提交请求并检索结果。HiveServer是建立在Apache ThriftTM（http:&#x2F;&#x2F;thrift.apache.org&#x2F;） 之上的，因此有时会被称为Thrift Server，这可能会导致混乱，因为新服务HiveServer2也是建立在Thrift之上的．自从引入HiveServer2后，HiveServer">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584893627_20200323000853470_30381.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584893624_20200323000853043_19679.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584893619_20200323000852626_7325.jpg">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.016Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584893627_20200323000853470_30381.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/06-HiveServer2">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HIVE学习笔记</a></li>
+            <li>06-HIVESERVER2</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>HiveServer是一种可选服务，允许远程客户端可以使用各种编程语言向Hive提交请求并检索结果。HiveServer是建立在Apache ThriftTM（<a href="http://thrift.apache.org/%EF%BC%89" target="_blank" rel="noopener">http://thrift.apache.org/）</a> 之上的，因此有时会被称为Thrift Server，这可能会导致混乱，因为新服务HiveServer2也是建立在Thrift之上的．自从引入HiveServer2后，HiveServer也被称为HiveServer1。</p><a id="more"></a>
+<p>HiveServer无法处理来自多个客户端的并发请求.这实际上是HiveServer导出的Thrift接口所施加的限制，也不能通过修改HiveServer源代码来解决。HiveServer2对HiveServer进行了重写，来解决这些问题，从Hive 0.11.0版本开始。建议使用HiveServer2。</p>
+<p>HiveServer2是HiveServer1的改进版，HiveServer1已经被废弃。从Hive 2.0版本开始，为HiveServer2提供了一个简单的WEBUI界面，界面中可以直观的看到当前链接的会话、历史日志、配置参数以及度量信息。</p>
+<p>HiveServer2的UI端口默认值：</p>
+<ul>
+<li>hive.server2.thrift.port：10000（服务监听端口）</li>
+<li>hive.server2.webui.port：10002（web服务端口）</li>
+</ul>
+<p><strong>HiveServer2的优点</strong></p>
+<p>在生产环境中使用Hive，强烈建议使用HiveServer2来提供服务，好处很多：</p>
+<ul>
+<li>在应用端不用部署Hadoop和hive客户端；</li>
+<li>相比hive-cli方式，HiveServer2不用直接将HDFS和Metastore暴漏给用户；</li>
+<li>有安全认证机制，并且支持自定义权限校验；</li>
+<li>有HA机制，解决应用端的并发和负载均衡问题</li>
+<li>JDBC方式，可以使用任何语言，方便与应用进行数据交互；</li>
+<li>从2.0开始，HiveServer2提供了WEB UI。</li>
+</ul>
+<h1>开启HiveServer2服务</h1>
+<p>开启HiveServer2服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# hive --service hiveserver2  &gt;/dev/null 2&gt;/dev/null &amp;</span><br><span class="line">[4] 3889</span><br><span class="line">[root@node3 ~]#</span><br></pre></td></tr></table></figure>
+<p>其中，输出的3889是hiveserver2的pid，需要关闭hiveserver2服务时可以通过该pid进行kill。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# jps</span><br><span class="line">2723 QuorumPeerMain</span><br><span class="line">3889 RunJar</span><br><span class="line">2873 JournalNode</span><br><span class="line">2779 DataNode</span><br><span class="line">2973 NodeManager</span><br><span class="line">4093 Jps</span><br><span class="line">[root@node3 ~]# jps -ml</span><br><span class="line">2723 org.apache.zookeeper.server.quorum.QuorumPeerMain /opt/zookeeper-3.4.10/bin/../conf/zoo.cfg</span><br><span class="line">3889 org.apache.hadoop.util.RunJar /opt/hive-2.1.1/lib/hive-service-2.1.1.jar org.apache.hive.service.server.HiveServer2</span><br><span class="line">4103 sun.tools.jps.Jps -ml</span><br><span class="line">2873 org.apache.hadoop.hdfs.qjournal.server.JournalNode</span><br><span class="line">2779 org.apache.hadoop.hdfs.server.datanode.DataNode</span><br><span class="line">2973 org.apache.hadoop.yarn.server.nodemanager.NodeManager</span><br><span class="line">[root@node3 ~]#</span><br></pre></td></tr></table></figure>
+<p>通过命令netstat -pan查看所有的进程和端口使用情况，其中最后一栏是PID/Program name</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@node3 ~]# netstat -pan | grep 10000</span><br><span class="line">tcp        0      0 0.0.0.0:10000           0.0.0.0:*               LISTEN      3889/java           </span><br><span class="line">[root@node3 ~]#</span><br></pre></td></tr></table></figure>
+<p>发现端口号10000被PID是3889的Java进程占用。</p>
+<p>Web页面：</p>
+<p><a href="http://192.168.80.133:10002/hiveserver2.jsp" target="_blank" rel="noopener">http://192.168.80.133:10002/hiveserver2.jsp</a></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584893627_20200323000853470_30381.png" alt></p>
+<h1>JDBC连接Hive编程</h1>
+<p>Hive JDBC驱动依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/org.apache.hive/hive-jdbc --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hive<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hive-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>示例类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"><span class="keyword">import</span> java.sql.*;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HiveDao</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="keyword">private</span> Connection connection;</span><br><span class="line">   <span class="keyword">private</span> PreparedStatement ps;</span><br><span class="line">   <span class="keyword">private</span> Statement st;</span><br><span class="line">   <span class="keyword">private</span> ResultSet rs;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getConnection</span><span class="params">(String ip, String db)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">           <span class="comment">// 连接hive的URL hive1.2.1版本需要的是jdbc:hive2，而不是 jdbc:hive</span></span><br><span class="line">           sb.append(<span class="string">"jdbc:hive2://"</span>).append(ip).append(<span class="string">":10000/"</span>).append(db);</span><br><span class="line">           Class.forName(<span class="string">"org.apache.hive.jdbc.HiveDriver"</span>);</span><br><span class="line">           connection = DriverManager.getConnection(sb.toString(), <span class="string">"jjt"</span>, <span class="string">"jjt"</span>);</span><br><span class="line">           System.out.println(connection);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createDatabase</span><span class="params">(String dbName)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           String sql = <span class="string">"create database if not exists "</span> + dbName;</span><br><span class="line">           ps = connection.prepareStatement(sql);</span><br><span class="line">           <span class="comment">// true if the first result is a ResultSet object;</span></span><br><span class="line">           <span class="comment">// false if the first result is an update count or there is no result</span></span><br><span class="line">           ps.execute();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createTable</span><span class="params">(String sql)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           ps = connection.prepareStatement(sql);</span><br><span class="line">           ps.execute();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dropTable</span><span class="params">(String tableName)</span> </span>&#123;</span><br><span class="line">       String sql = <span class="string">"drop table if exists "</span> + tableName;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           st = connection.createStatement();</span><br><span class="line">           st.execute(sql);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 添加数据</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">load</span><span class="params">(String loadData)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           ps = connection.prepareStatement(loadData);</span><br><span class="line">           <span class="keyword">return</span> ps.execute();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           <span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">           e.printStackTrace();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> ResultSet <span class="title">query</span><span class="params">(String sql)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           ps = connection.prepareStatement(sql);</span><br><span class="line">           <span class="keyword">return</span> ps.executeQuery();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">descTables</span><span class="params">(String tableName)</span></span>&#123;</span><br><span class="line">       String sql = <span class="string">"desc "</span> + tableName;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           st = connection.createStatement();</span><br><span class="line">           rs=st.executeQuery(sql);</span><br><span class="line">           <span class="keyword">while</span> (rs.next()) &#123;</span><br><span class="line">               System.out.println(rs.getString(<span class="number">1</span>) + <span class="string">"\t"</span> + rs.getString(<span class="number">2</span>));</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           <span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 关闭连接</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="keyword">if</span> (rs != <span class="keyword">null</span>) &#123;</span><br><span class="line">               rs.close();</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">if</span> (ps != <span class="keyword">null</span>) &#123;</span><br><span class="line">               ps.close();</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">if</span> (connection != <span class="keyword">null</span>) &#123;</span><br><span class="line">               connection.close();</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line"> </span><br><span class="line">       System.setProperty(<span class="string">"HADOOP_USER_NAME"</span>, <span class="string">"jjt"</span>);</span><br><span class="line">       <span class="comment">// 1.上传数据文件</span></span><br><span class="line">       <span class="comment">// 获取读取源文件和目标文件位置参数</span></span><br><span class="line">       String local = <span class="string">"src/main/resources/demo/goods.txt"</span>;</span><br><span class="line">       String uri = <span class="string">"hdfs://node:9000/user/jjt/hive/goods.txt"</span>;</span><br><span class="line">       Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">       conf.addResource(<span class="string">"core-site.xml"</span>);</span><br><span class="line">       conf.addResource(<span class="string">"hdfs-site.xml"</span>);</span><br><span class="line">       <span class="comment">// 获取目标文件信息</span></span><br><span class="line">       FileSystem fs = FileSystem.get(URI.create(uri), conf);</span><br><span class="line"> </span><br><span class="line">       Path targetPath = <span class="keyword">new</span> Path(uri);</span><br><span class="line">       <span class="keyword">if</span> (fs.exists(targetPath)) &#123;</span><br><span class="line">           <span class="keyword">boolean</span> delResult = fs.delete(targetPath, <span class="keyword">true</span>);</span><br><span class="line">           <span class="keyword">if</span> (delResult) &#123;</span><br><span class="line">               System.out.println(targetPath + <span class="string">" has been deleted sucessfullly."</span>);</span><br><span class="line">           &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">               System.out.println(targetPath + <span class="string">" deletion failed."</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"> </span><br><span class="line">       <span class="keyword">if</span> (!fs.exists(<span class="keyword">new</span> Path(<span class="string">"hdfs://node:9000/user/jjt/hive"</span>)))&#123;</span><br><span class="line">           fs.mkdirs(<span class="keyword">new</span> Path(<span class="string">"hdfs://node:9000/user/jjt/hive"</span>));</span><br><span class="line">       &#125;</span><br><span class="line">       fs.copyFromLocalFile(<span class="keyword">new</span> Path(local), <span class="keyword">new</span> Path(uri));</span><br><span class="line"> </span><br><span class="line">       <span class="comment">// 2.hive操作</span></span><br><span class="line">       HiveDao dao = <span class="keyword">new</span> HiveDao();</span><br><span class="line">       dao.getConnection(<span class="string">"node"</span>,<span class="string">"default"</span>);</span><br><span class="line">       dao.createDatabase(<span class="string">"mydb"</span>);</span><br><span class="line">       dao.dropTable(<span class="string">"mydb.goods"</span>);</span><br><span class="line">       dao.createTable(<span class="string">"create table mydb.goods(id int,name string) row format delimited fields terminated by ','"</span>);</span><br><span class="line">       dao.load(<span class="string">"load data inpath '/user/jjt/hive/goods.txt' into table mydb.goods"</span>);</span><br><span class="line">       dao.descTables(<span class="string">"mydb.goods"</span>);</span><br><span class="line">       ResultSet rs = dao.query(<span class="string">"select * from mydb.goods"</span>);</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="keyword">while</span>(rs.next())&#123;</span><br><span class="line">               System.out.println(rs.getInt(<span class="number">1</span>)+<span class="string">"\t"</span>+rs.getString(<span class="number">2</span>));</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">       dao.close();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="异常解决：hive-jdbc依赖问题">异常解决：hive-jdbc依赖问题</h2>
+<p>错误一：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">java.sql.SQLException: Could not establish connection to jdbc:hive2://hadoop2:10000/default: Required field &apos;serverProtocolVersion&apos; is unset! Struct:TOpenSessionResp(status:TStatus(statusCode:SUCCESS_STATUS), serverProtocolVersion:null, sessionHandle:TSessionHandle(sessionId:THandleIdentifier(guid:AC 5A 2E B8 FB ED 48 35 BA F5 0C 58 28 E2 FB 56, secret:BD 9D 67 70 F3 4A 4B 03 A4 E1 58 86 AF 02 BE 2C)), configuration:&#123;&#125;)</span><br><span class="line">    at org.apache.hive.jdbc.HiveConnection.openSession(HiveConnection.java:246)</span><br><span class="line">    at org.apache.hive.jdbc.HiveConnection.&lt;init&gt;(HiveConnection.java:132)</span><br><span class="line">    at org.apache.hive.jdbc.HiveDriver.connect(HiveDriver.java:105)</span><br><span class="line">    at java.sql.DriverManager.getConnection(DriverManager.java:664)</span><br><span class="line">    at java.sql.DriverManager.getConnection(DriverManager.java:247)</span><br><span class="line">    at cn.orcale.com.project.CDHHiveJdbcCli.main(CDHHiveJdbcCli.java:24)</span><br><span class="line">Caused by: org.apache.thrift.protocol.TProtocolException: Required field &apos;serverProtocolVersion&apos; is unset! Struct:TOpenSessionResp(status:TStatus(statusCode:SUCCESS_STATUS), serverProtocolVersion:null, sessionHandle:TSessionHandle(sessionId:THandleIdentifier(guid:AC 5A 2E B8 FB ED 48 35 BA F5 0C 58 28 E2 FB 56, secret:BD 9D 67 70 F3 4A 4B 03 A4 E1 58 86 AF 02 BE 2C)), configuration:&#123;&#125;)</span><br><span class="line">    at org.apache.hive.service.cli.thrift.TOpenSessionResp.validate(TOpenSessionResp.java:578)</span><br><span class="line">    ......</span><br></pre></td></tr></table></figure>
+<p>错误二：</p>
+<p>该异常为Iface接口重复加载。找不到不是因为不存在，而是有重复的类，不知道找哪个。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">java.lang.NoClassDefFoundError: org/apache/hive/service/cli/thrift/TCLIService$Iface</span><br><span class="line">at org.apache.hive.jdbc.HiveDriver.connect(HiveDriver.java:105)</span><br><span class="line">at java.sql.DriverManager.getConnection(DriverManager.java:664)</span><br><span class="line">at java.sql.DriverManager.getConnection(DriverManager.java:208)</span><br><span class="line">at com.bonc.vbap.data.query.jdbc.spring.datasource.DriverManagerDataSource.getConnectionFromDriverManager(DriverManagerDataSource.java:116)</span><br><span class="line">at com.bonc.vbap.data.query.jdbc.spring.datasource.DriverManagerDataSource.getConnectionFromDriver(DriverManagerDataSource.java:107)</span><br><span class="line">at com.bonc.vbap.data.query.jdbc.spring.datasource.DriverManagerDataSource.getConnectionFromDriver(DriverManagerDataSource.java:191)</span><br><span class="line">at com.bonc.vbap.data.query.jdbc.spring.datasource.DriverManagerDataSource.getConnection(DriverManagerDataSource.java:161)</span><br><span class="line">at com.bonc.vbap.data.query.jdbc.ConnectionManager.getConnection(ConnectionManager.java:63)</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>以上两个异常均为hive-jdbc依赖问题。建议使用最新版本（3.0.0），并排除（配置exclusions）重复依赖的jar包，例如：org.apache.hadoop、org.apache.zookeeper、hive-service-rpc、hive-service等等。</p>
+<h2 id="异常解决：用户伪装问题">异常解决：用户伪装问题</h2>
+<p>JDBC客户端程序连接hive时，出现报错：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; org.apache.hive.service.cli.HiveSQLException: Failed to open new session: java.lang.RuntimeException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.authorize.AuthorizationException): User: jjt is not allowed to impersonate root</span><br><span class="line">    at org.apache.hive.jdbc.Utils.verifySuccess(Utils.java:258)</span><br><span class="line">    at org.apache.hive.jdbc.Utils.verifySuccess(Utils.java:249)</span><br><span class="line">    at org.apache.hive.jdbc.HiveConnection.openSession(HiveConnection.java:579)</span><br><span class="line">    at org.apache.hive.jdbc.HiveConnection.&lt;init&gt;(HiveConnection.java:167)</span><br><span class="line">    at org.apache.hive.jdbc.HiveDriver.connect(HiveDriver.java:107)</span><br><span class="line">    at java.sql.DriverManager.getConnection(DriverManager.java:571)</span><br><span class="line">    at java.sql.DriverManager.getConnection(DriverManager.java:215)</span><br><span class="line">    at client.main(client.java:21)</span><br><span class="line">    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</span><br><span class="line">    ......</span><br></pre></td></tr></table></figure>
+<p>从最终的错误信息来看：User: jjt is not allowed to impersonate root，意思是用户jjt不允许伪装成root。</p>
+<p>JDBC连接代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Connection conn = DriverManager.getConnection(<span class="string">"jdbc:hive2://node:10000/default"</span>, <span class="string">"root"</span>, <span class="string">"jjt"</span>);</span><br></pre></td></tr></table></figure>
+<p>这里使用的是root用户，但是我服务器能访问hive和hdfs的用户是jjt。很显然无法访问，需要做用户代理配置。（这里注意：和hadoop一样，Hive用户组和用户即Linux用户组和用户，其本身不提供用户组和用户管理，只做权限控制。）</p>
+<p>在hadoop的core-site.xml中进行如下设置, 用户“jjt”就可以代理主机host1和host2上属于组group1和group2的所有用户。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.proxyuser.jjt.hosts<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>host1,host2<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.proxyuser.jjt.groups<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>group1,group2<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>当然，也可以进行更松弛的设置。如下所示表示用户“jjt”可以代理所有主机上的所有用户。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.proxyuser.jjt.hosts<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.proxyuser.jjt.groups<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>同时，JDBC连接代码修改为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Connection conn = DriverManager.getConnection(<span class="string">"jdbc:hive2://node:10000/default"</span>, <span class="string">"jjt"</span>, <span class="string">"jjt"</span>);</span><br></pre></td></tr></table></figure>
+<p>到此，问题解决。</p>
+<h1>beenline</h1>
+<p>HiveServer2提供了一个新的命令行工具Beeline，它是基于SQLLine CLI的JDBC客户端。</p>
+<p>Beeline工作模式有两种，即本地嵌入模式和远程模式。嵌入模式情况下，它返回一个嵌入式的Hive（类似于hive CLI）。而远程模式则是通过Thrift协议与某个单独的HiveServer2进程进行连接通信。</p>
+<p>（1）本地模式</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# /usr/lib/hive/bin/beeline </span><br><span class="line">Beeline version 1.2.1000.2.4.3.0-227 by Apache Hive</span><br><span class="line"><span class="meta">beeline&gt;</span><span class="bash"> !connect jdbc:hive2://localhost:10000/default</span></span><br><span class="line">Connecting to jdbc:hive2://localhost:10000/default</span><br><span class="line">Enter username for jdbc:hive2://localhost:10000/default: root</span><br><span class="line">Enter password for jdbc:hive2://localhost:10000/default: ******</span><br><span class="line">Connected to: Apache Hive (version 1.2.1000.2.4.3.0-227)</span><br><span class="line">Driver: Hive JDBC (version 1.2.1000.2.4.3.0-227)</span><br><span class="line">Transaction isolation: TRANSACTION_REPEATABLE_READ</span><br><span class="line">0: jdbc:hive2://localhost:10000/default&gt; show tables;</span><br><span class="line">+-----------+--+</span><br><span class="line">| tab_name  |</span><br><span class="line">+-----------+--+</span><br><span class="line">| goods     |</span><br><span class="line">+-----------+--+</span><br><span class="line">1 row selected (0.236 seconds)</span><br><span class="line">0: jdbc:hive2://localhost:10000/default&gt; select * from goods;</span><br><span class="line">+-----------+-------------+--+</span><br><span class="line">| goods.id  | goods.name  |</span><br><span class="line">+-----------+-------------+--+</span><br><span class="line">| 1         | Java        |</span><br><span class="line">| 2         | Java EE     |</span><br><span class="line">| 3         | Android     |</span><br><span class="line">| 4         | Hadoop      |</span><br><span class="line">| 5         | Zookeeper   |</span><br><span class="line">| 6         | Hive        |</span><br><span class="line">| 7         | HBase       |</span><br><span class="line">| 8         | Spark       |</span><br><span class="line">+-----------+-------------+--+</span><br><span class="line">8 rows selected (0.314 seconds)</span><br><span class="line">0: jdbc:hive2://localhost:10000/default&gt;</span><br></pre></td></tr></table></figure>
+<p>默认用户名、密码不验证，可以随便输入。</p>
+<p>（2）远程模式</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">[root@node2 ~]#/usr/lib/hive/bin# ./beeline</span><br><span class="line">Beeline version 1.2.1000.2.4.3.0-227 by Apache Hive</span><br><span class="line"><span class="meta">beeline&gt;</span><span class="bash"> !connect jdbc:hive2://192.168.1.158:10000/default</span></span><br><span class="line">Connecting to jdbc:hive2://192.168.1.158:10000/default</span><br><span class="line">Enter username for jdbc:hive2://192.168.1.158:10000/default: root</span><br><span class="line">Enter password for jdbc:hive2://192.168.1.158:10000/default: ******</span><br><span class="line">Connected to: Apache Hive (version 1.2.1000.2.4.3.0-227)</span><br><span class="line">Driver: Hive JDBC (version 1.2.1000.2.4.3.0-227)</span><br><span class="line">Transaction isolation: TRANSACTION_REPEATABLE_READ</span><br><span class="line">0: jdbc:hive2://192.168.1.158:10000/default&gt; show tables;</span><br><span class="line">+-----------+--+</span><br><span class="line">| tab_name  |</span><br><span class="line">+-----------+--+</span><br><span class="line">| goods     |</span><br><span class="line">+-----------+--+</span><br><span class="line">1 row selected (0.265 seconds)</span><br><span class="line">0: jdbc:hive2://192.168.1.158:10000/default&gt; select * from goods;</span><br><span class="line">+-----------+-------------+--+</span><br><span class="line">| goods.id  | goods.name  |</span><br><span class="line">+-----------+-------------+--+</span><br><span class="line">| 1         | Java        |</span><br><span class="line">| 2         | Java EE     |</span><br><span class="line">| 3         | Android     |</span><br><span class="line">| 4         | Hadoop      |</span><br><span class="line">| 5         | Zookeeper   |</span><br><span class="line">| 6         | Hive        |</span><br><span class="line">| 7         | HBase       |</span><br><span class="line">| 8         | Spark       |</span><br><span class="line">+-----------+-------------+--+</span><br><span class="line">8 rows selected (0.53 seconds)</span><br><span class="line">0: jdbc:hive2://192.168.1.158:10000/default&gt; root@tdh02:/usr/lib/hive/bin# ./beeline</span><br><span class="line">Beeline version 1.2.1000.2.4.3.0-227 by Apache Hive</span><br><span class="line"><span class="meta">beeline&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h1>HiveServer2 HA</h1>
+<h2 id="单点故障">单点故障</h2>
+<p>如果使用HiveServer2的Client并发比较少，可以使用一个HiveServer2实例，没问题。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584893624_20200323000853043_19679.jpg" alt></p>
+<p>但如果这一个实例挂掉，那么会导致所有的应用连接失败。</p>
+<h2 id="高可用">高可用</h2>
+<p>Hive从0.14开始，使用Zookeeper实现了HiveServer2的HA功能（ZooKeeperService Discovery），Client端可以通过指定一个nameSpace来连接HiveServer2，而不是指定某一个host和port。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584893619_20200323000852626_7325.jpg" alt></p>
+<h2 id="HA配置">HA配置</h2>
+<p>hive-site.xml中：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.server2.support.dynamic.service.discovery<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.server2.zookeeper.namespace<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>hiveserver2_zk<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.zookeeper.quorum<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>node1:2181,node2:2181,node3:2181<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.zookeeper.client.port<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>2181<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.server2.thrift.bind.host<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>0.0.0.0<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.server2.thrift.port<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>10001<span class="tag">&lt;/<span class="name">value</span>&gt;</span> //两个HiveServer2实例的端口号要一致</span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HIVE学习笔记</a></li>
+            <li>06-HIVESERVER2</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">开启HiveServer2服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">JDBC连接Hive编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#异常解决：hive-jdbc依赖问题"><span class="nav-text">异常解决：hive-jdbc依赖问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异常解决：用户伪装问题"><span class="nav-text">异常解决：用户伪装问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">beenline</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HiveServer2 HA</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#单点故障"><span class="nav-text">单点故障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高可用"><span class="nav-text">高可用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HA配置"><span class="nav-text">HA配置</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

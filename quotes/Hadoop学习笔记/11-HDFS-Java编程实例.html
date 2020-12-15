@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="注意事项FileSystem get(URI uri, Configuration conf, String user)方法中：  指定的uri访问路径必须与core-site.xml文件中的fs.defaultFS配置一致；   需要指定user用户，该用户必须和Hadoop访问用户一致。  Windows系统默认用户是Administrator，如果程序中不指定用户名root，则可能抛出异常：">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;11-HDFS-Java%E7%BC%96%E7%A8%8B%E5%AE%9E%E4%BE%8B.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="注意事项FileSystem get(URI uri, Configuration conf, String user)方法中：  指定的uri访问路径必须与core-site.xml文件中的fs.defaultFS配置一致；   需要指定user用户，该用户必须和Hadoop访问用户一致。  Windows系统默认用户是Administrator，如果程序中不指定用户名root，则可能抛出异常：">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584884198_20200322213536868_21856.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584884198_20200322213536868_21856.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/11-HDFS-Java%E7%BC%96%E7%A8%8B%E5%AE%9E%E4%BE%8B">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>11-HDFS-JAVA编程实例</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p><strong>注意事项</strong></p><p>FileSystem get(URI uri, Configuration conf, String user)方法中：</p><ol>
+<li>
+<p>指定的uri访问路径必须与core-site.xml文件中的fs.defaultFS配置一致；</p>
+</li>
+<li>
+<p>需要指定user用户，该用户必须和Hadoop访问用户一致。</p>
+</li>
+</ol><p>Windows系统默认用户是Administrator，如果程序中不指定用户名root，则可能抛出异常：</p><a id="more"></a>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Permission denied: user=Administrator</span><br><span class="line">Exception in thread <span class="string">"main"</span> org.apache.hadoop.security.AccessControlException: Permission denied: user=Administrator</span><br></pre></td></tr></table></figure>
+<p>也可以使用下面代码设置用户名：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.setProperty(<span class="string">"HADOOP_USER_NAME"</span>, <span class="string">"xxx"</span>)；</span><br></pre></td></tr></table></figure>
+<p><strong>Java API封装类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"><span class="keyword">import</span> java.net.URISyntaxException;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.IOUtils;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.lang.StringUtils;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* HDFS工具类</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HDFSUtil</span> </span>&#123;</span><br><span class="line">   <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * 获取文件系统</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> FileSystem <span class="title">getFileSystem</span><span class="params">(String url)</span> </span>&#123;</span><br><span class="line">       <span class="comment">//StringUtils中方法的操作对象是java.lang.String类型的对象，是JDK提供的String类型操作方法的补充</span></span><br><span class="line">       <span class="keyword">if</span>(StringUtils.isBlank(url))&#123;<span class="comment">//判断某字符串是否为空或长度为0或由空白符(whitespace)构成</span></span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">       FileSystem fs = <span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           URI uri = <span class="keyword">new</span> URI(url.trim());</span><br><span class="line">           fs = FileSystem.get(uri,conf);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (URISyntaxException|IOException e) &#123;</span><br><span class="line">           System.out.println(e);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> fs;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * 获取文件系统</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> FileSystem <span class="title">getFileSystem</span><span class="params">(String url,String user)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span>(StringUtils.isBlank(url))&#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">       FileSystem fs = <span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           URI uri = <span class="keyword">new</span> URI(url.trim());</span><br><span class="line">           fs = FileSystem.get(uri,conf,user);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (InterruptedException|URISyntaxException|IOException e) &#123;</span><br><span class="line">           System.out.println(e);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> fs;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * 创建目录</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">mkdir</span><span class="params">(String path)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">       FileSystem fs = getFileSystem(path,<span class="string">"root"</span>);</span><br><span class="line">       <span class="keyword">boolean</span> b=fs.mkdirs(<span class="keyword">new</span> Path(path));</span><br><span class="line">       fs.close();</span><br><span class="line">       <span class="keyword">return</span> b;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 读文件</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> filePath</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">readFile</span><span class="params">(String filePath)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">       FileSystem fs = getFileSystem(filePath);</span><br><span class="line">       InputStream in=<span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">try</span>&#123;</span><br><span class="line">           in=fs.open(<span class="keyword">new</span> Path(filePath));</span><br><span class="line">           IOUtils.copyBytes(in, System.out,<span class="number">4096</span>,<span class="keyword">false</span>);</span><br><span class="line">       &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">           System.out.println(e.getMessage());</span><br><span class="line">       &#125;<span class="keyword">finally</span>&#123;</span><br><span class="line">           IOUtils.closeStream(in);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 上传文件</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> src</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> dst</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">putFile</span><span class="params">(String localPath,String hdfsPath)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">       FileSystem fs = getFileSystem(hdfsPath,<span class="string">"root"</span>);</span><br><span class="line">       fs.copyFromLocalFile(<span class="keyword">new</span> Path(localPath), <span class="keyword">new</span> Path(hdfsPath));</span><br><span class="line">       fs.close();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 下载文件</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> hdfsPath</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> localPath</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">getFile</span><span class="params">(String hdfsPath,String localPath)</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">       FileSystem fs = getFileSystem(hdfsPath,<span class="string">"root"</span>);</span><br><span class="line">       Path hdfs_path = <span class="keyword">new</span> Path(hdfsPath);</span><br><span class="line">       Path local_path = <span class="keyword">new</span> Path(localPath);</span><br><span class="line">       fs.copyToLocalFile(hdfs_path, local_path);</span><br><span class="line">       fs.close();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 递归删除</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> hdfsPath</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> IllegalArgumentException</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">deleteFile</span><span class="params">(String hdfsPath)</span> <span class="keyword">throws</span> IllegalArgumentException, IOException</span>&#123;</span><br><span class="line">       FileSystem fs = getFileSystem(hdfsPath,<span class="string">"root"</span>);</span><br><span class="line">       <span class="keyword">return</span> fs.delete(<span class="keyword">new</span> Path(hdfsPath), <span class="keyword">true</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 目录列表</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> hdfsPath</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> String[] listFile(String hdfsPath)&#123;</span><br><span class="line">       String[] files = <span class="keyword">new</span> String[<span class="number">0</span>];</span><br><span class="line">       FileSystem fs = getFileSystem(hdfsPath,<span class="string">"root"</span>);</span><br><span class="line">       Path path=<span class="keyword">new</span> Path(hdfsPath);</span><br><span class="line">       FileStatus[] st=<span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           st = fs.listStatus(path);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">       files = <span class="keyword">new</span> String[st.length];</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;st.length;i++)&#123;</span><br><span class="line">           files[i]=st[i].toString();</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> files;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 主方法，测试</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">       String base=<span class="string">"hdfs://192.168.80.131:9000/"</span>;</span><br><span class="line">       HDFSUtil.mkdir(base+<span class="string">"util"</span>);</span><br><span class="line">       HDFSUtil.putFile(<span class="string">"D:\\words"</span>, base+<span class="string">"util/"</span>);</span><br><span class="line">       HDFSUtil.readFile(base+<span class="string">"util/words/words.txt"</span>);</span><br><span class="line">       HDFSUtil.getFile(base+<span class="string">"util/words"</span>, <span class="string">"D:\\util"</span>);</span><br><span class="line">       HDFSUtil.deleteFile(base+<span class="string">"abc"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>上传：FileSystem.copyFromLocalFile()</h1>
+<p>上传本地文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.hdfsDemo;</span><br><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PutFile</span> </span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">       <span class="comment">//本地文件路径</span></span><br><span class="line">       String local=<span class="string">"D:\\word2.txt"</span>;</span><br><span class="line">       <span class="comment">//dest路径要与core-site.xml文件中的fs.defaultFS配置对应，其值是hdfs://node1:9000。</span></span><br><span class="line">       <span class="comment">//由于本地Windows系统的hosts文件没有配置node1，所以这里需要IP地址表示。</span></span><br><span class="line">       String dest=<span class="string">"hdfs://192.168.80.131:9000/user/root/input/word2.txt"</span>;</span><br><span class="line">       Configuration cfg=<span class="keyword">new</span> Configuration();</span><br><span class="line">       <span class="comment">//下面语句中指定了root用户，这是因为Windows系统默认用户是Administrator。</span></span><br><span class="line">       <span class="comment">// 如果程序中不指定用户名root，则可能抛出异常：Permission denied: user=Administrator...</span></span><br><span class="line">       FileSystem fs=  FileSystem.get(URI.create(dest),cfg,<span class="string">"root"</span>);</span><br><span class="line">       fs.copyFromLocalFile(<span class="keyword">new</span> Path(local), <span class="keyword">new</span> Path(dest));</span><br><span class="line">       fs.close();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上传本地目录</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.hdfsDemo;</span><br><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CopyFromLocalFile</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">       String hdfsPath=<span class="string">"hdfs://192.168.80.131:9000/user/root/"</span>;</span><br><span class="line">       String localPath=<span class="string">"D:\\words"</span>;</span><br><span class="line">       Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">       FileSystem fs = FileSystem.get(URI.create(hdfsPath), conf,<span class="string">"root"</span>);</span><br><span class="line">       Path hdfs_path = <span class="keyword">new</span> Path(hdfsPath);</span><br><span class="line">       Path local_path = <span class="keyword">new</span> Path(localPath);</span><br><span class="line">       fs.copyFromLocalFile(local_path, hdfs_path);</span><br><span class="line">       fs.close();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>下载：FileSystem.copyToLocalFile()</h1>
+<p>下载HDFS文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.hdfsDemo;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GetFile</span> </span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       String hdfsPath=<span class="string">"hdfs://192.168.80.131:9000/user/root/input/words.txt"</span>;</span><br><span class="line">       String localPath=<span class="string">"D:/copy_words.txt"</span>;</span><br><span class="line">       Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">       FileSystem fs = FileSystem.get(URI.create(hdfsPath), conf);</span><br><span class="line">       Path hdfs_path = <span class="keyword">new</span> Path(hdfsPath);</span><br><span class="line">       Path local_path = <span class="keyword">new</span> Path(localPath);</span><br><span class="line">       fs.copyToLocalFile(hdfs_path, local_path);</span><br><span class="line">       fs.close();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下载HDFS目录</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.hdfsDemo;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CopyToLocalFile</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       String hdfsPath=<span class="string">"hdfs://192.168.80.131:9000/user/root/input"</span>;</span><br><span class="line">       String localPath=<span class="string">"D:\\input"</span>;</span><br><span class="line">       Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">       FileSystem fs = FileSystem.get(URI.create(hdfsPath), conf);</span><br><span class="line">       Path hdfs_path = <span class="keyword">new</span> Path(hdfsPath);</span><br><span class="line">       Path local_path = <span class="keyword">new</span> Path(localPath);</span><br><span class="line">       fs.copyToLocalFile(hdfs_path,local_path);</span><br><span class="line">       fs.close();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在D盘可以查看到input目录文件</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584884198_20200322213536868_21856.png" alt></p>
+<p>其中.crc文件是校验文件。Hadoop系统为了保证数据的一致性，会对文件生成相应的校验文件，并在读写的时候进行校验，确保数据的准确性。</p>
+<h1>创建HDFS目录：FileSystem.mkdirs()</h1>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.hdfsDemo;</span><br><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CreateDir</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       String url = <span class="string">"hdfs://192.168.80.131:9000/tmp/"</span>;</span><br><span class="line">       Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">       FileSystem fs=  FileSystem.get(URI.create(url),conf,<span class="string">"root"</span>);</span><br><span class="line">       <span class="keyword">boolean</span> b=fs.mkdirs(<span class="keyword">new</span> Path(url));</span><br><span class="line">       System.out.println(b);</span><br><span class="line">       fs.close();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>删除HDFS文件或文件夹：FileSystem.delete()</h1>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.hdfsDemo;</span><br><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DeleteFile</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">       String uri = <span class="string">"hdfs://192.168.80.131:9000/tmp"</span>;</span><br><span class="line">       Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">       FileSystem fs =FileSystem.get(URI.create(uri),conf,<span class="string">"root"</span>);</span><br><span class="line">       <span class="comment">//参数true表示递归删除文件夹及文件夹下的文件</span></span><br><span class="line">       <span class="keyword">boolean</span> b = fs.delete(<span class="keyword">new</span> Path(uri), <span class="keyword">true</span>);</span><br><span class="line">       System.out.println(b);</span><br><span class="line">       fs.close();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>读取文件内容：FileSystem.open()</h1>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.IOUtils;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Created by jiateng.jiang on 2017/11/14.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileSystemCat</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       String uri = <span class="string">"hdfs://node1:9000/user/jjt/wordCount/input/protocols"</span>;</span><br><span class="line">       Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">       conf.addResource(<span class="string">"core-site.xml"</span>);</span><br><span class="line">       conf.addResource(<span class="string">"hdfs-site.xml"</span>);</span><br><span class="line"> </span><br><span class="line">       FileSystem fs = FileSystem.get(URI.create (uri), conf);</span><br><span class="line">       InputStream in = <span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           in = fs.open(<span class="keyword">new</span> Path(uri));</span><br><span class="line">           IOUtils.copyBytes(in, System.out, <span class="number">4096</span>, <span class="keyword">false</span>);</span><br><span class="line">       &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">           IOUtils.closeStream(in);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>目录列表：FileSystem.listStatus()</h1>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.URI;</span><br><span class="line"><span class="keyword">import</span> java.net.URISyntaxException;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.IOUtils;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.lang.StringUtils;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HDFSUtil</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * 获取文件系统</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> FileSystem <span class="title">getFileSystem</span><span class="params">(String url,String user)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span>(StringUtils.isBlank(url))&#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">       FileSystem fs = <span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           URI uri = <span class="keyword">new</span> URI(url.trim());</span><br><span class="line">           fs = FileSystem.get(uri,conf,user);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (InterruptedException|URISyntaxException|IOException e) &#123;</span><br><span class="line">           System.out.println(e);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> fs;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 目录列表</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> hdfsPath</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> String[] listFile(String hdfsPath)&#123;</span><br><span class="line">       String[] files = <span class="keyword">new</span> String[<span class="number">0</span>];</span><br><span class="line">       FileSystem fs = getFileSystem(hdfsPath,<span class="string">"root"</span>);</span><br><span class="line">       Path path=<span class="keyword">new</span> Path(hdfsPath);</span><br><span class="line">       FileStatus[] st=<span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           st = fs.listStatus(path);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">       files = <span class="keyword">new</span> String[st.length];</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;st.length;i++)&#123;</span><br><span class="line">           files[i]=st[i].toString();</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> files;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>11-HDFS-JAVA编程实例</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">上传：FileSystem.copyFromLocalFile()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">下载：FileSystem.copyToLocalFile()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">创建HDFS目录：FileSystem.mkdirs()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">删除HDFS文件或文件夹：FileSystem.delete()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">读取文件内容：FileSystem.open()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">目录列表：FileSystem.listStatus()</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

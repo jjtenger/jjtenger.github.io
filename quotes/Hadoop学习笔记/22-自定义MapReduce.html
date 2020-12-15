@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="自定义Writable类型Hadoop提供了多种基本的Writable类型，但是在实际开发中这些基本的Writable类型可能不能满足需求，这时候需要根据具体情况自定义Writable类型。如何区分每一条数据，也就是如何寻求key的类型？123456789101112131415161718192021222324252627282930313233343536373839404142434445">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;22-%E8%87%AA%E5%AE%9A%E4%B9%89MapReduce.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="自定义Writable类型Hadoop提供了多种基本的Writable类型，但是在实际开发中这些基本的Writable类型可能不能满足需求，这时候需要根据具体情况自定义Writable类型。如何区分每一条数据，也就是如何寻求key的类型？123456789101112131415161718192021222324252627282930313233343536373839404142434445">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/22-%E8%87%AA%E5%AE%9A%E4%B9%89MapReduce">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>22-自定义MAPREDUCE</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>自定义Writable类型</h1><p>Hadoop提供了多种基本的Writable类型，但是在实际开发中这些基本的Writable类型可能不能满足需求，这时候需要根据具体情况自定义Writable类型。</p><p>如何区分每一条数据，也就是如何寻求key的类型？</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.mr.ncdc;</span><br><span class="line"><span class="keyword">import</span> java.io.DataInput;</span><br><span class="line"><span class="keyword">import</span> java.io.DataOutput;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.WritableComparable;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Weather</span> <span class="keyword">implements</span> <span class="title">WritableComparable</span>&lt;<span class="title">Weather</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">int</span> year;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">int</span> month;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">double</span> hot;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Weather</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Weather</span><span class="params">(<span class="keyword">int</span> year, <span class="keyword">int</span> month, <span class="keyword">double</span> hot)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.year = year;</span><br><span class="line">       <span class="keyword">this</span>.month = month;</span><br><span class="line">       <span class="keyword">this</span>.hot = hot;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="string">"[year="</span> + year + <span class="string">", month="</span> + month + <span class="string">"]"</span>;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 从输入流in中读取字节流反序列化为对象</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFields</span><span class="params">(DataInput in)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.year = in.readInt();</span><br><span class="line">       <span class="keyword">this</span>.month = in.readInt();</span><br><span class="line">       <span class="keyword">this</span>.hot = in.readDouble();</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 将对象转换为字节流并写入到输出流out中</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(DataOutput out)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       out.writeInt(year);</span><br><span class="line">       out.writeInt(month);</span><br><span class="line">       out.writeDouble(hot);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 判断对象是否是同一个对象，当该对象作为输出的key</span></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Weather t)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">int</span> r1 = Integer.compare(<span class="keyword">this</span>.year, t.getYear());</span><br><span class="line">       <span class="keyword">if</span> (r1 == <span class="number">0</span>) &#123;</span><br><span class="line">           <span class="comment">//如果年份相同，则判断月份</span></span><br><span class="line">           <span class="keyword">int</span> r2 = Integer.compare(<span class="keyword">this</span>.month, t.getMonth());</span><br><span class="line">           <span class="keyword">if</span> (r2 == <span class="number">0</span>) &#123;</span><br><span class="line">               <span class="keyword">return</span> Double.compare(<span class="keyword">this</span>.hot, t.getHot());</span><br><span class="line">           &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="keyword">return</span> r2;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="keyword">return</span> r1;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getYear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> year;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setYear</span><span class="params">(<span class="keyword">int</span> year)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.year = year;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMonth</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> month;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMonth</span><span class="params">(<span class="keyword">int</span> month)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.month = month;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getHot</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> hot;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setHot</span><span class="params">(<span class="keyword">double</span> hot)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.hot = hot;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+<h1>自定义Partitioner</h1>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.mr.ncdc;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.DoubleWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyPartitioner</span> <span class="keyword">extends</span> <span class="title">HashPartitioner</span>&lt;<span class="title">Weather</span>, <span class="title">DoubleWritable</span>&gt; </span>&#123;</span><br><span class="line">   <span class="comment">// 执行时间越短越好</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPartition</span><span class="params">(Weather key, DoubleWritable value, <span class="keyword">int</span> numReduceTasks)</span> </span>&#123;</span><br><span class="line">       <span class="comment">// 根据年份分区</span></span><br><span class="line">       <span class="keyword">return</span> key.getYear() % numReduceTasks;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>自定义比较器</h1>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.mr.ncdc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.WritableComparable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.WritableComparator;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyComparator</span> <span class="keyword">extends</span> <span class="title">WritableComparator</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="title">MyComparator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">super</span>(Weather.class, <span class="keyword">true</span>);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(WritableComparable k1, WritableComparable k2)</span> </span>&#123;</span><br><span class="line">       Weather key1=(Weather)k1;</span><br><span class="line">       Weather key2=(Weather)k2;</span><br><span class="line">       <span class="keyword">int</span> r1 = Integer.compare(key1.getYear(), key2.getYear());</span><br><span class="line">       <span class="keyword">if</span> (r1 == <span class="number">0</span>) &#123;</span><br><span class="line">           <span class="comment">//如果年份相同，则判断月份</span></span><br><span class="line">           <span class="keyword">return</span> Integer.compare(key1.getMonth(), key2.getMonth());</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="keyword">return</span> r1;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>综合示例</h1>
+<p>针对NCDC提供的气象数据，求2016年和2017年每个月份最高温度。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.mr.ncdc;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Text;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.DoubleWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.LongWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Job;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RunJob</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">       <span class="comment">// 设置环境变量HADOOP_USER_NAME，其值是root</span></span><br><span class="line">       System.setProperty(<span class="string">"HADOOP_USER_NAME"</span>, <span class="string">"root"</span>);</span><br><span class="line">       <span class="comment">// Configuration类包含了Hadoop的配置</span></span><br><span class="line">       Configuration config = <span class="keyword">new</span> Configuration();</span><br><span class="line">       <span class="comment">// 设置fs.defaultFS</span></span><br><span class="line">       config.set(<span class="string">"fs.defaultFS"</span>, <span class="string">"hdfs://192.168.1.117:8020"</span>);</span><br><span class="line">       <span class="comment">// 设置yarn.resourcemanager节点</span></span><br><span class="line">       config.set(<span class="string">"yarn.resourcemanager.hostname"</span>, <span class="string">"node1"</span>);</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           FileSystem fs = FileSystem.get(config);</span><br><span class="line">           Job job = Job.getInstance(config);</span><br><span class="line">           job.setJarByClass(RunJob.class);</span><br><span class="line">           job.setJobName(<span class="string">"weather"</span>);</span><br><span class="line">           job.setMapperClass(WeatherMapper.class);</span><br><span class="line">           job.setReducerClass(WeatherReducer.class);</span><br><span class="line">           job.setMapOutputKeyClass(Weather.class);</span><br><span class="line">           job.setMapOutputValueClass(DoubleWritable.class);</span><br><span class="line">           job.setOutputKeyClass(Text.class);</span><br><span class="line">           job.setOutputValueClass(DoubleWritable.class);</span><br><span class="line">           job.setPartitionerClass(MyPartitioner.class);</span><br><span class="line">           job.setSortComparatorClass(MyComparator.class);</span><br><span class="line">           <span class="comment">//只有两年的数据，所以ReduceTask设置2</span></span><br><span class="line">           job.setNumReduceTasks(<span class="number">2</span>);</span><br><span class="line">           FileInputFormat.addInputPath(job, <span class="keyword">new</span> Path(<span class="string">"/user/root/input/ncdc.txt"</span>));</span><br><span class="line">           Path outpath = <span class="keyword">new</span> Path(<span class="string">"/user/root/output"</span>);</span><br><span class="line">           <span class="keyword">if</span> (fs.exists(outpath)) &#123;</span><br><span class="line">               fs.delete(outpath, <span class="keyword">true</span>);</span><br><span class="line">           &#125;</span><br><span class="line">           FileOutputFormat.setOutputPath(job, outpath);</span><br><span class="line">           System.out.println(job.waitForCompletion(<span class="keyword">true</span>));</span><br><span class="line">       &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">WeatherMapper</span> <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">LongWritable</span>, <span class="title">Text</span>, <span class="title">Weather</span>, <span class="title">DoubleWritable</span>&gt; </span>&#123;</span><br><span class="line">       <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String MISSING = <span class="string">"9999.9"</span>;</span><br><span class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">map</span><span class="params">(LongWritable key, Text value, Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">           String val=value.toString();</span><br><span class="line">           <span class="keyword">int</span> year=<span class="number">0</span>;</span><br><span class="line">           <span class="keyword">int</span> month=<span class="number">0</span>;</span><br><span class="line">           <span class="keyword">double</span> hot=<span class="number">0.0</span>;</span><br><span class="line">           Weather w=<span class="keyword">null</span>;</span><br><span class="line">           <span class="keyword">try</span>&#123;</span><br><span class="line">               year = Integer.parseInt(val.substring(<span class="number">14</span>,<span class="number">18</span>));</span><br><span class="line">               month =Integer.parseInt(val.substring(<span class="number">18</span>,<span class="number">20</span>));</span><br><span class="line">               String hotStr=val.substring(<span class="number">102</span>,<span class="number">108</span>);</span><br><span class="line">               <span class="keyword">if</span>(!MISSING.equals(hotStr))&#123;</span><br><span class="line">                   hot =Double.parseDouble(hotStr);</span><br><span class="line">                   w=<span class="keyword">new</span> Weather(year,month,hot);</span><br><span class="line">                   context.write(w, <span class="keyword">new</span> DoubleWritable(hot));  </span><br><span class="line">               &#125;</span><br><span class="line">           &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">               System.out.println(e);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">WeatherReducer</span> <span class="keyword">extends</span> <span class="title">Reducer</span>&lt;<span class="title">Weather</span>, <span class="title">DoubleWritable</span>, <span class="title">Text</span>, <span class="title">DoubleWritable</span>&gt; </span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">reduce</span><span class="params">(Weather key, Iterable&lt;DoubleWritable&gt; values, Context context)</span></span></span><br><span class="line"><span class="function">               <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">           <span class="keyword">double</span> maxValue = <span class="number">0.0</span>;</span><br><span class="line">           <span class="keyword">for</span>(DoubleWritable value : values) &#123;  </span><br><span class="line">                maxValue = Math.max(maxValue, value.get());  </span><br><span class="line">           &#125;  </span><br><span class="line">           context.write(<span class="keyword">new</span> Text(key.toString()), <span class="keyword">new</span> DoubleWritable(maxValue));  </span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>22-自定义MAPREDUCE</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">自定义Writable类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">自定义Partitioner</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">自定义比较器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">综合示例</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

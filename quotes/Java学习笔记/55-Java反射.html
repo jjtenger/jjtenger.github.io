@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="在Java程序运行时，对于任意一个类，能否知道这个类有哪些属性和方法？对于任意一个对象，能否调用它的任意一个方法？答案是肯定的。这种动态获取类的信息以及动态调用对象的方法的功能来自于Java语言的反射（Reflection）机制。Reflection是Java被视为动态（或准动态）语言的一个关键性质。这个机制允许程序在运行时透过Reflection APIs取得任何一个已知名称的class的内部信">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;55-Java%E5%8F%8D%E5%B0%84.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="在Java程序运行时，对于任意一个类，能否知道这个类有哪些属性和方法？对于任意一个对象，能否调用它的任意一个方法？答案是肯定的。这种动态获取类的信息以及动态调用对象的方法的功能来自于Java语言的反射（Reflection）机制。Reflection是Java被视为动态（或准动态）语言的一个关键性质。这个机制允许程序在运行时透过Reflection APIs取得任何一个已知名称的class的内部信">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.028Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/55-Java%E5%8F%8D%E5%B0%84">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVA学习笔记</a></li>
+            <li>55-JAVA反射</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>在Java程序运行时，对于任意一个类，能否知道这个类有哪些属性和方法？对于任意一个对象，能否调用它的任意一个方法？答案是肯定的。这种动态获取类的信息以及动态调用对象的方法的功能来自于Java语言的反射（Reflection）机制。</p><p>Reflection是Java被视为动态（或准动态）语言的一个关键性质。这个机制允许程序在运行时透过Reflection APIs取得任何一个已知名称的class的内部信息，包括其modifiers（修饰符，诸如public, static等等）、 superclass（父类，例如Object）、实现之interfaces（父接口，例如Serializable），也包括fields和methods的所有信息，并可于运行时改变fields内容或调用methods。</p><a id="more"></a>
+
+<p>一般而言，开发者社群说到动态语言，大致认同的一个定义是：“程序运行时，允许改变程序结构或变量类型，这种语言称为动态语言”。从这个观点看，Perl、Python、Ruby是动态语言，C++，Java，C#不是动态语言。尽管在这样的定义与分类下Java不是动态语言，它却有着一个非常突出的动态相关机制：Reflection。这个字的意思是“反射、映象、倒影” ，用在Java身上指的是我们可以于运行时加载、探知、使用编译期间完全未知的classes。换句话说，Java程序可以加载一个运行时才得知名称的class，获悉其完整构造（ 但不包括methods定义），并生成其对象实体、或对其fields设值、或唤起其methods。这种“看透class”的能力（the ability of the program to examine itself）被称为introspection（内省、内观、反省）。Reflection和introspection是常被并提的两个术语。</p>
+<p>Java 反射机制主要提供了以下功能</p>
+<ul>
+<li>在运行时判断任意一个对象所属的类。</li>
+<li>在运行时构造任意一个类的对象。</li>
+<li>在运行时判断任意一个类所具有的成员变量和方法。</li>
+<li>在运行时调用任意一个对象的方法。</li>
+</ul>
+<h1>反射类</h1>
+<p>在JDK中，主要由以下类来实现Java反射机制，这些类都位于java.lang.reflect包中。</p>
+<ul>
+<li>Class类：代表类的实体，在运行的Java应用程序中表示类和接口。</li>
+<li>Field 类：代表类的成员变量（成员变量也称为类的属性）。</li>
+<li>Method类：代表类的方法。</li>
+<li>Constructor 类：代表类的构造方法。</li>
+<li>Array类：提供了动态创建数组，以及访问数组的元素的静态方法。</li>
+</ul>
+<h2 id="Class类">Class类</h2>
+<p>众所周知Java有个Object类，是所有Java类的继承根源，其内声明了数个应该在所有Java类中被改写的methods：hashCode()、equals()、clone()、toString()、getClass()等。其中getClass()返回一个Class对象。</p>
+<p>Class类十分特殊。它和一般类一样继承自Object，其实体对象用以表达Java程序运行时的类和对象，也用来表达enum、 array、 primitive Java types（boolean, byte, char, short, int, long, float, double）以及关键词void。当一个class被加载，或当加载器（class loader）的defineClass()被JVM调用，JVM 便自动产生一个Class对象。如果您想借由“修改Java标准库源码” 来观察Class object的实际生成时机（例如在Class的constructor内添加一个println()），不能够！因为Class并没有public constructor。</p>
+<p>Class是Reflection起源。针对任何您想探勘的类，唯有先为它产生一个Class对象，接下来才能经由后者唤起为数十多个的Reflection APIs。它有以下方法：</p>
+<h3 id="获得类相关的方法">获得类相关的方法</h3>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>asSubclass(Class&lt;U&gt; clazz)</code></td>
+<td>把传递的类的对象转换成代表其子类的对象</td>
+</tr>
+<tr>
+<td><code>Cast</code></td>
+<td>把对象转换成代表类或是接口的对象</td>
+</tr>
+<tr>
+<td><code>getClassLoader()</code></td>
+<td>获得类的加载器</td>
+</tr>
+<tr>
+<td><code>getClasses()</code></td>
+<td>返回一个数组，数组中包含该类中所有公共类和接口类的对象</td>
+</tr>
+<tr>
+<td><code>getDeclaredClasses()</code></td>
+<td>返回一个数组，数组中包含该类中所有类和接口类的对象</td>
+</tr>
+<tr>
+<td><code>forName(String className)</code></td>
+<td>根据类名返回类的对象</td>
+</tr>
+<tr>
+<td><code>getName()</code></td>
+<td>获得类的完整路径名字</td>
+</tr>
+<tr>
+<td><code>newInstance()</code></td>
+<td>创建类的实例</td>
+</tr>
+<tr>
+<td><code>getPackage()</code></td>
+<td>获得类的包</td>
+</tr>
+<tr>
+<td><code>getSimpleName()</code></td>
+<td>获得类的名字</td>
+</tr>
+<tr>
+<td><code>getSuperclass()</code></td>
+<td>获得当前类继承的父类的名字</td>
+</tr>
+<tr>
+<td><code>getInterfaces()</code></td>
+<td>获得当前类实现的类或是接口</td>
+</tr>
+</tbody>
+</table>
+<h3 id="获得类中属性相关的方法">获得类中属性相关的方法</h3>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>getField(String name)</code></td>
+<td>获得某个公有的属性对象</td>
+</tr>
+<tr>
+<td><code>getFields()</code></td>
+<td>获得所有公有的属性对象</td>
+</tr>
+<tr>
+<td><code>getDeclaredField(String name)</code></td>
+<td>获得某个属性对象</td>
+</tr>
+<tr>
+<td><code>getDeclaredFields()</code></td>
+<td>获得所有属性对象</td>
+</tr>
+</tbody>
+</table>
+<h3 id="获得类中注解相关的方法">获得类中注解相关的方法</h3>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>getAnnotation(Class&lt;A&gt; annotationClass)</code></td>
+<td>返回该类中与参数类型匹配的公有注解对象</td>
+</tr>
+<tr>
+<td><code>getAnnotations()</code></td>
+<td>返回该类所有的公有注解对象</td>
+</tr>
+<tr>
+<td><code>getDeclaredAnnotation(Class&lt;A&gt; annotationClass)</code></td>
+<td>返回该类中与参数类型匹配的所有注解对象</td>
+</tr>
+<tr>
+<td><code>getDeclaredAnnotations()</code></td>
+<td>返回该类所有的注解对象</td>
+</tr>
+</tbody>
+</table>
+<h3 id="获得类中构造器相关的方法">获得类中构造器相关的方法</h3>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>getConstructor(Class...&lt;?&gt; parameterTypes)</code></td>
+<td>获得该类中与参数类型匹配的公有构造方法</td>
+</tr>
+<tr>
+<td><code>getConstructors()</code></td>
+<td>获得该类的所有公有构造方法</td>
+</tr>
+<tr>
+<td><code>getDeclaredConstructor(Class...&lt;?&gt; parameterTypes)</code></td>
+<td>获得该类中与参数类型匹配的构造方法</td>
+</tr>
+<tr>
+<td><code>getDeclaredConstructors()</code></td>
+<td>获得该类所有构造方法</td>
+</tr>
+</tbody>
+</table>
+<h3 id="获得类中方法相关的方法">获得类中方法相关的方法</h3>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>getMethod(String name, Class...&lt;?&gt; parameterTypes)</code></td>
+<td>获得该类某个公有的方法</td>
+</tr>
+<tr>
+<td><code>getMethods()</code></td>
+<td>获得该类所有公有的方法</td>
+</tr>
+<tr>
+<td><code>getDeclaredMethod(String name, Class...&lt;?&gt; parameterTypes)</code></td>
+<td>获得该类某个方法</td>
+</tr>
+<tr>
+<td><code>getDeclaredMethods()</code></td>
+<td>获得该类所有方法</td>
+</tr>
+</tbody>
+</table>
+<h3 id="类中其他重要的方法">类中其他重要的方法</h3>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isAnnotation()</code></td>
+<td>如果是注解类型则返回true</td>
+</tr>
+<tr>
+<td><code>isAnnotationPresent(Class&lt;? extends Annotation&gt; annotationClass)</code></td>
+<td>如果是指定类型注解类型则返回true</td>
+</tr>
+<tr>
+<td><code>isAnonymousClass()</code></td>
+<td>如果是匿名类则返回true</td>
+</tr>
+<tr>
+<td>`isArray()``</td>
+<td>如果是一个数组类则返回true</td>
+</tr>
+<tr>
+<td><code>isEnum()</code></td>
+<td>如果是枚举类则返回true</td>
+</tr>
+<tr>
+<td><code>isInstance(Object obj)</code></td>
+<td>如果obj是该类的实例则返回true</td>
+</tr>
+<tr>
+<td><code>isInterface()</code></td>
+<td>如果是接口类则返回true</td>
+</tr>
+<tr>
+<td><code>isLocalClass()</code></td>
+<td>如果是局部类则返回true</td>
+</tr>
+<tr>
+<td><code>isMemberClass()</code></td>
+<td>如果是内部类则返回true</td>
+</tr>
+</tbody>
+</table>
+<p>特别注意：带有Declared修饰的方法可以反射到私有的方法和属性，没有Declared修饰的只能用来反射公有的方法和属性。</p>
+<h2 id="Constructor类">Constructor类</h2>
+<p>Constructor代表类的构造方法。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>newInstance(Object... initargs)</code></td>
+<td>根据传递的参数创建类的对象</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Method类">Method类</h2>
+<p>Method代表类的方法。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>invoke(Object obj, Object... args)</code></td>
+<td>传递object对象及参数调用该对象对应的方法</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Field类">Field类</h2>
+<p>Field代表类的成员变量（成员变量也称为类的属性）。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>equals(Object obj)</code></td>
+<td>属性与obj相等则返回true</td>
+</tr>
+<tr>
+<td><code>get(Object obj)</code></td>
+<td>获得obj中对应的属性值</td>
+</tr>
+<tr>
+<td><code>set(Object obj, Object value)</code></td>
+<td>设置obj中对应属性值</td>
+</tr>
+</tbody>
+</table>
+<h1>反射类的使用</h1>
+<h2 id="获取Class对象">获取Class对象</h2>
+<p>Java允许我们从多种途径为一个类生成对应的Class对象。获取某个类或某个对象所对应的Class对象的常用的3种方式：</p>
+<ul>
+<li>使用Class类的静态方法forName：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class.forName(“java.lang.String”);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用类的.class语法：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String.class;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用对象的 getClass()方法：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String s = “aa”;</span><br><span class="line">Class&lt;?&gt; clazz = s.getClass();</span><br></pre></td></tr></table></figure>
+<p>注意：Integer.TYPE返回的是int，而Integer.class返回的是Integer类所对应的Class对象。</p>
+<h2 id="通过反射生成对象">通过反射生成对象</h2>
+<p>若想通过类的不带参数的构造方法来生成对象，我们有两种方式：</p>
+<ul>
+<li>先获得Class对象，然后通过该Class对象的newInstance()方法直接生成即可：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;?&gt; classType = String.class;  </span><br><span class="line">Object obj = classType.newInstance();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>先获得Class对象，然后通过该对象获得对应的Constructor对象，再通过该Constructor对象的newInstance()方法生成：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;?&gt; classType = Customer.class;  </span><br><span class="line">Constructor cons = classType.getConstructor(<span class="keyword">new</span> Class[]&#123;&#125;);  </span><br><span class="line">Object obj = cons.newInstance(<span class="keyword">new</span> Object[]&#123;&#125;);</span><br></pre></td></tr></table></figure>
+<p>若想通过类的带参数的构造方法生成对象，只能使用下面这一种方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;?&gt; classType = Customer.class;  </span><br><span class="line">Constructor cons = classType.getConstructor(<span class="keyword">new</span> Class[]&#123;String.class, <span class="keyword">int</span>.class&#125;);  </span><br><span class="line">Object obj = cons.newInstance(<span class="keyword">new</span> Object[]&#123;“hello”, <span class="number">3</span>&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="通过反射调用methods">通过反射调用methods</h2>
+<p>这个动作和上述调用“带参数的构造方法”相当类似。首先准备一个Class[]做为参数类型，然后以此参数调用Class的getMethod()，获得特定的Method object。接下来准备一个Object[]放置Method的实参，然后调用上述所得之特定Method object的invoke()。</p>
+<p>为什么获得Method object时不需指定回返类型？因为method overloading机制要求signature必须唯一，而回返类型并非signature的一个成份。换句话说，只要指了method名称和参数列，就一定指出了一个独一无二的method。</p>
+<p>示例一：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.shengsiyuan.reflect;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">例程DumpMethods类演示了Reflection API的基本作用，</span></span><br><span class="line"><span class="comment">它读取命令行参数指定的类名，然后打印这个类所具有的方法信息。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DumpMethods</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       Class&lt;?&gt; classType = Class.forName(args[<span class="number">0</span>]);</span><br><span class="line">       Method[] methods = classType.getDeclaredMethods();</span><br><span class="line">       <span class="keyword">for</span>(Method method : methods)</span><br><span class="line">       &#123;</span><br><span class="line">           System.out.println(method);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>示例二：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.shengsiyuan.reflect;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">运用反射机制调用一个InvokeTester对象的add()和echo()方法。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InvokeTester</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> param1, <span class="keyword">int</span> param2)</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> param1 + param2;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">echo</span><span class="params">(String message)</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="string">"hello: "</span> + message;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="comment">// InvokeTester test = new InvokeTester();</span></span><br><span class="line">       <span class="comment">// System.out.println(test.add(1, 2));</span></span><br><span class="line">       <span class="comment">// System.out.println(test.echo("tom"));</span></span><br><span class="line"> </span><br><span class="line">       Class&lt;?&gt; classType = InvokeTester.class;</span><br><span class="line"> </span><br><span class="line">       Object invokeTester = classType.newInstance();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">// System.out.println(invokeTester instanceof InvokeTester);</span></span><br><span class="line"> </span><br><span class="line">       Method addMethod = classType.getMethod(<span class="string">"add"</span>, <span class="keyword">new</span> Class[] &#123; <span class="keyword">int</span>.class,<span class="keyword">int</span>.class &#125;);</span><br><span class="line">       </span><br><span class="line">       <span class="comment">//Method类的invoke(Object obj,Object args[])方法接收的参数必须为对象，如果参数为基本类型数据，必须转换为相应的包装类型的对象。</span></span><br><span class="line">       <span class="comment">//同理，invoke()方法的返回值也总是对象，如果实际被调用的方法的返回类型是基本类型数据，</span></span><br><span class="line">       <span class="comment">//那么invoke()方法会把它转换为相应的包装类型的对象，再将其返回。</span></span><br><span class="line">       Object result = addMethod.invoke(invokeTester, <span class="keyword">new</span> Object[]&#123;<span class="number">1</span>, <span class="number">2</span>&#125;);</span><br><span class="line">       </span><br><span class="line">       System.out.println((Integer)result); <span class="comment">//result为Integer类型</span></span><br><span class="line">       </span><br><span class="line">       System.out.println(<span class="string">"---------------------"</span>);</span><br><span class="line">       </span><br><span class="line">       Method echoMethod = classType.getMethod(<span class="string">"echo"</span>, <span class="keyword">new</span> Class[]&#123;String.class&#125;);</span><br><span class="line">       </span><br><span class="line">       Object result2 = echoMethod.invoke(invokeTester, <span class="keyword">new</span> Object[]&#123;<span class="string">"tom"</span>&#125;);</span><br><span class="line">       </span><br><span class="line">       System.out.println((String)result2);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="通过反射变更fields内容">通过反射变更fields内容</h2>
+<p>与先前两个动作相比， “变更field内容”轻松多了，因为它不需要参数和自变量。首先调用Class的getField()并指定field名称。获得特定的Field object之后便可直接调用Field的get()和set()方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.shengsiyuan.reflect;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReflectTester</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">   <span class="comment">/*</span></span><br><span class="line"><span class="comment">    该方法实现对Customer对象的拷贝操作，</span></span><br><span class="line"><span class="comment">    首先创建一个和参数object 同样类型的对象，然后把object对象中的所有属性拷贝到新建的对象中，并将它返回。</span></span><br><span class="line"><span class="comment">    只能复制简单的JavaBean，并且假定JavaBean的每个属性都有public类型的getXXX()和setXXX()方法。</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Object <span class="title">copy</span><span class="params">(Object object)</span> <span class="keyword">throws</span> Exception</span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="comment">//（1）获得对象的类型：</span></span><br><span class="line">       Class&lt;?&gt; classType = object.getClass();</span><br><span class="line">       <span class="comment">// System.out.println("Class:"+classType.getName());</span></span><br><span class="line"> </span><br><span class="line">       <span class="comment">//（2）通过默认构造方法创建一个新对象：</span></span><br><span class="line">       <span class="comment">//下面代码先调用Class类的getConstructor()方法获得一个Constructor对象， 它代表默认的构造方法，</span></span><br><span class="line">       <span class="comment">//然后调用Constructor对象的newInstance()方法构造一个实例。</span></span><br><span class="line">       Object objectCopy = classType.getConstructor(<span class="keyword">new</span> Class[] &#123;&#125;).newInstance(<span class="keyword">new</span> Object[] &#123;&#125;);</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">       <span class="comment">// （3）获得对象的所有属性：</span></span><br><span class="line">       <span class="comment">// Class类的getDeclaredFields()方法返回类的所有属性，包括public、 protected、默认和private访问级别的属性。</span></span><br><span class="line">       Field[] fields = classType.getDeclaredFields();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">// （4）获得每个属性相应的getXXX()和setXXX()方法，然后执行这些方法，把原来对象的属性拷贝到新的对象中。</span></span><br><span class="line">       <span class="keyword">for</span> (Field field : fields)</span><br><span class="line">       &#123;</span><br><span class="line">           String name = field.getName();</span><br><span class="line"> </span><br><span class="line">           String firstLetter = name.substring(<span class="number">0</span>, <span class="number">1</span>).toUpperCase();<span class="comment">// 将属性的首字母转换为大写</span></span><br><span class="line"> </span><br><span class="line">           String getMethodName = <span class="string">"get"</span> + firstLetter + name.substring(<span class="number">1</span>);</span><br><span class="line">           String setMethodName = <span class="string">"set"</span> + firstLetter + name.substring(<span class="number">1</span>);</span><br><span class="line"> </span><br><span class="line">           Method getMethod = classType.getMethod(getMethodName,<span class="keyword">new</span> Class[] &#123;&#125;);</span><br><span class="line">           Method setMethod = classType.getMethod(setMethodName,<span class="keyword">new</span> Class[] &#123; field.getType() &#125;);</span><br><span class="line"> </span><br><span class="line">           Object value = getMethod.invoke(object, <span class="keyword">new</span> Object[] &#123;&#125;);</span><br><span class="line">           setMethod.invoke(objectCopy, <span class="keyword">new</span> Object[] &#123; value &#125;);</span><br><span class="line">       &#125;</span><br><span class="line"> </span><br><span class="line">       <span class="keyword">return</span> objectCopy;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       Customer customer = <span class="keyword">new</span> Customer(<span class="string">"Tom"</span>, <span class="number">20</span>);</span><br><span class="line">       customer.setId(<span class="number">1L</span>);</span><br><span class="line"> </span><br><span class="line">       ReflectTester test = <span class="keyword">new</span> ReflectTester();</span><br><span class="line"> </span><br><span class="line">       Customer customer2 = (Customer) test.copy(customer);</span><br><span class="line"> </span><br><span class="line">       System.out.println(customer2.getId() + <span class="string">","</span> + customer2.getName() + <span class="string">","</span></span><br><span class="line">               + customer2.getAge());</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Customer</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">   <span class="keyword">private</span> Long id;</span><br><span class="line"> </span><br><span class="line">   <span class="keyword">private</span> String name;</span><br><span class="line"> </span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Customer</span><span class="params">()</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line"> </span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Customer</span><span class="params">(String name, <span class="keyword">int</span> age)</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.name = name;</span><br><span class="line">       <span class="keyword">this</span>.age = age;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//get和set方法省略...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVA学习笔记</a></li>
+            <li>55-JAVA反射</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">反射类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Class类"><span class="nav-text">Class类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获得类相关的方法"><span class="nav-text">获得类相关的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获得类中属性相关的方法"><span class="nav-text">获得类中属性相关的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获得类中注解相关的方法"><span class="nav-text">获得类中注解相关的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获得类中构造器相关的方法"><span class="nav-text">获得类中构造器相关的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获得类中方法相关的方法"><span class="nav-text">获得类中方法相关的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类中其他重要的方法"><span class="nav-text">类中其他重要的方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Constructor类"><span class="nav-text">Constructor类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Method类"><span class="nav-text">Method类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Field类"><span class="nav-text">Field类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">反射类的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取Class对象"><span class="nav-text">获取Class对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过反射生成对象"><span class="nav-text">通过反射生成对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过反射调用methods"><span class="nav-text">通过反射调用methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过反射变更fields内容"><span class="nav-text">通过反射变更fields内容</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="缓存 （Caching）可以存储经常会用到的信息，这样每次需要的时候，这些信息都是立即可用的。在本章中，我们将会了解到Spring的缓存抽象。尽管Spring自身并没有实现缓存解决方案，但是它对缓存功能提供了声明式的支持，能够与多种流行的缓存实现进行集成。其使用方法和原理都类似于Spring对事务管理的支持。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;48-SpringCache.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="缓存 （Caching）可以存储经常会用到的信息，这样每次需要的时候，这些信息都是立即可用的。在本章中，我们将会了解到Spring的缓存抽象。尽管Spring自身并没有实现缓存解决方案，但是它对缓存功能提供了声明式的支持，能够与多种流行的缓存实现进行集成。其使用方法和原理都类似于Spring对事务管理的支持。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854235_20200322131349536_23833.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854235_20200322131349221_5614.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854234_20200322131348905_2988.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854233_20200322131348586_2128.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854233_20200322131348376_22483.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854232_20200322131347753_6235.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854232_20200322131347540_1924.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854231_20200322131347328_7248.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854231_20200322131347118_5460.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854230_20200322131346909_19344.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854230_20200322131346595_12156.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854229_20200322131346160_19033.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.044Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854235_20200322131349536_23833.jpg">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/48-SpringCache">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>48-SPRINGCACHE</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p><strong>缓存</strong> （Caching）可以存储经常会用到的信息，这样每次需要的时候，这些信息都是立即可用的。在本章中，我们将会了解到Spring的缓存抽象。尽管Spring自身并没有实现缓存解决方案，但是它对缓存功能提供了声明式的支持，能够与多种流行的缓存实现进行集成。其使用方法和原理都类似于Spring对事务管理的支持。</p><a id="more"></a>
+<p>Spring Cache是作用在方法上的，其核心思想是这样的： <strong>当我们在调用一个缓存方法时会把该方法参数和返回结果作为一个键值对存放在缓存中</strong> ，等到下次利用同样的参数来调用该方法时将不再执行该方法，而是直接从缓存中获取结果进行返回。所以在使用Spring Cache的时候我们要保证我们缓存的方法对于相同的方法参数要有相同的返回结果。</p>
+<p>使用Spring Cache需要我们做两方面的事：</p>
+<ul>
+<li>声明某些方法使用缓存</li>
+<li>配置Spring对Cache的支持</li>
+</ul>
+<p>和Spring对事务管理的支持一样，Spring对Cache的支持也有基于注解和基于XML配置两种方式。下面我们先来看看基于注解的方式。</p>
+<h1>启用对缓存的支持</h1>
+<p>Spring对缓存的支持有两种方式：</p>
+<ul>
+<li>注解驱动的缓存</li>
+<li>XML声明的缓存</li>
+</ul>
+<p>使用Spring的缓存抽象时，最为通用的方式就是在方法上添加@Cacheable和@CacheEvict注解。在本章中，大多数内容都会使用这种类型的声明式注解。</p>
+<p>在往bean上添加缓存注解之前，必须要启用Spring对注解驱动缓存的支持。如果我们使用Java配置的话，那么可以在其中的一个配置类上添加@EnableCaching，这样的话就能启用注解驱动的缓存。下面程序代码展现了如何实际使用@EnableCaching。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854235_20200322131349536_23833.jpg" alt></p>
+<p>如果以XML的方式配置应用的话，那么可以使用Spring cache命名空间中的 <code>&lt;cache:annotation-driven&gt;</code> 元素来启用注解驱动的缓存。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854235_20200322131349221_5614.jpg" alt></p>
+<p>其实在本质上，@EnableCaching和 <code>&lt;cache:annotation-driven&gt;</code> 的工作方式是相同的。它们都会创建一个切面（aspect）并触发Spring缓存注解的切点（pointcut）。根据所使用的注解以及缓存的状态，这个切面会从缓存中获取数据，将数据添加到缓存之中或者从缓存中移除某个值。</p>
+<p>在上面两个程序清单中，你可能已经注意到了，它们不仅仅启用了注解驱动的缓存，还声明了一个 <strong>缓存管理器（cache manager）的bean。缓存管理器是Spring缓存抽象的核心，它能够与多个流行的缓存实现进行集成。</strong></p>
+<p>在本例中，声明了ConcurrentMapCacheManager，这个简单的缓存管理器使用java.util.concurrent.ConcurrentHashMap作为其缓存存储。它非常简单，因此对于开发、测试或基础的应用来讲，这是一个很不错的选择。但它的缓存存储是基于内存的，所以它的生命周期是与应用关联的，对于生产级别的大型企业级应用程序，这可能并不是理想的选择。</p>
+<p>幸好，有多个很棒的缓存管理器方案可供使用。让我们看一下几个最为常用的缓存管理器。</p>
+<h1>配置缓存管理器</h1>
+<p>Spring 3.1内置了五个缓存管理器实现，如下所示：</p>
+<ul>
+<li>SimpleCacheManager</li>
+<li>NoOpCacheManager</li>
+<li>ConcurrentMapCacheManager</li>
+<li>CompositeCacheManager</li>
+<li>EhCacheCacheManager</li>
+</ul>
+<p>Spring 3.2引入了另外一个缓存管理器，这个管理器可以用在基于JCache（JSR-107）的缓存提供商之中。除了核心的Spring框架，Spring Data又提供了两个缓存管理器：</p>
+<ul>
+<li>RedisCacheManager（来自于Spring Data Redis项目）</li>
+<li>GemfireCacheManager（来自于Spring Data GemFire项目）</li>
+</ul>
+<p>所以可以看到，在为Spring的缓存抽象选择缓存管理器时，我们有很多可选方案。具体选择哪一个要取决于想要使用的底层缓存供应商。每一个方案都可以为应用提供不同风格的缓存，其中有一些会比其他的更加适用于生产环境。尽管所做出的选择会影响到数据如何缓存，但是Spring声明缓存的方式上并没有什么差别。</p>
+<p>我们必须选择一个缓存管理器，然后要在Spring应用上下文中，以bean的形式对其进行配置。我们已经看到了如何配置ConcurrentMapCacheManager，并且知道它可能并不是实际应用的最佳选择。现在，看一下如何配置Spring其他的缓存管理器，从EhCacheCacheManager开始吧。</p>
+<h2 id="使用Ehcache缓存">使用Ehcache缓存</h2>
+<p>Ehcache是最为流行的缓存供应商之一。Ehcache网站上说它是“Java领域应用最为广泛的缓存”。鉴于它的广泛采用，Spring提供集成Ehcache的缓存管理器是很有意义的。这个缓存管理器也就是EhCacheCacheManager。</p>
+<p>当读这个名字的时候，在cache这个词上似乎有点结结巴巴的感觉。在Spring中配置EhCacheCacheManager是很容易的。下面程序清单展现了如何在Java中对其进行配置。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854234_20200322131348905_2988.jpg" alt></p>
+<p>在程序清单中，cacheManager()方法创建了一个EhCacheCacheManager的实例，这是通过传入Ehcache CacheManager实例实现的。在这里，稍微有点诡异的注入可能会让人感觉迷惑，这是因为Spring和EhCache都定义了CacheManager类型。需要明确的是，EhCache的CacheManager要被注入到Spring的EhCacheCacheManager（Spring CacheManager的实现）之中。</p>
+<p>我们需要使用EhCache的CacheManager来进行注入，所以必须也要声明一个CacheManager bean。为了对其进行简化，Spring提供了EhCacheManagerFactoryBean来生成EhCache的CacheManager。方法ehcache()会创建并返回一个EhCacheManagerFactoryBean实例。因为它是一个工厂bean（也就是说，它实现了Spring的FactoryBean接口），所以注册在Spring应用上下文中的并不是EhCacheManagerFactoryBean的实例，而是CacheManager的一个实例，因此适合注入到EhCacheCacheManager之中。</p>
+<p>除了在Spring中配置的bean，还需要有针对EhCache的配置。EhCache为XML定义了自己的配置模式，我们需要在一个XML文件中配置缓存，该文件需要符合EhCache所定义的模式。在创建EhCacheManagerFactoryBean的过程中，需要告诉它EhCache配置文件在什么地方。在这里通过调用setConfigLocation()方法，传入ClassPathResource，用来指明EhCache XML配置文件相对于根类路径（classpath）的位置。</p>
+<p>至于ehcache.xml文件的内容，不同的应用之间会有所差别，但是至少需要声明一个最小的缓存。例如，如下的EhCache配置声明一个名为spittleCache的缓存，它最大的堆存储为50MB，存活时间为100秒。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854233_20200322131348586_2128.png" alt></p>
+<p>显然，这是一个基础的EhCache配置。在你的应用之中，可能需要使用EhCache所提供的丰富的配置选项。参考EhCache的文档以了解调优EhCache配置的细节，地址是<a href="http://ehcache.org/documentation/configuration" target="_blank" rel="noopener">http://ehcache.org/documentation/configuration</a>。</p>
+<h2 id="使用Redis缓存">使用Redis缓存</h2>
+<p>如果你仔细想一下的话，缓存的条目不过是一个键值对（key-value pair），其中key描述了产生value的操作和参数。因此，很自然地就会想到，Redis作为key-value存储，非常适合于存储缓存。</p>
+<p>Redis可以用来为Spring缓存抽象机制存储缓存条目，Spring Data Redis提供了RedisCacheManager，这是CacheManager的一个实现。RedisCacheManager会与一个Redis服务器协作，并通过RedisTemplate将缓存条目存储到Redis中。</p>
+<p>为了使用RedisCacheManager，我们需要RedisTemplate bean以及RedisConnectionFactory实现类（如JedisConnectionFactory）的一个bean。在前面，我们已经看到了这些bean该如何配置。在RedisTemplate就绪之后，配置RedisCacheManager就是非常简单的事情了，如程序清单所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854233_20200322131348376_22483.jpg" alt></p>
+<p>可以看到，我们构建了一个RedisCacheManager，这是通过传递一个RedisTemplate实例作为其构造器的参数实现的。</p>
+<h2 id="使用多个缓存管理器">使用多个缓存管理器</h2>
+<p>我们并不是只能有且仅有一个缓存管理器。如果你很难确定该使用哪个缓存管理器，或者有合法的技术理由使用超过一个缓存管理器的话，那么可以尝试使用Spring的CompositeCacheManager。</p>
+<p>CompositeCacheManager要通过一个或更多的缓存管理器来进行配置，它会迭代这些缓存管理器，以查找之前所缓存的值。以下的程序清单展现了如何创建CompositeCacheManager bean，它会迭代JCacheCacheManager、EhCacheCacheManager和RedisCacheManager。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854232_20200322131347753_6235.jpg" alt></p>
+<p>当查找缓存条目时，CompositeCacheManager首先会从JCacheCacheManager开始检查JCache实现，然后通过EhCacheCacheManager检查Ehcache，最后会使用RedisCacheManager来检查Redis，完成缓存条目的查找。</p>
+<p>在配置完缓存管理器并启用缓存后，就可以在bean方法上应用缓存规则了。让我们看一下如何使用Spring的缓存注解来定义缓存边界。</p>
+<h1>使用注解声明缓存</h1>
+<p>如前文所述，Spring的缓存抽象在很大程度上是围绕切面构建的。在Spring中启用缓存时，会创建一个切面，它触发一个或更多的Spring的缓存注解。下表列出了Spring所提供的缓存注解。</p>
+<p>表中的所有注解都能运用在方法或类上。当将其放在单个方法上时，注解所描述的缓存行为只会运用到这个方法上。如果注解放在类级别的话，那么缓存行为就会应用到这个类的所有方法上。</p>
+<table>
+<thead>
+<tr>
+<th>注　　解</th>
+<th>描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@Cacheable</td>
+<td>表明Spring在调用方法之前，首先应该在缓存中查找方法的返回值。如果这个值能够找到，就会返回缓存的值。否则的话，这个方法就会被调用，返回值会放到缓存之中</td>
+</tr>
+<tr>
+<td>@CachePut</td>
+<td>表明Spring应该将方法的返回值放到缓存中。在方法的调用前并不会检查缓存，方法始终都会被调用</td>
+</tr>
+<tr>
+<td>@CacheEvict</td>
+<td>表明Spring应该在缓存中清除一个或多个条目</td>
+</tr>
+<tr>
+<td>@Caching</td>
+<td>这是一个分组的注解，能够同时应用多个其他的缓存注解</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Cacheable">@Cacheable</h2>
+<p>@Cacheable可以标记在一个方法上，也可以标记在一个类上。当标记在一个方法上时表示该方法是支持缓存的，当标记在一个类上时则表示该类所有的方法都是支持缓存的。</p>
+<p>对于一个支持缓存的方法，Spring会在其被调用后将其返回值缓存起来，以保证下次利用同样的参数来执行该方法时可以直接从缓存中获取结果，而不需要再次执行该方法。</p>
+<p>Spring是以键值对缓存方法返回值的，值就是方法的返回结果，至于键的话，Spring又支持两种策略，默认策略和自定义策略。</p>
+<p><strong>需要注意的是当一个支持缓存的方法在对象内部被调用时是不会触发缓存功能的。（这属于AOP的问题，AOP在内部调用时是不会进行代理的，Spring的缓存技术也是基于AOP实现的，所以内部调用是不会从缓存中获取。）</strong></p>
+<p>@Cacheable可以指定的属性如下表：</p>
+<table>
+<thead>
+<tr>
+<th>属　　性</th>
+<th>类　　型</th>
+<th>描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td>String[]</td>
+<td>要使用的缓存名称</td>
+</tr>
+<tr>
+<td>condition</td>
+<td>String</td>
+<td>SpEL表达式，如果得到的值是false的话，不会将缓存应用到方法调用上</td>
+</tr>
+<tr>
+<td>key</td>
+<td>String</td>
+<td>SpEL表达式，用来计算自定义的缓存key</td>
+</tr>
+<tr>
+<td>unless</td>
+<td>String</td>
+<td>SpEL表达式，如果得到的值是true的话，返回值不会放到缓存之中</td>
+</tr>
+</tbody>
+</table>
+<h3 id="value属性指定Cache名称">value属性指定Cache名称</h3>
+<p>value属性是必须指定的，其表示当前方法的返回值是会被缓存在哪个Cache上的，对应Cache的名称。可以是一个Cache也可以是多个Cache，当需要指定多个Cache时其是一个数组。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Cacheable</span>(<span class="string">"cache1"</span>)<span class="comment">//Cache是发生在cache1上的</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">find</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">   returnnull;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Cacheable</span>(&#123;<span class="string">"cache1"</span>, <span class="string">"cache2"</span>&#125;)<span class="comment">//Cache是发生在cache1和cache2上的</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">find</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">   returnnull;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="key属性自定义key">key属性自定义key</h3>
+<p>key属性是用来指定Spring缓存方法的返回结果时对应的key的。该属性支持SpringEL表达式。当我们没有指定该属性时，Spring将使用默认策略生成key。我们这里先来看看自定义策略，至于默认策略介绍见下面。</p>
+<p>自定义策略是指我们可以通过Spring的EL表达式来指定我们的key。这里的EL表达式可以使用方法参数及它们对应的属性。使用方法参数时我们可以直接使用“#参数名”或者“#p参数index”。下面是几个使用参数作为key的示例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Cacheable</span>(value=<span class="string">"users"</span>, key=<span class="string">"#id"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">find</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Cacheable</span>(value=<span class="string">"users"</span>, key=<span class="string">"#p0"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">find</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Cacheable</span>(value=<span class="string">"users"</span>, key=<span class="string">"#user.id"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">find</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Cacheable</span>(value=<span class="string">"users"</span>, key=<span class="string">"#p0.id"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">find</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>除了上述使用方法参数作为key之外，Spring还为我们提供了一个root对象可以用来生成key。通过该root对象我们可以获取到以下信息。</p>
+<p>当我们要使用root对象的属性作为key时我们也可以将“#root”省略，因为Spring默认从root对象中查找属性。如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Cacheable</span>(value=&#123;<span class="string">"users"</span>, <span class="string">"xxx"</span>&#125;, key=<span class="string">"caches[1].name"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">find</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">  returnnull;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下表列出了SpEL中可用的缓存元数据。</p>
+<table>
+<thead>
+<tr>
+<th>表　达　式</th>
+<th>描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#root.args</td>
+<td>传递给缓存方法的参数，形式为数组</td>
+</tr>
+<tr>
+<td>#root.caches</td>
+<td>该方法执行时所对应的缓存，形式为数组</td>
+</tr>
+<tr>
+<td>#root.target</td>
+<td>目标对象</td>
+</tr>
+<tr>
+<td>#root.targetClass</td>
+<td>目标对象的类，是#root.target.class的简写形式</td>
+</tr>
+<tr>
+<td>#root.method</td>
+<td>缓存方法</td>
+</tr>
+<tr>
+<td>#root.methodName</td>
+<td>缓存方法的名字，是#root.method.name的简写形式</td>
+</tr>
+<tr>
+<td>#result</td>
+<td>方法调用的返回值（不能用在@Cacheable注解上）</td>
+</tr>
+<tr>
+<td>#Argument</td>
+<td>任意的方法参数名（如#argName）或参数索引（如#a0或#p0）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="条件化缓存">条件化缓存</h3>
+<p>通过为方法添加Spring的缓存注解，Spring就会围绕着这个方法创建一个缓存切面。但是，在有些场景下我们可能希望将缓存功能关闭。</p>
+<p>unless和condition两个属性用以实现条件化缓存，这两个属性都接受一个SpEL表达式。如果unless属性的SpEL表达式计算结果为true，那么缓存方法返回的数据就不会放到缓存中。与之类似，如果condition属性的SpEL表达式计算结果为false，那么对于这个方法缓存就会被禁用掉。</p>
+<p>表面上来看，unless和condition属性做的是相同的事情。但是，这里有一点细微的差别。unless属性只能阻止将对象放进缓存，但是在这个方法调用的时候，依然会去缓存中进行查找，如果找到了匹配的值，就会返回找到的值。与之不同，如果condition的表达式计算结果为false，那么在这个方法调用的过程中，缓存是被禁用的。就是说，不会去缓存进行查找，同时返回值也不会放进缓存中。</p>
+<p>作为样例（尽管有些牵强），假设对于message属性包含“NoCache”的Spittle对象，我们不想对其进行缓存。为了阻止这样的Spittle对象被缓存起来，可以这样设置unless属性：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854232_20200322131347540_1924.png" alt></p>
+<p>为unless设置的SpEL表达式会检查返回的Spittle对象（在表达式中通过#result来识别）的message属性。如果它包含“NoCache”文本内容，那么这个表达式的计算值为true，这个Spittle对象不会放进缓存中。否则的话，表达式的计算结果为false，无法满足unless的条件，这个Spittle对象会被缓存。</p>
+<p>属性unless能够阻止将值写入到缓存中，但是有时候我们希望将缓存全部禁用。也就是说，在一定的条件下，我们既不希望将值添加到缓存中，也不希望从缓存中获取数据。</p>
+<p>例如，对于ID值小于10的Spittle对象，我们不希望对其使用缓存。在这种场景下，这些Spittle是用来进行调试的测试条目，对其进行缓存并没有实际的价值。为了要对ID小于10的Spittle关闭缓存，可以在@Cacheable上使用condition属性，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854231_20200322131347328_7248.png" alt></p>
+<p>如果findOne()调用时，参数值小于10，那么将不会在缓存中进行查找，返回的Spittle也不会放进缓存中，就像这个方法没有添加@Cacheable注解一样。</p>
+<p>如样例所示，unless属性的表达式能够通过#result引用返回值。这是很有用的，这么做之所以可行是因为unless属性只有在缓存方法有返回值时才开始发挥作用。而condition肩负着在方法上禁用缓存的任务，因此它不能等到方法返回时再确定是否该关闭缓存。这意味着它的表达式必须要在进入方法时进行计算，所以我们不能通过#result引用返回值。</p>
+<h2 id="CachePut">@CachePut</h2>
+<p>在Spring Cache的环境下，对于使用@Cacheable标注的方法，Spring在每次执行前都会检查Cache中是否存在相同key的缓存元素，如果存在就不再执行该方法，而是直接从缓存中获取结果进行返回，否则才会执行并将返回结果存入指定的缓存中。</p>
+<p>@CachePut也可以声明一个方法支持缓存功能。与@Cacheable不同的是使用@CachePut标注的方法在执行前不会去检查缓存中是否存在之前执行过的结果，而是每次都会执行该方法，并将执行结果以键值对的形式存入指定的缓存中。</p>
+<p>@CachePut也可以标注在类上和方法上。使用@CachePut时我们可以指定的属性跟@Cacheable是一样的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CachePut</span>(<span class="string">"users"</span>)<span class="comment">//每次都会执行方法，并将结果存入指定的缓存中</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">find</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="CacheEvict">@CacheEvict</h2>
+<p>@CacheEvict并不会往缓存中添加任何东西。相反，如果带有@CacheEvict注解的方法被调用的话，那么会有一个或更多的条目会在缓存中移除。</p>
+<p>那么在什么场景下需要从缓存中移除内容呢？当缓存值不再合法时，我们应该确保将其从缓存中移除，这样的话，后续的缓存命中就不会返回旧的或者已经不存在的值，其中一个这样的场景就是数据被删除掉了。这样的话，SpittleRepository的remove()方法就是使用@CacheEvict的绝佳选择：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854231_20200322131347118_5460.png" alt></p>
+<p>注意：与@Cacheable和@CachePut不同，@CacheEvict能够应用在返回值为void的方法上，而@Cacheable和@CachePut需要非void的返回值，它将会作为放在缓存中的条目。因为@CacheEvict只是将条目从缓存中移除，因此它可以放在任意的方法上，甚至void方法。</p>
+<p>从这里可以看到，当remove()调用时，会从缓存中删除一个条目。被删除条目的key与传递进来的spittleId参数的值相等。</p>
+<p>@CacheEvict有多个属性，如下表所示，这些属性会影响到该注解的行为，使其不同于默认的做法。</p>
+<p>可以看到，@CacheEvict的一些属性与@Cacheable和@CachePut是相同的，另外还有几个新的属性。与@Cacheable和@CachePut不同，@CacheEvict并没有提供unless属性。</p>
+<table>
+<thead>
+<tr>
+<th>属　　性</th>
+<th>类　　型</th>
+<th>描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td>String []</td>
+<td>要使用的缓存名称</td>
+</tr>
+<tr>
+<td>key</td>
+<td>String</td>
+<td>SpEL表达式，用来计算自定义的缓存key</td>
+</tr>
+<tr>
+<td>condition</td>
+<td>String</td>
+<td>SpEL表达式，如果得到的值是false的话，缓存不会应用到方法调用上</td>
+</tr>
+<tr>
+<td>allEntries</td>
+<td>b oolean</td>
+<td>如果为true的话，特定缓存的所有条目都会被移除掉</td>
+</tr>
+<tr>
+<td>beforeInvocation</td>
+<td>b oolean</td>
+<td>如果为true的话，在方法调用之前移除条目。如果为false（默认值）的话，在方法成功调用之后再移除条目</td>
+</tr>
+</tbody>
+</table>
+<h3 id="allEntries属性">allEntries属性</h3>
+<p>allEntries是boolean类型，表示是否需要清除缓存中的所有元素。默认为false，表示不需要。当指定了allEntries为true时，Spring Cache将忽略指定的key。有的时候我们需要Cache一下清除所有的元素，这比一个一个清除元素更有效率。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CacheEvict</span>(value=<span class="string">"users"</span>, allEntries=<span class="keyword">true</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">   System.out.println(<span class="string">"delete user by id: "</span> + id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="beforeInvocation属性">beforeInvocation属性</h3>
+<p>清除操作默认是在对应方法成功执行之后触发的，即方法如果因为抛出异常而未能成功返回时也不会触发清除操作。使用beforeInvocation可以改变触发清除操作的时间，当我们指定该属性值为true时，Spring会在调用该方法之前清除缓存中的指定元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CacheEvict</span>(value=<span class="string">"users"</span>, beforeInvocation=<span class="keyword">true</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">   System.out.println(<span class="string">"delete user by id: "</span> + id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Caching">@Caching</h2>
+<p>@Caching注解可以让我们在一个方法或者类上同时指定多个Spring Cache相关的注解。其拥有三个属性：cacheable、put和evict，分别用于指定@Cacheable、@CachePut和@CacheEvict。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Caching</span>(cacheable = <span class="meta">@Cacheable</span>(<span class="string">"users"</span>), evict = &#123; <span class="meta">@CacheEvict</span>(<span class="string">"cache2"</span>),</span><br><span class="line">      <span class="meta">@CacheEvict</span>(value = <span class="string">"cache3"</span>, allEntries = <span class="keyword">true</span>)&#125;)</span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">find</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">   returnnull;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="使用自定义注解">使用自定义注解</h2>
+<p>Spring允许我们在配置可缓存的方法时使用自定义的注解，前提是自定义的注解上必须使用对应的注解进行标注。如我们有如下这么一个使用@Cacheable进行标注的自定义注解。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(&#123;ElementType.TYPE, ElementType.METHOD&#125;)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Cacheable</span>(value=<span class="string">"users"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> MyCacheable &#123;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么在我们需要缓存的方法上使用@MyCacheable进行标注也可以达到同样的效果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@MyCacheable</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">findById</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">   System.out.println(<span class="string">"find user by id: "</span> + id);</span><br><span class="line">   User user = <span class="keyword">new</span> User();</span><br><span class="line">   user.setId(id);</span><br><span class="line">   user.setName(<span class="string">"Name"</span> + id);</span><br><span class="line">   <span class="keyword">return</span> user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>使用XML声明缓存</h1>
+<p>你可能想要知道为什么想要以XML的方式声明缓存。毕竟，本章中我们所看到的缓存注解要优雅得多。</p>
+<p>我认为有两个原因：</p>
+<ul>
+<li>你可能会觉得在自己的源码中添加Spring的注解有点不太舒服；</li>
+<li>你需要在没有源码的bean上应用缓存功能。</li>
+</ul>
+<p>在上面的任意一种情况下，最好（或者说需要）将缓存配置与缓存数据的代码分隔开来。Spring的cache命名空间提供了使用XML声明缓存规则的方法，可以作为面向注解缓存的替代方案。因为缓存是一种面向切面的行为，所以cache命名空间会与Spring的aop命名空间结合起来使用，用来声明缓存所应用的切点在哪里。</p>
+<p>要开始配置XML声明的缓存，首先需要创建Spring配置文件，这个文件中要包含cache和aop命名空间：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854230_20200322131346909_19344.jpg" alt></p>
+<p>cache命名空间定义了在Spring XML配置文件中声明缓存的配置元素。下表列出了cache命名空间所提供的所有元素。</p>
+<table>
+<thead>
+<tr>
+<th>元素</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;cache:annotation-driven&gt;</code></td>
+<td>启用注解驱动的缓存。等同于Java配置中的@EnableCaching</td>
+</tr>
+<tr>
+<td><code>&lt;cache:advice&gt;</code></td>
+<td>定义缓存通知（advice）。结合 <code>&lt;aop:advisor&gt;</code> ，将通知应用到切点上</td>
+</tr>
+<tr>
+<td><code>&lt;cache:caching&gt;</code></td>
+<td>在缓存通知中，定义一组特定的缓存规则</td>
+</tr>
+<tr>
+<td><code>&lt;cache:cacheable&gt;</code></td>
+<td>指明某个方法要进行缓存。等同于@Cacheable注解</td>
+</tr>
+<tr>
+<td><code>&lt;cache:cache-put&gt;</code></td>
+<td>指明某个方法要填充缓存，但不会考虑缓存中是否已有匹配的值。等同于@CachePut注解</td>
+</tr>
+<tr>
+<td><code>&lt;cache:cache-evict&gt;</code></td>
+<td>指明某个方法要从缓存中移除一个或多个条目，等同于@CacheEvict注解</td>
+</tr>
+</tbody>
+</table>
+<p><code>&lt;cache:annotation-driven&gt;</code> 元素与Java配置中所对应的@EnableCaching非常类似，会启用注解驱动的缓存。我们已经讨论过这种风格的缓存，因此没有必要再对其进行介绍。</p>
+<p>表中其他的元素都用于基于XML的缓存配置。接下来的代码清单展现了如何使用这些元素为SpittleRepositorybean配置缓存，其作用等同于本章前面章使用缓存注解的方式。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854230_20200322131346595_12156.jpg" alt></p>
+<p>在程序清单中，我们首先看到的是 <code>&lt;aop:advisor&gt;</code> ，它引用ID为cacheAdvice的通知，该元素将这个通知与一个切点进行匹配，因此建立了一个完整的切面。在本例中，这个切面的切点会在执行SpittleRepository的任意方法时触发。如果这样的方法被Spring应用上下文中的任意某个bean所调用，那么就会调用切面的通知。</p>
+<p>在这里，通知利用 <code>&lt;cache:advice&gt;</code> 元素进行了声明。在 <code>&lt;cache:advice&gt;</code> 元素中，可以包含任意数量的 <code>&lt;cache:caching&gt;</code> 元素，这些元素用来完整地定义应用的缓存规则。在本例中，只包含了一个 <code>&lt;cache:caching&gt;</code> 元素。这个元素又包含了三个 <code>&lt;cache:cacheable&gt;</code> 元素和一个 <code>&lt;cache:cache-put&gt;</code> 元素。</p>
+<p>每个 <code>&lt;cache:cacheable&gt;</code> 元素都声明了切点中的某一个方法是支持缓存的。这是与@Cacheable注解同等作用的XML元素。具体来讲，findRecent()、findOne()和findBySpitterId()都声明为支持缓存，它们的返回值将会保存在名为spittleCache的缓存之中。</p>
+<p><code>&lt;cache:cache-put&gt;</code> 是Spring XML中与@CachePut注解同等作用的元素。它表明一个方法的返回值要填充到缓存之中，但是这个方法本身并不会从缓存中获取返回值。在本例中，save()方法用来填充缓存。同面向注解的缓存一样，我们需要将默认的key改为返回Spittle对象的id属性。</p>
+<p>最后， <code>&lt;cache:cache-evict&gt;</code> 元素是Spring XML中用来替代@CacheEvict注解的。它会从缓存中移除元素，这样的话，下次有人进行查找的时候就找不到了。在这里，调用remove()时，会将缓存中的Spittle删除掉，其中key与remove()方法所传递进来的ID参数相等的条目会从缓存中移除。</p>
+<p>需要注意的是， <code>&lt;cache:advice&gt;</code> 元素有一个 <strong>cache-manager</strong> 属性，用来指定作为缓存管理器的bean。它的默认值是cacheManager，这与程序清单底部的 <code>&lt;bean&gt;</code> 声明恰好是一致的，所以没有必要再显式地进行设置。但是，如果缓存管理器的ID与之不同的话（使用多个缓存管理器的时候，可能会遇到这样的场景），那么可以通过设置 <strong>cache-manager</strong> 属性指定要使用哪个缓存管理器。如下示例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">cache:advice</span> <span class="attr">id</span>=<span class="string">"cacheAdvice"</span> <span class="attr">cache-manager</span>=<span class="string">"cacheManager"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">cache:caching</span> <span class="attr">cache</span>=<span class="string">"users"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">cache:cacheable</span> <span class="attr">method</span>=<span class="string">"findById"</span> <span class="attr">key</span>=<span class="string">"#p0"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">cache:cacheable</span> <span class="attr">method</span>=<span class="string">"find"</span> <span class="attr">key</span>=<span class="string">"#user.id"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">cache:cache-evict</span> <span class="attr">method</span>=<span class="string">"deleteAll"</span> <span class="attr">all-entries</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">cache:caching</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">cache:advice</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>另外，还要留意的是， <code>&lt;cache:cacheable&gt;</code> 、 <code>&lt;cache:cache-put&gt;</code> 和 <code>&lt;cache:cache-evict&gt;</code> 元素都引用了同一个名为spittleCache的缓存。为了消除这种重复，我们可以在 <code>&lt;cache:caching&gt;</code> 元素上指明缓存的名字：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854229_20200322131346160_19033.png" alt></p>
+<p><code>&lt;cache:caching&gt;</code> 有几个可以供 <code>&lt;cache:cacheable&gt;</code> 、 <code>&lt;cache:cache-put&gt;</code> 和 <code>&lt;cache:cache-evict&gt;</code> 共享的属性，包括：</p>
+<ul>
+<li>cache：指明要存储和获取值的缓存；</li>
+<li>condition：SpEL表达式，如果计算得到的值为false，将会为这个方法禁用缓存；</li>
+<li>key：SpEL表达式，用来得到缓存的key（默认为方法的参数）；</li>
+<li>method：要缓存的方法名。</li>
+</ul>
+<p>除此之外， <code>&lt;cache:cacheable&gt;</code> 和 <code>&lt;cache:cache-put&gt;</code> 还有一个unless属性，可以为这个可选的属性指定一个SpEL表达式，如果这个表达式的计算结果为true，那么将会阻止将返回值放到缓存之中。</p>
+<p><code>&lt;cache:cache-evict&gt;</code> 元素还有几个特有的属性：</p>
+<ul>
+<li>all-entries：如果是true的话，缓存中所有的条目都会被移除掉。如果是false的话，只有匹配key的条目才会被移除掉。</li>
+<li>before-invocation：如果是true的话，缓存条目将会在方法调用之前被移除掉。如果是false的话，方法调用之后才会移除缓存。</li>
+</ul>
+<p>all-entries和before-invocation的默认值都是false。这意味着在使用 <code>&lt;cache:cache-evict&gt;</code> 元素且不配置这两个属性时，会在方法调用完成后只删除一个缓存条目。要删除的条目会通过默认的key（基于方法的参数）进行识别，当然也可以通过为名为key的属性设置一个SpEL表达式指定要删除的key。</p>
+<h1>默认键生成策略</h1>
+<p>默认的key生成策略是通过KeyGenerator生成的，其默认策略如下：</p>
+<ul>
+<li>如果方法没有参数，则使用0作为key。</li>
+<li>如果只有一个参数的话则使用该参数作为key。</li>
+<li>如果参数多于一个的话则使用所有参数的hashCode作为key。</li>
+</ul>
+<p>如果我们需要指定自己的默认策略的话，那么我们可以实现自己的KeyGenerator，然后指定我们的Spring Cache使用的KeyGenerator为我们自己定义的KeyGenerator。</p>
+<p>使用基于注解的配置时是通过cache:annotation-driven指定的：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">cache:annotation-driven</span> <span class="attr">key-generator</span>=<span class="string">"userKeyGenerator"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"userKeyGenerator"</span> <span class="attr">class</span>=<span class="string">"com.xxx.cache.UserKeyGenerator"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>而使用基于XML配置时是通过cache:advice来指定的：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">cache:advice</span> <span class="attr">id</span>=<span class="string">"cacheAdvice"</span> <span class="attr">cache-manager</span>=<span class="string">"cacheManager"</span> <span class="attr">key-generator</span>=<span class="string">"userKeyGenerator"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">cache:advice</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的是此时我们所有的Cache使用的Key的默认生成策略都是同一个KeyGenerator。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>48-SPRINGCACHE</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">启用对缓存的支持</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">配置缓存管理器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Ehcache缓存"><span class="nav-text">使用Ehcache缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Redis缓存"><span class="nav-text">使用Redis缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用多个缓存管理器"><span class="nav-text">使用多个缓存管理器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用注解声明缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cacheable"><span class="nav-text">@Cacheable</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#value属性指定Cache名称"><span class="nav-text">value属性指定Cache名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key属性自定义key"><span class="nav-text">key属性自定义key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#条件化缓存"><span class="nav-text">条件化缓存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CachePut"><span class="nav-text">@CachePut</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CacheEvict"><span class="nav-text">@CacheEvict</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#allEntries属性"><span class="nav-text">allEntries属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#beforeInvocation属性"><span class="nav-text">beforeInvocation属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Caching"><span class="nav-text">@Caching</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用自定义注解"><span class="nav-text">使用自定义注解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用XML声明缓存</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">默认键生成策略</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="HDFS简介在大数据时代，需要处理分析的数据集的大小已经远远超过了单台计算机的存储能力，需要将数据集进行分区（partition）并存储到若干台独立自治计算机中。但是分区存储的数据不方便管理和维护，迫切需要一种文件系统来管理多台机器上的文件，这就是分布式文件系统（distribute filesystem）。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;06-HDFS%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="HDFS简介在大数据时代，需要处理分析的数据集的大小已经远远超过了单台计算机的存储能力，需要将数据集进行分区（partition）并存储到若干台独立自治计算机中。但是分区存储的数据不方便管理和维护，迫切需要一种文件系统来管理多台机器上的文件，这就是分布式文件系统（distribute filesystem）。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584883145_20200322211744110_19848.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584883145_20200322211743790_4074.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584883145_20200322211743570_13784.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584883145_20200322211743052_5932.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584883144_20200322211742532_2239.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584883145_20200322211744110_19848.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/06-HDFS%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>06-HDFS基本原理</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>HDFS简介</h1><p>在大数据时代，需要处理分析的数据集的大小已经远远超过了单台计算机的存储能力，需要将数据集进行分区（partition）并存储到若干台独立自治计算机中。但是分区存储的数据不方便管理和维护，迫切需要一种文件系统来管理多台机器上的文件，这就是分布式文件系统（distribute filesystem）。</p><a id="more"></a>
+
+<p>分布式文件系统是一种允许文件通过网络在多台主机上分享的 文件的系统，可让多机器上的多用户分享文件和存储空间。</p>
+<p>分布式文件系统很多，比如HDFS。HDFS（Hadoop Distribute File System）是Hadoop的一个分布式文件系统，Hadoop应用程序使用的主要分布式存储。 HDFS集群主要由一个NameNode来管理文件系统元数据和存储实际数据的DataNodes。</p>
+<h2 id="HDFS设计理念">HDFS设计理念</h2>
+<p>一句话，HDFS设计理念是可以运行在普通机器上，以流式数据方式存储文件，一次写入、多次查询。</p>
+<ul>
+<li>可构建在廉价机器上</li>
+</ul>
+<p>HDFS设计理念之一就是让它能运行在普通的硬件之上，即便硬件出现故障，也可以通过容错策略来保证数据的高可用。通过多副本提高可靠性，提供了容错和恢复机制。</p>
+<ul>
+<li>高容错性</li>
+</ul>
+<p>由于HDFS可以建立在普通计算机上，节点故障是正常事情。HDFS将数据自动保存多个副本，副本丢失后，自动恢复，实现数据高容错性。</p>
+<ul>
+<li>适合批处理</li>
+</ul>
+<p>也称为流式数据访问。HDFS适合一次写入、多次查询（读取）的情况。在数据集生成后，长时间在此数据集上进行各种分析。每次分析都将设计该数据集的大部分数据甚至全部数据，因此读取整个数据集的时间延迟比读取第一条记录的时间延迟更重要。</p>
+<ul>
+<li>适合存储大文件</li>
+</ul>
+<p>这里说的大文件包含两种意思：一是值文件大小超过100M以及达到GB甚至TB、PB的文件。二是百万规模以上的文件数量。</p>
+<h2 id="HDFS的局限">HDFS的局限</h2>
+<p>没有完美的系统，HDFS也存在一些短板。</p>
+<ul>
+<li>实时性差</li>
+</ul>
+<p>要求低时间延迟的访问的应用，不适合在HDFS上运行。记住，HDFS是为高数据吞吐量应用优化的，这可能会以高时间延迟为代价。目前，对于低延迟的访问需求，hbase是更好的选择。</p>
+<ul>
+<li>小文件问题</li>
+</ul>
+<p>由于nameNode将文件系统的元数据存储在内存中，因此该文件系统所能存储的文件总量受限于nameNode的内存总容量。根据经验，每个文件、目录和数据块的存储信息大约占150字节。过多的小文件存储会大量消耗nameNode的存储量。</p>
+<ul>
+<li>文件修改问题</li>
+</ul>
+<p>HDFS中的文件只有一个Writer，而且写操作总是将数据添加在文件的末尾（实际上，许多HDFS应用也不允许文件的追加操作）。他不支持具有多个写入者的操作，也不支持在文件的任意位置进行修改。</p>
+<h1>HDFS架构</h1>
+<p><a href="http://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html" target="_blank" rel="noopener">http://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html</a></p>
+<p>主从结构，一个管理节点NameNode和若干个数据节点DataNode。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584883145_20200322211744110_19848.png" alt></p>
+<h2 id="NameNode">NameNode</h2>
+<p>管理文件系统的命名空间，维护目录树， 保存datanode的元数据信息（包括文件和block的映射关系以及block和datanode的映射关系），接管用户的请求。</p>
+<h2 id="DataNode">DataNode</h2>
+<p>负责来自文件系统客户的读写请求，执行块的创建、删除、复制等操作，并且定期向nameNode发送他们所存储的块的列表。</p>
+<h2 id="Client-客户端">Client(客户端)</h2>
+<p>HDFS对外开放文件命名空间并允许用户数据以文件形式存储。用户通过客户端（Client）与HDFS进行通讯交互。</p>
+<p>客户端代表用户通过与nameNode和datanode交互来访问整个文件系统。它提供了一个类似于POSIX（可移植操作系统界面）的文件系统接口，因此用户在编程时无需知道nameNode和datanode也可以实现其功能。</p>
+<h2 id="块">块</h2>
+<p>HDFS内部机制是将一个文件分割成一个或多个块，这些块被存储在一组数据节点中。其中，NameNode节点用来确定块与数据节点DataNode的映射。数据节点DataNode执行块的创建，删除，和来自NameNode的块复制指令。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584883145_20200322211743790_4074.png" alt></p>
+<p>dfs.blocksize是一个文件块的大小了，默认128M。太大的话会有较少map同时计算，太小的话也浪费可用map个数资源，而且文件太小，namenode就浪费内存多。根据需要进行设置。</p>
+<p>每一个block会在多个datanode上存储多份副本，默认是3份。</p>
+<h1>HDFS基本读写流程</h1>
+<h2 id="HDFS文件访问权限">HDFS文件访问权限</h2>
+<p>针对文件和目录，HDFS有与POSIX非常相似的权限模式。</p>
+<p>一共提供三类权限模式：只读权限（r）、写入权限(w)和可执行权限（x）。读取文件或列出目录内容时需要只读权限。写入一个文件，或是在一个目录上创建及删除文件或目录，需要写入权限。对于文件而言，可执行权限可以忽略，因为你不能在HDFS中执行文件（与POSIX不同），但在访问一个目录的子项时需要该权限。</p>
+<p>每个文件和目录都有所属用户（owner）、所属组别（group）及模式（mode）。这个模式是由所属用户的权限、组内成员的权限及其他用户的权限组成的。</p>
+<p>默认情况下，可以通过正在运行进程的用户名和组名来唯一确定客户端的标示。但由于客户端是远程的，任何用户都可以简单的在远程系统上以他的名义创建一个账户来进行访问。因此，作为共享文件系统资源和防止数据意外损失的一种机制，权限只能供合作团体中的用户使用，而不能在一个不友好的环境中保护资源。注意，最新的hadoop系统支持kerberos用户认证，该认证去除了这些限制。但是，除了上述限制之外，为防止用户或者自动工具及程序意外修改或删除文件系统的重要部分，启用权限控制还是很重要的。</p>
+<p>注意：这里有一个超级用户的概念，超级用户是nameNode进程的标识。对于超级用户，系统不会执行任何权限检查。</p>
+<h2 id="读文件">读文件</h2>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584883145_20200322211743570_13784.png" alt></p>
+<p>在这个设计中，namenode会告知客户端每个块中最佳的datanode，并让客户端直接联系该datanode且检索数据。由于数据流分散在该集群中的所有datanode，所以这种设计会使HDFS可扩展到大量的并发客户端。同时，namenode仅需要响应位置的请求（这些信息存储在内存中，非常高效），而无需响应数据请求，否则随着客户端数量的增长，namenode很快会成为一个瓶颈。</p>
+<p><strong>1. FileSystem.open()</strong></p>
+<p>客户端通过调用FileSystem对象的open()方法来打开希望读取的文件，对于HDFS来说，这个对象是分布式文件系统的一个实例。</p>
+<p><strong>2. NameNode_get block locations</strong></p>
+<p>DistributedFileSystem通过使用RPC来调用nameNode，以确定文件起始块的位置。对于每一个块，nameNode返回存有该块复本的datanode地址。此外，这些datanode根据他们与客户端的距离来排序。如果客户端本身就是一个datanode，并保存有相应数据块的一个复本时，该节点将从本地datanode中读取数据。</p>
+<p><strong>3. FSDataInputStream.read()</strong></p>
+<p>DistributedFileSystem类返回一个FSDataInputStream对象给客户端读取数据。FSDataInputStream类内部封装了一个DFSInputStream对象，该对象管理着datanode和nameNode的I/O。接着，客户端对FSDataInputStream输入流调用read()方法。</p>
+<p><strong>4-5. DataNode_find blocks</strong></p>
+<p>在对FSDataInputStream输入流调用read()方法时，存储着文件起始块的datanode地址的DFSInputStream随即连接距离最近的datanode。通过对数据流反复调用read()方法，可以将数据从datanode传输到客户端。到达块的末端时，DFSInputStream会关闭与该datanode的连接，然后寻找下一个块的最佳datanode。客户端从流中读取数据时，块是按照打开DFSInputStream与datanode新建连接的顺序读取的。它也需要询问namenode来检索下一批所需块的datanode的位置。而客户端只需要读取连续的流，这些对于客户端都是透明的。</p>
+<p>注意：在读取数据的时候，如果DFSInputStream在与datanode通讯时遇到错误，它便会尝试从这个块的另外一个临近datanode读取数据。他也会记住那个故障datanode，以保证以后不会反复读取该节点上后续的块。DFSInputStream也会通过校验和确认从datanode发送来的数据是否完整。如果发现一个损坏的块， DFSInputStream就会在试图从其他datanode读取一个块的复本之前通知namenode。</p>
+<p><strong>6. FSDataInputStream.close()</strong></p>
+<p>一旦客户端完成读取，就对FSDataInputStream调用close()方法。</p>
+<h2 id="写文件">写文件</h2>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584883145_20200322211743052_5932.png" alt></p>
+<p><strong>1. DistributedFileSystem.create()</strong></p>
+<p>首先客户端通过DistributedFileSystem上的create()方法指明一个预创建的文件的文件名（第一步）。</p>
+<p><strong>2. namenode_create file</strong></p>
+<p>DistributedFileSystem再通过RPC调用向NameNode申请创建一个新文件（第二步，这时该文件还没有分配相应的block）。namenode检查是否有同名文件存在以及用户是否有相应的创建权限，如果检查通过，namenode会为该文件创建一个新的记录，否则的话文件创建失败，客户端得到一个IOException异常。</p>
+<p><strong>3. FSDataOutputStream.write()</strong></p>
+<p>DistributedFileSystem返回一个FSDataOutputStream以供客户端写入数据，与FSDataInputStream类似，FSDataOutputStream封装了一个DFSOutputStream用于处理namenode与datanode之间的通信。接着，客户端对FSDataOutputStream输出流调用write()方法（第三步）。</p>
+<p><strong>4. data queue_write packet to DateNodes</strong></p>
+<p>当客户端开始写数据时，DFSOutputStream会把数据切成一个个小的数据包（packet）, 放入一个中间队列——数据队列（data queue）中去。</p>
+<p>DataStreamer从数据队列（data queue）中取数据，同时向namenode申请一个新的block来存放它已经取得的数据。namenode选择合适的datanode（个数由文件的replica数决定）构成一个管道线（pipeline），这里我们假设replica为3，所以管道线中就有三个datanode。DataSteamer把数据流式的写入到管道线中的第一个datanode中（第四步），第一个datanode再把接收到的数据转到第二个datanode中（第四步），以此类推。</p>
+<p>注意：hdfs在写入的过程中，有一点与hdfs读取的时候非常相似，就是：DataStreamer在写入数据的时候，每写完一个datanode的数据块（默认64M）,都会重新向nameNode申请合适的datanode列表。这是为了保证系统中datanode数据存储的均衡性。</p>
+<p><strong>5. ack queue_get ack from DateNodes</strong></p>
+<p>DFSOutputStream同时也维护着另一个中间队列——确认队列（ack queue），也是由Packet组成，用于等待DataNode的收到响应，当管道线（pipeline）中的所有DataNode都表示已经收到的时候，这时ack queue才会把对应的Packet包移除掉；（第五步）。</p>
+<p>注意：hdfs写入过程中，DFSOutputStream的确认应答队列并不是每写完一个datanode，就返回一个确认应答，而是一直写入，直到最后一个datanode写入完毕后，统一返回应答。如果中间的一个datanode出现故障，那么返回的应答就是前面完好的datanode确认应答，和故障datanode的故障异常。这样我们也就可以理解，在写入数据的过程中，为什么数据包的校验是在最后一个datanode完成。</p>
+<p><strong>6-7. FSDataOutputStream.close()</strong></p>
+<p>当客户端完成写数据后，它会调用close()方法（第六步）。这个操作会冲洗（flush）所有剩下的package到pipeline中，等待这些package确认成功，然后通知namenode写入文件成功（第七步）。这时候namenode就知道该文件由哪些block组成（因为DataStreamer向namenode请求分配新block，namenode当然会知道它分配过哪些blcok给给定文件），它会等待最少的replica数被创建，然后成功返回。</p>
+<p><strong>datanode写宕机时的处理步骤</strong></p>
+<p>如果某个datanode在写数据的时候当掉了，下面这些对用户透明的步骤会被执行：</p>
+<p>管道线（pipeline）关闭，所有确认队列上的数据会被挪到数据队列的首部重新发送，这样可以确保管道线中当掉的datanode下游的datanode不会因为当掉的datanode而丢失数据包。</p>
+<p>在还在正常运行的datanode上的当前block上做一个标志，这样当当掉的datanode重新启动以后namenode就会知道该datanode上哪个block是刚才当机时残留下的局部损坏block，从而可以把它删掉。</p>
+<p>已经当掉的datanode从管道线中被移除，未写完的block的其他数据继续被写入到其他还在正常运行的datanode中去，namenode知道这个block还处在under-replicated状态（也即备份数不足的状态）下，然后他会安排一个新的replica从而达到要求的备份数，后续的block写入方法同前面正常时候一样。</p>
+<p>有可能管道线中的多个datanode当掉（虽然不太经常发生），但只要dfs.replication.min（默认为1）个replica被创建，我们就认为该创建成功了。剩余的replica会在以后异步创建以达到指定的replica数。</p>
+<h2 id="SecondnameNode（辅助namenode）">SecondnameNode（辅助namenode）</h2>
+<p>用来保存namenode中对HDFS metadata的信息的备份，并减少namenode重启的时间。</p>
+<p>主要操作：合并编辑日志（edits）和文件系统映射持久检查点（fsimage），以减少编辑日志的大小。</p>
+<p>创建检查点的触发条件配置：fs.checkpoint.period，fs.checkpoint.size。</p>
+<p><strong>辅助namenode工作原理</strong></p>
+<p>客户端执行写操作的时候，首先更新编辑日志（edits），然后修改内存中的文件系统映射。随着时间的推移，编辑日志会非常大。这个时候，就需要将编辑日志和文件系统映射持久检查点（fsimage）进行合并，以减少编辑日志的大小。这个工作就是由辅助namenode完成的。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584883144_20200322211742532_2239.png" alt></p>
+<p>① 辅助namenode请求主namenode停止使用edits文件，暂时将新的写操作记录到一个新的文件中；</p>
+<p>② 辅助namenode从主namenode获取fsimage和edits文件（通过http get）</p>
+<p>③ 辅助namenode将fsimage文件载入内存，逐一执行edits文件中的操作，创建新的fsimage文件。</p>
+<p>④ 辅助namenode将新的fsimage文件发送回主namenode（使用http post）.</p>
+<p>⑤ 主namenode用从辅助namenode接收的fsimage文件替换旧的fsimage文件；用步骤1所产生的edits文件替换旧的edits文件。同时，还更新fstime文件来记录检查点执行时间。</p>
+<p>最终，主namenode拥有最新的fsimage文件和一个更小的edits文件。当namenode处在安全模式时，管理员也可调用hadoop dfsadmin –saveNameSpace命令来创建检查点。</p>
+<p>从上面的过程中我们清晰的看到辅助namenode和主namenode拥有相近内存需求的原因（因为辅助namenode也把fsimage文件载入内存）。因此，在大型集群中，辅助namenode需要运行在一台专用机器上。</p>
+<p><strong>edits文件（编辑日志）</strong></p>
+<p>文件系统客户端在执行写操作时，这些操作首先被记录到编辑日志中，然后更新nameNode内存中维护的文件系统的元数据。</p>
+<p><strong>fsimage文件（命名空间镜像）</strong></p>
+<p>命名空间镜像文件（fsimage）是文件系统元数据的一个永久检查点。</p>
+<p>创建检查点的触发条件受两个配置参数控制。通常情况下，辅助namenode每隔一小时（有fs.checkpoint.period属性设置）创建检查点；此外，当编辑日志的大小达到64MB（有fs.checkpoint.size属性设置）时，也会创建检查点。系统每隔五分钟检查一次编辑日志的大小。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>06-HDFS基本原理</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HDFS简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS设计理念"><span class="nav-text">HDFS设计理念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS的局限"><span class="nav-text">HDFS的局限</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HDFS架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NameNode"><span class="nav-text">NameNode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DataNode"><span class="nav-text">DataNode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Client-客户端"><span class="nav-text">Client(客户端)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#块"><span class="nav-text">块</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HDFS基本读写流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS文件访问权限"><span class="nav-text">HDFS文件访问权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读文件"><span class="nav-text">读文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写文件"><span class="nav-text">写文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SecondnameNode（辅助namenode）"><span class="nav-text">SecondnameNode（辅助namenode）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

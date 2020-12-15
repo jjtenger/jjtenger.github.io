@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Linux进程概述进程的分类我们可以从两个角度来对进程分类，第一个角度以进程的功能与服务的对象来分；第二个角度以应用程序的服务类型来分。第一个角度来看，我们可以分为用户进程与系统进程： 用户进程：通过执行用户程序、应用程序或称之为内核之外的系统程序而产生的进程，此类进程可以在用户的控制下运行或关闭。 系统进程：通过执行系统内核程序而产生的进程，比如可以执行内存资源分配和进程切换等相对底层的工作；而">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;15-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Linux进程概述进程的分类我们可以从两个角度来对进程分类，第一个角度以进程的功能与服务的对象来分；第二个角度以应用程序的服务类型来分。第一个角度来看，我们可以分为用户进程与系统进程： 用户进程：通过执行用户程序、应用程序或称之为内核之外的系统程序而产生的进程，此类进程可以在用户的控制下运行或关闭。 系统进程：通过执行系统内核程序而产生的进程，比如可以执行内存资源分配和进程切换等相对底层的工作；而">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874021_20200322184610798_30802.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874021_20200322184610381_24952.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874020_20200322184610053_23381.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874020_20200322184609431_10374.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874020_20200322184608795_25834.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874020_20200322184608483_7665.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874019_20200322184608272_15801.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874019_20200322184607838_28593.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874019_20200322184607523_14300.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874018_20200322184607210_2862.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874018_20200322184606774_22814.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874018_20200322184606145_4289.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874017_20200322184605015_16695.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874017_20200322184604375_15814.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874017_20200322184603738_17954.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874017_20200322184603526_11312.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874016_20200322184602536_2303.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874016_20200322184602225_2554.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874016_20200322184601387_18475.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874015_20200322184600851_16372.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874015_20200322184600218_24425.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874015_20200322184559579_13997.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874014_20200322184559128_19793.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.032Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874021_20200322184610798_30802.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/15-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">LINUX学习笔记</a></li>
+            <li>15-进程管理</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>Linux进程概述</h1><h2 id="进程的分类">进程的分类</h2><p>我们可以从两个角度来对进程分类，第一个角度以进程的功能与服务的对象来分；第二个角度以应用程序的服务类型来分。</p><p>第一个角度来看，我们可以分为用户进程与系统进程：</p><ul>
+<li>用户进程：通过执行用户程序、应用程序或称之为内核之外的系统程序而产生的进程，此类进程可以在用户的控制下运行或关闭。</li>
+<li>系统进程：通过执行系统内核程序而产生的进程，比如可以执行内存资源分配和进程切换等相对底层的工作；而且，该进程的运行不受用户的干预，即使是root用户也不能干预系统进程的运行。</li>
+</ul><a id="more"></a>
+
+
+
+
+<p>第二角度来看，我们可以将进程分为交互进程、批处理进程、守护进程：</p>
+<ul>
+<li>交互进程：由一个shell终端启动的进程，在执行过程中，需要与用户进行交互操作，可以运行于前台，也可以运行在后台。</li>
+<li>批处理进程：该进程是一个进程集合，负责按顺序启动其他的进程。</li>
+<li>守护进程：守护进程是一直运行的一种进程，经常在Linux系统启动时启动，在系统关闭时终止。它们独立于控制终端并且周期性的执行某种任务或等待处理某些发生的事件。例如httpd进程，一直处于运行状态，等待用户的访问。还有经常用的cron（在 centOS 系列为 crond）进程，这个进程为crontab的守护进程，可以周期性的执行用户设定的某些任务。</li>
+</ul>
+<h2 id="进程的衍生">进程的衍生</h2>
+<p>进程有这么多的种类，那么进程之间定是有相关性的，而这些有关联性的进程又是如何产生的，如何衍生的？</p>
+<p>就比如我们启动了终端，就是启动了一个bash进程，我们可以在bash中再输入bash则会再启动一个bash的进程，此时第二个bash进程就是由第一个bash进程创建出来的，他们之间又是个什么关系？</p>
+<p>我们一般称呼第一个bash进程是第二个bash进程的父进程，第二bash进程是第一个bash进程的子进程，这层关系是如何得来的呢？</p>
+<p>关于 <strong>父进程与子进程</strong> 便会提及这 <strong>两个系统调用fork()与exec()</strong> 。fork-exec是由Dennis M. Ritchie创造的，其中：</p>
+<ul>
+<li>fork()是一个系统调用（system call），它的主要作用就是为当前的进程创建一个新的进程，这个新的进程就是它的子进程，这个子进程除了父进程的返回值和PID以外其他的都一模一样，如进程的执行代码段，内存信息，文件描述，寄存器状态等等。</li>
+<li>exec()也是系统调用，作用是切换子进程中的执行程序，也就是替换其从父进程复制过来的代码段与数据段。</li>
+</ul>
+<p>子进程就是父进程通过系统调用fork()而产生的复制品，fork()就是把父进程的PCB等进程的数据结构信息直接复制过来，只是修改了PID，所以一模一样，指挥在执行exec()之后才会不同，而早先的fork()比较消耗资源后来进化成vfork()，效率高了不少，感兴趣的同学可以查查为什么？</p>
+<p>这就是子进程产生的由来。简单的逻辑就如下方所示：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pid_t p;</span><br><span class="line">p = fork();</span><br><span class="line">if (p == (pid_t) -1)</span><br><span class="line">        /* ERROR */</span><br><span class="line">else if (p == 0)</span><br><span class="line">        /* CHILD */</span><br><span class="line">else</span><br><span class="line">        /* PARENT */</span><br></pre></td></tr></table></figure>
+<p>既然子进程是通过父进程而衍生出来的，那么子进程的退出与资源的回收定然与父进程有很大的相关性。当一个子进程要正常的终止运行时，或者该进程结束时，它的主函数main()会执行exit(n)或者return n，这里的返回值n是一个信号，系统会把这个SIGCHLD信号传给其父进程，当然若是异常终止也往往是因为这个信号。</p>
+<p>而这个时候的子进程代码执行部分其实已经结束执行了，系统的资源也基本归还给系统了，但是其进程的进程控制块（PCB）仍驻留在内存中，而它的PCB还在，代表这个进程还存在（因为PCB就是进程存在的唯一标志，里面有PID等消息），并没有消亡，这样的进程称之为 <strong>僵尸进程（Zombie）</strong> 。</p>
+<p>如图中第三行第四列标题是S，此处的S是进程的状态的意思，而在下属的第三行是Z，而此处的Z便是Zombie的意思。（ps命令将在后续详解）</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874021_20200322184610798_30802.png" alt></p>
+<p>正常情况下，父进程会收到两个返回值：exit code（也是SIGCHLD信号）和reason for termination。之后，父进程会使用 wait(&amp;status) 系统调用以获取子进程的退出状态，然后内核就可以从内存中释放已结束的子进程的PCB。而如若父进程没有这么做的话，子进程的PCB就会一直驻留在内存中，一直留在系统中做为僵尸进程（Zombie）。</p>
+<p>虽然僵尸进程是已经放弃了几乎所有内存空间，没有任何可执行代码，也不能被调度，在进程列表中保留一个位置，记载该进程的退出状态等信息供其父进程收集，从而释放它。但是 Linux系统中能使用的PID是有限的，如果系统中存在有大量的僵尸进程，系统将会因为没有可用的PID从而导致不能产生新的进程。</p>
+<p>而另外如果父进程结束（非正常的结束），未能及时收回子进程，子进程仍在运行，这样的子进程称之为 <strong>孤儿进程</strong> 。在Linux系统中，孤儿进程一般会被init进程所“收养”，成为init的子进程。由init来做善后处理，所以它并不至于像僵尸进程那样无人问津，不管不顾，大量存在会有危害。</p>
+<p>进程0是系统引导时创建的一个特殊进程，也称之为内核初始化，其最后一个动作就是调用fork()创建出一个子进程运行/sbin/init可执行文件，而该进程就是PID=1的进程1，也就是init进程。然后 <strong>进程0就转为交换进程（也被称为空闲进程）</strong> ， <strong>进程1（init进程）则是第一个普通用户态的进程</strong> ，再由它不断调用fork()来创建系统里其他的进程，所以它是所有进程的父进程或者祖先进程。同时它是一个守护程序，直到计算机关机才会停止。</p>
+<p>通过以下的命令我们可以很明显的看到这样的结构</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pstree</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874021_20200322184610381_24952.png" alt></p>
+<p>或者从此图我们可以更加形象的看清子父进程的关系</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874020_20200322184610053_23381.png" alt></p>
+<p>通过以上的显示结果我们可以看的很清楚，init为所有进程的父进程或者说是祖先进程</p>
+<p>我们还可以使用这样一个命令来看，其中pid就是该进程的一个唯一编号，ppid就是该进程的父进程的pid，command就是该进程是执行什么样的程序或者脚本而产生的</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps －fxo user,ppid,pid,pgid,command</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874020_20200322184609431_10374.png" alt></p>
+<p>可以在图中看见我们执行的ps就是由zsh通过fork-exec创建的子进程而执行的。</p>
+<p>使用这样的一个命令我们也能清楚的看见，init如上文所说是由进程0这个初始化进程来创建而出的子进程，而其他的进程基本是由init创建的子进程，或者是由它的子进程创建出来的子进程。所以init是用户进程的第一个进程也是所有用户进程的父进程或者祖先进程。（ps 命令将在后续课程详解）</p>
+<p>就像一个树状图，而init进程就是这棵树的根，其他进程由根不断的发散，开枝散叶。</p>
+<h2 id="进程组">进程组</h2>
+<p>每一个进程都会是一个进程组的成员，而且这个进程组是唯一存在的，他们是依靠 <strong>PGID（process group ID）</strong> 来区别的，而每当一个进程被创建的时候，它便会成为其父进程所在组中的一员。</p>
+<p>一般情况，进程组的PGID等同于进程组的第一个成员的PID，并且这样的进程称为该进程组的领导者,也就是 <strong>领导进程</strong> ，进程一般通过使用getpgrp()系统调用来寻找其所在组的 PGID，领导进程可以先终结，此时进程组依然存在，并持有相同的PGID，直到进程组中最后一个进程终结。</p>
+<h2 id="终端Session">终端Session</h2>
+<p>Session主要是针对一个tty（终端）建立，Session中的每个进程都称为一个 <strong>工作（job）</strong> 。每个会话可以连接一个终端(control terminal)。当控制终端有输入输出时，都传递给该会话的前台进程组。Session意义在于将多个jobs囊括在一个终端，并取其中的一个job作为前台，来直接接收该终端的输入输出以及终端信号。其他jobs在后台运行。</p>
+<p>与进程组类似，每当一个进程被创建的时候，它便会成为其父进程所在Session中的一员，每一个进程组都会在一个Session中，并且这个Session是唯一存在的。</p>
+<ul>
+<li><strong>前台（foreground）</strong> 就是在终端中运行，与你能有交互的。</li>
+<li><strong>后台（background）</strong> 就是在终端中运行，但是你并不能与其任何的交互，也不会显示其执行的过程。</li>
+</ul>
+<h1>工作控制</h1>
+<p>bash(Bourne-Again shell)支持工作控制(job control)，而sh(Bourne shell)并不支持。</p>
+<p>并且每个终端或者说bash只能管理当前终端的中的job，不能管理其他终端中的job。比如我当前存在两个bash分别为bash1、bash2，bash1只能管理其自己里面的job并不能管理bash2里面的job。</p>
+<p>我们都知道当一个进程在前台运作时我们可以用ctrl + c来终止它，但是若是在后台的话就不行了，并且在一个终端bash中只能管理当前bash里的job。</p>
+<h2 id="command-：使命令在后台运行">command &amp;：使命令在后台运行</h2>
+<p>我们可以通过&amp;这个符号，让我们的命令在后台中运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls &amp;</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874020_20200322184608795_25834.png" alt></p>
+<p>图中所显示的[1] 236分别是该工作的job number与该进程的PID，而最后一行的Done表示该命令已经在后台执行完毕。</p>
+<h2 id="ctrl-z：停止当前工作并丢入后台">ctrl + z：停止当前工作并丢入后台</h2>
+<p>我们还可以通过ctrl + z使我们的当前工作停止并丢到后台中去</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874020_20200322184608483_7665.png" alt></p>
+<h2 id="jobs：查看后台工作">jobs：查看后台工作</h2>
+<p>被停止并放置在后台的工作我们可以使用这个命令来查看：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jobs</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874019_20200322184608272_15801.png" alt></p>
+<p>其中第一列显示的为被放置后台的工作的编号，而第二列的＋表示最近被放置后台的工作，同时也表示预设的工作，也就是若是有什么针对后台的工作的操作，首先对预设的工作，- 表示倒数第二被放置后台的工作，倒数第三个以后都不会有这样的符号修饰，第三列表示它们的状态，而最后一列表示该进程执行的命令。</p>
+<h2 id="fg：将后台的工作拿到前台">fg：将后台的工作拿到前台</h2>
+<p>我们可以通过这样的一个命令将后台的工作拿到前台来</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 后面不加参数提取预设工作，加参数提取指定工作的编号</span></span><br><span class="line">fg [%jobnumber]</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874019_20200322184607838_28593.png" alt></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874019_20200322184607523_14300.png" alt></p>
+<h2 id="bg：使停止在后台的工作继续运行">bg：使停止在后台的工作继续运行</h2>
+<p>之前我们通过ctrl + z使得工作停止放置在后台，若是我们想让其在后台运作我们就使用这样一个命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 与<span class="built_in">fg</span>类似，加参则指定，不加参则取预设</span></span><br><span class="line">bg [%jobnumber]</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874018_20200322184607210_2862.png" alt></p>
+<h2 id="kill：删除或者重启工作">kill：删除或者重启工作</h2>
+<p>既然有方法将被放置在后台的工作提至前台或者让它从停止到继续运行在后台，当然也有方法删除一个工作，或者重启等等</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">kill</span>的使用格式如下</span></span><br><span class="line">kill -signal %jobnumber</span><br><span class="line"><span class="meta">#</span><span class="bash"> signal从1-64个信号值可以选择，可以这样查看</span></span><br><span class="line">kill －l</span><br></pre></td></tr></table></figure>
+<p>其中常用的有这些信号值</p>
+<table>
+<thead>
+<tr>
+<th>信号值</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-1</td>
+<td>重新读取参数运行，类似与restart</td>
+</tr>
+<tr>
+<td>-2</td>
+<td>如同ctrl+c的操作退出</td>
+</tr>
+<tr>
+<td>-9</td>
+<td>强制终止该任务</td>
+</tr>
+<tr>
+<td>-15</td>
+<td>正常的方式终止该任务</td>
+</tr>
+</tbody>
+</table>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874018_20200322184606774_22814.png" alt></p>
+<p>注意：</p>
+<ul>
+<li>若是在使用kill +信号值，然后直接加数字的话，这个数字代表的是pid，你将会对pid对应的进程做操作。</li>
+<li>若是在使用kill +信号值，然后<code>%jobnumber</code>，这时所操作的对象才是job，这个数字就是就当前bash中后台的运行的job的ID。</li>
+</ul>
+<h1>进程查看</h1>
+<h2 id="top工具">top工具</h2>
+<p>top工具是我们常用的一个查看工具，能实时的查看我们系统的一些关键信息的变化，例如运行的进程中的实时变化：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">top</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874018_20200322184606145_4289.png" alt></p>
+<p>top是一个在前台执行的程序，所以执行结果就是这样的一个交互界面，我们可以通过一些指令来做一些操作，筛选。首先我们先来了解一些显示了哪些信息。</p>
+<p><strong>1. 第一行信息：系统概况</strong></p>
+<p>我们看到 top 显示的第一排，</p>
+<table>
+<thead>
+<tr>
+<th>内容</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>top</td>
+<td>表示当前程序的名称</td>
+</tr>
+<tr>
+<td>11:05:18</td>
+<td>表示当前的系统的时间</td>
+</tr>
+<tr>
+<td>up 8 days,17:12</td>
+<td>表示该机器已经启动了多长时间</td>
+</tr>
+<tr>
+<td>1 user</td>
+<td>表示当前系统中只有一个用户</td>
+</tr>
+<tr>
+<td>load average: 0.29,0.20,0.25</td>
+<td>分别对应1、5、15分钟内cpu的平均负载</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2. 第二行信息：进程情况统计</strong></p>
+<p>我们回归正题，来看top的第二行数据，基本上第二行是进程的一个情况统计：</p>
+<table>
+<thead>
+<tr>
+<th>内容</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tasks: 26 total</td>
+<td>进程总数</td>
+</tr>
+<tr>
+<td>1 running</td>
+<td>1个正在运行的进程数</td>
+</tr>
+<tr>
+<td>25 sleeping</td>
+<td>25个睡眠的进程数</td>
+</tr>
+<tr>
+<td>0 stopped</td>
+<td>没有停止的进程数</td>
+</tr>
+<tr>
+<td>0 zombie</td>
+<td>没有僵尸进程数</td>
+</tr>
+</tbody>
+</table>
+<p><strong>3. 第三行信息：CPU使用情况统计</strong></p>
+<p>来看top的第三行数据，这一行基本上是CPU的一个使用情况的统计了</p>
+<table>
+<thead>
+<tr>
+<th>内容</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cpu(s): 1.0%us</td>
+<td>用户空间占用CPU百分比</td>
+</tr>
+<tr>
+<td>1.0% sy</td>
+<td>内核空间占用CPU百分比</td>
+</tr>
+<tr>
+<td>0.0%ni</td>
+<td>用户进程空间内改变过优先级的进程占用CPU百分比</td>
+</tr>
+<tr>
+<td>97.9%id</td>
+<td>空闲CPU百分比</td>
+</tr>
+<tr>
+<td>0.0%wa</td>
+<td>等待输入输出的CPU时间百分比</td>
+</tr>
+<tr>
+<td>0.1%hi</td>
+<td>硬中断(Hardware IRQ)占用CPU的百分比</td>
+</tr>
+<tr>
+<td>0.0%si</td>
+<td>软中断(Software IRQ)占用CPU的百分比</td>
+</tr>
+<tr>
+<td>0.0%st</td>
+<td>(Steal time)是当hypervisor服务另一个虚拟处理器的时候，虚拟CPU等待实际 CPU的时间的百分比</td>
+</tr>
+</tbody>
+</table>
+<p><strong>4. 第四行数据:内存使用情况统计</strong></p>
+<p>来看top的第四行数据，这一行基本上是内存的一个使用情况的统计了</p>
+<table>
+<thead>
+<tr>
+<th>内容</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8176740 total</td>
+<td>物理内存总量</td>
+</tr>
+<tr>
+<td>8032104 used</td>
+<td>使用的物理内存总量</td>
+</tr>
+<tr>
+<td>144636 free</td>
+<td>空闲内存总量</td>
+</tr>
+<tr>
+<td>313088 buffers</td>
+<td>用作内核缓存的内存量</td>
+</tr>
+</tbody>
+</table>
+<p>注意：系统的中可用的物理内存最大值并不是free这个单一的值，而是free+buffers+swap中的cached的和。</p>
+<p><strong>5. 第五行数据:交换区（swap）使用情况统计</strong></p>
+<p>来看top的第五行数据，这一行基本上是交换区（swap）的一个使用情况的统计了</p>
+<table>
+<thead>
+<tr>
+<th>内容</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>total</td>
+<td>交换区总量</td>
+</tr>
+<tr>
+<td>used</td>
+<td>使用的交换区总量</td>
+</tr>
+<tr>
+<td>free</td>
+<td>空闲交换区总量</td>
+</tr>
+<tr>
+<td>cached</td>
+<td>缓冲的交换区总量，内存中的内容被换出到交换区，而后又被换入到内存，但使用过的交换区尚未被覆盖</td>
+</tr>
+</tbody>
+</table>
+<p><strong>6. 最后：进程详情</strong></p>
+<p>再下面就是进程的一个情况了</p>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PID</td>
+<td>进程id</td>
+</tr>
+<tr>
+<td>USER</td>
+<td>该进程的所属用户</td>
+</tr>
+<tr>
+<td>PR</td>
+<td>该进程执行的优先级priority值</td>
+</tr>
+<tr>
+<td>NI</td>
+<td>该进程的nice值</td>
+</tr>
+<tr>
+<td>VIRT</td>
+<td>该进程任务所使用的虚拟内存的总数</td>
+</tr>
+<tr>
+<td>RES</td>
+<td>该进程所使用的物理内存数，也称之为驻留内存数</td>
+</tr>
+<tr>
+<td>SHR</td>
+<td>该进程共享内存的大小</td>
+</tr>
+<tr>
+<td>S</td>
+<td>该进程进程的状态: S=sleep R=running Z=zombie</td>
+</tr>
+<tr>
+<td>%CPU</td>
+<td>该进程CPU的利用率</td>
+</tr>
+<tr>
+<td>%MEM</td>
+<td>该进程内存的利用率</td>
+</tr>
+<tr>
+<td>TIME+</td>
+<td>该进程活跃的总时间</td>
+</tr>
+<tr>
+<td>COMMAND</td>
+<td>该进程运行的名字</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>NI(NICE值)：静态优先级</strong></li>
+</ul>
+<p>NI(NICE值)叫做静态优先级，是用户空间的一个优先级值，其取值范围是-20至19。这个值越小，表示进程”优先级”越高，而值越大“优先级”越低。nice值中的-20到19，中-20优先级最高，0是默认的值，而19优先级最低。</p>
+<ul>
+<li><strong>PR(Priority值)：动态优先级</strong></li>
+</ul>
+<p>PR值表示Priority值叫动态优先级，是进程在内核中实际的优先级值，该进程优先级的取值范围是通过一个宏定义的，这个宏的名称是MAX_PRIO，它的值为140。Linux实际上实现了140个优先级范围，取值范围是从0-139，这个值越小，优先级越高。而这其中的0-99是实时的值，而100-139是给用户的。</p>
+<p>其中PR中的100to139值部分有这么一个对应PR=20+(-20 to +19)，这里的-20to+19便是nice值，所以说两个虽然都是优先级，而且有千丝万缕的关系，但是他们的值，他们的作用范围并不相同。</p>
+<ul>
+<li><strong>VIRT值：任务所使用的虚拟内存总数</strong></li>
+</ul>
+<p>VIRT值表示任务所使用的虚拟内存的总数，其中包含所有的代码，数据，共享库和被换出swap空间的页面等所占据空间的总数。</p>
+<h3 id="load-average">load average</h3>
+<p>load average在wikipedia中的解释是the system load is a measure of the amount of work that a computer system is doing也就是对当前CPU工作量的度量，具体来说也就是指运行队列的平均长度，也就是等待CPU的平均进程数相关的一个计算值。</p>
+<p>我们该如何看待这个load average数据呢？</p>
+<p>假设我们的系统是单CPU单内核的，把它比喻成是一条单向的桥，把CPU任务比作汽车。</p>
+<ul>
+<li>load = 0 的时候意味着这个桥上并没有车，cpu 没有任何任务；</li>
+<li>load &lt; 1 的时候意味着桥上的车并不多，一切都还是很流畅的，cpu 的任务并不多，资源还很充足；</li>
+<li>load = 1 的时候就意味着桥已经被车给沾满了，没有一点空隙，cpu 的已经在全力工作了，所有的资源都被用完了，当然还好，这还在能力范围之内，只是有点慢而已；</li>
+<li>load &gt; 1 的时候就意味着不仅仅是桥上已经被车占满了，就连桥外都被占满了，cpu 已经在全力的工作了，系统资源的用完了，但是还是有大量的进程在请求，在等待。若是这个值大于２，大于３，超过 CPU 工作能力的 2，３。而若是这个值 &gt; 5 说明系统已经在超负荷运作了。</li>
+</ul>
+<p>这是单个CPU单核的情况，而实际生活中我们需要将得到的这个值除以我们的核数来看。我们可以通过一下的命令来查看CPU的个数与核心数：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看物理CPU的个数</span></span><br><span class="line">cat /proc/cpuinfo |grep "physical id"|sort |uniq|wc -l</span><br><span class="line"><span class="meta">#</span><span class="bash"> 每个cpu的核心数</span></span><br><span class="line">cat /proc/cpuinfo |grep "physical id"|grep "0"|wc -l</span><br></pre></td></tr></table></figure>
+<p>通过上面的指数我们可以得知load的临界值为1 ，但是在实际生活中，比较有经验的运维或者系统管理员会将临界值定为0.7。这里的指数都是除以核心数以后的值，不要混淆了。</p>
+<ul>
+<li>若是 load &lt; 0.7 并不会去关注他；</li>
+<li>若是 0.7&lt; load &lt; 1 的时候我们就需要稍微关注一下了，虽然还可以应付但是这个值已经离临界不远了；</li>
+<li>若是 load = 1 的时候我们就需要警惕了，因为这个时候已经没有更多的资源的了，已经在全力以赴了；</li>
+<li>若是 load &gt; 5 的时候系统已经快不行了，这个时候你需要加班解决问题了</li>
+</ul>
+<p>通常我们都会先看15分钟的值来看这个大体的趋势，然后再看5分钟的值对比来看是否有下降的趋势。</p>
+<p>查看busybox的代码可以知道，数据是每5秒钟就检查一次活跃的进程数，然后计算出该值，然后从/proc/loadavg中读取load值的。而这个load的值是如何计算的呢，这是load的计算的源码。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">define FSHIFT      11          /* nr of bits of precision */<span class="comment">#define FIXED_1    (1&lt;&lt;FSHIFT) /* 1.0 as fixed-point(定点) */</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">define LOAD_FREQ  (5*HZ)      /* 5 sec intervals，每隔5秒计算一次平均负载值 */</span></span><br><span class="line"><span class="meta">#</span><span class="bash">define CALC_LOAD(load, exp, n)    \</span></span><br><span class="line">        load *= exp;              \</span><br><span class="line">        load += n*(FIXED_1 - exp); \</span><br><span class="line">        load &gt;&gt;= FSHIFT;</span><br><span class="line">unsigned long avenrun[3];</span><br><span class="line">EXPORT_SYMBOL(avenrun);</span><br><span class="line">/*</span><br><span class="line">* calc_load - given tick count, update the avenrun load estimates.</span><br><span class="line">* This is called while holding a write_lock on xtime_lock.</span><br><span class="line">*/static inline void calc_load(unsigned long ticks)</span><br><span class="line">&#123;</span><br><span class="line">        unsigned long active_tasks; /* fixed-point */</span><br><span class="line">        static int count = LOAD_FREQ;</span><br><span class="line">        count -= ticks;</span><br><span class="line">        if (count &lt; 0) &#123;</span><br><span class="line">                count += LOAD_FREQ;</span><br><span class="line">                active_tasks = count_active_tasks();</span><br><span class="line">                CALC_LOAD(avenrun[0], EXP_1, active_tasks);</span><br><span class="line">                CALC_LOAD(avenrun[1], EXP_5, active_tasks);</span><br><span class="line">                CALC_LOAD(avenrun[2], EXP_15, active_tasks);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有兴趣的朋友可以研究一下，是如何计算的。代码中的后面这部分相当于它的计算公式。</p>
+<h3 id="CPU利用率">CPU利用率</h3>
+<p>CPU利用率，是对一个时间段内CPU使用状况的统计，通过这个指标可以看出在某一个时间段内CPU被占用的情况，Load Average是CPU的Load，它所包含的信息不是CPU的使用率状况，而是在一段时间内CPU正在处理以及等待CPU处理的进程数情况统计信息，这两个指标并不一样。</p>
+<h3 id="top交互命令">top交互命令</h3>
+<p>在上文我们曾经说过top是一个前台程序，所以是一个可以交互的。</p>
+<table>
+<thead>
+<tr>
+<th>常用交互命令</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>q</td>
+<td>退出程序</td>
+</tr>
+<tr>
+<td>I</td>
+<td>切换显示平均负载和启动时间的信息</td>
+</tr>
+<tr>
+<td>P</td>
+<td>根据CPU使用百分比大小进行排序</td>
+</tr>
+<tr>
+<td>M</td>
+<td>根据驻留内存大小进行排序</td>
+</tr>
+<tr>
+<td>i</td>
+<td>忽略闲置和僵死的进程，这是一个开关式命令</td>
+</tr>
+<tr>
+<td>k</td>
+<td>终止一个进程，系统提示输入PID及发送的信号值。一般终止进程用15信号，不能正常结束则使用9信号。安全模式下该命令被屏蔽。</td>
+</tr>
+</tbody>
+</table>
+<p>好好的利用top能够很有效的帮助我们观察到系统的瓶颈所在，或者是系统的问题所在。</p>
+<h2 id="ps工具">ps工具</h2>
+<p>ps也是我们最常用的查看进程的工具之一，我们通过这样的一个命令来了解一下，他能给我带来哪些消息。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874017_20200322184605015_16695.png" alt></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps axjf</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874017_20200322184604375_15814.png" alt></p>
+<p>我们来总体了解下会出现哪些信息给我们，这些信息又代表着什么（更多的keywords大家可以通过man ps了解）</p>
+<table>
+<thead>
+<tr>
+<th>内容</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F</td>
+<td>进程的标志（process flags），当flags值为1则表示此子程序只是fork但没有执行 exec，为4表示此程序使用超级管理员root权限</td>
+</tr>
+<tr>
+<td>USER</td>
+<td>进程的拥有用户</td>
+</tr>
+<tr>
+<td>PID</td>
+<td>进程的ID</td>
+</tr>
+<tr>
+<td>PPID</td>
+<td>其父进程的PID</td>
+</tr>
+<tr>
+<td>SID</td>
+<td>session的ID</td>
+</tr>
+<tr>
+<td>TPGID</td>
+<td>前台进程组的ID</td>
+</tr>
+<tr>
+<td>%CPU</td>
+<td>进程占用的CPU百分比</td>
+</tr>
+<tr>
+<td>%MEM</td>
+<td>占用内存的百分比</td>
+</tr>
+<tr>
+<td>NI</td>
+<td>进程的NICE值</td>
+</tr>
+<tr>
+<td>VSZ</td>
+<td>进程使用虚拟内存大小</td>
+</tr>
+<tr>
+<td>RSS</td>
+<td>驻留内存中页的大小</td>
+</tr>
+<tr>
+<td>TTY</td>
+<td>终端ID</td>
+</tr>
+<tr>
+<td>S or STAT</td>
+<td>进程状态</td>
+</tr>
+<tr>
+<td>WCHAN</td>
+<td>正在等待的进程资源</td>
+</tr>
+<tr>
+<td>START</td>
+<td>启动进程的时间</td>
+</tr>
+<tr>
+<td>TIME</td>
+<td>进程消耗CPU的时间</td>
+</tr>
+<tr>
+<td>COMMAND</td>
+<td>命令的名称和参数</td>
+</tr>
+</tbody>
+</table>
+<p>TPGID栏写着-1的都是没有控制终端的进程，也就是守护进程。</p>
+<p>其中，STAT表示进程的状态，而进程的状态有很多，如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R</td>
+<td>Running.运行中</td>
+</tr>
+<tr>
+<td>S</td>
+<td>Interruptible Sleep.等待调用</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Uninterruptible Sleep.不可终端睡眠</td>
+</tr>
+<tr>
+<td>T</td>
+<td>Stoped.暂停或者跟踪状态</td>
+</tr>
+<tr>
+<td>X</td>
+<td>Dead.即将被撤销</td>
+</tr>
+<tr>
+<td>Z</td>
+<td>Zombie.僵尸进程</td>
+</tr>
+<tr>
+<td>W</td>
+<td>Paging.内存交换</td>
+</tr>
+<tr>
+<td>N</td>
+<td>优先级低的进程</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>优先级高的进程</td>
+</tr>
+<tr>
+<td>s</td>
+<td>进程的领导者</td>
+</tr>
+<tr>
+<td>L</td>
+<td>锁定状态</td>
+</tr>
+<tr>
+<td>l</td>
+<td>多线程状态</td>
+</tr>
+<tr>
+<td>+</td>
+<td>前台进程</td>
+</tr>
+</tbody>
+</table>
+<p>其中的D是不能被终端睡眠的状态，处在这种状态的进程不接受外来的任何signal，所以无法使用kill命令杀掉处于D状态的进程，无论是kill，kill -9还是kill -15，一般处于这种状态可能是进程IO的时候出问题了。</p>
+<h3 id="ps-l：显示本次登陆bash相关的进程信息">ps -l：显示本次登陆bash相关的进程信息</h3>
+<p>使用-l参数可以显示自己这次登陆的 bash 相关的进程信息罗列出来</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -l</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874017_20200322184603738_17954.png" alt></p>
+<h3 id="ps-aux：显示所有进程信息">ps aux：显示所有进程信息</h3>
+<p>相对来说我们更加常用下面这个命令，他将会罗列出所有的进程信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874017_20200322184603526_11312.png" alt></p>
+<p>若是查找其中的某个进程的话，我们还可以配合着grep和正则表达式一起使用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux | grep zsh</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874016_20200322184602536_2303.png" alt></p>
+<h3 id="ps-afxo：定义需要显示的参数字段">ps -afxo：定义需要显示的参数字段</h3>
+<p>如果你觉得没有把你想要的信息放在一起，也可以是用这样的命令，来自定义我们所需要的参数显示</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps －afxo user,ppid,pid,pgid,command</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874016_20200322184602225_2554.png" alt></p>
+<h3 id="ps-axjf：查看进程树">ps axjf：查看进程树</h3>
+<p>此外我们还可以查看时，将连同部分的进程呈树状显示出来</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps axjf</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874016_20200322184601387_18475.png" alt></p>
+<h2 id="pstree工具">pstree工具</h2>
+<p>通过pstree可以很直接的看到相同的进程数量，最主要的还是我们可以看到所有进程的之间的相关性。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pstree</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874015_20200322184600851_16372.png" alt></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pstree -up</span><br><span class="line"><span class="meta">#</span><span class="bash"> 参数选择：</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -A  ：各程序树之间以 ASCII 字元來連接；</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -p  ：同时列出每个 process 的 PID；</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -u  ：同时列出每个 process 的所屬账户名称。</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874015_20200322184600218_24425.png" alt></p>
+<h2 id="jps查看Java进程">jps查看Java进程</h2>
+<p>jps(Java Virtual Machine Process Status Tool)是JDK 1.5开始提供的一个显示当前所有Java进程pid的命令，简单实用，非常适合在Linux/unix平台上简单察看当前java进程的一些简单情况。</p>
+<p>jps -l 输出应用程序main class的完整package名或者应用程序的jar文件完整路径名</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# jps -l</span><br><span class="line">5752 sun.tools.jps.Jps</span><br><span class="line">5342 org.apache.hadoop.hdfs.server.namenode.NameNode</span><br><span class="line">5440 org.apache.hadoop.hdfs.server.datanode.DataNode</span><br><span class="line">5630 org.apache.hadoop.hdfs.server.namenode.SecondaryNameNode</span><br></pre></td></tr></table></figure>
+<h1>进程操作</h1>
+<h2 id="结束进程：kill">结束进程：kill</h2>
+<p>上个实验中我们讲诉了进程之间是如何衍生，之间又有什么相关性，我们来回顾一下，当一个进程结束的时候或者要异常结束的时候，会向其父进程返回一个或者接收一个SIGHUP信号而做出的结束进程或者其他的操作，这个SIGHUP信号不仅可以由系统发送，我们可以使用kill来发送这个信号来操作进程的结束或者重启等等。</p>
+<p>上面我们使用kill命令来管理我们的一些job，这节课我们将尝试用kill来操作下一些不属于job范畴的进程，直接对pid下手</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">首先我们使用图形界面打开了gedit、gvim，用ps可以查看到</span></span><br><span class="line">ps aux</span><br><span class="line"><span class="meta">#</span><span class="bash">使用9这个信号强制结束gedit进程</span></span><br><span class="line">kill -9 1608</span><br><span class="line"><span class="meta">#</span><span class="bash">我们在查找这个进程的时候就找不到了</span></span><br><span class="line">ps aux | grep gedit</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874015_20200322184559579_13997.png" alt></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874014_20200322184559128_19793.png" alt></p>
+<h2 id="进程调度：nice、renice">进程调度：nice、renice</h2>
+<p>我们在是使用ps命令的时候我们可以看到大部分的进程都是处于休眠的状态，如果这些进程都被唤醒，那么该谁最先享受CPU的服务，后面的进程又该是一个什么样的顺序呢？进程调度的队列又该如何去排列呢？</p>
+<p>当然就是靠该进程的优先级值来判定进程调度的优先级，而优先级的值就是上文所提到的PR与nice来控制与体现了</p>
+<p>而nice的值我们是可以通过nice命令来修改的，而需要注意的是nice值可以调整的范围是-20 ~ 19，其中root有着至高无上的权力，既可以调整自己的进程也可以调整其他用户的程序，并且是所有的值都可以用，而普通用户只可以调制属于自己的进程，并且其使用的范围只能是0 ~ 19，因为系统为了避免一般用户抢占系统资源而设置的一个限制</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">打开一个程序放在后台，或者用图形界面打开</span></span><br><span class="line">nice -n -5 vim &amp;</span><br><span class="line"><span class="meta">#</span><span class="bash">用ps查看其优先级</span></span><br><span class="line">ps -afxo user,ppid,pid,stat,pri,ni,time,command | grep vim</span><br></pre></td></tr></table></figure>
+<p>我们还可以用renice命令来修改已经存在的进程的优先级：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">renice -5 pid</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">LINUX学习笔记</a></li>
+            <li>15-进程管理</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Linux进程概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的分类"><span class="nav-text">进程的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程的衍生"><span class="nav-text">进程的衍生</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程组"><span class="nav-text">进程组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#终端Session"><span class="nav-text">终端Session</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">工作控制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#command-：使命令在后台运行"><span class="nav-text">command &amp;：使命令在后台运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ctrl-z：停止当前工作并丢入后台"><span class="nav-text">ctrl + z：停止当前工作并丢入后台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jobs：查看后台工作"><span class="nav-text">jobs：查看后台工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fg：将后台的工作拿到前台"><span class="nav-text">fg：将后台的工作拿到前台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bg：使停止在后台的工作继续运行"><span class="nav-text">bg：使停止在后台的工作继续运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kill：删除或者重启工作"><span class="nav-text">kill：删除或者重启工作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">进程查看</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#top工具"><span class="nav-text">top工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#load-average"><span class="nav-text">load average</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU利用率"><span class="nav-text">CPU利用率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#top交互命令"><span class="nav-text">top交互命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ps工具"><span class="nav-text">ps工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ps-l：显示本次登陆bash相关的进程信息"><span class="nav-text">ps -l：显示本次登陆bash相关的进程信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps-aux：显示所有进程信息"><span class="nav-text">ps aux：显示所有进程信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps-afxo：定义需要显示的参数字段"><span class="nav-text">ps -afxo：定义需要显示的参数字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps-axjf：查看进程树"><span class="nav-text">ps axjf：查看进程树</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pstree工具"><span class="nav-text">pstree工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jps查看Java进程"><span class="nav-text">jps查看Java进程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">进程操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#结束进程：kill"><span class="nav-text">结束进程：kill</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程调度：nice、renice"><span class="nav-text">进程调度：nice、renice</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

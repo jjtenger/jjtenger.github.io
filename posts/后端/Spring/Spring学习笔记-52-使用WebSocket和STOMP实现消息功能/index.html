@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="52-使用WebSocket和STOMP实现消息功能 WebSocket协议提供了通过一个套接字实现异步全双工通信的功能。因为它是全双工的，所以每一端都可以发送和处理消息。 WebSocket通信可以应用于任何类型的应用中，但是WebSocket最常见的应用场景是实现服务器和基于浏览器的应用之间的通信。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="后端&#x2F;Spring&#x2F;Spring学习笔记-52-使用WebSocket和STOMP实现消息功能">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;posts&#x2F;%E5%90%8E%E7%AB%AF&#x2F;Spring&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-52-%E4%BD%BF%E7%94%A8WebSocket%E5%92%8CSTOMP%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E5%8A%9F%E8%83%BD&#x2F;index.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="52-使用WebSocket和STOMP实现消息功能 WebSocket协议提供了通过一个套接字实现异步全双工通信的功能。因为它是全双工的，所以每一端都可以发送和处理消息。 WebSocket通信可以应用于任何类型的应用中，但是WebSocket最常见的应用场景是实现服务器和基于浏览器的应用之间的通信。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584264827_2019-11-06-14-27-05.png.html">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584264827_2019-11-06-14-47-25.png.html">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584264829_2019-11-06-14-56-10.png.html">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584264831_2019-11-06-15-05-42.png.html">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584264833_2019-11-06-15-25-48.png.html">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584264835_2019-11-06-15-40-15.png.html">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584264834_2019-11-06-15-35-09.png.html">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584264836_2019-11-06-15-56-46.png.html">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584264840_2019-11-06-16-02-16.png.html">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584264827_2019-11-06-14-27-05.png.html">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/posts/%E5%90%8E%E7%AB%AF/Spring/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-52-%E4%BD%BF%E7%94%A8WebSocket%E5%92%8CSTOMP%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E5%8A%9F%E8%83%BD/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>后端/Spring/Spring学习笔记-52-使用WebSocket和STOMP实现消息功能 | JJT-个人Wiki</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/posts/%E5%90%8E%E7%AB%AF/Spring/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-52-%E4%BD%BF%E7%94%A8WebSocket%E5%92%8CSTOMP%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E5%8A%9F%E8%83%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="jiateng.jiang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JJT-个人Wiki">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          后端/Spring/Spring学习笔记-52-使用WebSocket和STOMP实现消息功能
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-14 12:54:19" itemprop="dateCreated datePublished" datetime="2020-03-14T12:54:19+00:00">2020-03-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-15 11:07:33" itemprop="dateModified" datetime="2020-12-15T11:07:33+00:00">2020-12-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index">
+                    <span itemprop="name">后端</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%90%8E%E7%AB%AF/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/52-%E4%BD%BF%E7%94%A8WebSocket%E5%92%8CSTOMP%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E5%8A%9F%E8%83%BD.html">52-使用WebSocket和STOMP实现消息功能</a></p>
+</blockquote><p>WebSocket协议提供了通过一个套接字实现异步全双工通信的功能。因为它是全双工的，所以每一端都可以发送和处理消息。<br>
+WebSocket通信可以应用于任何类型的应用中，但是WebSocket最常见的应用场景是实现服务器和基于浏览器的应用之间的通信。</p><a id="more"></a>
+
+<h1>使用Spring的低层级WebSocket API</h1>
+<h2 id="服务器端使用WebSocket">服务器端使用WebSocket</h2>
+<ul>
+<li>首先，编写一个实现WebSocketHandler的类（消息处理器类），实现五个方法。
+<ul>
+<li>方法一：扩展AbstractWebSocketHandler，这是WebSocketHandler的一个抽象实现。<br>
+尽管AbstractWebSocketHandler是一个抽象类，但是它并不要求我们必须重载任何特定的方法。相反，它让我们根据需要来决定该重载哪一个方法。<br>
+除了重载WebSocketHandler中所定义的五个方法以外，我们还可以重载AbstractWebSocketHandler中所定义的三个方法：<code>handleBinaryMessage()</code>、<code>handlePongMessage()</code>、<code>handleTextMessage()</code>。<br>
+这三个方法只是handleMessage()方法的具体化，每个方法对应于某一种特定类型的消息。<br>
+子类所没有重载的方法都由AbstractWebSocketHandler以空操作的方式（no-op）进行了实现。</li>
+<li>方法二：扩展TextWebSocketHandler、BinaryWebSocketHandler等。<br>
+它们是AbstractWebSocketHandler的子类，分别用于处理文本消息或二进制消息，如果收到类型不符的消息时，将会关闭WebSocket连接（在对应接口方法中处理）。</li>
+<li>当新连接建立的时候，会调用afterConnectionEstablished()方法，类似地，当连接关闭时，会调用afterConnectionClosed()方法。<br>
+重载这两个方法，用于在事件发生时执行自定义操作。比如：记录日志、建立或销毁资源等。</li>
+</ul>
+</li>
+<li>启用并注册WebSocketHandler。
+<ul>
+<li>Spring的Java配置中，需要在一个配置类上使用@EnableWebSocket，并实现WebSocketConfigurer接口。<br>
+registerWebSocketHandlers()方法是注册消息处理器的关键。通过重载该方法得到一个WebSocketHandlerRegistry对象，通过该对象的addHandler()方法来注册信息处理器。（将以bean方进行声明的WebSocketHandler实现对象与具体路径相关联）</li>
+<li>XML配置中，可以使用websocket命名空间。<br>
+<code>&lt;websocket:handlers&gt;</code>标签中，使用<code>&lt;websocket:mapping&gt;</code>子标签映射WebSocketHandler实现bean和具体路径。</li>
+</ul>
+</li>
+</ul>
+<h2 id="客户端（浏览器）使用WebSocket">客户端（浏览器）使用WebSocket</h2>
+<p>发送消息到服务器，并监听来自服务器的消息。</p>
+<ul>
+<li>通过传入指定URL，创建WebSocket实例。<br>
+对于支持WebSocket的浏览器来说，这个类型是原生的。<br>
+URL使用了“ws://”前缀，表明这是一个基本的WebSocket连接。如果是安全WebSocket的话，协议的前缀将会是“wss://”。</li>
+<li>编写WebSocket事件处理方法。<br>
+客户端WebSocket的onopen、onmessage和onclose事件对应于服务器端WebSocketHandler对象的afterConnectionEstablished()、handleTextMessage()和afterConnectionClosed()方法。<br>
+调用sock.close()、服务端关闭，或者浏览器转向其他的页面，都会关闭连接。只要连接关闭，都会触发onclose事件。</li>
+</ul>
+<h1>应对不支持WebSocket的场景</h1>
+<p>浏览器端和服务器端支持WebSocket的最低版本。<br>
+防火墙代理通常会限制所有除HTTP以外的流量。它们有可能不支持或者（还）没有配置允许进行WebSocket通信。</p>
+<h2 id="WebSocket的备用方案：SockJS">WebSocket的备用方案：SockJS</h2>
+<p>SockJS是WebSocket技术的一种模拟，在表面上，它尽可能对应WebSocket API，但是在底层它非常智能，如果WebSocket技术不可用的话，就会选择另外的通信方式（包括：XHR流、XDR流、iFrame事件源、iFrame HTML文件、XHR轮询、XDR轮询、iFrame XHR轮询、JSONP轮询等等。）</p>
+<ul>
+<li>在服务端启用SockJS通信。
+<ul>
+<li>Spring的Java配置中，通过简单地调用withSockJS()方法声明我们想要使用SockJS功能。<br>
+<code>registry.addHandler(marcoHandler(), &quot;/marco&quot;).withsockJs();</code></li>
+<li>XML配置中，添加<code>&lt;websocket:sockjs&gt;</code>元素。</li>
+</ul>
+</li>
+<li>在客户端使用SockJS。
+<ul>
+<li>首先需要确保加载了SockJS客户端库。
+<ul>
+<li>最简单办法是使用<code>&lt;script&gt;</code>标签从SockJS CDN中进行加载。</li>
+<li>用WebJars解析Web资源。<br>
+示例项目中，使用了WebJars来解析JavaScript库，使其作为项目Maven或Gradle构建的一部分，就像其他的Java依赖一样。
+<ul>
+<li>Spring MVC配置中添加一个资源处理器，负责解析WebJars资源加载请求。</li>
+<li>Web页面中使用<code>&lt;script&gt;</code>标签从该路径加载SockJS库。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>客户端代码修改。
+<ul>
+<li>URL修改。SockJS所处理的URL是“http://”或“https://”模式，而不是“ws://”和“wss://”。（使用相对路径）</li>
+<li>创建SockJS实例来代替WebSocket。</li>
+<li>其它代码不用变化。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1>使用STOMP消息</h1>
+<p>直接使用WebSocket（或SockJS）就很类似于使用TCP套接字来编写Web应用。因为没有高层级的线路协议（wire protocol），因此就需要我们定义应用之间所发送消息的语义，还需要确保连接的两端都能遵循这些语义。<br>
+就像HTTP在TCP套接字之上添加了请求-响应模型层一样，STOMP在WebSocket之上提供了一个基于帧的线路格式（frame-based wire format）层，用来定义消息的语义。<br>
+与HTTP请求和响应类似，STOMP帧由命令、一个或多个头信息以及负载所组成。<br>
+<img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584264827_2019-11-06-14-27-05.png.html" alt><br>
+在这个简单的样例中，STOMP命令是send，表明会发送一些内容。紧接着是两个头信息：一个用来表示消息要发送到哪里的目的地，另外一个则包含了负载的大小。然后，紧接着是一个空行，STOMP帧的最后是负载内容，在本例中，是一个JSON消息。<br>
+消息会发布到某个目的地，这个目的地实际上可能真的有消息代理（message broker）作为支撑。另一方面，消息处理器（message handler）也可以监听这些目的地，接收所发送过来的消息。</p>
+<h2 id="启用STOMP消息功能">启用STOMP消息功能</h2>
+<p>在Spring MVC中为控制器方法添加@MessageMapping注解，使其处理STOMP消息。（与@RequestMapping类似）<br>
+Spring的Web消息功能基于消息代理（message broker）构建，因此除了告诉Spring我们想要处理消息以外，还有其他的内容需要配置。我们必须要配置一个消息代理和其他的一些消息目的地。<br>
+使用@EnableWebSocketMessageBroker注解开启STOMP协议来传输基于代理（message broker）的消息，并通过实现WebSocketMessageBrokerConfigurer，重写其方法来配置具体参数。<br>
+注：Springboot2x之前的版本是继承AbstractWebSocketMessageBrokerConfigurer，目前已过时。<br>
+配置类中：</p>
+<ul>
+<li>重载registerStompEndpoints()方法，其中：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">registry.addEndpoint(&quot;/marcopolo&quot;).withSockJs();</span><br></pre></td></tr></table></figure>
+<p>将“/marcopolo”注册为STOMP端点。这个路径与之前发送和接收消息的目的地路径有所不同。这是一个端点，客户端在订阅或发布消息到目的地路径前，要连接该端点。</p>
+<ul>
+<li>重载configureMessageBroker()方法，配置了一个简单的消息代理。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//配置简单的内存消息代理，，将其目的地前缀设置为“/queue”和“/topic”。</span><br><span class="line">registry.enableSimpleBroker(&quot;/queue&quot;, &quot;/topic&quot;); </span><br><span class="line">//配置以应用程序为目的地的消息前缀。</span><br><span class="line">registry.setApplicationDestinationPrefixes(&quot;/app&quot;);</span><br></pre></td></tr></table></figure>
+<p>这个方法是可选的，如果不重载它的话，将会自动配置一个简单的内存消息代理，用它来处理以“/topic”为前缀的消息。</p>
+<p>下图展现了这个配置中的消息流：<br>
+<img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584264827_2019-11-06-14-47-25.png.html" alt><br>
+当消息到达时，目的地的前缀将会决定消息该如何处理。图中，应用程序的目的地以“/app”作为前缀，而代理的目的地以“/topic”和“/queue”作为前缀。以应用程序为目的地的消息将会直接路由到带有@MessageMapping注解的控制器方法中。而发送到代理上的消息，其中也包括@MessageMapping注解方法的返回值所形成的消息，将会路由到代理上，并最终发送到订阅这些目的地的客户端。</p>
+<h3 id="启用STOMP代理中继">启用STOMP代理中继</h3>
+<p>对于生产环境下的应用来说，你可能会希望使用真正支持STOMP的代理来支撑WebSocket消息，如RabbitMQ或ActiveMQ。这样的代理提供了可扩展性和健壮性更好的消息功能，当然它们也会完整支持STOMP命令。我们需要根据相关的文档来为STOMP搭建代理。搭建就绪之后，就可以使用STOMP代理来替换内存代理了，并重载configureMessageBroker()方法即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//启用了STOMP代理中继（broker relay）功能，并将其目的地前缀设置为“/topic”和“/queue”。</span><br><span class="line">//根据你所选择的STOMP代理不同，目的地的可选前缀也会有所限制。</span><br><span class="line">registry.enableStompBrokerRelay(&quot;/topic&quot;, &quot;/queue&quot;);</span><br><span class="line">registry.setApplicationDestinationPrefixes(&quot;/app&quot;);</span><br></pre></td></tr></table></figure>
+<p>与<code>registry.enableSimpleBroker(&quot;/queue&quot;, &quot;/topic&quot;); </code>关键的区别在于这里不再模拟STOMP代理的功能，而是由代理中继将消息传送到一个真正的消息代理中来进行处理。</p>
+<p>默认情况下，STOMP代理中继会假设代理监听localhost的61613端口，并且客户端的username和password均为“guest”。如果你的STOMP代理位于其他的服务器上，或者配置成了不同的客户端凭证，那么我们可以在启用STOMP代理中继的时候，需要配置这些细节信息：<br>
+<img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584264829_2019-11-06-14-56-10.png.html" alt><br>
+以上的这个配置调整了服务器、端口以及凭证信息。</p>
+<h2 id="处理来自客户端的STOMP消息">处理来自客户端的STOMP消息</h2>
+<h3 id="消息处理：-MessageMapping">消息处理：@MessageMapping</h3>
+<p>Spring 4.0引入了@MessageMapping注解，它用于STOMP消息的处理，类似于Spring MVC的@RequestMapping注解。当消息抵达某个特定的目的地时，带有@MessageMapping注解的方法能够处理这些消息。<br>
+<img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584264831_2019-11-06-15-05-42.png.html" alt><br>
+在本例中，这个目的地也就是“/app/marco”（“/app”前缀是隐含的，因为在前面配置类中，<code>registry.setApplicationDestinationPrefixes(&quot;/app&quot;);</code>将其配置为应用的目的地前缀）。<br>
+Spring的某一个消息转换器会将STOMP消息的负载转换为Shout对象（自定义对象）。Shout类非常简单，它是只具有一个属性的JavaBean，包含了消息的内容。<br>
+Spring 4.0提供了几个消息转换器，作为其消息API的一部分。下表描述了这些消息转换器，在处理STOMP消息的时候可能会用到它们。</p>
+<table>
+<thead>
+<tr>
+<th>消息转换器</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ByteArrayMessageConverter</td>
+<td>实现MIME类型为“application/octet-stream”的消息与byte[]之间的相互转换</td>
+</tr>
+<tr>
+<td>MappingJackson2MessageConverter</td>
+<td>实现MIME类型为“application/json”的消息与Java对象之间的相互转换</td>
+</tr>
+<tr>
+<td>StringMessageConverter</td>
+<td>实现MIME类型为“text/plain”的消息与String之间的相互转换</td>
+</tr>
+</tbody>
+</table>
+<p>其中MappingJackson2MessageConverter会将其任务委托给底层的Jackson 2 JSON处理器。我们可以通过在Java类型上使用Jackson注解，影响具体的转换行为。</p>
+<h3 id="订阅处理：-SubscribeMapping">订阅处理：@SubscribeMapping</h3>
+<p>与@MessagingMapping方法类似，@SubscribeMapping方法也是通过AnnotationMethodMessageHandler接收消息的。这就意味着@SubscribeMapping方法只能处理目的地以“/app”为前缀的消息。<br>
+@SubscribeMapping的主要应用场景是实现请求-回应模式。在请求-回应模式中，客户端订阅某一个目的地，然后预期在这个目的地上获得一个一次性的响应。<br>
+@SubscribeMapping注解方法中，会产生一个输出的Shout对象并将其返回。Shout对象会转换成一条消息，并且会按照客户端订阅时相同的目的地发送回客户端（直接返回，而不经过消息代理）。<br>
+这里的关键区别在于HTTP GET请求是同步的，而订阅的请求-回应模式则是异步的，这样客户端能够在回应可用时再去处理，而不必等待。</p>
+<h2 id="发送消息到客户端">发送消息到客户端</h2>
+<h3 id="在处理消息之后，发送消息">在处理消息之后，发送消息</h3>
+<p>当@MessageMapping注解标示的方法有返回值的时候，返回的对象将会进行转换（通过消息转换器）并放到STOMP帧的负载中，然后发送给消息代理。<br>
+默认情况下，帧所发往的目的地会与触发处理器方法的目的地相同，只不过会添加上“/topic”前缀。不过，我们可以通过为方法添加@SendTo注解，重载目的地。<br>
+@SubscribeMapping的区别在于这里的Shout消息将会直接发送给客户端，而不必经过消息代理。如果你为方法添加@SendTo注解的话，那么消息将会发送到指定的目的地，这样会经过代理。</p>
+<h3 id="在应用的任意地方发送消息">在应用的任意地方发送消息</h3>
+<p>Spring的SimpMessagingTemplate能够在应用的任何地方发送消息，甚至不必以首先接收一条消息作为前提。<br>
+使用SimpMessagingTemplate的最简单方式是将它（或者其接口SimpMessageSendingOperations）自动装配到所需的对象中（配置Spring支持STOMP后，在Spring应用上下文中已经包含了SimpMessagingTemplate）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Autowired</span><br><span class="line">private SimpMessageSendingOperations messaging;</span><br><span class="line">...</span><br><span class="line">//convertAndSend()方法，将Spittle转换为消息，并将其发送到“/topic/spittlefeed”主题上。</span><br><span class="line">messaging.convertAndSend(&quot;/topic/spittlefeed&quot;, spittle);</span><br></pre></td></tr></table></figure>
+<h2 id="编写JavaScript客户端">编写JavaScript客户端</h2>
+<ul>
+<li>发送消息</li>
+</ul>
+<p>借助STOMP库，通过JavaScript发送消息。<br>
+<img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584264833_2019-11-06-15-25-48.png.html" alt><br>
+与我们之前的JavaScript客户端样例类似，在这里首先针对给定的URL创建一个SockJS实例。<br>
+区别在于，我们不再直接使用SockJS，而是通过调用Stomp.over(sock)创建了一个STOMP客户端实例。这实际上封装了SockJS，这样就能在WebSocket连接上发送STOMP消息。<br>
+接下来，我们使用STOMP进行连接，假设连接成功，然后发送带有JSON负载的消息到名为“/marco”的目的地。往send()方法传递的第二个参数是一个头信息的Map，它会包含在STOMP的帧中，不过在这个例子中，我们没有提供任何参数，Map是空的。</p>
+<ul>
+<li>订阅消息</li>
+</ul>
+<p>让首页订阅一个STOMP主题，在Spittle创建的时候，该主题能够收到Spittle更新的实时feed。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584264835_2019-11-06-15-40-15.png.html" alt></p>
+<p>与之前的样例一样，我们首先创建了SockJS实例，然后基于该SockJS实例创建了Stomp实例。在连接到STOMP代理之后，我们订阅了“/topic/spittlefeed”，并指定当消息达到的时候，由handleSpittle()函数来处理Spittle更新。h</p>
+<h1>为目标用户发送消息</h1>
+<p>通过使用与第9章相同的认证机制，我们可以使用Spring Security来认证用户，并为目标用户处理消息。<br>
+Spring STOMP支持识别前缀为“/user/”的目的地。例如，客户端可能订阅目的地 “/user/queue/position-updates”。该目的地将由UserDestinationMessageHandler处理并转换为该用户会话唯一的目的地，例如，“/queue/position-updates-user123”。这就给订阅通用的命名目的地提供了便利性，同时确保不与订阅目的地相同的其他用户发生冲突，每个用户都有独一无二的目标地址可以接收到消息更新。<br>
+对于服务器发送方，消息可以被发送到目的地，例如“/user/{username}/queue/position-updates”，然后由UserDestinationMessageHandler将其转换为一个或多个目的地，对应于与用户相关联的每个会话。这允许应用程序中的任何组件发送针对特定用户的消息，而不必知道除其用户名和通用目标地之外的任何内容。通过注释@SendToUser和消息传递模板SimpMessagingTemplate支持此功能。</p>
+<h2 id="在控制器中处理用户的消息">在控制器中处理用户的消息</h2>
+<p>在控制器的@MessageMapping或@SubscribeMapping方法中，处理消息时有两种方式了解用户信息。在处理器方法中，通过简单地添加一个Principal参数，这个方法就能知道用户是谁并利用该信息关注此用户相关的数据。<br>
+除此之外，处理器方法还可以使用@SendToUser注解，表明它的返回值要以消息的形式发送给某个认证用户的客户端（只发送给该客户端）。<br>
+<img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584264834_2019-11-06-15-35-09.png.html" alt><br>
+当有发往“/app/spittle”目的地的消息到达时，该方法就会触发，并且会根据消息创建SpittleForm对象，如果用户已经认证过的话，将会根据STOMP帧上的头信息得到Principal对象。<br>
+@SendToUser注解指定返回的Notification要以消息的形式发送到“/queue/notifications”目的地上。在表面上，“/queue/notifications”并没有与特定用户关联。但因为这里使用的是@SendToUser注解而不是@SendTo，所以就会发生更多的事情了。<br>
+<img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584264836_2019-11-06-15-56-46.png.html" alt></p>
+<ul>
+<li>客户端用户订阅地址重路由<br>
+让我们看一下针对控制器方法发布Notification对象的目的地，客户端该如何进行订阅。考虑如下的这行JavaScript代码，它订阅了一个用户特定的目的地：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stomp.subscribe(&quot;/user/queue/notifications&quot;, handleNotifications);</span><br></pre></td></tr></table></figure>
+<p>注意，这个目的地使用了“/user”作为前缀，在内部，以“/user”为前缀的消息将会通过UserDestinationMessageHandler进行处理：<br>
+UserDestinationMessageHandler的主要任务是将用户消息重新路由到某个用户独有的目的地上。在处理订阅的时候，它会将目标地址中的“/user”前缀去掉，并基于用户的会话添加一个后缀。例如，对“/user/queue/notifications”的订阅最后可能路由到名为“/queue/notifications-user6hr83v6t”的目的地上，其中，user是关键字，6hr83v6t是sessionid，这样子就把用户和订阅目的地唯一的匹配起来了。</p>
+<ul>
+<li>服务端发送给用户的消息地址重路由<br>
+在服务端样例中，handleSpittle()方法使用了@SendToUser(“/queue/notifications”)注解。@SendToUser注解会将用户名从请求消息头中提取出来，并以&quot;/user/{username}“的格式作为前缀，添加到发送目的地中（”/user/{username}/queue/notifications&quot;），这样子就把消息唯一的关联到请求用户的订阅地址，然后UserDestinationMessageHandler会将新路径转换为一个或多个目的地，（比如，名为“/queue/notifications-user6hr83v6t”的目的地），对应于与用户相关联的每个会话。<br>
+然后，新的目的地以“/queue”作为前缀，根据配置，这是StompBrokerRelayMessageHandler（或SimpleBrokerMessageHandler）要处理的前缀，所以消息接下来会到达这里。最终，客户端会订阅这个目的地，因此客户端会收到Notification消息。<br>
+如果一个帐号打开了多个浏览器窗口，也就是打开了多个stomp session通道，这时，spring stomp默认会把消息推送到同一个帐号不同的session，你可以利用<code>broadcast = false</code>属性避免把消息推送到用户的所有的session中：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@MessageMapping(&quot;handle&quot;) </span><br><span class="line">@SendToUser(value = &quot;/topic/greetings&quot;,broadcast = false.html)</span><br><span class="line">public String handle(String msg) &#123;</span><br><span class="line">  //...</span><br><span class="line">  return name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="为指定用户发送消息">为指定用户发送消息</h2>
+<p>除了convertAndSend()以外，SimpMessagingTemplate还提供了convertAndSendToUser()方法。按照名字就可以判断出来，convertAndSendToUser()方法能够让我们给特定用户发送消息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">messaging.convertAndSendToUser(username, &quot;/queue/notifications&quot;</span><br><span class="line">  new Notification(&quot;You just got mentioned!&quot;));</span><br></pre></td></tr></table></figure>
+<p>如果Spittle中包含“@jbauer”的话，Notification将会发送到“/user/jbauer/queue/notifications”目的地上。</p>
+<h1>处理消息异常：@MessageExceptionHandler</h1>
+<p>在Spring MVC中，如果在请求处理中，出现异常的话，@ExceptionHandler方法将有机会处理异常。与之类似，我们也可以在某个控制器方法上添加@MessageException-Handler注解，让它来处理@MessageMapping方法所抛出的异常。<br>
+按照最简单的形式，@MessageExceptionHandler标注的方法能够处理消息方法中所抛出的异常。但是，我们也可以以参数的形式声明它所能处理的异常：或者，以数组参数的形式指定多个异常类型：<br>
+这个方法可以做更多的事情。例如，它可以回应一个错误：<br>
+<img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584264840_2019-11-06-16-02-16.png.html" alt></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/posts/%E5%85%B6%E5%AE%83/Hexo/%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E5%AF%BC%E8%87%B4%E7%BC%96%E8%AF%91%E5%87%BA%E9%94%99/" rel="next" title="其它/Hexo/特殊字符导致编译出错">
+                  <i class="fa fa-chevron-left"></i> 其它/Hexo/特殊字符导致编译出错
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/posts/%E5%90%8E%E7%AB%AF/WebSocket/WebSocket-%E7%9B%AE%E5%BD%95/" rel="prev" title="后端/WebSocket/WebSocket-目录">
+                  后端/WebSocket/WebSocket-目录 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用Spring的低层级WebSocket API</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器端使用WebSocket"><span class="nav-text">服务器端使用WebSocket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端（浏览器）使用WebSocket"><span class="nav-text">客户端（浏览器）使用WebSocket</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">应对不支持WebSocket的场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#WebSocket的备用方案：SockJS"><span class="nav-text">WebSocket的备用方案：SockJS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用STOMP消息</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启用STOMP消息功能"><span class="nav-text">启用STOMP消息功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#启用STOMP代理中继"><span class="nav-text">启用STOMP代理中继</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理来自客户端的STOMP消息"><span class="nav-text">处理来自客户端的STOMP消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消息处理：-MessageMapping"><span class="nav-text">消息处理：@MessageMapping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#订阅处理：-SubscribeMapping"><span class="nav-text">订阅处理：@SubscribeMapping</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送消息到客户端"><span class="nav-text">发送消息到客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在处理消息之后，发送消息"><span class="nav-text">在处理消息之后，发送消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在应用的任意地方发送消息"><span class="nav-text">在应用的任意地方发送消息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写JavaScript客户端"><span class="nav-text">编写JavaScript客户端</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">为目标用户发送消息</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#在控制器中处理用户的消息"><span class="nav-text">在控制器中处理用户的消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为指定用户发送消息"><span class="nav-text">为指定用户发送消息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">处理消息异常：@MessageExceptionHandler</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

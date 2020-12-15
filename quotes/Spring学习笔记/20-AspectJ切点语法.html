@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="AspectJ切点语法：通过切点来选择连接点。正如之前所提过的，切点用于准确定位应该在什么地方应用切面的通知。通知和切点是切面的最基本元素。因此，了解如何编写切点非常重要。关于Spring AOP的AspectJ切点，最重要的一点就是Spring仅支持AspectJ切点指示器（pointcut designator）的一个子集。让我们回顾下，Spring是基于代理的，而某些切点表达式是与基于代理的">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;20-AspectJ%E5%88%87%E7%82%B9%E8%AF%AD%E6%B3%95.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="AspectJ切点语法：通过切点来选择连接点。正如之前所提过的，切点用于准确定位应该在什么地方应用切面的通知。通知和切点是切面的最基本元素。因此，了解如何编写切点非常重要。关于Spring AOP的AspectJ切点，最重要的一点就是Spring仅支持AspectJ切点指示器（pointcut designator）的一个子集。让我们回顾下，Spring是基于代理的，而某些切点表达式是与基于代理的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.036Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/20-AspectJ%E5%88%87%E7%82%B9%E8%AF%AD%E6%B3%95">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>20-ASPECTJ切点语法</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>AspectJ切点语法：通过切点来选择连接点。</p><p>正如之前所提过的，切点用于准确定位应该在什么地方应用切面的通知。通知和切点是切面的最基本元素。因此，了解如何编写切点非常重要。</p><p>关于Spring AOP的AspectJ切点，最重要的一点就是Spring仅支持AspectJ切点指示器（pointcut designator）的一个子集。让我们回顾下，Spring是基于代理的，而某些切点表达式是与基于代理的AOP无关的。下表列出了Spring AOP所支持的AspectJ切点指示器。</p><a id="more"></a>
+
+
+<p>表：Spring借助AspectJ的切点表达式语言来定义Spring切面</p>
+<table>
+<thead>
+<tr>
+<th>AspectJ指示器</th>
+<th>描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>args(参数类全限定名)</td>
+<td>限制连接点方法参数为指定类型的类。</td>
+</tr>
+<tr>
+<td>@args(注解类全限定名)</td>
+<td>限制连接点的方法参数由指定注解标注。</td>
+</tr>
+<tr>
+<td>execution(匹配表达式)</td>
+<td>可以使用类匹配和方法匹配表达式匹配方法连接点。</td>
+</tr>
+<tr>
+<td>this(类全限定名)</td>
+<td>限制连接点的AOP代理bean（执行对象）为指定类型的类。</td>
+</tr>
+<tr>
+<td>target(类全限定名)</td>
+<td>限制连接点的目标对象为指定类型的类。</td>
+</tr>
+<tr>
+<td>@target(注解类全限定名)</td>
+<td>限制连接点匹配特定的执行对象，这些对象对应的类要具有指定类型的注解。</td>
+</tr>
+<tr>
+<td>within(类匹配表达式)</td>
+<td>使用（并且只能使用）类匹配表达式，限制连接点的类型（在指定的类中）。</td>
+</tr>
+<tr>
+<td>@within(注解类全限定名)</td>
+<td>限制连接点匹配指定注解所标注的类型。（当使用Spring AOP时，方法定义在由指定的注解所标注的类里）</td>
+</tr>
+<tr>
+<td>@annotation(注解类全限定名)</td>
+<td>限定连接点方法上带有指定注解。</td>
+</tr>
+</tbody>
+</table>
+<p>在Spring中尝试使用AspectJ其他指示器时，将会抛出IllegalArgument-Exception异常。</p>
+<p>当我们查看如上所展示的这些Spring支持的指示器时，注意只有execution指示器是实际执行匹配的，而其他的指示器都是用来限制匹配的。这说明execution指示器是我们在编写切点定义时最主要使用的指示器。在此基础上，我们使用其他指示器来限制所匹配的切点。</p>
+<h1>匹配表达式</h1>
+<h2 id="通配符">通配符</h2>
+<p><code>*</code> 表示任意字符，只能匹配上下文中的一个元素（元素指：包、类、方法、参数等）；</p>
+<p><code>..</code> 表示任意字符，可以匹配上下文中的多个同类型元素（包及其子包、任意个参数等）；</p>
+<p><code>+</code> ：匹配指定类的所有子类，必须跟在类名后面。</p>
+<h2 id="匹配表达式类型">匹配表达式类型</h2>
+<ol>
+<li><strong>类匹配</strong>([]中为可选项)：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&lt;类注解匹配&gt;] &lt;类全限定名匹配&gt;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><strong>方法匹配</strong>([]中为可选项)：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&lt;方法注解匹配&gt;] [&lt;修饰符匹配&gt;] &lt;返回值类型匹配&gt;(&quot;*&quot;表示所有类型) [&lt;类全限定名匹配&gt;].&lt;方法名匹配&gt;(&lt;参数列表匹配&gt;) [&lt;异常匹配&gt;(throws 异常全限定名列表)]</span><br></pre></td></tr></table></figure>
+<p><strong>3.Bean名称匹配</strong></p>
+<p>可以使用Bean的id或name进行匹配，并且可使用通配符“*”；</p>
+<h2 id="组合运算符">组合运算符</h2>
+<p>组合运算符：“&amp;&amp;”（且）、“||”（或）、“！”（非）、“()”（括号），可以用来组合关键字、匹配表达式和命名切入点等。</p>
+<p>为了避免XML中使用转义字符，Spring AOP提供了and、or、not替代选择。</p>
+<h1>匹配关键字</h1>
+<h2 id="execution-匹配表达式">execution(匹配表达式)</h2>
+<p>execution(匹配表达式)：可以使用类匹配和方法匹配表达式匹配方法连接点。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.DeclareParents;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointcutAspect</span> </span>&#123;</span><br><span class="line">       </span><br><span class="line">   <span class="comment">/*execution*/</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">//任何公共方法的执行</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(public * *(..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(public * *(..)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//demo包及所有子包下IPointcutService接口中的任何无参方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* demo..IPointcutService.*())"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest2</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* demo..IPointcutService.*())"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//demo包包及所有子包下任何类的任何方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* demo..*.*(..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest3</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* demo..*.*(..))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//demo包及所有子包下IPointcutService接口的任何只有一个参数方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* demo..IPointcutService.*(*))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest4</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* demo..IPointcutService.*(*))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//非“demo包及所有子包下IPointcutService接口及子类型”的任何方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* (!demo..IPointcutService+).*(..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest5</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       <span class="comment">//如果!demo..IPointcutService+ 不加“+”将匹配不到</span></span><br><span class="line">       dump(<span class="string">"execution(* (!demo..IPointcutService+).*(..))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//demo包及所有子包下IPointcutService接口及子类型的的任何无参方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* demo..IPointcutService+.*())"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest6</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* demo..IPointcutService+.*())"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*</span></span><br><span class="line"><span class="comment">     demo包及所有子包下IPointcut前缀类型的的以test开头的只有一个参数类型为java.Date的方法，</span></span><br><span class="line"><span class="comment">     注意该匹配是根据方法签名的参数类型进行匹配的，而不是根据执行时传入的参数类型决定的。</span></span><br><span class="line"><span class="comment">     如定义方法：public void test(Object obj);即使执行时传入java.Date，也不会匹配的；</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* demo..IPointcut*.test*(java.Date))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest7</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* demo..IPointcut*.test*(java.Date))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//demo包及所有子包下IPointcut前缀类型的的test前缀方法，且抛出IllegalArgumentException和ArrayIndexOutOfBoundsException异常</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* demo..IPointcut*.test*(..)  throws IllegalArgumentException, ArrayIndexOutOfBoundsException)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest8</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* demo..IPointcut*.test*(..)  throws IllegalArgumentException, ArrayIndexOutOfBoundsException)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//任何实现了demo包及所有子包下IPointcutService接口和java.io.Serializable接口的类型的任何方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* (demo..IPointcutService+ &amp;&amp; java.io.Serializable+).*(..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest9</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* (demo..IPointcutService+ &amp;&amp; java.io.Serializable+).*(..))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//任何持有@java.lang.Deprecated注解的方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(@java.lang.Deprecated * *(..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest10</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(@java.lang.Deprecated * *(..))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">//任何持有@java.lang.Deprecated和@demo..Secure注解的方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(@java.lang.Deprecated @(demo..Secure) * *(..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest11</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(@java.lang.Deprecated @(demo..Secure) * *(..))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//任何持有@java.lang.Deprecated或@demo..Secure注解的方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(@(java.lang.Deprecated || (demo..Secure)) * *(..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest12</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(@(java.lang.Deprecated || (demo..Secure)) * *(..))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">//任何返回值类型持有@demo..Secure的方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution((@(demo..Secure) *)  *(..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest13</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution((@(demo..Secure) *)  *(..))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//任何定义方法的类型持有@demo..Secure的方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* (@(demo..Secure) *).*(..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest14</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(*  (@(demo..Secure) *).*(..))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*</span></span><br><span class="line"><span class="comment">     任何签名带有两个参数的方法，且这个两个参数都被@Secure标记了，</span></span><br><span class="line"><span class="comment">     如public void test(@Secure String str1, @Secure String str1);</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* *(@(demo..Secure) (*) , @(demo..Secure) (*)))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest15</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* *(@(demo..Secure) (*) , @(demo..Secure) (*)))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*</span></span><br><span class="line"><span class="comment">     任何带有一个参数的方法，且该参数类型持有@demo..Secure；</span></span><br><span class="line"><span class="comment">     如public void test(Model model);且Model类上持有@Secure注解</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* *((@(demo..Secure) *)))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest16_1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* *((@ (demo..Secure) *)))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//同上</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* *(@(demo..Secure) *))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest16_2</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* *(@ (demo..Secure) *))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">//任何带有两个参数的方法，且这两个参数都被@demo..Secure标记了；且这两个参数的类型上都持有@demo..Secure；</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* *(@(demo..Secure) (@(demo..Secure) *), @(demo..Secure) (@(demo..Secure) *)))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest17</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* *(@(demo..Secure) (@(demo..Secure) *), @(demo..Secure) (@(demo..Secure) *)))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*</span></span><br><span class="line"><span class="comment">     任何带有一个java.Map参数的方法，且该参数类型是以&lt;demo..Model, demo..Model&gt;为泛型参数；</span></span><br><span class="line"><span class="comment">     注意只匹配第一个参数为java.Map,不包括子类型；如public void test(HashMap&lt;Model, Model&gt; map, String str);将不匹配，</span></span><br><span class="line"><span class="comment">     必须使用“* *(java.HashMap&lt;cn.javass..Model,cn.javass..Model&gt;, ..)”进行匹配；</span></span><br><span class="line"><span class="comment">     而public void test(Map map, int i);也将不匹配，因为泛型参数不匹配。</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* *(java.Map&lt;demo..Model, demo..Model&gt;, ..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest18</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* *(java.Map&lt;demo..Model, demo..Model&gt;, ..))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* *(java.HashMap&lt;demo..Model, demo..Model&gt;, ..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest18_1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* *(java.HashMap&lt;demo..Model, demo..Model&gt;, ..))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*</span></span><br><span class="line"><span class="comment">     任何带有一个参数（类型为java.Collection）的方法，且该参数类型是有一个泛型参数，该泛型参数类型上持有@demo..Model注解；</span></span><br><span class="line"><span class="comment">     如public void test(Collection&lt;Model&gt; collection) Model类型上持有@demo..Model</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* *(java.Collection&lt;@(demo..Secure) *&gt;))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest19</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"execution(* *(java.Collection&lt;@(demo..Secure) *&gt;))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//任何带有一个参数的方法，且传入的参数类型是有一个泛型参数，该泛型参数类型继承与HashMap；Spring AOP目前测试不能正常工作</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* *(java.Set&lt;? extends java.HashMap&gt;))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest20</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       <span class="comment">//不正常工作</span></span><br><span class="line">       dump(<span class="string">"execution(* *(java.Set&lt;? extends java.HashMap&gt;))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//任何带有一个参数的方法，且传入的参数类型是有一个泛型参数，该泛型参数类型是HashMap的基类型；</span></span><br><span class="line">   <span class="comment">// 如public voi test(Map map)；Spring AOP目前测试不能正常工作</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* *(java.Stack&lt;? super java.HashMap&gt;))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest21</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       <span class="comment">//不正常工作</span></span><br><span class="line">       dump(<span class="string">"execution(* *(java.Stack&lt;? super java.HashMap&gt;))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//任何带有一个参数的方法，且该参数类型是有一个泛型参数，该泛型参数类型上持有@cn.javass..Secure注解；Spring AOP目前测试不能正常工作</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"execution(* *(*&lt;@(demo..Secure) *&gt;))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executionTest22</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       <span class="comment">//不正常工作</span></span><br><span class="line">       dump(<span class="string">"execution(* *(*&lt;@(demo..Secure) *&gt;))"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="within-类匹配表达式">within(类匹配表达式)</h2>
+<p>within(类匹配表达式)：使用（并且只能使用）类匹配表达式，限制连接点的类型（在指定的类中）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.DeclareParents;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointcutAspect</span> </span>&#123;</span><br><span class="line">      </span><br><span class="line">   <span class="comment">/*within*/</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">//demo包及子包下的任何方法执行</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"within(demo..*)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">withinTest1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"within(demo..*)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//demo包或所有子包下IPointcutService类型及子类型的任何方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"within(demo..IPointcutService+) "</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">withinTest2</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"within(demo..IPointcutService+) "</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//持有demo..Secure注解的任何类型的任何方法必须是在目标对象上声明这个注解，在接口上声明的对它不起作用</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"within(@(demo..Secure) *)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">withinTest3</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"within(@(demo..Secure) *)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="this-类全限定名">this(类全限定名)</h2>
+<p>this(类全限定名)：限制连接点的AOP代理bean（执行对象）为指定类型的类。</p>
+<p>一般情况下等同于target，区别在于this可以匹配引入的接口方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.DeclareParents;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointcutAspect</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/*this*/</span></span><br><span class="line"></span><br><span class="line">   <span class="comment">//AOP代理对象实现了IPointcutService接口的任何方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"this(demo.aop_pointcut.IPointcutService)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">thisTest1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"this(demo.aop_pointcut.IPointcutService)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//AOP代理对象实现了IIntroductionService接口的任何方法,也可以是引入接口</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"this(demo.introductionAOP.IIntroductionService)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">thisTest2</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"this(demo.introductionAOP.IIntroductionService)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="target-类全限定名">target(类全限定名)</h2>
+<p>target(类全限定名)：限制连接点的目标对象为指定类型的类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.DeclareParents;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointcutAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*target*/</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">//目标对象实现了IPointcutService接口的任何方法</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"target(demo.aop_pointcut.IPointcutService)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">targetTest1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"target(demo.aop_pointcut.IPointcutService)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//目标对象实现了IIntroductionService接口的任何方法，不可能是引入接口</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"target(demo.introductionAOP.IIntroductionService)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">targetTest2</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       <span class="comment">//注意与this(demo..IIntroductionService)区别</span></span><br><span class="line">       dump(<span class="string">"target(demo.introductionAOP.IIntroductionService)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="args-参数类全限定名">args(参数类全限定名)</h2>
+<p>args(参数类全限定名)：限制连接点方法参数为指定类型的类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.DeclareParents;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointcutAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*args*/</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">//任何一个以接受“传入参数类型为 java.io.Serializable” 开头，</span></span><br><span class="line">   <span class="comment">//且其后可跟任意个任意类型的参数的方法执行，args指定的参数类型是在运行时动态匹配的</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"args(java.io.Serializable, ..)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">argsTest1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"args(java.io.Serializable, ..)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="within-注解类全限定名">@within(注解类全限定名)</h2>
+<p>@within(注解类全限定名)：限制连接点所在类上的注解为指定注解类型（当使用Spring AOP时，方法定义在由指定的注解所标注的类里）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.DeclareParents;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointcutAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*@within*/</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">//任何目标对象对应的类型持有Secure注解的类方法；必须是在目标对象上声明这个注解，在接口上声明的对它不起作用</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"@within(demo.annotation.Secure)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">annotationWithinTest1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"@within(demo.annotation.Secure)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="target-注解类全限定名">@target(注解类全限定名)</h2>
+<p>@target(注解类全限定名)：限制连接点匹配特定的执行对象，这些对象对应的类要具有指定类型的注解。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.DeclareParents;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointcutAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*@target*/</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">//任何目标对象持有Secure注解的类方法；必须是在目标对象上声明这个注解，在接口上声明的对它不起作用</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"@target(demo.annotation.Secure)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">annotationTargetTest1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"@target(demo.annotation.Secure)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="args-注解类全限定名">@args(注解类全限定名)</h2>
+<p>@args(注解类全限定名)：限制连接点的方法参数由指定注解标注。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.DeclareParents;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointcutAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*@args*/</span></span><br><span class="line">   <span class="comment">//任何一个只接受一个参数的方法，且方法运行时传入的参数持有注解demo.annotation.Secure；</span></span><br><span class="line">   <span class="comment">//动态切入点，类似于arg指示符；</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"@args(demo.annotation.Secure)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">annotationArgsTest1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"@args(demo.annotation.Secure)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="annotation-注解类全限定名">@annotation(注解类全限定名)</h2>
+<p>@annotation(注解类全限定名)：限定连接点方法上带有指定注解。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.DeclareParents;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointcutAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*@annotation*/</span></span><br><span class="line">   <span class="comment">//当前执行方法上持有注解demo.annotation.Secure将被匹配</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"@annotation(demo.annotation.Secure)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">annotationAnnotationTest1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"@annotation(demo.annotation.Secure)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="bean-Bean-id或名字通配符">bean(Bean id或名字通配符)</h2>
+<p>bean(Bean id或名字通配符)：指定特定名称的Bean，AspectJ中无相应概念。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.DeclareParents;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointcutAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*bean*/</span></span><br><span class="line">   <span class="comment">//匹配所有以Service命名（id或name）结尾的Bean</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"bean(*Service)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beanTest1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"bean(*Service)"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="命名切入点的匹配">命名切入点的匹配</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.DeclareParents;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PointcutAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/*11、reference pointcut*/</span></span><br><span class="line">   </span><br><span class="line">   <span class="meta">@Pointcut</span>(value=<span class="string">"bean(*Service)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pointcut1</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Pointcut</span>(value=<span class="string">"@args(demo.annotation.Secure)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pointcut2</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">   </span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"pointcut1() &amp;&amp; pointcut2()"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">referencePointcutTest1</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"pointcut1() &amp;&amp; pointcut2()"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"demo.ReferencePointcutAspect.pointcut()"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">referencePointcutTest2</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       dump(<span class="string">"demo.ReferencePointcutAspect.pointcut()"</span>, jp);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>20-ASPECTJ切点语法</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">匹配表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通配符"><span class="nav-text">通配符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#匹配表达式类型"><span class="nav-text">匹配表达式类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组合运算符"><span class="nav-text">组合运算符</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">匹配关键字</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#execution-匹配表达式"><span class="nav-text">execution(匹配表达式)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#within-类匹配表达式"><span class="nav-text">within(类匹配表达式)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this-类全限定名"><span class="nav-text">this(类全限定名)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#target-类全限定名"><span class="nav-text">target(类全限定名)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#args-参数类全限定名"><span class="nav-text">args(参数类全限定名)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#within-注解类全限定名"><span class="nav-text">@within(注解类全限定名)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#target-注解类全限定名"><span class="nav-text">@target(注解类全限定名)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#args-注解类全限定名"><span class="nav-text">@args(注解类全限定名)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#annotation-注解类全限定名"><span class="nav-text">@annotation(注解类全限定名)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bean-Bean-id或名字通配符"><span class="nav-text">bean(Bean id或名字通配符)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命名切入点的匹配"><span class="nav-text">命名切入点的匹配</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

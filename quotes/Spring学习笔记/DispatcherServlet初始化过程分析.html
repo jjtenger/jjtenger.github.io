@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="DispatcherServlet继承体系结构HttpServletBean初始化过程HttpServletBean继承HttpServlet，因此在Web容器启动时将调用它的init方法，该初始化方法的主要作用： 将Servlet初始化参数（init-param）设置到该组件上（如contextAttribute、contextClass、namespace、contextConfigLocat">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;DispatcherServlet%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="DispatcherServlet继承体系结构HttpServletBean初始化过程HttpServletBean继承HttpServlet，因此在Web容器启动时将调用它的init方法，该初始化方法的主要作用： 将Servlet初始化参数（init-param）设置到该组件上（如contextAttribute、contextClass、namespace、contextConfigLocat">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584799382_20200321220015236_13734.jpg">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.044Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584799382_20200321220015236_13734.jpg">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/DispatcherServlet%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>DISPATCHERSERVLET初始化过程分析</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>DispatcherServlet继承体系结构</h1><p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584799382_20200321220015236_13734.jpg" alt></p><h1>HttpServletBean初始化过程</h1><p>HttpServletBean继承HttpServlet，因此在Web容器启动时将调用它的init方法，该初始化方法的主要作用：</p><ul>
+<li>将Servlet初始化参数（init-param）设置到该组件上（如contextAttribute、contextClass、namespace、contextConfigLocation），通过BeanWrapper简化设值过程，方便后续使用；</li>
+<li>提供给子类初始化扩展点，initServletBean()，该方法由FrameworkServlet覆盖。</li>
+</ul><a id="more"></a>
+
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">HttpServletBean</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> <span class="keyword">implements</span> <span class="title">EnvironmentAware</span></span>&#123;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> <span class="keyword">throws</span> ServletException </span>&#123;</span><br><span class="line">      <span class="comment">//省略部分代码</span></span><br><span class="line">      <span class="comment">//1、如下代码的作用是将Servlet初始化参数设置到该组件上</span></span><br><span class="line">      <span class="comment">//如contextAttribute、contextClass、namespace、contextConfigLocation；</span></span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">          PropertyValues pvs = <span class="keyword">new</span> ServletConfigPropertyValues(getServletConfig(), <span class="keyword">this</span>.requiredProperties);</span><br><span class="line">          BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(<span class="keyword">this</span>);</span><br><span class="line">          ResourceLoader resourceLoader = <span class="keyword">new</span> ServletContextResourceLoader(getServletContext());</span><br><span class="line">          bw.registerCustomEditor(Resource.class, <span class="keyword">new</span> ResourceEditor(resourceLoader, <span class="keyword">this</span>.environment));</span><br><span class="line">          initBeanWrapper(bw);</span><br><span class="line">          bw.setPropertyValues(pvs, <span class="keyword">true</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">catch</span> (BeansException ex) &#123;</span><br><span class="line">          <span class="comment">//…………省略其他代码</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">//2、提供给子类初始化的扩展点，该方法由FrameworkServlet覆盖</span></span><br><span class="line">      initServletBean();</span><br><span class="line">      <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">          logger.debug(<span class="string">"Servlet '"</span> + getServletName() + <span class="string">"' configured successfully"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//…………省略其他代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>FrameworkServlet初始化过程</h1>
+<p>FrameworkServlet继承HttpServletBean，通过initServletBean()进行Web上下文初始化，该方法主要覆盖一下两件事情：</p>
+<ul>
+<li>初始化web上下文；</li>
+<li>提供给子类初始化扩展点。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">FrameworkServlet</span> <span class="keyword">extends</span> <span class="title">HttpServletBean</span> </span>&#123;</span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">initServletBean</span><span class="params">()</span> <span class="keyword">throws</span> ServletException </span>&#123;</span><br><span class="line">       <span class="comment">//省略部分代码</span></span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//1、初始化Web上下文</span></span><br><span class="line">          <span class="keyword">this</span>.webApplicationContext = initWebApplicationContext();</span><br><span class="line">            <span class="comment">//2、提供给子类初始化的扩展点</span></span><br><span class="line">          initFrameworkServlet();</span><br><span class="line">      &#125;</span><br><span class="line">       <span class="comment">//省略部分代码</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> WebApplicationContext <span class="title">initWebApplicationContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="comment">//ROOT上下文（ContextLoaderListener加载的）</span></span><br><span class="line">  WebApplicationContext rootContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());</span><br><span class="line">  WebApplicationContext wac = <span class="keyword">null</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.webApplicationContext != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="comment">// 1、获取创建该Servlet注入的上下文</span></span><br><span class="line">      wac = <span class="keyword">this</span>.webApplicationContext;</span><br><span class="line">      <span class="keyword">if</span> (wac <span class="keyword">instanceof</span> ConfigurableWebApplicationContext) &#123;</span><br><span class="line">         ConfigurableWebApplicationContext cwac = (ConfigurableWebApplicationContext) wac;</span><br><span class="line">         <span class="keyword">if</span> (!cwac.isActive()) &#123;</span><br><span class="line">             <span class="keyword">if</span> (cwac.getParent() == <span class="keyword">null</span>) &#123;</span><br><span class="line">                 cwac.setParent(rootContext);</span><br><span class="line">             &#125;</span><br><span class="line">             configureAndRefreshWebApplicationContext(cwac);</span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (wac == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//2、查找已经绑定的上下文</span></span><br><span class="line">      wac = findWebApplicationContext();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (wac == <span class="keyword">null</span>) &#123;</span><br><span class="line">       <span class="comment">//3、如果没有找到相应的上下文，并指定父亲为ContextLoaderListener</span></span><br><span class="line">      wac = createWebApplicationContext(rootContext);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">this</span>.refreshEventReceived) &#123;</span><br><span class="line">        <span class="comment">//4、刷新上下文（执行一些初始化）</span></span><br><span class="line">      onRefresh(wac);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.publishContext) &#123;</span><br><span class="line">      <span class="comment">// Publish the context as a servlet context attribute.</span></span><br><span class="line">      String attrName = getServletContextAttributeName();</span><br><span class="line">      getServletContext().setAttribute(attrName, wac);</span><br><span class="line">      <span class="comment">//省略部分代码</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> wac;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从initWebApplicationContext()方法可以看出，基本上如果ContextLoaderListener加载了上下文，将作为根上下文（DispatcherServlet的父容器）。最后调用了onRefresh()方法执行容器的一些初始化，这个方法由子类实现，来进行扩展。</p>
+<h1>DispatcherServlet初始化过程</h1>
+<p>DispatcherServlet继承FrameworkServlet，并实现了onRefresh()方法提供一些前端控制器相关的配置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DispatcherServlet</span> <span class="keyword">extends</span> <span class="title">FrameworkServlet</span> </span>&#123;</span><br><span class="line">    <span class="comment">//实现子类的onRefresh()方法，该方法委托为initStrategies()方法。</span></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onRefresh</span><span class="params">(ApplicationContext context)</span> </span>&#123;</span><br><span class="line">      initStrategies(context);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//初始化默认的Spring Web MVC框架使用的策略（如HandlerMapping）</span></span><br><span class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initStrategies</span><span class="params">(ApplicationContext context)</span> </span>&#123;</span><br><span class="line">      initMultipartResolver(context);</span><br><span class="line">      initLocaleResolver(context);</span><br><span class="line">      initThemeResolver(context);</span><br><span class="line">      initHandlerMappings(context);</span><br><span class="line">      initHandlerAdapters(context);</span><br><span class="line">      initHandlerExceptionResolvers(context);</span><br><span class="line">      initRequestToViewNameTranslator(context);</span><br><span class="line">      initViewResolvers(context);</span><br><span class="line">      initFlashMapManager(context);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从如上代码我们可以看出，整个DispatcherServlet初始化的过程和做了些什么事情，具体主要做了如下两件事情：</p>
+<p>1、初始化Spring Web MVC使用的Web上下文，并且可能指定父容器为ContextLoaderListener加载的根上下文；</p>
+<p>2、初始化DispatcherServlet使用的策略，如HandlerMapping、HandlerAdapter等，而且如果我们没有配置，还会给我们提供默认的配置。</p>
+<h1>容器上下文初始化日志分析</h1>
+<p>示例：服务器启动时，容器上下文初始化日志分析</p>
+<p>服务器启动时的日志分析（此处加上了ContextLoaderListener从而启动ROOT上下文容器）：</p>
+<p><strong>Initializing Spring root WebApplicationContext //由ContextLoaderListener启动ROOT上下文</strong></p>
+<p>2012-03-12 13:33:55 [main] INFO org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started</p>
+<p>2012-03-12 13:33:55 [main] INFO org.springframework.web.context.support.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Mar 12 13:33:55 CST 2012]; root of context hierarchy</p>
+<p>2012-03-12 13:33:55 [main] DEBUG org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader - Loading bean definitions</p>
+<p>2012-03-12 13:33:55 [main] DEBUG org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loaded 0 bean definitions from location pattern [/WEB-INF/ContextLoaderListener.xml]</p>
+<p>2012-03-12 13:33:55 [main] DEBUG org.springframework.web.context.support.XmlWebApplicationContext - Bean factory for Root WebApplicationContext: org.springframework.beans.factory.support.DefaultListableBeanFactory@1c05ffd: defining beans []; root of factory hierarchy</p>
+<p>2012-03-12 13:33:55 [main] DEBUG org.springframework.web.context.support.XmlWebApplicationContext - Bean factory for Root WebApplicationContext:</p>
+<p><strong>2012-03-12 13:33:55 [main] DEBUG org.springframework.web.context.ContextLoader - Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT] //将ROOT上下文绑定到ServletContext</strong></p>
+<p><strong>2012-03-12 13:33:55 [main] INFO org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 438 ms //到此ROOT上下文启动完毕</strong></p>
+<p>2012-03-12 13:33:55 [main] DEBUG org.springframework.web.servlet.DispatcherServlet - Initializing servlet ‘chapter2’</p>
+<p><strong>信息: Initializing Spring FrameworkServlet ‘chapter2’ //开始初始化FrameworkServlet对应的Web上下文</strong></p>
+<p>2012-03-12 13:33:55 [main] INFO org.springframework.web.servlet.DispatcherServlet - FrameworkServlet ‘chapter2’: initialization started</p>
+<p><strong>2012-03-12 13:33:55 [main] DEBUG org.springframework.web.servlet.DispatcherServlet - Servlet with name ‘chapter2’ will try to create custom WebApplicationContext context of class ‘org.springframework.web.context.support.XmlWebApplicationContext’, using parent context [Root WebApplicationContext: startup date [Mon Mar 12 13:33:55 CST 2012]; root of context hierarchy]</strong></p>
+<p><strong>//此处使用Root WebApplicationContext作为父容器。</strong></p>
+<p>2012-03-12 13:33:55 [main] INFO org.springframework.web.context.support.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace ‘chapter2-servlet’: startup date [Mon Mar 12 13:33:55 CST 2012]; parent: Root WebApplicationContext</p>
+<p>2012-03-12 13:33:55 [main] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/chapter2-servlet.xml]</p>
+<p>2012-03-12 13:33:55 [main] DEBUG org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader - Loading bean definitions</p>
+<p><strong>2012-03-12 13:33:55 [main] DEBUG org.springframework.beans.factory.xml.BeanDefinitionParserDelegate - Neither XML ‘id’ nor ‘name’ specified - using generated bean name[org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping#0] //我们配置的HandlerMapping</strong></p>
+<p><strong>2012-03-12 13:33:55 [main] DEBUG org.springframework.beans.factory.xml.BeanDefinitionParserDelegate - Neither XML ‘id’ nor ‘name’ specified - using generated bean name[org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter#0] //我们配置的HandlerAdapter</strong></p>
+<p><strong>2012-03-12 13:33:55 [main] DEBUG org.springframework.beans.factory.xml.BeanDefinitionParserDelegate - Neither XML ‘id’ nor ‘name’ specified - using generated bean name [org.springframework.web.servlet.view.InternalResourceViewResolver#0] //我们配置的ViewResolver</strong></p>
+<p><strong>2012-03-12 13:33:55 [main] DEBUG org.springframework.beans.factory.xml.BeanDefinitionParserDelegate - No XML ‘id’ specified - using ‘/hello’ as bean name and [] as aliases</strong></p>
+<p><strong>//我们的处理器（HelloWorldController）</strong></p>
+<p>2012-03-12 13:33:55 [main] DEBUG org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loaded 4 bean definitions from location pattern [/WEB-INF/chapter2-servlet.xml]</p>
+<p><strong>2012-03-12 13:33:55 [main] DEBUG org.springframework.web.context.support.XmlWebApplicationContext - Bean factory for WebApplicationContext for namespace ‘chapter2-servlet’: org.springframework.beans.factory.support.DefaultListableBeanFactory@1372656: defining beans [org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping#0,org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter#0,org.springframework.web.servlet.view.InternalResourceViewResolver#0,/hello]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@1c05ffd</strong></p>
+<p><strong>//到此容器注册的Bean初始化完毕</strong></p>
+<p>2012-03-12 13:33:56 [main] DEBUG org.springframework.web.servlet.DispatcherServlet - Unable to locate MultipartResolver with name ‘multipartResolver’: no multipart request handling provided</p>
+<p><strong>2012-03-12 13:33:56 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating instance of bean ‘org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver’</strong></p>
+<p><strong>//默认的LocaleResolver注册</strong></p>
+<p><strong>2012-03-12 13:33:56 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating instance of bean ‘org.springframework.web.servlet.theme.FixedThemeResolver’</strong></p>
+<p><strong>//默认的ThemeResolver注册</strong></p>
+<p><strong>2012-03-12 13:33:56 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Returning cached instance of singleton bean ‘org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping#0’</strong></p>
+<p><strong>//发现我们定义的HandlerMapping 不再使用默认的HandlerMapping。</strong></p>
+<p><strong>2012-03-12 13:33:56 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Returning cached instance of singleton bean ‘org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter#0’</strong></p>
+<p><strong>//发现我们定义的HandlerAdapter 不再使用默认的HandlerAdapter。</strong></p>
+<p><strong>2012-03-12 13:33:56 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating instance of bean ‘org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver’</strong></p>
+<p><strong>//异常处理解析器ExceptionResolver</strong></p>
+<p>2012-03-12 13:33:56 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Creating instance of bean ‘org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver’</p>
+<p>2012-03-12 13:33:56 [main] DEBUG org.springframework.beans.factory.support.DefaultListableBeanFactory - Returning cached instance of singleton bean ‘org.springframework.web.servlet.view.InternalResourceViewResolver#0’</p>
+<p><strong>2012-03-12 13:33:56 [main] DEBUG org.springframework.web.servlet.DispatcherServlet - Published WebApplicationContext of servlet ‘chapter2’ as ServletContext attribute with name [org.springframework.web.servlet.FrameworkServlet.CONTEXT.chapter2]</strong></p>
+<p><strong>//绑定FrameworkServlet初始化的Web上下文到ServletContext</strong></p>
+<p>2012-03-12 13:33:56 [main] INFO org.springframework.web.servlet.DispatcherServlet - FrameworkServlet ‘chapter2’: initialization completed in 297 ms</p>
+<p>2012-03-12 13:33:56 [main] DEBUG org.springframework.web.servlet.DispatcherServlet - Servlet ‘chapter2’ configured successfully</p>
+<p><strong>//到此完整流程结束</strong></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>DISPATCHERSERVLET初始化过程分析</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">DispatcherServlet继承体系结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HttpServletBean初始化过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">FrameworkServlet初始化过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">DispatcherServlet初始化过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">容器上下文初始化日志分析</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

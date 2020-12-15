@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="用户存储配置：configure(AuthenticationManagerBuilder)因为我们的安全配置类扩展了WebSecurityConfigurerAdapter，因此配置用户存储的最简单方式就是重载configure()方法，并以AuthenticationManagerBuilder作为传入参数。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;39-Web%E5%AE%89%E5%85%A8%E5%8A%9F%E8%83%BD%E9%85%8D%E7%BD%AE.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="用户存储配置：configure(AuthenticationManagerBuilder)因为我们的安全配置类扩展了WebSecurityConfigurerAdapter，因此配置用户存储的最简单方式就是重载configure()方法，并以AuthenticationManagerBuilder作为传入参数。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809827_20200322005034627_21074.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809827_20200322005031110_4331.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809826_20200322005030696_13772.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809825_20200322005030376_16512.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809823_20200322005029958_30739.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809822_20200322005029541_17715.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809822_20200322005029123_15013.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809821_20200322005028809_2500.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809821_20200322005028495_32702.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809820_20200322005028178_23502.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809819_20200322005027861_31431.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809818_20200322005027541_24896.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809817_20200322005027224_15637.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809815_20200322005026907_21884.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809813_20200322005026394_2685.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809813_20200322005025970_17173.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809807_20200322005025756_30875.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809807_20200322005024935_30029.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809806_20200322005024619_1215.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809806_20200322005024403_11452.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809805_20200322005024092_22472.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809805_20200322005023883_19653.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809804_20200322005023574_19596.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809803_20200322005023259_19401.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809803_20200322005022943_19576.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809802_20200322005022733_15930.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809801_20200322005022421_1919.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809800_20200322005022008_27890.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809800_20200322005021699_16292.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809799_20200322005021388_6529.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809799_20200322005021178_9627.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809798_20200322005020969_28496.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809798_20200322005020658_27475.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809797_20200322005020449_14025.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809797_20200322005020240_2665.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809796_20200322005020031_16356.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809794_20200322005019822_6098.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809794_20200322005019308_13254.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809793_20200322005019097_11077.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809793_20200322005018889_8540.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809791_20200322005018378_12323.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809791_20200322005017969_14098.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809790_20200322005017657_14067.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809790_20200322005017340_17430.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.040Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584809827_20200322005034627_21074.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/39-Web%E5%AE%89%E5%85%A8%E5%8A%9F%E8%83%BD%E9%85%8D%E7%BD%AE">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>39-WEB安全功能配置</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>用户存储配置：configure(AuthenticationManagerBuilder)</h1><p>因为我们的安全配置类扩展了WebSecurityConfigurerAdapter，因此配置用户存储的最简单方式就是重载configure()方法，并以AuthenticationManagerBuilder作为传入参数。</p><a id="more"></a>
+
+<h2 id="基于内存">基于内存</h2>
+<p>AuthenticationManagerBuilder有多个方法可以用来配置Spring Security对认证的支持。通过inMemoryAuthentication()方法，我们可以启用、配置并任意填充基于内存的用户存储。</p>
+<p>例如，在如下程序清单中，SecurityConfig重载了configure()方法，并使用两个用户来配置内存用户存储。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809827_20200322005034627_21074.png" alt></p>
+<p>我们可以看到，configure()方法中的AuthenticationManagerBuilder使用构造者风格的接口来构建认证配置。通过简单地调用inMemoryAuthentication()就能启用内存用户存储。但是我们还需要有一些用户，否则的话，这和没有用户并没有什么区别。</p>
+<p>因此，我们需要调用withUser()方法为内存用户存储添加新的用户，这个方法的参数是username。withUser()方法返回的是UserDetailsManagerConfigurer.UserDetailsBuilder，这个对象提供了多个进一步配置用户的方法，包括设置用户密码的password()方法以及为给定用户授予一个或多个角色权限的roles()方法。</p>
+<p>在程序清单中，我们添加了两个用户，“user”和“admin”，密码均为“password”。“user”用户具有USER角色，而“admin”用户具有ADMIN和USER两个角色。我们可以看到，and()方法能够将多个用户的配置连接起来。</p>
+<p>除了password()、roles()和and()方法以外，还有其他的几个方法可以用来配置内存用户存储中的用户信息。下表描述了UserDetailsManagerConfigurer.UserDetailsBuilder对象所有可用的方法。</p>
+<p>需要注意的是，roles()方法是authorities()方法的简写形式。roles()方法所给定的值都会添加一个“ROLE_”前缀，并将其作为权限授予给用户。实际上，如下的用户配置与上面程序清单是等价的：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809827_20200322005031110_4331.png" alt></p>
+<p>配置用户详细信息的方法：</p>
+<table>
+<thead>
+<tr>
+<th>方　　法</th>
+<th>描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>accountExpired(boolean)</td>
+<td>定义账号是否已经过期</td>
+</tr>
+<tr>
+<td>accountLocked(boolean)</td>
+<td>定义账号是否已经锁定</td>
+</tr>
+<tr>
+<td>and()</td>
+<td>用来连接配置</td>
+</tr>
+<tr>
+<td>authorities(GrantedAuthority…)</td>
+<td>授予某个用户一项或多项权限</td>
+</tr>
+<tr>
+<td>authorities(List&lt;? extends GrantedAuthority&gt;)</td>
+<td>授予某个用户一项或多项权限</td>
+</tr>
+<tr>
+<td>authorities(String…)</td>
+<td>授予某个用户一项或多项权限</td>
+</tr>
+<tr>
+<td>credentialsExpired(boolean)</td>
+<td>定义凭证是否已经过期</td>
+</tr>
+<tr>
+<td>disabled(boolean)</td>
+<td>定义账号是否已被禁用</td>
+</tr>
+<tr>
+<td>password(String)</td>
+<td>定义用户的密码</td>
+</tr>
+<tr>
+<td>roles(String…)</td>
+<td>授予某个用户一项或多项角色</td>
+</tr>
+</tbody>
+</table>
+<p>对于调试和开发人员测试来讲，基于内存的用户存储是很有用的，但是对于生产级别的应用来讲，这就不是最理想的可选方案了。为了用于生产环境，通常最好将用户数据保存在某种类型的数据库之中。</p>
+<h2 id="基于数据库表">基于数据库表</h2>
+<p>用户数据通常会存储在关系型数据库中，并通过JDBC进行访问。为了配置Spring Security使用以JDBC为支撑的用户存储，我们可以使用jdbcAuthentication()方法，所需的最少配置如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809826_20200322005030696_13772.png" alt></p>
+<p>我们必须要配置的只是一个DataSource，这样的话，就能访问关系型数据库了。在这里，DataSource是通过自动装配的技巧得到的。</p>
+<h3 id="重写默认的用户查询功能">重写默认的用户查询功能</h3>
+<p>尽管默认的最少配置能够让一切运转起来，但是它对我们的数据库模式有一些要求。它预期存在某些存储用户数据的表。更具体来说，下面的代码片段来源于Spring Security内部，这块代码展现了当查找用户信息时所执行的SQL查询语句：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809825_20200322005030376_16512.png" alt></p>
+<p>在第一个查询中，我们获取了用户的用户名、密码以及是否启用的信息，这些信息会用来进行用户认证。接下来的查询查找了用户所授予的权限，用来进行鉴权，最后一个查询中，查找了用户作为群组的成员所授予的权限。</p>
+<p>如果你能够在数据库中定义和填充满足这些查询的表，那么基本上就不需要你再做什么额外的事情了。但是，也有可能你的数据库与上面所述并不一致，那么你就会希望在查询上有更多的控制权。如果是这样的话，我们可以按照如下的方式配置自己的查询：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809823_20200322005029958_30739.png" alt></p>
+<p>在本例中，我们只重写了认证和基本权限的查询语句，但是通过调用groupAuthoritiesByUsername()方法，我们也能够将群组权限重写为自定义的查询语句。</p>
+<p>将默认的SQL查询替换为自定义的设计时，很重要的一点就是要遵循查询的基本协议。所有查询都将用户名作为唯一的参数。认证查询会选取用户名、密码以及启用状态信息。权限查询会选取零行或多行包含该用户名及其权限信息的数据。群组权限查询会选取零行或多行数据，每行数据中都会包含群组ID、群组名称以及权限。</p>
+<h3 id="使用转码后的密码">使用转码后的密码</h3>
+<p>看一下上面的认证查询，它会预期用户密码存储在了数据库之中。这里唯一的问题在于如果密码明文存储的话，会很容易受到黑客的窃取。但是，如果数据库中的密码进行了转码的话，那么认证就会失败，因为它与用户提交的明文密码并不匹配。</p>
+<p>为了解决这个问题，我们需要借助passwordEncoder()方法指定一个密码转码器（encoder）：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809822_20200322005029541_17715.png" alt></p>
+<p>passwordEncoder()方法可以接受Spring Security中PasswordEncoder接口的任意实现。Spring Security的加密模块包括了三个这样的实现：BCryptPasswordEncoder、NoOpPasswordEncoder和StandardPasswordEncoder。</p>
+<p>上述的代码中使用了StandardPasswordEncoder，但是如果内置的实现无法满足需求时，你可以提供自定义的实现。PasswordEncoder接口非常简单：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809822_20200322005029123_15013.png" alt></p>
+<p>不管你使用哪一个密码转码器，都需要理解的一点是，数据库中的密码是永远不会解码的。所采取的策略与之相反，用户在登录时输入的密码会按照相同的算法进行转码，然后再与数据库中已经转码过的密码进行对比。这个对比是在PasswordEncoder的matches()方法中进行的。</p>
+<h2 id="基于LDAP进行认证">基于LDAP进行认证</h2>
+<p>为了让Spring Security使用基于LDAP的认证，我们可以使用ldapAuthentication()方法。这个方法在功能上类似于jdbcAuthentication()，只不过是LDAP版本。如下的configure()方法展现了LDAP认证的简单配置：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809821_20200322005028809_2500.png" alt></p>
+<p>方法userSearchFilter()和groupSearchFilter()用来为基础LDAP查询提供过滤条件，它们分别用于搜索用户和组。默认情况下，对于用户和组的基础查询都是空的，也就是表明搜索会在LDAP层级结构的根开始。但是我们可以通过指定查询基础来改变这个默认行为：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809821_20200322005028495_32702.png" alt></p>
+<p>userSearchBase()属性为查找用户提供了基础查询。同样，groupSearchBase()为查找组指定了基础查询。我们声明用户应该在名为people的组织单元下搜索而不是从根开始。而组应该在名为groups的组织单元下搜索。</p>
+<h3 id="配置密码比对">配置密码比对</h3>
+<p>基于LDAP进行认证的默认策略是进行绑定操作，直接通过LDAP服务器认证用户。另一种可选的方式是进行比对操作。这涉及将输入的密码发送到LDAP目录上，并要求服务器将这个密码和用户的密码进行比对。因为比对是在LDAP服务器内完成的，实际的密码能保持私密。</p>
+<p>如果你希望通过密码比对进行认证，可以通过声明passwordCompare()方法来实现：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809820_20200322005028178_23502.png" alt></p>
+<p>默认情况下，在登录表单中提供的密码将会与用户的LDAP条目中的userPassword属性进行比对。如果密码被保存在不同的属性中，可以通过passwordAttribute()方法来声明密码属性的名称：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809819_20200322005027861_31431.png" alt></p>
+<p>在本例中，我们指定了要与给定密码进行比对的是“passcode”属性。另外，我们还可以指定密码转码器。在进行服务器端密码比对时，有一点非常好，那就是实际的密码在服务器端是私密的。但是进行尝试的密码还是需要通过线路传输到LDAP服务器上，这可能会被黑客所拦截。为了避免这一点，我们可以通过调用passwordEncoder()方法指定加密策略。</p>
+<p>在本示例中，密码会进行MD5加密。这需要LDAP服务器上密码也使用MD5进行加密。</p>
+<h3 id="引用远程的LDAP服务器">引用远程的LDAP服务器</h3>
+<p>到目前为止，我们忽略的一件事就是LDAP和实际的数据在哪里。我们很开心地配置Spring使用LDAP服务器进行认证，但是服务器在哪里呢？</p>
+<p>默认情况下，Spring Security的LDAP认证假设LDAP服务器监听本机的33389端口。但是，如果你的LDAP服务器在另一台机器上，那么可以使用contextSource()方法来配置这个地址：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809818_20200322005027541_24896.png" alt></p>
+<p>contextSource()方法会返回一个ContextSourceBuilder对象，这个对象除了其他功能以外，还提供了url()方法用来指定LDAP服务器的地址。</p>
+<h3 id="配置嵌入式的LDAP服务器">配置嵌入式的LDAP服务器</h3>
+<p>如果你没有现成的LDAP服务器供认证使用，Spring Security还为我们提供了嵌入式的LDAP服务器。我们不再需要设置远程LDAP服务器的URL，只需通过root()方法指定嵌入式服务器的根前缀就可以了：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809817_20200322005027224_15637.png" alt></p>
+<p>当LDAP服务器启动时，它会尝试在类路径下寻找LDIF文件来加载数据。LDIF（LDAP Data Interchange Format，LDAP数据交换格式）是以文本文件展现LDAP数据的标准方式。每条记录可以有一行或多行，每项包含一个名值对。记录之间通过空行进行分割。</p>
+<p>如果你不想让Spring从整个根路径下搜索LDIF文件的话，那么可以通过调用ldif()方法来明确指定加载哪个LDIF文件：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809815_20200322005026907_21884.png" alt></p>
+<p>在这里，我们明确要求LDAP服务器从类路径根目录下的users.ldif文件中加载内容。如果你比较好奇的话，如下就是一个包含用户数据LDIF文件，我们可以使用它来加载嵌入式LDAP服务器：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809813_20200322005026394_2685.png" alt></p>
+<p>Spring Security内置的用户存储非常便利，并且涵盖了最为常用的用户场景。但是，如果你的认证需求不是那么通用的话，那么就需要创建并配置自定义的用户详细信息服务了。</p>
+<h2 id="配置自定义的用户服务">配置自定义的用户服务</h2>
+<p>假设我们需要认证的用户存储在非关系型数据库中，如Mongo或Neo4j，在这种情况下，我们<strong>需要提供一个自定义的UserDetailsService接口实现。</strong></p>
+<p>UserDetailsService接口非常简单：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809813_20200322005025970_17173.png" alt></p>
+<p>我们所需要做的就是实现loadUserByUsername()方法，根据给定的用户名来查找用户。loadUserByUsername()方法会返回代表给定用户的UserDetails对象。如下的程序清单展现了一个UserDetailsService的实现，它会从给定的SpitterRepository实现中查找用户。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809807_20200322005025756_30875.png" alt></p>
+<p>SpitterUserService有意思的地方在于它并不知道用户数据存储在什么地方。设置进来的SpitterRepository能够从关系型数据库、文档数据库或图数据中查找Spitter对象，甚至可以伪造一个。SpitterUserService不知道也不会关心底层所使用的数据存储。它只是获得Spitter对象，并使用它来创建User对象。（User是UserDetails的具体实现。）</p>
+<p>为了使用SpitterUserService来认证用户，我们可以通过userDetailsService()方法将其设置到安全配置中：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809807_20200322005024935_30029.png" alt></p>
+<p>userDetailsService()方法（类似于jdbcAuthentication()、ldapAuthentication以及inMemoryAuthentication()）会配置一个用户存储。不过，这里所使用的不是Spring所提供的用户存储，而是使用UserDetailsService的实现。</p>
+<p>另外一种值得考虑的方案就是修改Spitter，让其实现UserDetails。这样的话，loadUserByUsername()就能直接返回Spitter对象了，而不必再将它的值复制到User对象中。</p>
+<h1>安全性控制：configure(HttpSecurity)</h1>
+<p>在任何应用中，并不是所有的请求都需要同等程度地保护。有些请求需要认证，而另一些可能并不需要。有些请求可能只有具备特定权限的用户才能访问，没有这些权限的用户会无法访问。</p>
+<p>例如，考虑Spittr应用的请求。首页当然是公开的，不需要进行保护。类似地，因为所有的Spittle都是公开的，所以展现Spittle的页面不需要安全性。但是，创建Spittle的请求只有认证用户才能执行。同样，尽管用户基本信息页面是公开的，不需要认证，但是，如果要处理“/spitters/me”请求，并展现当前用户的基本信息时，那么就需要进行认证，从而确定要展现谁的信息。</p>
+<p>对每个请求进行细粒度安全性控制的关键在于重载configure(HttpSecurity)方法。</p>
+<h2 id="路径保护">路径保护</h2>
+<p>如下的代码片段展现了重载的configure(HttpSecurity)方法，它为不同的URL路径有选择地应用安全性：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809806_20200322005024619_1215.png" alt></p>
+<p>configure()方法中得到的HttpSecurity对象可以在多个方面配置HTTP的安全性。在这里，我们首先调用authorizeRequests()，然后调用该方法所返回的对象的方法来配置请求级别的安全性细节。其中，第一次调用antMatchers()指定了对“/spitters/me”路径的请求需要进行认证。第二次调用antMatchers()更为具体，说明对“/spittles”路径的HTTP POST请求必须要经过认证。最后对anyRequests()的调用中，说明其他所有的请求都是允许的，不需要认证和任何的权限。</p>
+<p>antMatchers()方法中设定的路径支持Ant风格的通配符。在这里我们并没有这样使用，但是也可以使用通配符来指定路径，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809806_20200322005024403_11452.png" alt></p>
+<p>我们也可以在一个对antMatchers()方法的调用中指定多个路径：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809805_20200322005024092_22472.png" alt></p>
+<p>antMatchers()方法所使用的路径可能会包括Ant风格的通配符，而regexMatchers()方法则能够接受正则表达式来定义请求路径。例如，如下代码片段所使用的正则表达式与“/spitters/**”（Ant风格）功能是相同的：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809805_20200322005023883_19653.png" alt></p>
+<p>除了路径选择，我们还通过authenticated()和permitAll()来定义该如何保护路径。authenticated()要求在执行该请求时，必须已经登录了应用。如果用户没有认证的话，Spring Security的Filter将会捕获该请求，并将用户重定向到应用的登录页面。同时，permitAll()方法允许请求没有任何的安全限制。</p>
+<p>除了authenticated()和permitAll()以外，还有其他的一些方法能够用来定义该如何保护请求。下表描述了所有可用的方案。</p>
+<table>
+<thead>
+<tr>
+<th>方　　法</th>
+<th>能够做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>access(String)</td>
+<td>如果给定的SpEL表达式计算结果为true，就允许访问</td>
+</tr>
+<tr>
+<td>anonymous()</td>
+<td>允许匿名用户访问</td>
+</tr>
+<tr>
+<td>authenticated()</td>
+<td>允许认证过的用户访问</td>
+</tr>
+<tr>
+<td>denyAll()</td>
+<td>无条件拒绝所有访问</td>
+</tr>
+<tr>
+<td>fullyAuthenticated()</td>
+<td>如果用户是完整认证的话（不是通过Remember-me功能认证的），就允许访问</td>
+</tr>
+<tr>
+<td>hasAnyAuthority(String…)</td>
+<td>如果用户具备给定权限中的某一个的话，就允许访问</td>
+</tr>
+<tr>
+<td>hasAnyRole(String…)</td>
+<td>如果用户具备给定角色中的某一个的话，就允许访问</td>
+</tr>
+<tr>
+<td>hasAuthority(String)</td>
+<td>如果用户具备给定权限的话，就允许访问</td>
+</tr>
+<tr>
+<td>hasIpAddress(String)</td>
+<td>如果请求来自给定IP地址的话，就允许访问</td>
+</tr>
+<tr>
+<td>hasRole(String)</td>
+<td>如果用户具备给定角色的话，就允许访问</td>
+</tr>
+<tr>
+<td>not()</td>
+<td>对其他访问方法的结果求反</td>
+</tr>
+<tr>
+<td>permitAll()</td>
+<td>无条件允许访问</td>
+</tr>
+<tr>
+<td>rememberMe()</td>
+<td>如果用户是通过Remember-me功能认证的，就允许访问</td>
+</tr>
+</tbody>
+</table>
+<p>通过使用表中的方法，我们所配置的安全性能够不仅仅限于认证用户。例如，我们可以修改之前的configure()方法，要求用户不仅需要认证，还要具备ROLE_SPITTER权限：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809804_20200322005023574_19596.png" alt></p>
+<p>作为替代方案，我们还可以使用hasRole()方法，它会自动使用“ROLE_”前缀：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809803_20200322005023259_19401.png" alt></p>
+<p>我们可以将任意数量的antMatchers()、regexMatchers()和anyRequest()连接起来，以满足Web应用安全规则的需要。但是，我们需要知道，这些规则会按照给定的顺序发挥作用。所以，很重要的一点就是将最为具体的请求路径放在前面，而最不具体的路径（如anyRequest()）放在最后面。如果不这样做的话，那不具体的路径配置将会覆盖掉更为具体的路径配置。</p>
+<h2 id="使用SpEL配置安全保护">使用SpEL配置安全保护</h2>
+<p><strong>大多数路径保护方法方法都是一维的，也就是说我们可以使用hasRole()限制某个特定的角色，但是我们不能在相同的路径上同时通过hasIpAddress()限制特定的IP地址。</strong></p>
+<p>那除了这些方法以外，我们没有办法使用其他的条件。如果我们希望限制某个角色只能在星期二进行访问的话，该怎么办呢？</p>
+<p>借助access()方法，我们也可以将SpEL作为声明访问限制的一种方式。例如，如下就是使用SpEL表达式来声明具有“ROLE_SPITTER”角色才能访问“/spitter/me”URL：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809803_20200322005022943_19576.png" alt></p>
+<p>这个对“/spitter/me”的安全限制与开始时的效果是等价的，只不过这里使用了SpEL来描述安全规则。如果当前用户被授予了给定角色的话，那hasRole()表达式的计算结果就为true。</p>
+<p>让SpEL更强大的原因在于，hasRole()仅是Spring支持的安全相关表达式中的一种，下表列出了Spring Security支持的所有SpEL表达式。</p>
+<table>
+<thead>
+<tr>
+<th>安全表达式</th>
+<th>计 算 结 果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>authentication</td>
+<td>用户的认证对象</td>
+</tr>
+<tr>
+<td>denyAll</td>
+<td>结果始终为false</td>
+</tr>
+<tr>
+<td>hasAnyRole(list of roles)</td>
+<td>如果用户被授予了列表中任意的指定角色，结果为true</td>
+</tr>
+<tr>
+<td>hasRole(role)</td>
+<td>如果用户被授予了指定的角色，结果为true</td>
+</tr>
+<tr>
+<td>hasIpAddress(IP Address)</td>
+<td>如果请求来自指定IP的话，结果为true</td>
+</tr>
+<tr>
+<td>isAnonymous()</td>
+<td>如果当前用户为匿名用户，结果为true</td>
+</tr>
+<tr>
+<td>isAuthenticated()</td>
+<td>如果当前用户进行了认证的话，结果为true</td>
+</tr>
+<tr>
+<td>isFullyAuthenticated()</td>
+<td>如果当前用户进行了完整认证的话（不是通过Remember-me功能进行的认证），结果为true</td>
+</tr>
+<tr>
+<td>isRememberMe()</td>
+<td>如果当前用户是通过Remember-me自动认证的，结果为true</td>
+</tr>
+<tr>
+<td>permitAll</td>
+<td>结果始终为true</td>
+</tr>
+<tr>
+<td>principal</td>
+<td>用户的principal对象</td>
+</tr>
+</tbody>
+</table>
+<p>在掌握了Spring Security的SpEL表达式后，我们就能够不再局限于基于用户的权限进行访问限制了。例如，如果你想限制“/spitter/me” URL的访问，不仅需要ROLE_SPITTER，还需要来自指定的IP地址，那么我们可以按照如下的方式调用access()方法：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809802_20200322005022733_15930.png" alt></p>
+<p>我们可以使用SpEL实现各种各样的安全性限制。我敢打赌，你已经在想象基于SpEL所能实现的那些有趣的安全性限制了。</p>
+<h2 id="强制通道的安全性">强制通道的安全性</h2>
+<p>使用HTTP提交数据是一件具有风险的事情。如果使用HTTP发送无关紧要的信息，这可能不是什么大问题。但是如果你通过HTTP发送诸如密码和信用卡号这样的敏感信息的话，那你就是在找麻烦了。通过HTTP发送的数据没有经过加密，黑客就有机会拦截请求并且能够看到他们想看的数据。这就是为什么敏感信息要通过HTTPS来加密发送的原因。</p>
+<p>使用HTTPS似乎很简单。你要做的事情只是在URL中的HTTP后加上一个字母“s”就可以了。是这样吗？</p>
+<p>这是真的，但这是把使用HTTPS通道的责任放在了错误的地方。通过添加“s”我们就能很容易地实现页面的安全性，但是忘记添加“s”同样也是很容易出现的。如果我们的应用中有多个链接需要HTTPS，估计在其中的一两个上忘记添加“s”的概率还是很高的。</p>
+<p>另一方面，你可能还会在原本并不需要HTTPS的地方，误用HTTPS。</p>
+<p>传递到configure()方法中的HttpSecurity对象，除了具有authorizeRequests()方法以外，还有一个requiresChannel()方法，借助这个方法能够为各种URL模式声明所要求的通道。</p>
+<p>作为示例，可以参考Spittr应用的注册表单。尽管Spittr应用不需要信用卡号、社会保障号或其他特别敏感的信息，但用户有可能仍然希望信息是私密的。为了保证注册表单的数据通过HTTPS传送，我们可以在配置中添加requiresChannel()方法，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809801_20200322005022421_1919.png" alt></p>
+<p>不论何时，只要是对“/spitter/form”的请求，Spring Security都视为需要安全通道（通过调用requiresChannel()确定的）并自动将请求重定向到HTTPS上。</p>
+<p>与之相反，有些页面并不需要通过HTTPS传送。例如，首页不包含任何敏感信息，因此并不需要通过HTTPS传送。我们可以使用requiresInsecure()代替requiresSecure()方法，将首页声明为始终通过HTTP传送：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809800_20200322005022008_27890.png" alt></p>
+<p>如果通过HTTPS发送了对“/”的请求，Spring Security将会把请求重定向到不安全的HTTP通道上。</p>
+<p>在强制要求通道时，路径的选取方案与authorizeRequests()是相同的。在上面程序清单中，使用了antMatches()，但我们也可以使用regexMatchers()方法，通过正则表达式选取路径模式。</p>
+<h2 id="防止跨站请求伪造">防止跨站请求伪造</h2>
+<p>我们可以回忆一下，当一个POST请求提交到“/spittles”上时，SpittleController将会为用户创建一个新的Spittle对象。但是，如果这个POST请求来源于其他站点的话，会怎么样呢？如果在其他站点提交如下表单，这个POST请求会造成什么样的结果呢？</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809800_20200322005021699_16292.png" alt></p>
+<p>假设你禁不住获得一辆新汽车的诱惑，点击了按钮——那么你将会提交表单到如下地址<a href="http://www.spittr.com/spittles" target="_blank" rel="noopener">http://www.spittr.com/spittles</a> 。<a href="http://xn--spittr-2e8i71df5lnpucqlz5d8q9a4e0cyd0a.com" target="_blank" rel="noopener">如果你已经登录到了spittr.com</a>，那么这就会广播一条消息，让每个人都知道你做了一件蠢事。</p>
+<p>这是跨站请求伪造（cross-site request forgery，CSRF）的一个简单样例。简单来讲，如果一个站点欺骗用户提交请求到其他服务器的话，就会发生CSRF攻击，这可能会带来消极的后果。尽管提交“I’m stupid!”这样的信息到微博站点算不上什么CSRF攻击的最糟糕场景，但是你可以很容易想到更为严重的攻击情景，它可能会对你的银行账号执行难以预期的操作。</p>
+<p>从Spring Security 3.2开始，默认就会启用CSRF防护。实际上，除非你采取行为处理CSRF防护或者将这个功能禁用，否则的话，在应用中提交表单时，你可能会遇到问题。</p>
+<p>Spring Security通过一个同步token的方式来实现CSRF防护的功能。它将会拦截状态变化的请求（例如，非GET、HEAD、OPTIONS和TRACE的请求）并检查CSRF token。如果请求中不包含CSRF token的话，或者token不能与服务器端的token相匹配，请求将会失败，并抛出CsrfException异常。</p>
+<p>这意味着在你的应用中，所有的表单必须在一个“_csrf”域中提交token，而且这个token必须要与服务器端计算并存储的token一致，这样的话当表单提交的时候，才能进行匹配。</p>
+<p>好消息是，Spring Security已经简化了将token放到请求的属性中这一任务。如果你使用Thymeleaf作为页面模板的话，只要 <code>&lt;form&gt;</code> 标签的action属性添加了Thymeleaf命名空间前缀，那么就会自动生成一个“_csrf”隐藏域：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809799_20200322005021388_6529.png" alt></p>
+<p>如果使用JSP作为页面模板的话，我们要做的事情非常类似：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809799_20200322005021178_9627.png" alt></p>
+<p>更好的功能是，如果使用Spring的表单绑定标签的话， <code>&lt;sf:form&gt;</code> 标签会自动为我们添加隐藏的CSRF token标签。</p>
+<p>处理CSRF的另外一种方式就是根本不去处理它。默认是开启的</p>
+<p>我们可以在配置中通过调用csrf().disable()禁用Spring Security的CSRF防护功能，如下所示，我们可以禁用Spring Security的CSRF防护功能：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809798_20200322005020969_28496.png" alt></p>
+<p>需要提醒的是，禁用CSRF防护功能通常来讲并不是一个好主意。如果这样做的话，那么应用就会面临CSRF攻击的风险。只有在深思熟虑之后，才能使用程序清单中的配置。</p>
+<h1>视图保护</h1>
+<p>当为浏览器渲染HTML内容时，你可能希望视图中能够反映安全限制和相关的信息。一个简单的样例就是渲染用户的基本信息（比如显示“您已经以……身份登录”）。或者你想根据用户被授予了什么权限，有条件地渲染特定的视图元素。</p>
+<p>在Spring MVC应用中渲染视图的两个最重要的可选方案：JSP和Thymeleaf。不管你使用哪种方案，都有办法在视图上实现安全性。Spring Security本身提供了一个JSP标签库，而Thymeleaf通过特定的方言实现了与Spring Security的集成。</p>
+<p>让我们看一下如何将Spring Security用到视图中，就从Spring Security的JSP标签库开始吧。</p>
+<h2 id="使用SpringSecurity的JSP标签库">使用SpringSecurity的JSP标签库</h2>
+<p>Spring Security的JSP标签库很小，只包含三个标签，如表所示。</p>
+<table>
+<thead>
+<tr>
+<th>JSP标签</th>
+<th>作　　用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;security:accesscontrollist&gt;</code></td>
+<td>如果用户通过访问控制列表授予了指定的权限，那么渲染该标签体中的内容</td>
+</tr>
+<tr>
+<td><code>&lt;security:authentication&gt;</code></td>
+<td>渲染当前用户认证对象的详细信息</td>
+</tr>
+<tr>
+<td><code>&lt;security:authorize&gt;</code></td>
+<td>如果用户被授予了特定的权限或者SpEL表达式的计算结果为true，那么渲染该标签体中的内容</td>
+</tr>
+</tbody>
+</table>
+<p>为了使用JSP标签库，我们需要在对应的JSP中声明它：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809798_20200322005020658_27475.png" alt></p>
+<p>只要标签库在JSP文件中进行了声明，我们就可以使用它了。让我们看看Spring Security提供的这三个标签是如何工作的。</p>
+<h3 id="访问认证信息的细节">访问认证信息的细节</h3>
+<p>借助Spring Security JSP标签库，所能做到的最简单的一件事情就是便利地访问用户的认证信息。例如，对于Web站点来讲，在页面顶部以用户名标示显示“欢迎”或“您好”信息是很常见的。这恰恰是<code>&lt;security:authentication&gt;</code>能为我们所做的事情。例如：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809797_20200322005020449_14025.png" alt></p>
+<p>其中，property用来标示用户认证对象的一个属性。可用的属性取决于用户认证的方式。但是，我们可以依赖几个通用的属性，在不同的认证方式下，它们都是可用的，如表所示。</p>
+<table>
+<thead>
+<tr>
+<th>认 证 属 性</th>
+<th>描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>authorities</td>
+<td>一组用于表示用户所授予权限的GrantedAuthority对象</td>
+</tr>
+<tr>
+<td>Credentials</td>
+<td>用于核实用户的凭证（通常，这会是用户的密码）</td>
+</tr>
+<tr>
+<td>details</td>
+<td>认证的附加信息（IP地址、证件序列号、会话ID等）</td>
+</tr>
+<tr>
+<td>principal</td>
+<td>用户的基本信息对象</td>
+</tr>
+</tbody>
+</table>
+<p>在我们的示例中，实际上渲染的是principal属性中嵌套的username属性。</p>
+<p>当像前面示例那样使用时， <code>&lt;security:authentication&gt;</code> 将在视图中渲染属性的值。但是如果你愿意将其赋值给一个变量，那只需要在var属性中指明变量的名字即可。例如，如下展现了如何将其设置给名为loginId的属性：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809797_20200322005020240_2665.png" alt></p>
+<p>这个变量默认是定义在页面作用域内的。但是如果你愿意在其他作用域内创建它，例如请求或会话作用域（或者是能够在javax.servlet.jsp.PageContext中获取的其他作用域），那么可以通过scope属性来声明。例如，要在请求作用域内创建这个变量，那可以使用 <code>&lt;security:authentication&gt;</code> 按照如下的方式来设置：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809796_20200322005020031_16356.png" alt></p>
+<p><code>&lt;security:authentication&gt;</code> 标签非常有用，但这只是Spring Security JSP标签库功能的基础功能。让我们来看一下如何根据用户的权限来渲染内容。</p>
+<h3 id="条件性的渲染内容">条件性的渲染内容</h3>
+<p>有时候视图上的一部分内容需要根据用户被授予了什么权限来确定是否渲染。对于已经登录的用户显示登录表单，或者对还未登录的用户显示个性化的问候信息都是毫无意义的。</p>
+<p>Spring Security的<code>&lt;security:authorize&gt;</code>JSP标签能够根据用户被授予的权限有条件地渲染页面的部分内容。例如，在Spittr应用中，对于没有ROLE_SPITTER角色的用户，我们不会为其显示添加新Spitter记录的表单。程序清单展现了如何使用 <code>&lt;security:authorize&gt;</code> 标签来为具有ROLE_SPITTER角色的用户显示Spitter表单。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809794_20200322005019822_6098.png" alt></p>
+<p><strong>access属性被赋值为一个SpEL表达式</strong>，这个表达式的值将确定 <code>&lt;security: authorize&gt;</code> 标签主体内的内容是否渲染。这里我们使用了hasRole(‘ROLE_SPITTER’)表达式来确保用户具有ROLE_SPITTER角色。但是，当你设置access属性时，可以任意发挥SpEL的强大威力，包括之前所示的Spring Security所提供的表达式。</p>
+<p>借助于这些可用的表达式，可以构造出非常有意思的安全性约束。例如，假设应用中有一些管理功能只能对用户名为habuma的用户可用。也许你会像这样使用isAuthenticated()和principal表达式：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809794_20200322005019308_13254.png" alt></p>
+<p>我相信你能设计出比这个更有意思的表达式,可以尽情发挥你的想象力来构造更多的安全性约束。借助于SpEL，选择其实是无限的。</p>
+<p>但是我构造的这个示例还有一件事让人很困惑。尽管我想限制管理功能只能给habuma用户，但使用JSP标签表达式并不见得理想。确实，它能在视图上阻止链接的渲染。但是没有什么可以阻止别人在浏览器的地址栏手动输入“/admin”这个URL。</p>
+<p>根据我们在本章前面所学，这是一个很容易解决的问题。在安全配置中，添加一个对antMatchers()方法的调用将会严格限制对“/admin”这个URL的访问。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809793_20200322005019097_11077.png" alt></p>
+<p>现在，管理功能已经被锁定了。URL地址得到了保护，并且到这个URL的链接在用户没有授权使用的情况下不会显示。但是为了做到这一点，我们需要在两个地方声明SpEL表达式——在安全配置中以及在 <code>&lt;security:authorize&gt;</code> 标签的access属性中。有没有办法消除这种重复性，并且还要确保只有规则条件满足的情况下才渲染管理功能的链接呢？</p>
+<p>这是 <code>&lt;security:authorize&gt;</code> 的url属性所要做的事情。它不像access属性那样明确声明安全性限制，<strong>url属性对一个给定的URL模式会间接引用其安全性约束</strong>。鉴于我们已经在Spring Security配置中为“/admin”声明了安全性约束，所以我们可以这样使用url属性：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809793_20200322005018889_8540.png" alt></p>
+<p>因为只有基本信息中用户名为“habuma”的已认证用户才能访问“/admin” URL，所以只有满足以上条件， <code>&lt;security:authorize&gt;</code> 标签主体中的内容才会被渲染。我们只在一个地方配置了表达式（安全配置中），但是在两个地方进行了应用。</p>
+<p>Spring Security的JSP标签库非常便利，尤其是只给满足条件的用户渲染特定的视图元素时更是如此。如果我们选择Thymeleaf而不是JSP作为视图方案的话，我们其实还能延续这种好运气。我们已经看到Thymeleaf的Spring方言能够自动为表单添加隐藏的CSRF token，现在我们看一下Thymeleaf如何支持Spring Security。</p>
+<h2 id="使用Thymeleaf的SpringSecurity方言">使用Thymeleaf的SpringSecurity方言</h2>
+<p>与Spring Security的JSP标签库类似，Thymeleaf的安全方言提供了条件化渲染和显示认证细节的能力。下表列出了安全方言所提供的属性。</p>
+<table>
+<thead>
+<tr>
+<th>属　　性</th>
+<th>作　　用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sec:authentication</td>
+<td>渲染认证对象的属性。类似于Spring Security的 <code>&lt;sec:authentication/&gt;</code> JSP标签</td>
+</tr>
+<tr>
+<td>sec:authorize</td>
+<td>基于表达式的计算结果，条件性的渲染内容。类似于Spring Security的 <code>&lt;sec:authorize/&gt;</code> JSP标签</td>
+</tr>
+<tr>
+<td>sec:authorize-acl</td>
+<td>基于表达式的计算结果，条件性的渲染内容。类似于Spring Security的 <code>&lt;sec:accesscontrollist/&gt;</code>  JSP标签</td>
+</tr>
+<tr>
+<td>sec:authorize-expr</td>
+<td>sec:authorize属性的别名</td>
+</tr>
+<tr>
+<td>sec:authorize-url</td>
+<td>基于给定URL路径相关的安全规则，条件性的渲染内容。类似于Spring Security的 <code>&lt;sec:authorize/&gt;</code>  JSP标签使用url属性时的场景</td>
+</tr>
+</tbody>
+</table>
+<p>为了使用安全方言，我们需要确保Thymeleaf Extras Spring Security已经位于应用的类路径下。然后，还需要在配置中使用SpringTemplateEngine来注册SpringSecurity Dialect。下面程序清单所展现的@Bean方法声明了SpringTemplateEngine bean，其中就包含了SpringSecurityDialect。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809791_20200322005018378_12323.png" alt></p>
+<p>安全方言注册完成之后，我们就可以在Thymeleaf模板中使用它的属性了。首先，需要在使用这些属性的模板中声明安全命名空间：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809791_20200322005017969_14098.png" alt></p>
+<p>在这里，标准的Thymeleaf方法依旧与之前一样，使用th前缀，安全方言则设置为使用sec前缀。</p>
+<p>这样我们就能在任意合适的地方使用Thymeleaf属性了。比如，假设我们想要为认证用户渲染“Hello”文本。如下的Thymeleaf模板代码片段就能完成这项任务：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809790_20200322005017657_14067.png" alt></p>
+<p>sec:authorize属性会接受一个SpEL表达式。如果表达式的计算结果为true，那么元素的主体内容就会渲染。在本例中，表达式为isAuthenticated()，所以只有用户已经进行了认证，才会渲染 <code>&lt;div&gt;</code> 标签的主体内容。就这个标签的主体内容部分而言，它的功能是使用认证对象的name属性提示“Hello”文本。</p>
+<p>你可能还记得，在Spring Security中，借助 <code>&lt;sec:authorize&gt;</code> JSP标签的url属性能够基于给定URL的权限有条件地渲染内容。在Thymeleaf中，我们可以通过sec:authorize-url属性完成相同的功能。例如，如下Thymeleaf代码片段所实现的功能与之前 <code>&lt;sec:authorize&gt;</code>  JSP标签和url属性所实现的功能是相同的：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584809790_20200322005017340_17430.png" alt></p>
+<p>如果用户有权限访问“/admin”的话，那么到管理页面的链接就会渲染，否则的话，这个链接将不会渲染。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>39-WEB安全功能配置</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">用户存储配置：configure(AuthenticationManagerBuilder)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于内存"><span class="nav-text">基于内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于数据库表"><span class="nav-text">基于数据库表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重写默认的用户查询功能"><span class="nav-text">重写默认的用户查询功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用转码后的密码"><span class="nav-text">使用转码后的密码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于LDAP进行认证"><span class="nav-text">基于LDAP进行认证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置密码比对"><span class="nav-text">配置密码比对</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用远程的LDAP服务器"><span class="nav-text">引用远程的LDAP服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置嵌入式的LDAP服务器"><span class="nav-text">配置嵌入式的LDAP服务器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置自定义的用户服务"><span class="nav-text">配置自定义的用户服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">安全性控制：configure(HttpSecurity)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#路径保护"><span class="nav-text">路径保护</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用SpEL配置安全保护"><span class="nav-text">使用SpEL配置安全保护</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#强制通道的安全性"><span class="nav-text">强制通道的安全性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#防止跨站请求伪造"><span class="nav-text">防止跨站请求伪造</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">视图保护</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用SpringSecurity的JSP标签库"><span class="nav-text">使用SpringSecurity的JSP标签库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#访问认证信息的细节"><span class="nav-text">访问认证信息的细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#条件性的渲染内容"><span class="nav-text">条件性的渲染内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Thymeleaf的SpringSecurity方言"><span class="nav-text">使用Thymeleaf的SpringSecurity方言</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

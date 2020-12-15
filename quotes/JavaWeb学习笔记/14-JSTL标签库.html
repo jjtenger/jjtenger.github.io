@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="JSTL标签库的使用是为弥补html标签的不足，规范自定义标签的使用而诞生的。使用JSLT标签的目的就是不希望在jsp页面中出现java逻辑代码。JSTL标签库的分类 核心标签(用得最多) 国际化标签(I18N格式化标签) 数据库标签(SQL标签，很少使用) XML标签(几乎不用) JSTL函数(EL函数)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;14-JSTL%E6%A0%87%E7%AD%BE%E5%BA%93.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="JSTL标签库的使用是为弥补html标签的不足，规范自定义标签的使用而诞生的。使用JSLT标签的目的就是不希望在jsp页面中出现java逻辑代码。JSTL标签库的分类 核心标签(用得最多) 国际化标签(I18N格式化标签) 数据库标签(SQL标签，很少使用) XML标签(几乎不用) JSTL函数(EL函数)">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584776544_20200321153054319_21186.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584776543_20200321153054108_25823.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584776535_20200321153053695_3768.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584776534_20200321153053280_15396.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584776534_20200321153049942_3802.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.020Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584776544_20200321153054319_21186.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/14-JSTL%E6%A0%87%E7%AD%BE%E5%BA%93">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>14-JSTL标签库</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>JSTL标签库的使用是为弥补html标签的不足，规范自定义标签的使用而诞生的。使用JSLT标签的目的就是不希望在jsp页面中出现java逻辑代码。</p><h1>JSTL标签库的分类</h1><ul>
+<li>核心标签(用得最多)</li>
+<li>国际化标签(I18N格式化标签)</li>
+<li>数据库标签(SQL标签，很少使用)</li>
+<li>XML标签(几乎不用)</li>
+<li>JSTL函数(EL函数)</li>
+</ul><a id="more"></a>
+
+
+<h1>核心标签库</h1>
+<p>JSTL的核心标签库标签共13个，使用这些标签能够完成JSP页面的基本功能，减少编码工作。</p>
+<p>从功能上可以分为4类：表达式控制标签、流程控制标签、循环标签、URL操作标签。</p>
+<ul>
+<li>表达式控制标签：out标签、set标签、remove标签、catch标签。</li>
+<li>流程控制标签：if标签、choose标签、when标签、otherwise标签。</li>
+<li>循环标签：forEach标签、forTokens标签。</li>
+<li>URL操作标签：import标签、url标签、redirect标签、param标签。</li>
+</ul>
+<p>在JSP页面引入核心标签库的代码为：</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ taglib prefix=<span class="string">"c"</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/core"</span> %&gt;</span><br></pre></td></tr></table></figure>
+<h1><code>&lt;c:out&gt;</code> 标签</h1>
+<p><code>&lt;c:out&gt;</code> 标签主要是用来输出数据对象（字符串、表达式）的内容或结果。</p>
+<p>在使用Java脚本输出时常使用的方式为： <code>&lt;% out.println(“字符串”)%&gt;</code>  或者  <code>&lt;%=表达式%&gt;</code>  ，在web开发中，为了避免暴露逻辑代码会尽量减少页面中的Java脚本，使用 <code>&lt;c:out&gt;</code> 标签就可以实现以上功能。</p>
+<ul>
+<li><code>&lt;c:out value=&quot;字符串&quot;&gt;</code></li>
+<li><code>&lt;c:out value=&quot;EL表达式&quot;&gt;</code></li>
+</ul>
+<p><strong><code>&lt;c:out&gt;</code>与EL表达式</strong></p>
+<p>STL的使用是和EL表达式分不开的。EL表达式虽然可以直接将结果返回给页面，但有时得到的结果为空， <code>&lt;c:out&gt;</code> 有特定的结果处理功能，可以避免该情况。另外，EL的单独使用会降低程序的易读性，建议把EL的结果输入放入 <code>&lt;c:out&gt;</code> 标签中。</p>
+<p><strong><code>&lt;c:out&gt;</code>标签的语法</strong></p>
+<p><code>&lt;c:out&gt;</code> 标签的使用有两种语法格式：</p>
+<ul>
+<li>【语法1】：</li>
+</ul>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:out value=<span class="string">"要显示的数据对象"</span> [escapeXml=<span class="string">"true|false"</span>] [<span class="keyword">default</span>=<span class="string">"默认值"</span>]/&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>【语法2】：</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:out value="要显示的数据对象" [escapeXml="true|false"]&gt;默认值&lt;/c:out&gt;</span><br></pre></td></tr></table></figure>
+<p>这两种方式没有本质的区别，只是格式上的差别。[escapeXml=“true|false”] [default=“默认值”]这些使用[]属性表示是不是必须的。</p>
+<p><strong><code>&lt;c:out&gt;</code>标签属性说明</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584776544_20200321153054319_21186.png" alt></p>
+<p>代码示例如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%--引入JSTL核心标签库 --%&gt;</span><br><span class="line">&lt;%@ taglib prefix=<span class="string">"c"</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/core"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;JSTL: --表达式控制标签“out”标签的使用&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h3&gt;&lt;c:out value="下面的代码演示了c:out的使用，以及在不同属性值状态下的结果。"/&gt;&lt;/h3&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line">&lt;ul&gt;</span><br><span class="line">   &lt;%--（<span class="number">1</span>）直接输出了一个字符串。 --%&gt;</span><br><span class="line">   &lt;li&gt;（1）&lt;c:out value="JSTL的out标签的使用" /&gt;&lt;/li&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;li&gt;（2）&lt;c:out value="&lt;a href='http://www.cnblogs.com/'&gt;点击链接到博客园&lt;/a&gt;" /&gt;&lt;/li&gt;</span><br><span class="line">   &lt;%-- escapeXml：避免xml转义输出，默认情况下 escapeXml=<span class="string">"true"</span> --%&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;%-- escapeXml=<span class="string">"false"</span>表示value值中的html标签进行xml转义输出 --%&gt;</span><br><span class="line">   &lt;li&gt;（3）&lt;c:out value="&lt;a href='http://www.cnblogs.com/'&gt;点击链接到博客园&lt;/a&gt;" escapeXml="false"/&gt;&lt;/li&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;%--(<span class="number">4</span>）字符串中有转义字符，但在默认情况下没有转换。 --%&gt;</span><br><span class="line">   &lt;li&gt;（4）&lt;c:out value="&lt;未使用字符转义&gt;" /&gt;&lt;/li&gt;</span><br><span class="line">   </span><br><span class="line">   &lt;%--（<span class="number">5</span>）使用了转义字符&lt;和&gt;分别转换成&lt;和&gt;符号。 --%&gt;</span><br><span class="line">   &lt;li&gt;（5）&lt;c:out value="&lt;使用字符转义&gt;" escapeXml="false"&gt;&lt;/c:out&gt;&lt;/li&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;%--（<span class="number">6</span>）设定了默认值，从EL表达式$&#123;<span class="keyword">null</span>&#125;得到空值，所以直接输出设定的默认值。 --%&gt;</span><br><span class="line">   &lt;li&gt;（6）&lt;c:out value="$&#123;null&#125;"&gt;使用了默认值&lt;/c:out&gt;&lt;/li&gt;</span><br><span class="line">   &lt;%--（<span class="number">7</span>）未设定默认值，输出结果为空。 --%&gt;</span><br><span class="line">   &lt;li&gt;（7）&lt;c:out value="$&#123;null&#125;"&gt;&lt;/c:out&gt;&lt;/li&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;%--（<span class="number">8</span>）设定了默认值，从EL表达式$&#123;<span class="keyword">null</span>&#125;得到空值，所以直接输出设定的默认值。 --%&gt;</span><br><span class="line">   &lt;li&gt;（8）&lt;c:out value="$&#123;null&#125;" default="默认值"/&gt;&lt;/li&gt;</span><br><span class="line">   &lt;%--（<span class="number">9</span>）未设定默认值，输出结果为空。 --%&gt;</span><br><span class="line">   &lt;li&gt;（9）&lt;c:out value="$&#123;null&#125;"/&gt;&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h1><code>&lt;c:set&gt;</code> 标签</h1>
+<p><code>&lt;c:set&gt;</code> 标签用于把某一个对象存在指定的域范围内，或者将某一个对象存储到Map或者JavaBean对象中。</p>
+<p><code>&lt;c:set&gt;</code> 标签的编写共有4种语法格式：</p>
+<p><strong>把值存在指定的域范围内</strong></p>
+<ul>
+<li>语法1：存值，把一个值放在指定的域范围内。</li>
+</ul>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:set value=<span class="string">"值1"</span> <span class="keyword">var</span>=<span class="string">"name1"</span> [scope=<span class="string">"page|request|session|application"</span>]/&gt;</span><br></pre></td></tr></table></figure>
+<p>含义：把一个变量名为name1值为“值1&quot;的变量存储在指定的scope范围内。</p>
+<ul>
+<li>语法2：</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:set <span class="keyword">var</span>=<span class="string">"name2"</span> [scope=<span class="string">"page|request|session|application"</span>]&gt;</span><br><span class="line">    值<span class="number">2</span></span><br><span class="line">&lt;/c:set&gt;</span><br></pre></td></tr></table></figure>
+<p>含义：把一个变量名为name2，值为值2的变量存储在指定的scope范围内。</p>
+<p><strong>给指定JavaBean或Map赋值</strong></p>
+<ul>
+<li>语法3：</li>
+</ul>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:set value=<span class="string">"值3"</span> target=<span class="string">"JavaBean对象"</span> property=<span class="string">"属性名"</span>/&gt;</span><br></pre></td></tr></table></figure>
+<p>含义：把一个值为“值3&quot;赋值给指定的JavaBean的属性名。相当与setter()方法。</p>
+<ul>
+<li>语法4：</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:set target=<span class="string">"JavaBean对象"</span> property=<span class="string">"属性名"</span>&gt;</span><br><span class="line">    值<span class="number">4</span></span><br><span class="line">&lt;/c:set&gt;</span><br></pre></td></tr></table></figure>
+<p>含义：把一个值4赋值给指定的JavaBean的属性名。</p>
+<p>注意：</p>
+<p>设置JavaBean的属性值，等同与setter方法，Target指向实例化后的对象，property指向要插入值的参数名。</p>
+<p>使用target时一定要指向实例化后的JavaBean对象，也就是要跟 <code>&lt;jsp:useBean&gt;</code> 配套使用。</p>
+<p>使用JSP的指令元素指定使用的JavaBean：</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;jsp:useBean id=<span class="string">"person"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"_4_JSP.jsp_tag.jstl.demo.Person"</span>/&gt;</span><br></pre></td></tr></table></figure>
+<p>也可以java脚本实例化，但这就失去了是用标签的本质意义。使用Java脚本实例化：</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;%<span class="meta">@page</span> <span class="keyword">import</span>=<span class="string">"javabean.Person"</span>%&gt;</span><br><span class="line">&lt;% Person person=<span class="keyword">new</span> Person(); %&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>set标签属性说明</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584776543_20200321153054108_25823.png" alt></p>
+<p>示例代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%--引入JSTL核心标签库 --%&gt;</span><br><span class="line">&lt;%@ taglib prefix=<span class="string">"c"</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/core"</span>%&gt;</span><br><span class="line"> </span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;title&gt;JSTL: --表达式控制标签“set”标签的使用&lt;/title&gt;</span><br><span class="line"> </span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;代码给出了给指定scope范围赋值的示例。&lt;/h3&gt;</span><br><span class="line">&lt;ul&gt;</span><br><span class="line">   &lt;%--通过&lt;c:set&gt;标签将data1的值放入page范围中。--%&gt;</span><br><span class="line">   &lt;li&gt;把一个值放入page域中:&lt;c:set var="data1" value="2016-08-11" scope="page"/&gt;&lt;/li&gt;</span><br><span class="line">   &lt;%--使用EL表达式从pageScope得到data1的值。--%&gt;</span><br><span class="line">   &lt;li&gt;从page域中得到值：$&#123;pageScope.data1&#125;&lt;/li&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;%--通过&lt;c:set&gt;标签将data2的值放入request范围中。--%&gt;</span><br><span class="line">   &lt;li&gt;把一个值放入request域中:&lt;c:set var="data2" value="2016-08-11 11:23" scope="request"/&gt;&lt;/li&gt;</span><br><span class="line">   &lt;%--使用EL表达式从requestScope得到data2的值。--%&gt;</span><br><span class="line">   &lt;li&gt;从request域中得到值：$&#123;requestScope.data2&#125;&lt;/li&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;%--通过&lt;c:set&gt;标签将值name1的值放入session范围中。--%&gt;</span><br><span class="line">   &lt;li&gt;把一个值放入session域中。&lt;c:set value="孤傲苍狼" var="name1" scope="session"&gt;&lt;/c:set&gt;&lt;/li&gt;</span><br><span class="line">   &lt;%--使用EL表达式从sessionScope得到name1的值。--%&gt;</span><br><span class="line">   &lt;li&gt;从session域中得到值:$&#123;sessionScope.name1&#125; &lt;/li&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;%--把name2放入application范围中。 --%&gt;</span><br><span class="line">   &lt;li&gt;把一个值放入application域中。&lt;c:set var="name2" scope="application"&gt;白虎神皇&lt;/c:set&gt;&lt;/li&gt;</span><br><span class="line">   &lt;%--使用EL表达式从application范围中取值，用&lt;c:out&gt;标签输出使得页面规范化。 --%&gt;</span><br><span class="line">   &lt;li&gt;使用out标签和EL表达式嵌套从application域中得到值：</span><br><span class="line">       &lt;c:out value="$&#123;applicationScope.name2&#125;"&gt;未得到name的值&lt;/c:out&gt;</span><br><span class="line">   &lt;/li&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;%--不指定范围使用EL自动查找得到值 --%&gt;</span><br><span class="line">   &lt;li&gt;未指定scope的范围，会从不同的范围内查找得到相应的值：$&#123;data1&#125;、$&#123;data2&#125;、$&#123;name1&#125;、$&#123;name2&#125;&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;使用Java脚本实现以上功能&lt;/h3&gt;</span><br><span class="line">&lt;ul&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;li&gt;把一个值放入page域中。&lt;%pageContext.setAttribute("data1","xdp");%&gt;&lt;/li&gt;</span><br><span class="line">   &lt;li&gt;从page域中得到值:&lt;%out.println(pageContext.getAttribute("data1"));%&gt;&lt;/li&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;li&gt;把一个值放入request域中。&lt;%request.setAttribute("data2","gacl");%&gt;&lt;/li&gt;</span><br><span class="line">   &lt;li&gt;从request域中得到值:&lt;%out.println(request.getAttribute("data2"));%&gt;&lt;/li&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;li&gt;把一个值放入session域中。&lt;%session.setAttribute("name1","孤傲苍狼");%&gt;&lt;/li&gt;</span><br><span class="line">   &lt;li&gt;从session中域得到值:&lt;%out.println(session.getAttribute("name1"));%&gt;&lt;/li&gt;</span><br><span class="line">   &lt;%--out.println()方法与&lt;%=%&gt;表达式输出功能一样</span><br><span class="line">   但使用表达式输出（&lt;%=%&gt;）明显要比使用out.println()输出更好。</span><br><span class="line">   --%&gt;</span><br><span class="line">   &lt;li&gt;&lt;%=session.getAttribute("name1") %&gt;&lt;/li&gt;</span><br><span class="line">   &lt;li&gt;把另一个值放入application域中。&lt;%application.setAttribute("name2","白虎神皇");%&gt;&lt;/li&gt;</span><br><span class="line">   &lt;li&gt; 从application域中得到值：&lt;%out.println(application.getAttribute("name2"));%&gt;&lt;/li&gt;</span><br><span class="line">   &lt;li&gt;&lt;%=application.getAttribute("name2")%&gt;&lt;/li&gt;</span><br><span class="line"> </span><br><span class="line">   &lt;li&gt;未指定scope的范围，会从不同的范围内查找得到相应的值：</span><br><span class="line">       &lt;%=pageContext.findAttribute(<span class="string">"data1"</span>)%&gt;、</span><br><span class="line">       &lt;%=pageContext.findAttribute(<span class="string">"data2"</span>)%&gt;、</span><br><span class="line">       &lt;%=pageContext.findAttribute(<span class="string">"name1"</span>)%&gt;、</span><br><span class="line">       &lt;%=pageContext.findAttribute(<span class="string">"name2"</span>)%&gt;</span><br><span class="line">   &lt;/li&gt;</span><br><span class="line"> </span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;操作JavaBean，设置JavaBean的属性值&lt;/h3&gt;</span><br><span class="line">&lt;%--设置JavaBean的属性值，等同与setter方法，Target指向实例化后的对象，property指向要插入值的参数名。</span><br><span class="line">注意：使用target时一定要指向实例化后的JavaBean对象，也就是要跟&lt;jsp:useBean&gt;配套使用，</span><br><span class="line">也可以java脚本实例化，但这就失去了是用标签的本质意义。</span><br><span class="line">使用Java脚本实例化：</span><br><span class="line">&lt;%<span class="meta">@page</span> <span class="keyword">import</span>=<span class="string">"javabean.Person"</span>%&gt;</span><br><span class="line">&lt;% Person person=<span class="keyword">new</span> Person(); %&gt;</span><br><span class="line">--%&gt;</span><br><span class="line"> </span><br><span class="line">&lt;%--使用JSP的指令元素指定要使用的JavaBean --%&gt;</span><br><span class="line">&lt;jsp:useBean id=<span class="string">"person"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"_4_JSP.jsp_tag.jstl.demo.Person"</span>/&gt;</span><br><span class="line">&lt;%--负责实例化Bean，id指定实例化后的对象名，可以通过$&#123;person&#125;得到person在内存中的值 --%&gt;</span><br><span class="line"> </span><br><span class="line">&lt;c:set target="$&#123;person&#125;" property="name"&gt;孤傲苍狼&lt;/c:set&gt;</span><br><span class="line">&lt;c:set target="$&#123;person&#125;" property="age"&gt;25&lt;/c:set&gt;</span><br><span class="line">&lt;c:set target="$&#123;person&#125;" property="sex"&gt;男&lt;/c:set&gt;</span><br><span class="line">&lt;c:set target="$&#123;person&#125;" property="home"&gt;中国&lt;/c:set&gt;</span><br><span class="line">&lt;ul&gt;</span><br><span class="line">   &lt;li&gt;使用的目标对象为：$&#123;person&#125;&lt;/li&gt;</span><br><span class="line">   &lt;li&gt;从Bean中获得的name值为：&lt;c:out value="$&#123;person.name&#125;"&gt;&lt;/c:out&gt;&lt;/li&gt;</span><br><span class="line">   &lt;li&gt;从Bean中获得的age值为：&lt;c:out value="$&#123;person.age&#125;"&gt;&lt;/c:out&gt;&lt;/li&gt;</span><br><span class="line">   &lt;li&gt;从Bean中获得的sex值为：&lt;c:out value="$&#123;person.sex&#125;"&gt;&lt;/c:out&gt;&lt;/li&gt;</span><br><span class="line">   &lt;li&gt;从Bean中获得的home值为：&lt;c:out value="$&#123;person.home&#125;"&gt;&lt;/c:out&gt;&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;操作Map&lt;/h3&gt;</span><br><span class="line">&lt;%</span><br><span class="line">   Map map = <span class="keyword">new</span> HashMap();</span><br><span class="line">   request.setAttribute(<span class="string">"map"</span>,map);</span><br><span class="line">%&gt;</span><br><span class="line">&lt;%--将key的值存储到map集合中 --%&gt;</span><br><span class="line">&lt;c:set property=<span class="string">"key"</span> value=<span class="string">"jjttenger"</span> target=<span class="string">"$&#123;map&#125;"</span>/&gt;</span><br><span class="line">$&#123;map.key&#125;</span><br><span class="line"> </span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>代码中的Person类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String age;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String home;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String sex;</span><br><span class="line">    </span><br><span class="line">   <span class="comment">//省略getter/setter </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1><code>&lt;c:remove&gt;</code> 标签</h1>
+<p><strong><code>&lt;c:remove&gt;</code>标签的功能</strong></p>
+<p><code>&lt;c:remove&gt;</code> 标签主要用来从指定的JSP范围内移除指定的变量。</p>
+<p><strong><code>&lt;c:remove&gt;</code>标签的语法</strong></p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:remove <span class="keyword">var</span>=<span class="string">"变量名"</span> [scope=<span class="string">"page|request|session|application"</span>]/&gt;</span><br></pre></td></tr></table></figure>
+<p>其中var属性是必须的，scope可以以省略。</p>
+<p>示例代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%--引入JSTL核心标签库 --%&gt;</span><br><span class="line">&lt;%@ taglib prefix=<span class="string">"c"</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/core"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;JSTL: --表达式控制标签“remove”标签的使用&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;ul&gt;</span><br><span class="line">   &lt;c:set var="name" scope="session"&gt;孤傲苍狼&lt;/c:set&gt;</span><br><span class="line">   &lt;c:set var="age" scope="session"&gt;25&lt;/c:set&gt;</span><br><span class="line">   &lt;li&gt;&lt;c:out value="$&#123;sessionScope.name&#125;"&gt;&lt;/c:out&gt;&lt;/li&gt;</span><br><span class="line">   &lt;li&gt;&lt;c:out value="$&#123;sessionScope.age&#125;"&gt;&lt;/c:out&gt;&lt;/li&gt;</span><br><span class="line">   &lt;%--使用remove标签移除age变量 --%&gt;</span><br><span class="line">   &lt;c:remove <span class="keyword">var</span>=<span class="string">"age"</span> /&gt;</span><br><span class="line">   &lt;li&gt;&lt;c:out value="$&#123;sessionScope.name&#125;"&gt;&lt;/c:out&gt;&lt;/li&gt;</span><br><span class="line">   &lt;li&gt;&lt;c:out value="$&#123;sessionScope.age&#125;"&gt;&lt;/c:out&gt;&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h1><code>&lt;c:catch&gt;</code> 标签</h1>
+<p><strong><code>&lt;c:catch&gt;</code>标签的功能</strong></p>
+<p><code>&lt;c:catch&gt;</code> 标签用于捕获嵌套在标签体中的内容抛出的异常。</p>
+<p><strong><code>&lt;c:catch&gt;</code>标签的语法</strong></p>
+<p>其语法格式如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:catch [var="varName"]&gt;容易产生异常的代码&lt;/c:catch&gt;</span><br></pre></td></tr></table></figure>
+<p>var属性用于标识 <code>&lt;c:catch&gt;</code> 标签捕获的异常对象，它将保存在page这个Web域中。</p>
+<p>示例代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%--引入JSTL核心标签库 --%&gt;</span><br><span class="line">&lt;%@ taglib prefix=<span class="string">"c"</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/core"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;JSTL: --表达式控制标签“catch”标签实例&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h4&gt;catch标签实例&lt;/h4&gt;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line">&lt;%--把容易产生异常的代码放在&lt;c:catch&gt;&lt;/c:catch&gt;中，</span><br><span class="line">自定义一个变量errorInfo用于存储异常信息 --%&gt;</span><br><span class="line">&lt;c:<span class="keyword">catch</span> <span class="keyword">var</span>=<span class="string">"errorInfo"</span>&gt;</span><br><span class="line">   &lt;%--实现了一段异常代码，向一个不存在的JavaBean中插入一个值--%&gt;</span><br><span class="line">   &lt;c:set target="person" property="hao"&gt;&lt;/c:set&gt;</span><br><span class="line">&lt;/c:catch&gt;</span><br><span class="line">&lt;%--用EL表达式得到errorInfo的值，并使用&lt;c:out&gt;标签输出 --%&gt;</span><br><span class="line">异常：&lt;c:out value=<span class="string">"$&#123;errorInfo&#125;"</span> /&gt;&lt;br /&gt;</span><br><span class="line">异常 errorInfo.getMessage：&lt;c:out value=<span class="string">"$&#123;errorInfo.message&#125;"</span> /&gt;&lt;br /&gt;</span><br><span class="line">异常 errorInfo.getCause：&lt;c:out value=<span class="string">"$&#123;errorInfo.cause&#125;"</span> /&gt;&lt;br /&gt;</span><br><span class="line">异常 errorInfo.getStackTrace：&lt;c:out value=<span class="string">"$&#123;errorInfo.stackTrace&#125;"</span> /&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h1><code>&lt;c:if&gt;</code> 标签</h1>
+<p><strong><code>&lt;c:if&gt;</code>标签的功能</strong></p>
+<p><code>&lt;c:if&gt;</code> 标签和程序中的if语句作用相同，用来实现条件控制。</p>
+<p><strong><code>&lt;c:if&gt;</code>标签的语法</strong></p>
+<ul>
+<li>【语法1】：没有标签体内容(body)</li>
+</ul>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:<span class="keyword">if</span> test=<span class="string">"testCondition"</span> <span class="keyword">var</span>=<span class="string">"varName"</span> [scope=<span class="string">"&#123;page|request|session|application&#125;"</span>]/&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>【语法2】：有标签体内容</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:<span class="keyword">if</span> test=<span class="string">"testCondition"</span> [<span class="keyword">var</span>=<span class="string">"varName"</span>] [scope=<span class="string">"&#123;page|request|session|application&#125;"</span>]&gt;</span><br><span class="line">    标签体内容</span><br><span class="line">&lt;/c:if&gt;</span><br></pre></td></tr></table></figure>
+<p>【参数说明】</p>
+<ul>
+<li>test属性用于存放判断的条件，一般使用EL表达式来编写。</li>
+<li>var属性用来存放判断的结果，类型为true或false。</li>
+<li>scopes属性用来指定var属性存放的范围。</li>
+</ul>
+<p>** <code>&lt;c:if&gt;</code> 标签属性说明**</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584776535_20200321153053695_3768.png" alt></p>
+<p>示例代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%--引入JSTL核心标签库 --%&gt;</span><br><span class="line">&lt;%@ taglib prefix=<span class="string">"c"</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/core"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;JSTL: --流程控制标签 if标签示例&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h4&gt;if标签示例&lt;/h4&gt;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line">&lt;!-- 提交给jsp页面自身--&gt;</span><br><span class="line">&lt;form action=<span class="string">"c_if_demo01.jsp"</span> method=<span class="string">"post"</span>&gt;</span><br><span class="line">   &lt;input type=<span class="string">"text"</span> name=<span class="string">"uname"</span> value=<span class="string">"$&#123;param.uname&#125;"</span>&gt;</span><br><span class="line">   &lt;input type=<span class="string">"submit"</span> value=<span class="string">"登录"</span>&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line">&lt;%--使用<span class="keyword">if</span>标签进行判断并把检验后的结果赋给adminchock，存储在默认的page范围中。 --%&gt;</span><br><span class="line">&lt;c:<span class="keyword">if</span> test=<span class="string">"$&#123;param.uname=='admin'&#125;"</span> <span class="keyword">var</span>=<span class="string">"adminchock"</span>&gt;</span><br><span class="line">   &lt;%--可以把adminchock的属性范围设置为session，这样就可以在其他的页面中得到adminchock的值，</span><br><span class="line">   使用&lt;c:<span class="keyword">if</span> text=”$&#123;adminchock&#125;”&gt;&lt;c:<span class="keyword">if</span>&gt;判断，实现不同的权限。 --%&gt;</span><br><span class="line">   &lt;c:out value=<span class="string">"管理员欢迎您！"</span>/&gt;</span><br><span class="line">&lt;/c:if&gt;</span><br><span class="line">&lt;%--使用EL表达式得到adminchock的值，如果输入的用户名为admin将显示<span class="keyword">true</span>。 --%&gt;</span><br><span class="line">$&#123;adminchock&#125;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h1><code>&lt;c:choose&gt;</code> 、 <code>&lt;c:when&gt;</code> 和 <code>&lt;c:otherwise&gt;</code> 标签</h1>
+<p><strong>标签功能</strong></p>
+<p><code>&lt;c:choose&gt;</code> 、 <code>&lt;c:when&gt;</code> 和 <code>&lt;c:otherwise&gt;</code> 这3个标签通常情况下是一起使用的， <code>&lt;c:choose&gt;</code> 标签作为 <code>&lt;c:when&gt;</code> 和 <code>&lt;c:otherwise&gt;</code> 标签的父标签来使用。</p>
+<p>使用 <code>&lt;c:choose&gt;</code> ， <code>&lt;c:when&gt;</code> 和 <code>&lt;c:otherwise&gt;</code> 三个标签，可以构造类似 “if-else if-else” 的复杂条件判断结构。</p>
+<p><strong>语法</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:choose&gt;</span><br><span class="line">  &lt;c:when test=<span class="string">"条件1"</span>&gt;</span><br><span class="line">     <span class="comment">//业务逻辑1</span></span><br><span class="line">  &lt;/c:when&gt;</span><br><span class="line">  &lt;c:when test=<span class="string">"条件2"</span>&gt;</span><br><span class="line">     <span class="comment">//业务逻辑2</span></span><br><span class="line">  &lt;/c:when&gt;</span><br><span class="line">  &lt;c:when test=<span class="string">"条件n"</span>&gt;</span><br><span class="line">     <span class="comment">//业务逻辑n</span></span><br><span class="line">  &lt;/c:when&gt;</span><br><span class="line">  &lt;c:otherwise&gt;</span><br><span class="line">     <span class="comment">//业务逻辑</span></span><br><span class="line">  &lt;/c:otherwise&gt;</span><br><span class="line">&lt;/c:choose&gt;</span><br></pre></td></tr></table></figure>
+<p>示例代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%--引入JSTL核心标签库 --%&gt;</span><br><span class="line">&lt;%@ taglib prefix=<span class="string">"c"</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/core"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;JSTL: -- choose及其嵌套标签标签示例&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h4&gt;choose及其嵌套标签示例&lt;/h4&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;div&gt;</span><br><span class="line">&lt;!-- 提交给jsp页面自身--&gt;</span><br><span class="line">&lt;form action=<span class="string">"c_choose_demo01.jsp"</span> method=<span class="string">"post"</span>&gt;</span><br><span class="line">   &lt;input type=<span class="string">"text"</span> name=<span class="string">"score"</span> value=<span class="string">"$&#123;param.score&#125;"</span>&gt;</span><br><span class="line">   &lt;input type=<span class="string">"submit"</span> value=<span class="string">"提交"</span>&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;div&gt;</span><br><span class="line">&lt;c:choose&gt;</span><br><span class="line">   &lt;%--使用&lt;c:when&gt;进行条件判断。</span><br><span class="line">       如果大于等于<span class="number">90</span>，输出“您的成绩为优秀”；</span><br><span class="line">       如果大于等于<span class="number">70</span>小于<span class="number">90</span>，输出“您的成绩为良好”；</span><br><span class="line">       大于等于<span class="number">60</span>小于<span class="number">70</span>，输出“您的成绩为及格”；</span><br><span class="line">       其他（otherwise）输出“对不起，您没能通过考试”。</span><br><span class="line">    --%&gt;</span><br><span class="line">   &lt;c:when test=<span class="string">"$&#123;param.score&gt;=90&#125;"</span>&gt;</span><br><span class="line">       你的成绩为优秀！</span><br><span class="line">   &lt;/c:when&gt;</span><br><span class="line">   &lt;c:when test=<span class="string">"$&#123;param.score&gt;70 &amp;&amp; param.score&lt;90&#125;"</span>&gt;</span><br><span class="line">       您的成绩为良好!</span><br><span class="line">   &lt;/c:when&gt;</span><br><span class="line">   &lt;c:when test=<span class="string">"$&#123;param.score&gt;60 &amp;&amp; param.score&lt;70&#125;"</span>&gt;</span><br><span class="line">       您的成绩为及格</span><br><span class="line">   &lt;/c:when&gt;</span><br><span class="line">   &lt;c:otherwise&gt;</span><br><span class="line">       对不起，您没有通过考试！</span><br><span class="line">   &lt;/c:otherwise&gt;</span><br><span class="line">&lt;/c:choose&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h1><code>&lt;c:forEach&gt;</code> 标签</h1>
+<p><strong><code>&lt;c:forEach&gt;</code>标签的功能</strong></p>
+<p>该标签根据循环条件遍历集合（Collection）中的元素。</p>
+<p><strong><code>&lt;c:forEach&gt;</code>标签的语法</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:forEach</span><br><span class="line">     <span class="keyword">var</span>=<span class="string">"name"</span></span><br><span class="line">     items=<span class="string">"Collection"</span></span><br><span class="line">     varStatus=<span class="string">"StatusName"</span></span><br><span class="line">     begin=<span class="string">"begin"</span></span><br><span class="line">     end=<span class="string">"end"</span></span><br><span class="line">     step=<span class="string">"step"</span>&gt;</span><br><span class="line">   本体内容</span><br><span class="line"> &lt;/c:forEach&gt;</span><br></pre></td></tr></table></figure>
+<p>【参数解析】</p>
+<ul>
+<li>var设定变量名用于存储从集合中取出元素。</li>
+<li>items指定要遍历的集合。</li>
+<li>varStatus设定变量名，该变量用于存放集合中元素的状态信息。</li>
+<li>begin、end用于指定遍历的起始位置和终止位置（可选）。</li>
+<li>step指定循环的步长。</li>
+</ul>
+<p><strong><code>&lt;c:forEach&gt;</code>标签属性说明</strong></p>
+<table>
+<thead>
+<tr>
+<th>属性名称</th>
+<th>是否支持EL表达式</th>
+<th>属性类型</th>
+<th>是否必须</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>var</td>
+<td>NO</td>
+<td>String</td>
+<td>是</td>
+<td>无</td>
+</tr>
+<tr>
+<td>items</td>
+<td>YES</td>
+<td>Arrays,Collection,Iterator, Enumeration,Map,String[] args</td>
+<td>是</td>
+<td>无</td>
+</tr>
+<tr>
+<td>begin</td>
+<td>YES</td>
+<td>int</td>
+<td>否</td>
+<td>0</td>
+</tr>
+<tr>
+<td>end</td>
+<td>YES</td>
+<td>int</td>
+<td>否</td>
+<td>集合中最后一个元素</td>
+</tr>
+<tr>
+<td>step</td>
+<td>YES</td>
+<td>int</td>
+<td>否</td>
+<td>1</td>
+</tr>
+<tr>
+<td>varStatus</td>
+<td>NO</td>
+<td>String</td>
+<td>否</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<p><strong>varStatus属性说明</strong></p>
+<p>varStatus有4个状态属性，如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>index</td>
+<td>int</td>
+<td>当前循环的索引值</td>
+</tr>
+<tr>
+<td>count</td>
+<td>int</td>
+<td>循环的次数</td>
+</tr>
+<tr>
+<td>first</td>
+<td>boolean</td>
+<td>是否为第一个位置</td>
+</tr>
+<tr>
+<td>last</td>
+<td>boolean</td>
+<td>是否为最后一个位置</td>
+</tr>
+</tbody>
+</table>
+<p>示例</p>
+<p>（1） <code>&lt;c:forEach&gt;</code> 进行map迭代</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:forEach items=<span class="string">"$&#123;map&#125;"</span> <span class="keyword">var</span>=<span class="string">"mymap"</span> &gt;</span><br><span class="line">  &lt;c:out value=<span class="string">"$&#123;mymap.key&#125;"</span> /&gt;</span><br><span class="line">  &lt;c:out value=<span class="string">"$&#123;mymap.value&#125;"</span> /&gt;</span><br><span class="line">&lt;/c:forEach&gt;</span><br></pre></td></tr></table></figure>
+<p>（2）</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%--引入JSTL核心标签库 --%&gt;</span><br><span class="line">&lt;%@ taglib prefix=<span class="string">"c"</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/core"</span>%&gt;</span><br><span class="line">&lt;%<span class="meta">@page</span> <span class="keyword">import</span>=<span class="string">"java.util.ArrayList"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;JSTL: -- forEach标签实例&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h4&gt;&lt;c:out value="forEach实例"/&gt;&lt;/h4&gt;</span><br><span class="line">&lt;%</span><br><span class="line">   List&lt;String&gt;list = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">   list.add(<span class="number">0</span>, <span class="string">"贝贝"</span>);</span><br><span class="line">   list.add(<span class="number">1</span>, <span class="string">"晶晶"</span>);</span><br><span class="line">   list.add(<span class="number">2</span>, <span class="string">"欢欢"</span>);</span><br><span class="line">   list.add(<span class="number">3</span>, <span class="string">"莹莹"</span>);</span><br><span class="line">   list.add(<span class="number">4</span>, <span class="string">"妮妮"</span>);</span><br><span class="line">   request.setAttribute(<span class="string">"list"</span>, list);</span><br><span class="line">%&gt;</span><br><span class="line">&lt;B&gt;&lt;c:out value="不指定begin和end的迭代：" /&gt;&lt;/B&gt;&lt;br&gt;</span><br><span class="line">&lt;%--不使用begin和end的迭代，从集合的第一个元素开始，遍历到最后一个元素。 --%&gt;</span><br><span class="line">&lt;c:forEach <span class="keyword">var</span>=<span class="string">"fuwa"</span> items=<span class="string">"$&#123;list&#125;"</span>&gt;</span><br><span class="line">    &lt;c:out value=<span class="string">"$&#123;fuwa&#125;"</span>/&gt;&lt;br/&gt;</span><br><span class="line">&lt;/c:forEach&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line">&lt;B&gt;&lt;c:out value="指定begin和end的迭代：" /&gt;&lt;/B&gt;&lt;br&gt;</span><br><span class="line">&lt;%--指定begin的值为<span class="number">1</span>、end的值为<span class="number">3</span>、step的值为<span class="number">2</span>，</span><br><span class="line">   从第二个开始首先得到晶晶，每两个遍历一次，</span><br><span class="line">   则下一个显示的结果为莹莹，end为<span class="number">3</span>则遍历结束。 --%&gt;</span><br><span class="line">&lt;c:forEach <span class="keyword">var</span>=<span class="string">"fuwa"</span> items=<span class="string">"$&#123;list&#125;"</span> begin=<span class="string">"1"</span> end=<span class="string">"3"</span> step=<span class="string">"2"</span>&gt;</span><br><span class="line">    &lt;c:out value=<span class="string">"$&#123;fuwa&#125;"</span>/&gt;&lt;br/&gt;</span><br><span class="line">&lt;/c:forEach&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line">&lt;B&gt;&lt;c:out value="输出整个迭代的信息：" /&gt;&lt;/B&gt;&lt;br&gt;</span><br><span class="line">&lt;%--指定varStatus的属性名为s，并取出存储的状态信息 --%&gt;</span><br><span class="line">&lt;c:forEach <span class="keyword">var</span>=<span class="string">"fuwa"</span></span><br><span class="line">          items=<span class="string">"$&#123;list&#125;"</span></span><br><span class="line">          begin=<span class="string">"3"</span></span><br><span class="line">          end=<span class="string">"4"</span></span><br><span class="line">          varStatus=<span class="string">"s"</span></span><br><span class="line">          step=<span class="string">"1"</span>&gt;</span><br><span class="line">    &lt;c:out value=<span class="string">"$&#123;fuwa&#125;"</span> /&gt;的四种属性：&lt;br&gt;</span><br><span class="line">       所在位置，即索引：&lt;c:out value=<span class="string">"$&#123;s.index&#125;"</span> /&gt;&lt;br&gt;</span><br><span class="line">       总共已迭代的次数：&lt;c:out value=<span class="string">"$&#123;s.count&#125;"</span> /&gt;&lt;br&gt;</span><br><span class="line">       是否为第一个位置：&lt;c:out value=<span class="string">"$&#123;s.first&#125;"</span> /&gt;&lt;br&gt;</span><br><span class="line">       是否为最后一个位置：&lt;c:out value=<span class="string">"$&#123;s.last&#125;"</span> /&gt;&lt;br&gt;</span><br><span class="line">&lt;/c:forEach&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h1><code>&lt;c:forTokens&gt;</code> 标签</h1>
+<p><strong>标签功能</strong></p>
+<p>该标签用于遍历字符串，并根据指定的字符截取字符串。</p>
+<p><strong>标签语法</strong></p>
+<p>【语法】：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:forTokens items=<span class="string">"strigOfTokens"</span></span><br><span class="line">           delims=<span class="string">"delimiters"</span></span><br><span class="line">           [<span class="keyword">var</span>=<span class="string">"name"</span></span><br><span class="line">           begin=<span class="string">"begin"</span></span><br><span class="line">           end=<span class="string">"end"</span></span><br><span class="line">           step=<span class="string">"len"</span></span><br><span class="line">           varStatus=<span class="string">"statusName"</span>] &gt;</span><br><span class="line">   本体内容</span><br><span class="line">&lt;/c:forTokens&gt;</span><br></pre></td></tr></table></figure>
+<p>【参数说明】</p>
+<ul>
+<li>items指定被迭代的字符串。</li>
+<li>delims指定使用的分隔符。</li>
+<li>var指定用来存放遍历到的成员。</li>
+<li>begin指定遍历的开始位置（int型从取值0开始）。</li>
+<li>end指定遍历结束的位置（int型，默认集合中最后一个元素）。</li>
+<li>step遍历的步长（大于0的整型）。</li>
+<li>varStatus存放遍历到的成员的状态信息。</li>
+</ul>
+<p>示例代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%--引入JSTL核心标签库 --%&gt;</span><br><span class="line">&lt;%@ taglib prefix=<span class="string">"c"</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/core"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;JSTL: -- forTokens标签实例&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h4&gt;&lt;c:out value="forToken实例"/&gt;&lt;/h4&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line">&lt;%--提示：分隔符的作用是根据标识，截取字符串。</span><br><span class="line">   如果未设定分隔符或在字符串中没有找到分隔符，将把整个元素作为一个元素截取。</span><br><span class="line">   在实际应用中用于在除去某些符号在页面中显示。 --%&gt;</span><br><span class="line">&lt;c:forTokens <span class="keyword">var</span>=<span class="string">"str"</span> items=<span class="string">"北、京、欢、迎、您"</span> delims=<span class="string">"、"</span>&gt;</span><br><span class="line">   &lt;c:out value="$&#123;str&#125;"&gt;&lt;/c:out&gt;&lt;br/&gt;</span><br><span class="line">&lt;/c:forTokens&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line">&lt;c:forTokens items=<span class="string">"123-4567-8854"</span> delims=<span class="string">"-"</span> <span class="keyword">var</span>=<span class="string">"t"</span>&gt;</span><br><span class="line">   &lt;c:out value="$&#123;t&#125;"&gt;&lt;/c:out&gt;&lt;br/&gt;</span><br><span class="line">&lt;/c:forTokens&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line">&lt;c:forTokens items=<span class="string">"1*2*3*4*5*6*7"</span></span><br><span class="line">            delims=<span class="string">"*"</span></span><br><span class="line">            begin=<span class="string">"1"</span></span><br><span class="line">            end=<span class="string">"3"</span></span><br><span class="line">            <span class="keyword">var</span>=<span class="string">"n"</span></span><br><span class="line">            varStatus=<span class="string">"s"</span>&gt;</span><br><span class="line">    &lt;c:out value=<span class="string">"$&#123;n&#125;"</span> /&gt;的四种属性：&lt;br&gt;</span><br><span class="line">       所在位置，即索引：&lt;c:out value=<span class="string">"$&#123;s.index&#125;"</span> /&gt;&lt;br&gt;</span><br><span class="line">       总共已迭代的次数：&lt;c:out value=<span class="string">"$&#123;s.count&#125;"</span> /&gt;&lt;br&gt;</span><br><span class="line">       是否为第一个位置：&lt;c:out value=<span class="string">"$&#123;s.first&#125;"</span> /&gt;&lt;br&gt;</span><br><span class="line">       是否为最后一个位置：&lt;c:out value=<span class="string">"$&#123;s.last&#125;"</span> /&gt;&lt;br&gt;</span><br><span class="line">&lt;/c:forTokens&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h1><code>&lt;c:import&gt;</code> 标签</h1>
+<p><strong><code>&lt;c:import&gt;</code>标签的功能</strong></p>
+<p>该标签可以把其他静态或动态文件包含到本JSP页面，与 <code>&lt;jsp:include&gt;</code> 的区别为： <code>&lt;jsp:include&gt;</code> 只能包含同一个web应用中的文件。而 <code>&lt;c:import&gt;</code> 可以包含其他web应用中的文件，甚至是网络上的资源。</p>
+<p><strong><code>&lt;c:import&gt;</code>标签的语法</strong></p>
+<ul>
+<li>【语法1】：</li>
+</ul>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:<span class="keyword">import</span></span><br><span class="line">    url=<span class="string">"url"</span></span><br><span class="line">    [context=<span class="string">"context"</span>]</span><br><span class="line">    [value=<span class="string">"value"</span>]</span><br><span class="line">    [scope=<span class="string">"page|request|session|application"</span>]</span><br><span class="line">    [charEncoding=<span class="string">"encoding"</span>]/&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>【语法2】：</li>
+</ul>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:<span class="keyword">import</span></span><br><span class="line">    url=<span class="string">"url"</span></span><br><span class="line">    varReader=<span class="string">"name"</span></span><br><span class="line">    [context=<span class="string">"context"</span>]</span><br><span class="line">    [charEncoding=<span class="string">"encoding"</span>]/&gt;</span><br></pre></td></tr></table></figure>
+<p>【属性说明】</p>
+<p><code>&lt;c:import&gt;</code> 标签有如下属性：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+<th>是否必要</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>url</td>
+<td>待导入资源的URL，可以是相对路径和绝对路径，并且可以导入其他主机资源</td>
+<td>是</td>
+<td>无</td>
+</tr>
+<tr>
+<td>context</td>
+<td>当使用相对路径访问外部context资源时，context指定了这个资源的名字。</td>
+<td>否</td>
+<td>当前应用程序</td>
+</tr>
+<tr>
+<td>charEncoding</td>
+<td>所引入的数据的字符编码集</td>
+<td>否</td>
+<td>ISO-8859-1</td>
+</tr>
+<tr>
+<td>var</td>
+<td>用于存储所引入的文本的变量</td>
+<td>否</td>
+<td>无</td>
+</tr>
+<tr>
+<td>scope</td>
+<td>var属性的作用域</td>
+<td>否</td>
+<td>page</td>
+</tr>
+<tr>
+<td>varReader</td>
+<td>可选的，用于提供java.io.Reader对象的变量</td>
+<td>否</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<p>【注意事项】</p>
+<ul>
+<li>
+<p>URL为资源的路径，当引用的资源不存在时系统会抛出异常，因此该语句应该放在 <code>&lt;c:catch&gt;</code>  <code>&lt;/c:catch&gt;</code> 语句块中捕获。</p>
+</li>
+<li>
+<p>URL属性值可以使 用 Java.NET.URL 类所支持的任何协议。</p>
+</li>
+<li>
+<p>引用资源有两种方式：绝对路径和相对路径。</p>
+</li>
+<li>
+<p>使用绝对路径的示例如下： <code>&lt;c:import url=&quot;http://www.baidu.com&quot;&gt;</code></p>
+</li>
+<li>
+<p>使用相对路径的示例如下： <code>&lt;c:import url=&quot;aa.txt&quot;&gt;</code> ，aa.txt放在同一文件目录。</p>
+</li>
+<li>
+<p>如果以“/&quot;开头表示应用的根目录下。例如：tomcat应用程序的根目录文件夹为webapps。导入webapps下的文件bb.txt的编写方式为： <code>&lt;c:import url=&quot;/bb.txt&quot;&gt;</code></p>
+</li>
+<li>
+<p>如果访问webapps管理文件夹中其他web应用就要用context属性。context属性用于在访问其他web应用的文件时，指定应用目录。例如，访问root应用下的index.jsp的实现代码为： <code>&lt;c:import url=&quot;/index.jsp&quot; context=&quot;/root&quot;&gt;</code> 等同于webapps/root/index.jsp</p>
+</li>
+<li>
+<p>var、scope、charEncoding、varReader是可选属性。</p>
+</li>
+</ul>
+<p><strong>使用<code>&lt;c:param&gt;</code>指定资源参数</strong></p>
+<p>可以在 <code>&lt;c:import&gt;</code> 的本体内容中使用 <code>&lt;c:param&gt;</code> ，它的功用主要是：可以将参数传递给被包含的文件，它有两个属性name和value。如：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:<span class="keyword">import</span> url=<span class="string">"http://java.sun.com"</span>; &gt;</span><br><span class="line">   &lt;c:param name=<span class="string">"test"</span> value=<span class="string">"1234"</span> /&gt;</span><br><span class="line">&lt;/c:import&gt;</span><br></pre></td></tr></table></figure>
+<p>这样的做法等于是包含一个资源，并且所指定的资源URL会变成如下：</p>
+<p><a href="http://java.sun.com?test=1234" target="_blank" rel="noopener">http://java.sun.com?test=1234</a></p>
+<p>示例代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%--引入JSTL核心标签库 --%&gt;</span><br><span class="line">&lt;%@ taglib prefix=<span class="string">"c"</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/core"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;JSTL: -- import标签实例&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h4&gt;&lt;c:out value="import实例"/&gt;&lt;/h4&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line">&lt;h4&gt;&lt;c:out value="绝对路径引用的实例" /&gt;&lt;/h4&gt;</span><br><span class="line">&lt;%--使用绝对路径导入百度首页，</span><br><span class="line">   导入时使用&lt;c:catch&gt;&lt;/c:catch&gt;捕获异常。</span><br><span class="line">--%&gt;</span><br><span class="line">&lt;c:<span class="keyword">catch</span> <span class="keyword">var</span>=<span class="string">"error1"</span>&gt;</span><br><span class="line">   &lt;c:<span class="keyword">import</span> url=<span class="string">"http://wwww.baidu.com"</span> charEncoding=<span class="string">"utf-8"</span>/&gt;</span><br><span class="line">&lt;/c:catch&gt;</span><br><span class="line">$&#123;error1&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h4&gt;</span><br><span class="line">   &lt;c:out value=<span class="string">"相对路径引用本应用中的文件"</span> /&gt;</span><br><span class="line">&lt;/h4&gt;</span><br><span class="line">&lt;%--使用相对路径导入同一文件夹下的“JSTL的<span class="keyword">import</span>标签使用说明”文件，</span><br><span class="line">   接收的字符编码格式使用charEncoding设置为utf-<span class="number">8</span>。 --%&gt;</span><br><span class="line">&lt;c:<span class="keyword">catch</span> <span class="keyword">var</span>=<span class="string">"error2"</span>&gt;</span><br><span class="line">   &lt;c:<span class="keyword">import</span> url=<span class="string">"JSTL的import标签使用说明"</span> charEncoding=<span class="string">"utf-8"</span>/&gt;</span><br><span class="line">&lt;/c:catch&gt;</span><br><span class="line">$&#123;error2&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h4&gt;&lt;c:out value="使用字符串输出相对路径引用的实例，并保存在session范围内" /&gt;&lt;/h4&gt;</span><br><span class="line">&lt;%--导入“JSTL的<span class="keyword">import</span>标签使用说明.txt”，</span><br><span class="line">   使用<span class="keyword">var</span>定义的变量接收要导入的文件，并存储在session中，</span><br><span class="line">   如果在其他页面同样也要导入该文件，只须使用&lt;c:out&gt;输出“JSTL的<span class="keyword">import</span>标签使用说明.txt”的值即可。</span><br><span class="line">--%&gt;</span><br><span class="line">&lt;c:<span class="keyword">catch</span> <span class="keyword">var</span>=<span class="string">"error3"</span>&gt;</span><br><span class="line">   &lt;c:<span class="keyword">import</span></span><br><span class="line">           <span class="keyword">var</span>=<span class="string">"myurl"</span></span><br><span class="line">           url=<span class="string">"JSTL的import标签使用说明"</span></span><br><span class="line">           scope=<span class="string">"session"</span></span><br><span class="line">           charEncoding=<span class="string">"utf-8"</span>/&gt;</span><br><span class="line">   &lt;c:out value=<span class="string">"$&#123;myurl&#125;"</span> /&gt;</span><br><span class="line">&lt;/c:catch&gt;</span><br><span class="line"> </span><br><span class="line">$&#123;error3&#125;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h1><code>&lt;c:url&gt;</code> 标签</h1>
+<p><strong><code>&lt;c:url&gt;</code>标签的功能</strong></p>
+<p><code>&lt;c:url&gt;</code> 标签用于在JSP页面中构造一个URL地址，其主要目的是实现URL重写。</p>
+<p><strong><code>&lt;c:url&gt;</code>标签的语法</strong></p>
+<ul>
+<li>【语法1】：指定一个url不做修改，可以选择把该url存储在JSP不同的范围中。</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">c:url</span></span></span><br><span class="line"><span class="tag">    <span class="attr">value</span>=<span class="string">”value”</span></span></span><br><span class="line"><span class="tag">    [<span class="attr">var</span>=<span class="string">”name”]</span></span></span><br><span class="line"><span class="tag">    [<span class="attr">scope</span>=<span class="string">”page|request|session|application”]</span></span></span><br><span class="line"><span class="tag">    [<span class="attr">context</span>=<span class="string">”context”]/</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>【语法2】：配合  <code>&lt;c:param&gt;</code>  标签给url加上指定参数及参数值，可以选择以name存储该url。</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">c:url</span></span></span><br><span class="line"><span class="tag">    <span class="attr">value</span>=<span class="string">”value”</span></span></span><br><span class="line"><span class="tag">    [<span class="attr">var</span>=<span class="string">”name”]</span></span></span><br><span class="line"><span class="tag">    [<span class="attr">scope</span>=<span class="string">”page|request|session|application”]</span></span></span><br><span class="line"><span class="tag">    [<span class="attr">context</span>=<span class="string">”context”]</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">c:param</span> <span class="attr">name</span>=<span class="string">”参数名”</span> <span class="attr">value</span>=<span class="string">”值”</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">c:url</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>** <code>&lt;c:url&gt;</code> 标签主要属性说明**</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584776534_20200321153053280_15396.png" alt></p>
+<p>示例代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%--引入JSTL核心标签库 --%&gt;</span><br><span class="line">&lt;%@ taglib prefix=<span class="string">"c"</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/core"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;JSTL: -- url标签实例&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;c:out value="url标签使用"&gt;&lt;/c:out&gt;</span><br><span class="line">&lt;h4&gt;使用url标签生成一个动态的url，并把值存入session中.&lt;/h4&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line">&lt;c:url value=<span class="string">"http://www.baidu.com"</span> <span class="keyword">var</span>=<span class="string">"url"</span> scope=<span class="string">"session"</span>&gt;</span><br><span class="line">&lt;/c:url&gt;</span><br><span class="line">&lt;a href="$&#123;url&#125;"&gt;百度首页(不带参数)&lt;/a&gt;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line">&lt;h4&gt;</span><br><span class="line">   配合 &lt;c:param&gt;标签给url加上指定参数及参数值，生成一个动态的url然后存储到paramUrl变量中</span><br><span class="line">&lt;/h4&gt;</span><br><span class="line">&lt;c:url value=<span class="string">"http://www.baidu.com"</span> <span class="keyword">var</span>=<span class="string">"paramUrl"</span>&gt;</span><br><span class="line">   &lt;c:param name=<span class="string">"userName"</span> value=<span class="string">"孤傲苍狼"</span>/&gt;</span><br><span class="line">   &lt;c:param name="pwd"&gt;123456&lt;/c:param&gt;</span><br><span class="line">&lt;/c:url&gt;</span><br><span class="line">&lt;a href="$&#123;paramUrl&#125;"&gt;百度首页(带参数)&lt;/a&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h1><code>&lt;c:redirect&gt;</code> 标签</h1>
+<p><strong>标签功能</strong></p>
+<p>该标签用来实现请求的重定向。同时可以配合使用 <code>&lt;c:param&gt;</code> 标签在url中加入指定的参数。</p>
+<p><strong>标签语法</strong></p>
+<ul>
+<li>【语法1】：</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">c:redirect</span> <span class="attr">url</span>=<span class="string">”url”</span> [<span class="attr">context</span>=<span class="string">”context”]/</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>【语法2】：</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">c:redirect</span> <span class="attr">url</span>=<span class="string">”url”[context</span>=<span class="string">”context”]</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">c:param</span> <span class="attr">name</span>=<span class="string">”name1”</span> <span class="attr">value</span>=<span class="string">”value1”</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">c:redirect</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>【参数说明】</p>
+<ul>
+<li>url指定重定向页面的地址，可以是一个string类型的绝对地址或相对地址。</li>
+<li>context用于导入其他web应用中的页面。</li>
+</ul>
+<p><strong><code>&lt;c:redirect&gt;</code>标签属性说明</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584776534_20200321153049942_3802.png" alt></p>
+<h1><code>&lt;c:param&gt;</code> 标签</h1>
+<p><strong><code>&lt;c:param&gt;</code>标签功能</strong></p>
+<p>在JSP页面进行URL的相关操作时，经常要在URL地址后面附加一些参数。 <code>&lt;c:param&gt;</code> 标签可以嵌套在 <code>&lt;c:import&gt;</code> 、 <code>&lt;c:url&gt;</code> 或 <code>&lt;c:redirect&gt;</code> 标签内，为这些标签所使用的URL地址附加参数。</p>
+<p><strong><code>&lt;c:param&gt;</code>标签会自动对参数值进行URL编码</strong></p>
+<p><code>&lt;c:param&gt;</code> 标签在为一个URL地址附加参数时，将自动对参数值进行URL编码，例如，如果传递的参数值为“中国”， 则将其转换为“%d6%d0%b9%fa”后再附加到URL地址后面，这也就是使用 <code>&lt;c:param&gt;</code> 标签的最大好处。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>14-JSTL标签库</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">JSTL标签库的分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">核心标签库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;c:out&gt; 标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;c:set&gt; 标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;c:remove&gt; 标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;c:catch&gt; 标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;c:if&gt; 标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;c:choose&gt; 、 &lt;c:when&gt; 和 &lt;c:otherwise&gt; 标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;c:forEach&gt; 标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;c:forTokens&gt; 标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;c:import&gt; 标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;c:url&gt; 标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;c:redirect&gt; 标签</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;c:param&gt; 标签</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

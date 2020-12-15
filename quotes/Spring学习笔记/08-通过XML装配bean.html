@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="创建XML配置规范在使用XML为Spring装配bean之前，你需要创建一个新的配置规范。在使用JavaConfig的时候，这意味着要创建一个带有@Configuration注解的类，而在XML配置中，这意味着要创建一个XML文件，并且要以 &amp;lt;beans&amp;gt; 元素为根。最为简单的Spring XML配置如下所示：">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;08-%E9%80%9A%E8%BF%87XML%E8%A3%85%E9%85%8Dbean.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="创建XML配置规范在使用XML为Spring装配bean之前，你需要创建一个新的配置规范。在使用JavaConfig的时候，这意味着要创建一个带有@Configuration注解的类，而在XML配置中，这意味着要创建一个XML文件，并且要以 &amp;lt;beans&amp;gt; 元素为根。最为简单的Spring XML配置如下所示：">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794494_20200321201418289_31162.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794493_20200321201417976_22528.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794493_20200321201416668_20265.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794493_20200321201416354_6466.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794493_20200321201416145_32497.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794492_20200321201415736_12104.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794492_20200321201415427_1211.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794491_20200321201414310_19341.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794494_20200321201632143_8026.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794494_20200321201631930_4608.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794495_20200321201659585_7497.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794495_20200321201659267_21156.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794494_20200321201658955_25348.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.036Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584794494_20200321201418289_31162.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/08-%E9%80%9A%E8%BF%87XML%E8%A3%85%E9%85%8Dbean">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>08-通过XML装配BEAN</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>创建XML配置规范</h1><p>在使用XML为Spring装配bean之前，你需要创建一个新的配置规范。在使用JavaConfig的时候，这意味着要创建一个带有@Configuration注解的类，而在XML配置中，这意味着要创建一个XML文件，并且要以 <code>&lt;beans&gt;</code> 元素为根。</p><p>最为简单的Spring XML配置如下所示：</p><a id="more"></a>
+
+
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794494_20200321201418289_31162.png" alt></p>
+<p>很容易就能看出来，这个基本的XML配置已经比同等功能的JavaConfig类复杂得多了。作为起步，在JavaConfig中所需要的只是@Configuration，但在使用XML时，需要在配置文件的顶部声明多个XML模式（XSD）文件，这些文件定义了配置Spring的XML元素。</p>
+<blockquote>
+<p><strong>借助Spring Tool Suite创建XML配置文件</strong> 创建和管理Spring XML配置文件的一种简便方式是使用Spring Tool Suite（<a href="https://spring.io/tools/sts" target="_blank" rel="noopener">https://spring.io/tools/sts</a>）。在Spring Tool Suite的菜单中，选择File&gt;New&gt;Spring Bean Configuration File，能够创建Spring XML配置文件，并且可以选择可用的配置命名空间。</p>
+</blockquote>
+<p>用来装配bean的最基本的XML元素包含在spring-beans模式之中，在上面这个XML文件中，它被定义为根命名空间。 <code>&lt;beans&gt;</code> 是该模式中的一个元素，它是所有Spring配置文件的根元素。</p>
+<h1><code>&lt;bean&gt;</code> ：声明bean</h1>
+<h2 id="声明bean">声明bean</h2>
+<p>要在基于XML的Spring配置中声明一个bean，我们要使用spring-beans模式中的另外一个元素： <code>&lt;bean&gt;</code> 。 <code>&lt;bean&gt;</code> 元素类似于JavaConfig中的@Bean注解。我们可以按照如下的方式声明CompactDiscbean：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794493_20200321201417976_22528.png" alt></p>
+<p>这里声明了一个很简单的bean，创建这个bean的类通过class属性来指定的，并且要使用全限定的类名。</p>
+<p>因为没有明确给定ID，所以这个bean将会根据全限定类名来进行命名。在本例中，bean的ID将会是“soundsystem.SgtPeppers#0”。其中，“#0”是一个计数的形式，用来区分相同类型的其他bean。如果你声明了另外一个SgtPeppers，并且没有明确进行标识，那么它自动得到的ID将会是“soundsystem.SgtPeppers#1”。</p>
+<p>在进一步学习之前，让我们花点时间看一下这个简单bean声明的一些特征。</p>
+<p>第一件需要注意的事情就是你不再需要直接负责创建SgtPeppers的实例，在基于JavaConfig的配置中，我们是需要这样做的。当Spring发现这个 <code>&lt;bean&gt;</code> 元素时，它将会调用SgtPeppers的默认构造器来创建bean。在XML配置中，bean的创建显得更加被动，不过，它并没有JavaConfig那样强大，在JavaConfig配置方式中，你可以通过任何可以想象到的方法来创建bean实例。</p>
+<p>另外一个需要注意到的事情就是，在这个简单的 <code>&lt;bean&gt;</code> 声明中，我们将bean的类型以字符串的形式设置在了class属性中。谁能保证设置给class属性的值是真正的类呢？Spring的XML配置并不能从编译期的类型检查中受益。即便它所引用的是实际的类型，如果你重命名了类，会发生什么呢？</p>
+<blockquote>
+<p><strong>借助IDE检查XML的合法性</strong>使用能够感知Spring功能的IDE，如Spring Tool Suite，能够在很大程度上帮助你确保Spring XML配置的合法性。</p>
+</blockquote>
+<h2 id="Bean命名配置">Bean命名配置</h2>
+<p>尽管自动化的bean命名方式非常方便，但如果你要稍后引用它的话，那自动产生的名字就没有多大的用处了。因此，通常来讲更好的办法是借助id属性，为每个bean设置一个你自己选择的名字。</p>
+<p>通过 <code>&lt;bean&gt;</code> 标签的id、name属性命名bean。</p>
+<p>有以下几种情况：</p>
+<ul>
+<li>不指定id和name，只配置必须的全限定类名，由IoC容器生成匿名标识，客户端必须通过接口<code>T getBean(Class &lt;T&gt; requiredType)</code>获取Bean；</li>
+<li>id和name两者取一，id/name即标识符，必须在Ioc容器中唯一；</li>
+<li>同时指定id和name,id就是标识符，而name就是别名；</li>
+<li>指定多个name；用“，”、“；”、“ ”分割，第一个用作标识符，其他是别名</li>
+</ul>
+<p>使用id定义标识符的好处：在XML中id是一个真正的XML id属性，因此当其他的定义来引用Bean时，可以利用XML解析器来验证引用的这个id是否存在，从而更早的发现是否引用了一个不存在的bean，而使用name，则可能要在真正使用bean时才能发现。</p>
+<blockquote>
+<p><strong>减少繁琐</strong>为了减少XML中繁琐的配置，只对那些需要按名字引用的bean（比如，你需要将对它的引用注入到另外一个bean中）进行明确地命名。</p>
+</blockquote>
+<h2 id="Bean别名配置">Bean别名配置</h2>
+<p>使用 <code>&lt;alias&gt;</code> 标签指定。</p>
+<p>示例代码：</p>
+<ol>
+<li>Spring容器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--不指定id，只配置必须的全限定类名，由IoC容器为其生成一个标识，客户端必须通过接口“T getBean(Class requiredType)”获取Bean--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--指定id，必须在Ioc容器中唯一--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"hello"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--指定name，这样name就是“标识符”，必须在Ioc容器中唯一--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"helloName"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--指定id和name，id就是标识符，而name就是别名，必须在Ioc容器中唯一--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"hello2"</span> <span class="attr">name</span>=<span class="string">"helloName2"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--指定多个name，多个name用“，”、“；”、“ ”分割，第一个被用作标识符，其他的（alias1、alias2、alias3）是别名，所有标识符也必须在Ioc容器中唯一--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"helloName3;alias11,alias12;alias13 alias14”"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--alias用于定义Bean别名，使用标签指定别名，别名也必须在IoC容器中唯一--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">alias</span> <span class="attr">name</span>=<span class="string">"hello"</span> <span class="attr">alias</span>=<span class="string">"helloAlias"</span>&gt;</span><span class="tag">&lt;/<span class="name">alias</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>构造器注入</h1>
+<p>在Spring XML配置中，只有一种声明bean的方式：使用 <code>&lt;bean&gt;</code> 元素并指定class属性。Spring会从这里获取必要的信息来创建bean。</p>
+<p>但是，在XML中声明DI时，会有多种可选的配置方案和风格。具体到构造器注入，有两种基本的配置方案可供选择：</p>
+<ul>
+<li><code>&lt;constructor-arg&gt;</code> 元素</li>
+<li>使用Spring 3.0所引入的c-命名空间</li>
+</ul>
+<p>两者的区别在很大程度就是是否冗长烦琐。可以看到， <code>&lt;constructor-arg&gt;</code> 元素比使用c-命名空间会更加冗长，从而导致XML更加难以读懂。另外，有些事情 <code>&lt;constructor-arg&gt;</code> 可以做到，但是使用c-命名空间却无法实现。</p>
+<h2 id="constructor-arg"><code>&lt;constructor-arg&gt;</code></h2>
+<p>使用 <code>&lt;constructor-arg&gt;</code> 标签指定构造器参数,使用index属性指定参数索引，使用type属性指定参数类型</p>
+<ol>
+<li>空构造器配置，使用此种方式，class属性指定的类必须有空构造器</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"bean1"</span> <span class="attr">class</span>=<span class="string">"cn.javass.spring.chapter2.HelloImpl2"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>有参数构造器配置，使用 <code>&lt;constructor-arg&gt;</code> 标签指定构造器参数值，</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 通过构造器参数索引方式依赖注入 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!--value指定注入值，也可以使用ref来引用另一个Bean定义--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"byIndex"</span> <span class="attr">class</span>=<span class="string">"cn.javass.spring.chapter3.HelloImpl3"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">index</span>=<span class="string">"0"</span> <span class="attr">value</span>=<span class="string">"Hello World!"</span>/&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">index</span>=<span class="string">"1"</span> <span class="attr">value</span>=<span class="string">"1"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">&lt;!-- 通过构造器参数类型方式依赖注入 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"byType"</span> <span class="attr">class</span>=<span class="string">"cn.javass.spring.chapter3.HelloImpl3"</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">type</span>=<span class="string">"java.lang.String"</span> <span class="attr">value</span>=<span class="string">"Hello World!"</span>/&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">type</span>=<span class="string">"int"</span> <span class="attr">value</span>=<span class="string">"2"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意：不建议使用根据参数名进行构造器注入，因为这需要在编译代码的时候，将调试标志（debug symbol）保存在类代码中。如果你优化构建过程，将调试标志移除掉，那么这种方式可能就无法正常执行了。</p>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> model.HelloApi;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Created by jiateng.jiang on 2016/6/27.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstructorInjectionTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">constructorInjectionTest</span><span class="params">()</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">       ApplicationContext beanContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"constructorInjection.xml"</span>);</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//使用有参数构造器进行定义</span></span><br><span class="line">       HelloApi helloApi = beanContext.getBean(<span class="string">"helloImpl2_1"</span>,HelloApi.class);</span><br><span class="line">       helloApi.sayHello();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//获取根据参数索引依赖注入的Bean</span></span><br><span class="line">       HelloApi byIndex = beanContext.getBean(<span class="string">"byIndex"</span>,HelloApi.class);</span><br><span class="line">       byIndex.sayHello();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//获取根据参数类型依赖注入的Bean</span></span><br><span class="line">       HelloApi byType = beanContext.getBean(<span class="string">"byType"</span>, HelloApi.class);</span><br><span class="line">       byType.sayHello();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//获取根据参数名字依赖注入的Bean</span></span><br><span class="line">       <span class="comment">//不建议使用</span></span><br><span class="line">       HelloApi byName = beanContext.getBean(<span class="string">"byName"</span>, HelloApi.class);</span><br><span class="line">       byName.sayHello();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Spring容器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--使用构造器实例化Bean--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--使用空构造器进行定义，使用此种方式，class属性指定的类必须有空构造器--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloImpl2"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl2"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--使用有参数构造器进行定义，使用此中方式，可以使用&lt;constructor-arg&gt;标签指定构造器参数值，其中index表示位置，value表示常量值，</span></span><br><span class="line"><span class="comment">      也可以使用ref来引用另一个Bean定义--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloImpl2_1"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl2"</span>&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- 指定构造器参数 --&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">index</span>=<span class="string">"0"</span> <span class="attr">value</span>=<span class="string">"Hello Spring! provide by constructor"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 通过构造器参数索引方式依赖注入 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"byIndex"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl3"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">index</span>=<span class="string">"0"</span> <span class="attr">value</span>=<span class="string">"Hello World!"</span>/&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">index</span>=<span class="string">"1"</span> <span class="attr">value</span>=<span class="string">"1"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 通过构造器参数类型方式依赖注入 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"byType"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl3"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">type</span>=<span class="string">"java.lang.String"</span> <span class="attr">value</span>=<span class="string">"Hello World!"</span>/&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">type</span>=<span class="string">"int"</span> <span class="attr">value</span>=<span class="string">"2"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 通过构造器参数名称方式依赖注入 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"byName"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl3"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">"message"</span> <span class="attr">value</span>=<span class="string">"Hello World!"</span>/&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">"index"</span> <span class="attr">value</span>=<span class="string">"3"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="c-命名空间">c-命名空间</h2>
+<p>作为替代的方案，你也可以使用Spring的c-命名空间。c-命名空间是在Spring 3.0中引入的，它是在XML中更为简洁地描述构造器参数的方式。要使用它的话，必须要在XML的顶部声明其模式，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794493_20200321201416668_20265.png" alt></p>
+<h3 id="装配引用">装配引用</h3>
+<p>在c-命名空间和模式声明之后，我们就可以使用它来声明构造器参数了，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794493_20200321201416354_6466.png" alt></p>
+<p>在这里，我们使用了c-命名空间来声明构造器参数，它作为 <code>&lt;bean&gt;</code> 元素的一个属性，不过这个属性的名字有点诡异。下图描述了这个属性名是如何组合而成的。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794493_20200321201416145_32497.png" alt></p>
+<p>属性名以“c:”开头，也就是命名空间的前缀。接下来就是要装配的构造器参数名，在此之后是“-ref”，这是一个命名的约定，它会告诉Spring，正在装配的是一个bean的引用，这个bean的名字是compactDisc，而不是字面量“compactDisc”。</p>
+<p>与 <code>&lt;constructor-arg&gt;</code> 类似，上面直接引用构造器参数的名称，需要在编译代码的时候，将调试标志（debug symbol）保存在类代码中。</p>
+<p>替代的方案是我们使用参数在整个参数列表中的位置信息：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794492_20200321201415736_12104.png" alt></p>
+<p>将参数的名称替换成了“0”，也就是参数的索引。因为在XML中不允许数字作为属性的第一个字符，因此必须要添加一个下画线作为前缀。如果只有一个构造器参数，根本不用去标示参数，直接使用c:_-ref。</p>
+<h3 id="装配字面量">装配字面量</h3>
+<p>装配字面量与装配引用的区别在于属性名中去掉了“-ref”后缀。示例如下：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794492_20200321201415427_1211.png" alt></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794491_20200321201414310_19341.png" alt></p>
+<h1>工厂方法注入</h1>
+<p><strong>静态工厂方法注入</strong>：使用 <code>&lt;bean&gt;</code> 标签的class属性指定工厂类，factory-method属性指定静态工厂方法。</p>
+<p><strong>实例化工厂方法注入</strong>：使用 <code>&lt;bean&gt;</code> 标签的factory-bean属性指定工厂Bean，factory-method属性指定工厂方法。</p>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> model.HelloApi;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FactoryMethodInjectionTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">factoryMethodInjectionTest</span><span class="params">()</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">       ApplicationContext beanContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"factoryMethodInjection.xml"</span>);</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//使用静态工厂方式实例化Bean</span></span><br><span class="line">       HelloApi helloApi2 = beanContext.getBean(<span class="string">"helloImpl2_1"</span>,HelloApi.class);</span><br><span class="line">       helloApi2.sayHello();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//使用实例工厂方法实例化Bean</span></span><br><span class="line">       HelloApi helloApi3 = beanContext.getBean(<span class="string">"helloImpl2_2"</span>,HelloApi.class);</span><br><span class="line">       helloApi3.sayHello();</span><br><span class="line"> </span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Spring容器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--使用静态工厂方式实例化Bean，使用这种方式需要指定必须的class属性（工厂类），还要指定factory-method属性来指定实例化Bean的方法--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloImpl2_1"</span> <span class="attr">class</span>=<span class="string">"model.HelloApiStaticFactory"</span> <span class="attr">factory-method</span>=<span class="string">"newInstance"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">index</span>=<span class="string">"0"</span> <span class="attr">value</span>=<span class="string">"Hello Spring! provide by HelloApiStaticFactory"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--使用实例工厂方法实例化Bean，该方式不能指定class属性，而是使用factory-bean属性来指定工厂Bean，factory-method属性指定实例化Bean的方法--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--1、定义实例工厂Bean --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"beanInstanceFactory"</span> <span class="attr">class</span>=<span class="string">"model.HelloApiInstanceFactory"</span>/&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--2、使用实例工厂Bean创建Bean --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloImpl2_2"</span> <span class="attr">factory-bean</span>=<span class="string">"beanInstanceFactory"</span> <span class="attr">factory-method</span>=<span class="string">"newInstance"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">index</span>=<span class="string">"0"</span> <span class="attr">value</span>=<span class="string">"Hello Spring! provide by HelloApiInstanceFactory"</span>&gt;</span><span class="tag">&lt;/<span class="name">constructor-arg</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>Setter注入</h1>
+<h2 id="property"><code>&lt;property&gt;</code></h2>
+<p>通过 <code>&lt;property&gt;</code> 标签配置，name属性指定Bean的字段名。</p>
+<p><code>&lt;property&gt;</code> 元素为属性的Setter方法所提供的功能与 <code>&lt;constructor-arg&gt;</code> 元素为构造器所提供的功能是一样的。它通过JavaBean的Setter方法装配bean属性。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"bean"</span> <span class="attr">class</span>=<span class="string">"cn.javass.spring.chapter3.HelloImpl4"</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"message"</span> <span class="attr">value</span>=<span class="string">"Hello World!"</span>/&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"index"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">value</span>&gt;</span>1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="p-命名空间">p-命名空间</h2>
+<p>我们已经知道，Spring为 <code>&lt;constructor-arg&gt;</code> 元素提供了c-命名空间作为替代方案，与之类似，Spring提供了更加简洁的p-命名空间，作为 <code>&lt;property&gt;</code> 元素的替代方案。为了启用p-命名空间，必须要在XML文件中与其他的命名空间一起对其进行声明：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794494_20200321201632143_8026.png" alt></p>
+<p>p-命名空间中属性所遵循的命名约定与c-命名空间中的属性类似。下图阐述了p-命名空间属性是如何组成的。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794494_20200321201631930_4608.png" alt></p>
+<p>首先，属性的名字使用了“p:”前缀，表明我们所设置的是一个属性。接下来就是要注入的属性名。最后，属性的名称以“-ref”结尾，这会提示Spring要进行装配的是引用，而不是字面量。其中，两种装配类型如下：</p>
+<ul>
+<li>常量注入的格式为 <code>p:属性名=&quot;注入的值&quot;</code></li>
+<li>引用注入的格式为 <code>p:属性名-ref=&quot;注入的其它Bean&quot;</code></li>
+</ul>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> model.HelloApi;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.BeanFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.FileSystemXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SetterInjectionTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setterInjectionTest</span><span class="params">()</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">       BeanFactory beanFactory = <span class="keyword">new</span> FileSystemXmlApplicationContext(<span class="string">"classpath:setterInjection.xml"</span>);</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//通过setter方式进行依赖注入</span></span><br><span class="line">       HelloApi bean = beanFactory.getBean(<span class="string">"setterBean"</span>, HelloApi.class);</span><br><span class="line">       bean.sayHello();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//setter简化配置</span></span><br><span class="line">       HelloApi setterSimple1 = beanFactory.getBean(<span class="string">"setterSimple1"</span>, HelloApi.class);</span><br><span class="line">       setterSimple1.sayHello();</span><br><span class="line"> </span><br><span class="line">       HelloApi setterSimple2 = beanFactory.getBean(<span class="string">"setterSimple2"</span>, HelloApi.class);</span><br><span class="line">       setterSimple2.sayHello();</span><br><span class="line"> </span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Spring容器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">&lt;!-- 使用p命名空间简化setter注入，xmlns:p="http://www.springframework.org/schema/p" ：首先指定p命名空间--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:p</span>=<span class="string">"http://www.springframework.org/schema/p"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 通过setter方式进行依赖注入 --&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--setter注入的方法名要遵循“JavaBean getter/setter 方法命名约定--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"setterBean"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl4"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"message"</span> <span class="attr">value</span>=<span class="string">"Hello World!，Come from Setter"</span>/&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"index"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">value</span>&gt;</span>1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 使用p命名空间简化setter注入，下面配置效果同上--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 常量setter注入方式,等价于  &lt;property name="" value=""/&gt;</span></span><br><span class="line"><span class="comment">      --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"setterSimple1"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl4"</span> <span class="attr">p:message</span>=<span class="string">"Hello World!，Come from Setter"</span> <span class="attr">p:index</span>=<span class="string">"1"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 引用setter注入方式，其等价于  &lt;property name="" ref=""/&gt;</span></span><br><span class="line"><span class="comment">      --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"setterSimple2"</span> <span class="attr">class</span>=<span class="string">"model.HelloApiDecorator"</span> <span class="attr">p:helloApi-ref</span>=<span class="string">"setterSimple1"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>注入常量</h1>
+<p>通过 <code>&lt;property&gt;</code> 的value属性，或者通过value子标签配置；</p>
+<p>其中，通过以下几种方式：“true/false”、“yes/no”、“on/off”、“1/0”注入boolean值；</p>
+<p>通过 <code>&lt;null/&gt;</code> 标签注入null值</p>
+<h1>注入Bean ID</h1>
+<p>使用 <code>&lt;idref&gt;</code> 子标签配置，注入的值类型是常量而不是Bean引用。</p>
+<p>配置方式如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"idrefBean1"</span> <span class="attr">class</span>=<span class="string">"cn.javass.spring.chapter3.bean.IdRefTestBean"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"id"</span>&gt;</span><span class="tag">&lt;<span class="name">idref</span> <span class="attr">bean</span>=<span class="string">"bean1"</span>/&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> model.BooleanTestBean;</span><br><span class="line"><span class="keyword">import</span> model.IdRefTestBean;</span><br><span class="line"><span class="keyword">import</span> model.HelloApi;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstantInjectionTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">injectionTypeTest</span><span class="params">()</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">       ApplicationContext beanContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"constantInjection.xml"</span>);</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//注入常量布尔值</span></span><br><span class="line">       BooleanTestBean booleanTestBean = beanContext.getBean(<span class="string">"booleanTestBean1"</span>,BooleanTestBean.class);</span><br><span class="line">       booleanTestBean.saySuccess();</span><br><span class="line">       booleanTestBean = beanContext.getBean(<span class="string">"booleanTestBean2"</span>,BooleanTestBean.class);</span><br><span class="line">       booleanTestBean.saySuccess();</span><br><span class="line">       booleanTestBean = beanContext.getBean(<span class="string">"booleanTestBean3"</span>,BooleanTestBean.class);</span><br><span class="line">       booleanTestBean.saySuccess();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//使用&lt;idref&gt;注入Bean ID</span></span><br><span class="line">       IdRefTestBean idRefTestBean = beanContext.getBean(<span class="string">"idrefBean1"</span>,IdRefTestBean.class);</span><br><span class="line">       idRefTestBean.printId();</span><br><span class="line">   </span><br><span class="line">       <span class="comment">//注入null值</span></span><br><span class="line">       HelloApi nullTest = beanContext.getBean(<span class="string">"nullTest"</span>,HelloApi.class);</span><br><span class="line">       nullTest.sayHello();</span><br><span class="line"> </span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Spring容器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 注入常量--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- boolean参数值可以用on/off --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"booleanTestBean1"</span> <span class="attr">class</span>=<span class="string">"model.BooleanTestBean"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"success"</span> <span class="attr">value</span>=<span class="string">"on"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- boolean参数值可以用yes/no --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"booleanTestBean2"</span> <span class="attr">class</span>=<span class="string">"model.BooleanTestBean"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"success"</span>&gt;</span><span class="tag">&lt;<span class="name">value</span>&gt;</span>no<span class="tag">&lt;/<span class="name">value</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- boolean参数值可以用1/0 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"booleanTestBean3"</span> <span class="attr">class</span>=<span class="string">"model.BooleanTestBean"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"success"</span> <span class="attr">value</span>=<span class="string">"1"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- ****************************************************** --&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"stringbean1"</span> <span class="attr">class</span>=<span class="string">"java.lang.String"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">index</span>=<span class="string">"0"</span> <span class="attr">value</span>=<span class="string">"test"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"stringbean2"</span> <span class="attr">class</span>=<span class="string">"java.lang.String"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">index</span>=<span class="string">"0"</span> <span class="attr">value</span>=<span class="string">"test"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 使用&lt;idref&gt;注入Bean ID，注意注入的是Bean ID常量值，而不是Bean引用--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"idrefBean1"</span> <span class="attr">class</span>=<span class="string">"model.IdRefTestBean"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"id"</span>&gt;</span><span class="tag">&lt;<span class="name">idref</span> <span class="attr">bean</span>=<span class="string">"stringbean1"</span>/&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 处理null值: Spring通过&lt;null/&gt;标签注入null值。而不是通过"null",如果注入“null”只会被认为是字符串--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"nullTest"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl4"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"message"</span>&gt;</span><span class="tag">&lt;<span class="name">null</span>/&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"index"</span> <span class="attr">value</span>=<span class="string">"0"</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>引用Bean</h1>
+<p>通过ref属性或者 <code>&lt;ref bean=&quot;beanName&quot;&gt;</code> 子标签配置，可以用在 <code>&lt;constructor-arg&gt;</code> 、 <code>&lt;property&gt;</code> 等中。</p>
+<p><strong>高级引用方式</strong></p>
+<ul>
+<li><code>&lt;ref parent=&quot;&quot;/&gt;</code> 配置用于引用父容器中对应的Bean，而不会引用到当前容器中的Bean；</li>
+<li>在 <code>&lt;property&gt;</code> 或 <code>&lt;constructor-arg&gt;</code> 内通过 <code>&lt;bean&gt;</code> 标签定义的Bean为内部匿名Bean,对外不可见。</li>
+</ul>
+<p>注意：父容器不是指上级配置文件（上级配置文件指向的是同一个容器），而是指在在创建当前上下文对象时所传入的父级上下文对象。</p>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> model.HelloApi;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BeanReferenceTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">injectionTypeTest</span><span class="params">()</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">       ApplicationContext beanContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"parentReference.xml"</span>);</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//以beanContext为父容器初始化当前容器</span></span><br><span class="line">       ApplicationContext currentContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="keyword">new</span> String[] &#123;<span class="string">"beanReference.xml"</span>&#125;,beanContext);</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//通过&lt;ref&gt;子标签或者标签的ref属性来引用其他Bean</span></span><br><span class="line">       HelloApi refApi1 = currentContext.getBean(<span class="string">"helloApiDecorator1"</span>, HelloApi.class);</span><br><span class="line">       refApi1.sayHello();</span><br><span class="line">       HelloApi refApi2 = currentContext.getBean(<span class="string">"helloApiDecorator2"</span>, HelloApi.class);</span><br><span class="line">       refApi2.sayHello();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//通过parent注入</span></span><br><span class="line">       HelloApi parentBean = currentContext.getBean(<span class="string">"parentBean"</span>, HelloApi.class);</span><br><span class="line">       parentBean.sayHello();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//内部Bean定义</span></span><br><span class="line">       HelloApi bean = currentContext.getBean(<span class="string">"innerBean"</span>, HelloApi.class);</span><br><span class="line">       bean.sayHello();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Spring容器配置</li>
+</ol>
+<p>（1）子容器beanReference.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 通过&lt;ref&gt;子标签或者标签的ref属性来引用其他Bean--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 定义依赖Bean --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloApi"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 通过构造器注入 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloApiDecorator1"</span> <span class="attr">class</span>=<span class="string">"model.HelloApiDecorator"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">index</span>=<span class="string">"0"</span> <span class="attr">ref</span>=<span class="string">"helloApi"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 通过setter方式注入 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloApiDecorator2"</span> <span class="attr">class</span>=<span class="string">"model.HelloApiDecorator"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"helloApi"</span>&gt;</span><span class="tag">&lt;<span class="name">ref</span> <span class="attr">bean</span>=<span class="string">"helloApi"</span>/&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 注意父容器中也定义了 id 为 helloApiCopies的Bean --&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 父容器中的Bean和当前容器的Bean是可以重名的，默认的获取顺序是先查找当前容器中的Bean，如果找不到再从父容器找。--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloApiCopies"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl4"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"index"</span> <span class="attr">value</span>=<span class="string">"1"</span>/&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"message"</span> <span class="attr">value</span>=<span class="string">"Hello I'm local bean!"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- &lt;ref parent=””/&gt;配置方式：用于引用父容器中的Bean，而不会引用当前容器中的Bean。--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 注意：父容器不是指上级配置文件（上级配置文件指向的是同一个容器），而是指在在创建当前上下文对象时所传入的父级上下文对象--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"parentBean"</span> <span class="attr">class</span>=<span class="string">"model.HelloApiDecorator"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"helloApi"</span>&gt;</span><span class="tag">&lt;<span class="name">ref</span> <span class="attr">parent</span>=<span class="string">"helloApiCopies"</span>/&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 内部Bean定义: 在&lt;property&gt;或&lt;constructor-arg&gt;内通过&lt;bean&gt;标签定义的Bean，</span></span><br><span class="line"><span class="comment">      该Bean不管是否指定id或name，都会有唯一的匿名标识符，而且不能指定别名，该内部Bean对其他外部Bean不可见--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"innerBean"</span> <span class="attr">class</span>=<span class="string">"model.HelloApiDecorator"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"helloApi"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloApi"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl"</span>/&gt;</span></span><br><span class="line">             <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>（2）父容器parentReference.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloApiCopies"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl4"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"index"</span> <span class="attr">value</span>=<span class="string">"1"</span>/&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"message"</span> <span class="attr">value</span>=<span class="string">"Hello I'm parent bean!"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>批量注入</h1>
+<h2 id="注入集合">注入集合</h2>
+<p>使用 <code>&lt;list&gt;</code> 标签注入List，使用 <code>&lt;set&gt;</code> 标签注入Set，使用 <code>&lt;array&gt;</code> 标签注入数组。（ <code>&lt;set&gt;</code> 或 <code>&lt;list&gt;</code> 都可以用来装配List、Set甚至数组）</p>
+<p>可以使用子标签 <code>&lt;value&gt;</code> 指定每个元素的字面量值，或者使用 <code>&lt;ref&gt;</code> 引用bean。</p>
+<h2 id="注入字典（Map）类型">注入字典（Map）类型</h2>
+<p>使用 <code>&lt;map&gt;</code> 标签配置注入， <code>&lt;entry&gt;</code> 子标签配置键值对，其中使用 <code>&lt;key&gt;</code> 、 <code>&lt;value&gt;</code> 或者 <code>&lt;entry&gt;</code> 的key、value属性指定每个键值对的值；</p>
+<h2 id="注入Properties类型">注入Properties类型</h2>
+<p>使用 <code>&lt;props&gt;</code> 标签配置，子标签 <code>&lt;prop key=”键”&gt;</code> 值 <code>&lt;/prop&gt;</code> 指定键值对，键和值类型必须是String。</p>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> model.ArrayTestBean;</span><br><span class="line"><span class="keyword">import</span> model.ListTestBean;</span><br><span class="line"><span class="keyword">import</span> model.MapTestBean;</span><br><span class="line"><span class="keyword">import</span> model.PropertiesTestBean;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CollectionInjectionTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">injectionTypeTest</span><span class="params">()</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">       ApplicationContext beanContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"collectionInjection.xml"</span>);</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//使用&lt;list&gt;注入List类型</span></span><br><span class="line">       ListTestBean listBean = beanContext.getBean(<span class="string">"listBean"</span>,ListTestBean.class);</span><br><span class="line">       System.out.println(listBean.getValues().size());</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//使用&lt;array&gt;注入数组类型</span></span><br><span class="line">       ArrayTestBean arrayTestBean = beanContext.getBean(<span class="string">"arrayTestBean"</span>,ArrayTestBean.class);</span><br><span class="line">       arrayTestBean.printAray();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//使用&lt;map&gt;注入map类型</span></span><br><span class="line">       MapTestBean mapTestBean = beanContext.getBean(<span class="string">"mapTestBean"</span>,MapTestBean.class);</span><br><span class="line">       mapTestBean.printMap();</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//使用&lt;props&gt;注入Properties类型</span></span><br><span class="line">       PropertiesTestBean propertiesTestBean = beanContext.getBean(<span class="string">"propertiesTestBean"</span>,PropertiesTestBean.class);</span><br><span class="line">       propertiesTestBean.printPros();</span><br><span class="line">       propertiesTestBean = beanContext.getBean(<span class="string">"propertiesTestBean2"</span>,PropertiesTestBean.class);</span><br><span class="line">       propertiesTestBean.printPros();</span><br><span class="line"> </span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Spring容器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- List类型：需要使用&lt;list&gt;标签来配置注入--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"listBean"</span> <span class="attr">class</span>=<span class="string">"model.ListTestBean"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"values"</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">                    &lt;list value-type="java.lang.String" merge="default"&gt;</span></span><br><span class="line"><span class="comment">                    可选属性 value-type：表示list中元素的属性。当bean类中使用泛型时，Spring能够自动识别list元素属性,而不用配置该值。</span></span><br><span class="line"><span class="comment">                    可选属性 merge: 当存在父子bean时，是否合并父子bean中的list条码。</span></span><br><span class="line"><span class="comment">                    --&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">value</span>&gt;</span>1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">value</span>&gt;</span>2<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">value</span>&gt;</span>3<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- Set类型配置: 与List类型完全一致，使用&lt;set&gt;标签来配置注入，具体同上--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- Collection类型：Collection类型是Set和List类型的基类型，使用&lt;set&gt;或&lt;list&gt;标签都可以进行注入--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 数组类型：需要使用&lt;array&gt;标签来配置注入，其中标签属性“value-type”和“merge”和&lt;list&gt;标签含义完全一样--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"arrayTestBean"</span> <span class="attr">class</span>=<span class="string">"model.ArrayTestBean"</span>&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- 一维数组注入--&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"array"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">array</span> <span class="attr">value-type</span>=<span class="string">"java.lang.String"</span> <span class="attr">merge</span>=<span class="string">"default"</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">value</span>&gt;</span>[0]<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">value</span>&gt;</span>[1]<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- 二维数组注入--&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"array2"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;<span class="name">value</span>&gt;</span>[0][0]<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;<span class="name">value</span>&gt;</span>[0][1]<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;<span class="name">value</span>&gt;</span>[0][2]<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;<span class="name">value</span>&gt;</span>[1][0]<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;<span class="name">value</span>&gt;</span>[1][1]<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- map类型：是包含键值对数据的数据结构，需要使用&lt;map&gt;标签来配置注入--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"mapTestBean"</span> <span class="attr">class</span>=<span class="string">"model.MapTestBean"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"values"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">map</span> <span class="attr">key-type</span>=<span class="string">"java.lang.String"</span> <span class="attr">value-type</span>=<span class="string">"java.lang.String"</span>&gt;</span></span><br><span class="line">                           <span class="comment">&lt;!-- &lt;entry&gt;表示键值对--&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">entry</span>&gt;</span></span><br><span class="line">                                  <span class="comment">&lt;!-- &lt;key&gt;表示键数据--&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;<span class="name">key</span>&gt;</span><span class="tag">&lt;<span class="name">value</span>&gt;</span>SH<span class="tag">&lt;/<span class="name">value</span>&gt;</span><span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">                                  <span class="comment">&lt;!-- &lt;value&gt;表示键对应的值数据--&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;<span class="name">value</span>&gt;</span>上海<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">                           <span class="comment">&lt;!-- 更简单的配置方式--&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">"HB"</span> <span class="attr">value</span>=<span class="string">"湖北"</span>&gt;</span><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- java.util.Properties类型: 需要使用&lt;props&gt;标签来配置注入，键和值类型必须是String，不能变，</span></span><br><span class="line"><span class="comment">      子标签&lt;prop key=”键”&gt;值&lt;/prop&gt;来指定键值对，具体配置如下：--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"propertiesTestBean"</span> <span class="attr">class</span>=<span class="string">"model.PropertiesTestBean"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"values"</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 虽然指定了value-type,但该属性不起作用，Properties键和值全是String类型--&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">props</span> <span class="attr">value-type</span>=<span class="string">"int"</span> <span class="attr">merge</span>=<span class="string">"default"</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">"1"</span>&gt;</span>1sss<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">"2"</span>&gt;</span>2TTt<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">props</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 配置方法二,不建议使用--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"propertiesTestBean2"</span> <span class="attr">class</span>=<span class="string">"model.PropertiesTestBean"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"values"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">value</span>&gt;</span></span><br><span class="line">                           1 = 11</span><br><span class="line">                           2 = 22</span><br><span class="line">                           3 = 33</span><br><span class="line">                           4 = 44</span><br><span class="line">                    <span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>util-命名空间</h1>
+<p>我们可以使用Spring util-命名空间中的一些功能来简bean装配。</p>
+<p>首先，需要在XML中声明util-命名空间及其模式：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794495_20200321201659585_7497.png" alt></p>
+<p>util-命名空间所提供的功能之一就是 <code>&lt;util:list&gt;</code> 元素，它会创建一个列表的bean。借助 <code>&lt;util:list&gt;</code> ，我们可以将单独声明List对象bean，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794495_20200321201659267_21156.png" alt></p>
+<p>现在，我们能够像使用其他的bean那样，将trackList注入到BlankDisc bean的tracks属性中：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584794494_20200321201658955_25348.png" alt></p>
+<p><code>&lt;util:list&gt;</code> 只是util-命名空间中的多个元素之一。下表列出了util-命名空间提供的所有元素。在需要的时候，你可能会用到util-命名空间中的其它成员。</p>
+<table>
+<thead>
+<tr>
+<th>元 素</th>
+<th>描 述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;util:constant&gt;</code></td>
+<td>引用某个类型的public static域，并将其暴露为bean</td>
+</tr>
+<tr>
+<td>util:list</td>
+<td>创建一个java.util.List类型的bean，其中包含值或引用</td>
+</tr>
+<tr>
+<td>util:map</td>
+<td>创建一个java.util.Map类型的bean，其中包含值或引用</td>
+</tr>
+<tr>
+<td>util:properties</td>
+<td>创建一个java.util.Properties类型的bean</td>
+</tr>
+<tr>
+<td>util:property-path</td>
+<td>引用一个bean的属性（或内嵌属性），并将其暴露为bean</td>
+</tr>
+<tr>
+<td>util:set</td>
+<td>创建一个java.util.Set类型的bean，其中包含值或引用</td>
+</tr>
+</tbody>
+</table>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>08-通过XML装配BEAN</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">创建XML配置规范</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">&lt;bean&gt; ：声明bean</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#声明bean"><span class="nav-text">声明bean</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bean命名配置"><span class="nav-text">Bean命名配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bean别名配置"><span class="nav-text">Bean别名配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">构造器注入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#constructor-arg"><span class="nav-text">&lt;constructor-arg&gt;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#c-命名空间"><span class="nav-text">c-命名空间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#装配引用"><span class="nav-text">装配引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#装配字面量"><span class="nav-text">装配字面量</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">工厂方法注入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Setter注入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#property"><span class="nav-text">&lt;property&gt;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#p-命名空间"><span class="nav-text">p-命名空间</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">注入常量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">注入Bean ID</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">引用Bean</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">批量注入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#注入集合"><span class="nav-text">注入集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注入字典（Map）类型"><span class="nav-text">注入字典（Map）类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注入Properties类型"><span class="nav-text">注入Properties类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">util-命名空间</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

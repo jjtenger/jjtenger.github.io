@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="HttpServletRequest对象代表客户端的请求，当客户端通过HTTP协议访问服务器时，HTTP请求头中的所有信息都封装在这个对象中，通过这个对象提供的方法，可以获得客户端请求的所有信息。获取主机信息及请求URL获取主机信息及请求URL getRequestURL方法返回客户端发出请求时的完整URL。 getRequestURI方法返回请求行中的资源名部分。 getQueryString">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;06-HttpServletRequest.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="HttpServletRequest对象代表客户端的请求，当客户端通过HTTP协议访问服务器时，HTTP请求头中的所有信息都封装在这个对象中，通过这个对象提供的方法，可以获得客户端请求的所有信息。获取主机信息及请求URL获取主机信息及请求URL getRequestURL方法返回客户端发出请求时的完整URL。 getRequestURI方法返回请求行中的资源名部分。 getQueryString">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.020Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/06-HttpServletRequest">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>06-HTTPSERVLETREQUEST</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>HttpServletRequest对象代表客户端的请求，当客户端通过HTTP协议访问服务器时，HTTP请求头中的所有信息都封装在这个对象中，通过这个对象提供的方法，可以获得客户端请求的所有信息。</p><h1>获取主机信息及请求URL</h1><p>获取主机信息及请求URL</p><ul>
+<li>getRequestURL方法返回客户端发出请求时的完整URL。</li>
+<li>getRequestURI方法返回请求行中的资源名部分。</li>
+<li>getQueryString 方法返回请求行中的参数部分。</li>
+<li>getPathInfo方法返回请求URL中的额外路径信息。额外路径信息是请求URL中的位于Servlet的路径之后和查询参数之前的内容，它以“/”开头。</li>
+<li>getRemoteAddr方法返回发出请求的客户机的IP地址。</li>
+<li>getRemoteHost方法返回发出请求的客户机的完整主机名。</li>
+<li>getRemotePort方法返回客户机所使用的网络端口号。</li>
+<li>getLocalAddr方法返回WEB服务器的IP地址。</li>
+<li>getLocalName方法返回WEB服务器的主机名。</li>
+</ul><a id="more"></a>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.annotation.WebServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.PrintWriter;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 通过request对象获取客户端信息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">// http://localhost:8080/javaWeb/request_getCustomerMessage?name=sdf&amp;value=154sadf&amp;oiuo=32asfd</span></span><br><span class="line"><span class="meta">@WebServlet</span>(urlPatterns = &#123;<span class="string">"/request_getCustomerMessage"</span>&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Request_GetCustomerMessage</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 1.获得客户机信息</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        String requestUrl = request.getRequestURL().toString();<span class="comment">//得到请求的URL地址</span></span><br><span class="line">        String requestUri = request.getRequestURI();<span class="comment">//得到请求的资源</span></span><br><span class="line">        String queryString = request.getQueryString();<span class="comment">//得到请求的URL地址中附带的参数</span></span><br><span class="line">        String remoteAddr = request.getRemoteAddr();<span class="comment">//得到来访者的IP地址</span></span><br><span class="line">        String remoteHost = request.getRemoteHost();</span><br><span class="line">        <span class="keyword">int</span> remotePort = request.getRemotePort();</span><br><span class="line">        String remoteUser = request.getRemoteUser();</span><br><span class="line">        String method = request.getMethod();<span class="comment">//得到请求URL地址时使用的方法</span></span><br><span class="line">        String pathInfo = request.getPathInfo();</span><br><span class="line">        String localAddr = request.getLocalAddr();<span class="comment">//获取WEB服务器的IP地址</span></span><br><span class="line">        String localName = request.getLocalName();<span class="comment">//获取WEB服务器的主机名</span></span><br><span class="line"></span><br><span class="line">        response.setCharacterEncoding(<span class="string">"UTF-8"</span>);<span class="comment">//设置将字符以"UTF-8"编码输出到客户端浏览器</span></span><br><span class="line">        <span class="comment">//通过设置响应头控制浏览器以UTF-8的编码显示数据，如果不加这句话，那么浏览器显示的将是乱码</span></span><br><span class="line">        response.setHeader(<span class="string">"content-type"</span>, <span class="string">"text/html;charset=UTF-8"</span>);</span><br><span class="line">        PrintWriter out = response.getWriter();</span><br><span class="line">        out.write(<span class="string">"获取到的客户机信息如下："</span>);</span><br><span class="line">        out.write(<span class="string">"&lt;hr/&gt;"</span>);</span><br><span class="line">        out.write(<span class="string">"请求的URL地址："</span>+requestUrl);</span><br><span class="line">        out.write(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">        out.write(<span class="string">"请求的资源："</span>+requestUri);</span><br><span class="line">        out.write(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">        out.write(<span class="string">"请求的URL地址中附带的参数："</span>+queryString);</span><br><span class="line">        out.write(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">        out.write(<span class="string">"来访者的IP地址："</span>+remoteAddr);</span><br><span class="line">        out.write(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">        out.write(<span class="string">"来访者的主机名："</span>+remoteHost);</span><br><span class="line">        out.write(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">        out.write(<span class="string">"使用的端口号："</span>+remotePort);</span><br><span class="line">        out.write(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">        out.write(<span class="string">"remoteUser："</span>+remoteUser);</span><br><span class="line">        out.write(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">        out.write(<span class="string">"请求使用的方法："</span>+method);</span><br><span class="line">        out.write(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">        out.write(<span class="string">"pathInfo："</span>+pathInfo);</span><br><span class="line">        out.write(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">        out.write(<span class="string">"localAddr："</span>+localAddr);</span><br><span class="line">        out.write(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">        out.write(<span class="string">"localName："</span>+localName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        doGet(request, response);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>获取请求头</h1>
+<p>获取请求头</p>
+<ul>
+<li>getHeader(string name)方法:String</li>
+<li>getHeaders(String name)方法:Enumeration</li>
+<li>getHeaderNames()方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.annotation.WebServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.PrintWriter;</span><br><span class="line"><span class="keyword">import</span> java.util.Enumeration;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 通过request对象获取客户端请求头信息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@WebServlet</span>(urlPatterns = &#123;<span class="string">"/request_getHeader"</span>&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Request_GetHeader</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line"></span><br><span class="line">        response.setCharacterEncoding(<span class="string">"UTF-8"</span>);<span class="comment">//设置将字符以"UTF-8"编码输出到客户端浏览器</span></span><br><span class="line">        <span class="comment">//通过设置响应头控制浏览器以UTF-8的编码显示数据</span></span><br><span class="line">        response.setHeader(<span class="string">"content-type"</span>, <span class="string">"text/html;charset=UTF-8"</span>);</span><br><span class="line">        PrintWriter out = response.getWriter();</span><br><span class="line"></span><br><span class="line">        Enumeration&lt;String&gt; reqHeadInfos = request.getHeaderNames();<span class="comment">//获取所有的请求头</span></span><br><span class="line">        out.write(<span class="string">"获取到的客户端所有的请求头信息如下："</span>);</span><br><span class="line">        out.write(<span class="string">"&lt;hr/&gt;"</span>);</span><br><span class="line">        <span class="keyword">while</span> (reqHeadInfos.hasMoreElements()) &#123;</span><br><span class="line">            String headName = (String) reqHeadInfos.nextElement();</span><br><span class="line">            String headValue = request.getHeader(headName);<span class="comment">//根据请求头的名字获取对应的请求头的值</span></span><br><span class="line">            out.write(headName+<span class="string">":"</span>+headValue);</span><br><span class="line">            out.write(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        out.write(<span class="string">"&lt;br/&gt;"</span>);</span><br><span class="line">        out.write(<span class="string">"获取到的客户端Accept-Encoding请求头的值："</span>);</span><br><span class="line">        out.write(<span class="string">"&lt;hr/&gt;"</span>);</span><br><span class="line">        String value = request.getHeader(<span class="string">"Accept-Encoding"</span>);<span class="comment">//获取Accept-Encoding请求头对应的值</span></span><br><span class="line">        out.write(value);</span><br><span class="line"></span><br><span class="line">        Enumeration&lt;String&gt; e = request.getHeaders(<span class="string">"Accept-Encoding"</span>);</span><br><span class="line">        <span class="keyword">while</span> (e.hasMoreElements()) &#123;</span><br><span class="line">            String string = (String) e.nextElement();</span><br><span class="line">            System.out.println(string);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        doGet(request, response);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>获取请求参数：getParameter</h1>
+<p>获取请求参数(客户端提交的表单数据)</p>
+<ul>
+<li>getParameter(String)方法(常用)</li>
+<li>getParameterValues(String name)方法(常用)</li>
+<li>getParameterNames()方法(不常用)</li>
+<li>getParameterMap()方法(编写框架时常用)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.annotation.WebServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.text.MessageFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.Enumeration;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 获取客户端通过Form表单提交上来的参数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@WebServlet</span>(urlPatterns = &#123;<span class="string">"/request_getParameter"</span>&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Request_GetParameter</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//客户端是以UTF-8编码提交表单数据的，所以需要设置服务器端以UTF-8的编码进行接收，否则对于中文数据就会产生乱码</span></span><br><span class="line">        request.setCharacterEncoding(<span class="string">"UTF-8"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 编  号(文本框)：</span></span><br><span class="line"><span class="comment">         * &lt;input type="text" name="userid" value="NO." size="2" maxlength="2"&gt;</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        String userid = request.getParameter(<span class="string">"userid"</span>);<span class="comment">//获取填写的编号，userid是文本框的名字，&lt;input type="text" name="userid"&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 用户名(文本框)：&lt;input type="text" name="username" value="请输入用户名"&gt;</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        String username = request.getParameter(<span class="string">"username"</span>);<span class="comment">//获取填写的用户名</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 密  码(密码框)：&lt;input type="password" name="userpass" value="请输入密码"&gt;</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        String userpass = request.getParameter(<span class="string">"userpass"</span>);<span class="comment">//获取填写的密码</span></span><br><span class="line"></span><br><span class="line">        String sex = request.getParameter(<span class="string">"sex"</span>);<span class="comment">//获取选中的性别</span></span><br><span class="line"></span><br><span class="line">        String dept = request.getParameter(<span class="string">"dept"</span>);<span class="comment">//获取选中的部门</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//获取选中的兴趣，因为可以选中多个值，所以获取到的值是一个字符串数组，因此需要使用getParameterValues方法来获取</span></span><br><span class="line">        String[] insts = request.getParameterValues(<span class="string">"inst"</span>);</span><br><span class="line">        String note = request.getParameter(<span class="string">"note"</span>);<span class="comment">//获取填写的说明信息</span></span><br><span class="line">        String hiddenField = request.getParameter(<span class="string">"hiddenField"</span>);<span class="comment">//获取隐藏域的内容</span></span><br><span class="line"></span><br><span class="line">        String instStr=<span class="string">""</span>;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 获取数组数据的技巧，可以避免insts数组为null时引发的空指针异常错误！</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; insts!=<span class="keyword">null</span> &amp;&amp; i &lt; insts.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i == insts.length-<span class="number">1</span>) &#123;</span><br><span class="line">                instStr+=insts[i];</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                instStr+=insts[i]+<span class="string">","</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        String htmlStr = <span class="string">"&lt;table&gt;"</span> +</span><br><span class="line">                <span class="string">"&lt;tr&gt;&lt;td&gt;填写的编号：&lt;/td&gt;&lt;td&gt;&#123;0&#125;&lt;/td&gt;&lt;/tr&gt;"</span> +</span><br><span class="line">                <span class="string">"&lt;tr&gt;&lt;td&gt;填写的用户名：&lt;/td&gt;&lt;td&gt;&#123;1&#125;&lt;/td&gt;&lt;/tr&gt;"</span> +</span><br><span class="line">                <span class="string">"&lt;tr&gt;&lt;td&gt;填写的密码：&lt;/td&gt;&lt;td&gt;&#123;2&#125;&lt;/td&gt;&lt;/tr&gt;"</span> +</span><br><span class="line">                <span class="string">"&lt;tr&gt;&lt;td&gt;选中的性别：&lt;/td&gt;&lt;td&gt;&#123;3&#125;&lt;/td&gt;&lt;/tr&gt;"</span> +</span><br><span class="line">                <span class="string">"&lt;tr&gt;&lt;td&gt;选中的部门：&lt;/td&gt;&lt;td&gt;&#123;4&#125;&lt;/td&gt;&lt;/tr&gt;"</span> +</span><br><span class="line">                <span class="string">"&lt;tr&gt;&lt;td&gt;选中的兴趣：&lt;/td&gt;&lt;td&gt;&#123;5&#125;&lt;/td&gt;&lt;/tr&gt;"</span> +</span><br><span class="line">                <span class="string">"&lt;tr&gt;&lt;td&gt;填写的说明：&lt;/td&gt;&lt;td&gt;&#123;6&#125;&lt;/td&gt;&lt;/tr&gt;"</span> +</span><br><span class="line">                <span class="string">"&lt;tr&gt;&lt;td&gt;隐藏域的内容：&lt;/td&gt;&lt;td&gt;&#123;7&#125;&lt;/td&gt;&lt;/tr&gt;"</span> +</span><br><span class="line">                <span class="string">"&lt;/table&gt;"</span>;</span><br><span class="line">        htmlStr = MessageFormat.format(htmlStr, userid,username,userpass,sex,dept,instStr,note,hiddenField);</span><br><span class="line"></span><br><span class="line">        response.setCharacterEncoding(<span class="string">"UTF-8"</span>);<span class="comment">//设置服务器端以UTF-8编码输出数据到客户端</span></span><br><span class="line">        response.setContentType(<span class="string">"text/html;charset=UTF-8"</span>);<span class="comment">//设置客户端浏览器以UTF-8编码解析数据</span></span><br><span class="line">        response.getWriter().write(htmlStr);<span class="comment">//输出htmlStr里面的内容到客户端浏览器显示</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//使用getParameterNames方法接收表单参数</span></span><br><span class="line">        Enumeration&lt;String&gt; paramNames = request.getParameterNames();<span class="comment">//获取所有的参数名</span></span><br><span class="line">        <span class="keyword">while</span> (paramNames.hasMoreElements()) &#123;</span><br><span class="line">            String name = paramNames.nextElement();<span class="comment">//得到参数名</span></span><br><span class="line">            <span class="comment">//此处只能获得key对应的第一个参数</span></span><br><span class="line">            String value = request.getParameter(name);<span class="comment">//通过参数名获取对应的值</span></span><br><span class="line">            System.out.println(MessageFormat.format(<span class="string">"&#123;0&#125;=&#123;1&#125;"</span>, name,value));</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"-------------------------------------------------------"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//使用getParameterMap方法接收表单参数</span></span><br><span class="line">        <span class="comment">//request对象封装的参数是以Map的形式存储的</span></span><br><span class="line">        Map&lt;String, String[]&gt; paramMap = request.getParameterMap();</span><br><span class="line">        <span class="keyword">for</span>(Map.Entry&lt;String, String[]&gt; entry :paramMap.entrySet())&#123;</span><br><span class="line">            String paramName = entry.getKey();</span><br><span class="line">            String paramValue = <span class="string">""</span>;</span><br><span class="line">            String[] paramValueArr = entry.getValue();</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; paramValueArr!=<span class="keyword">null</span> &amp;&amp; i &lt; paramValueArr.length; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (i == paramValueArr.length-<span class="number">1</span>) &#123;</span><br><span class="line">                    paramValue+=paramValueArr[i];</span><br><span class="line">                &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                    paramValue+=paramValueArr[i]+<span class="string">","</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(MessageFormat.format(<span class="string">"&#123;0&#125;=&#123;1&#125;"</span>, paramName,paramValue));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        doGet(request, response);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">%@</span> <span class="attr">page</span> <span class="attr">language</span>=<span class="string">"java"</span> <span class="attr">import</span>=<span class="string">"java.util.*"</span> <span class="attr">pageEncoding</span>=<span class="string">"UTF-8"</span>%&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>获得客户机请求参数(客户端提交的数据)<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">fieldset</span> <span class="attr">style</span>=<span class="string">"width:500px;"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">legend</span>&gt;</span>获得客户机请求参数(客户端提交的数据)<span class="tag">&lt;/<span class="name">legend</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--form表单的action属性规定当提交表单时，向何处发送表单数据，method属性指明表单的提交方式，分为get和post，默认为get--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"$&#123;pageContext.request.contextPath&#125;/request_getParameter"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!--输入文本框，SIZE表示显示长度，maxlength表示最多输入长度--&gt;</span></span><br><span class="line">            编  号(文本框)：</span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"userid"</span> <span class="attr">value</span>=<span class="string">"NO."</span> <span class="attr">size</span>=<span class="string">"2"</span> <span class="attr">maxlength</span>=<span class="string">"2"</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!--输入文本框，通过value指定其显示的默认值--&gt;</span></span><br><span class="line">            用户名(文本框)：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"username"</span> <span class="attr">value</span>=<span class="string">"请输入用户名"</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!--密码框，其中所有输入的内容都以密文的形式显示--&gt;</span></span><br><span class="line">            密  码(密码框)：</span><br><span class="line">            <span class="comment">&lt;!-- 表示的是一个空格--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">name</span>=<span class="string">"userpass"</span> <span class="attr">value</span>=<span class="string">"请输入密码"</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!--单选按钮，通过checked指定默认选中，名称必须一样，其中value为真正需要的内容--&gt;</span></span><br><span class="line">            性  别(单选框)：</span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"sex"</span> <span class="attr">value</span>=<span class="string">"男"</span> <span class="attr">checked</span>&gt;</span>男</span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"sex"</span> <span class="attr">value</span>=<span class="string">"女"</span>&gt;</span>女<span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!--下拉列表框，通过&lt;option&gt;元素指定下拉的选项--&gt;</span></span><br><span class="line">            部  门(下拉框)：</span><br><span class="line">            <span class="tag">&lt;<span class="name">select</span> <span class="attr">name</span>=<span class="string">"dept"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">option</span> <span class="attr">value</span>=<span class="string">"技术部"</span>&gt;</span>技术部<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">option</span> <span class="attr">value</span>=<span class="string">"销售部"</span> <span class="attr">SELECTED</span>&gt;</span>销售部<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">option</span> <span class="attr">value</span>=<span class="string">"财务部"</span>&gt;</span>财务部<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">select</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!--复选框，可以同时选择多个选项，名称必须一样，其中value为真正需要的内容--&gt;</span></span><br><span class="line">            兴  趣(复选框)：</span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">name</span>=<span class="string">"inst"</span> <span class="attr">value</span>=<span class="string">"唱歌"</span>&gt;</span>唱歌</span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">name</span>=<span class="string">"inst"</span> <span class="attr">value</span>=<span class="string">"游泳"</span>&gt;</span>游泳</span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">name</span>=<span class="string">"inst"</span> <span class="attr">value</span>=<span class="string">"跳舞"</span>&gt;</span>跳舞</span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">name</span>=<span class="string">"inst"</span> <span class="attr">value</span>=<span class="string">"编程"</span> <span class="attr">checked</span>&gt;</span>编程</span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">name</span>=<span class="string">"inst"</span> <span class="attr">value</span>=<span class="string">"上网"</span>&gt;</span>上网</span><br><span class="line">            <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!--大文本输入框，宽度为34列，高度为5行--&gt;</span></span><br><span class="line">            说  明(文本域)：</span><br><span class="line">            <span class="tag">&lt;<span class="name">textarea</span> <span class="attr">name</span>=<span class="string">"note"</span> <span class="attr">cols</span>=<span class="string">"34"</span> <span class="attr">rows</span>=<span class="string">"5"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">textarea</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!--隐藏域，在页面上无法看到，专门用来传递参数或者保存参数--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"hiddenField"</span> <span class="attr">value</span>=<span class="string">"hiddenvalue"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!--提交表单按钮，当点击提交后，所有填写的表单内容都会被传输到服务器端--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"提交(提交按钮)"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!--重置表单按钮，当点击重置后，所有表单恢复原始显示内容--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"reset"</span> <span class="attr">value</span>=<span class="string">"重置(重置按钮)"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--表单结束--&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">fieldset</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="getAttribute-与getParameter-区别">getAttribute()与getParameter()区别</h2>
+<p>Request对象中 getAttribute() 与 getParameter() 方法的区别</p>
+<ul>
+<li>
+<p><code>request.getAttribute()</code>方法返回request或者session范围内存在的对象（域对象），EL表达式<code>$(requestScope.user)</code>等价于 <code>request.getAttribute(&quot;user&quot;)</code>；</p>
+</li>
+<li>
+<p><code>request.getParameter()</code>方法是获取http提交过来的请求参数。EL表达式中使用<code>${param.user}</code>获取user请求参数，<code>等价于 request.getParameter(&quot;user&quot;)</code>，而不是<code>${user}</code>。</p>
+</li>
+</ul>
+<h2 id="避免请求参数中文乱码">避免请求参数中文乱码</h2>
+<h3 id="post请求中文乱码：request-setCharacterEncoding">post请求中文乱码：request.setCharacterEncoding()</h3>
+<p>post请求之所以会产生乱码，就是因为客户端和服务器请求和解析请求所用的编码不一致造成的，因此解决的办法是：客户端（请求视图）和服务器（解析请求的servlet）设置统一的编码方式，按照此编码进行数据的传输和接收。其中servlet使用HttpServletRequest对象从ServletRequest接口继承的&quot;setCharacterEncoding(charset)&quot;方法来设置解析请求用到的编码方式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.annotation.WebServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@WebServlet</span>(urlPatterns = &#123;<span class="string">"/request_postWithChinese"</span>&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Request_PostWithChinese</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">       <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * 客户端是以UTF-8编码传输数据到服务器端的，所以需要设置服务器端以UTF-8的编码进行接收，否则对于中文数据就会产生乱码</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">       <span class="comment">//注释掉后会出现乱码</span></span><br><span class="line">       <span class="comment">//request.setCharacterEncoding("UTF-8");</span></span><br><span class="line">       String userName = request.getParameter(<span class="string">"userName"</span>);</span><br><span class="line">       System.out.println(<span class="string">"userName："</span>+userName);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">%@</span> <span class="attr">page</span> <span class="attr">language</span>=<span class="string">"java"</span> <span class="attr">import</span>=<span class="string">"java.util.*"</span> <span class="attr">pageEncoding</span>=<span class="string">"UTF-8"</span>%&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">title</span>&gt;</span>request接收中文参数乱码问题<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"&lt;%=request.getContextPath()%&gt;/request_postWithChinese"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line">   用户名：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"userName"</span>/&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"post方式提交表单"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="get请求中文乱码">get请求中文乱码</h3>
+<p>对于get请求，请求参数是通过超链接附加参数的形式传递的。因此即使设置了以指定的编码接收数据也是无效，默认的还是使用ISO8859-1编码接收数据。</p>
+<p>URL地址后面如果跟了中文数据，那么中文参数需使用URL编码/解码处理。</p>
+<p><strong>URL中出现中文的情况有两种：</strong></p>
+<ul>
+<li>一种是中文出现在URL的路径部分（此种情况也可能出现乱码，不要使用）；</li>
+<li>一种是中文出现在URL的传参的部分，此时必须采用编码后传参。</li>
+</ul>
+<p><strong>URL中文编码及其原理</strong></p>
+<p>在浏览器地址栏里，浏览器认为%是个转义字符，浏览器会把%与%之间的编码，两位两位取出后进行解码，然后再传递给目标资源，然后由目标资源进行再次解码。</p>
+<p>因此JS页面处理URL中文时，需要使用两次encodeURI方法，例如encodeURI(encodeURI(“中文”))。</p>
+<p>第一次是把中文编码成%xy的格式，</p>
+<p>第二次是对%xy中的%进行编码,%编码成%25。</p>
+<p>整个传参过程大体应该是：</p>
+<p>浏览器执行JS获取URL地址时（注意在openModelDialog方法中，浏览器获取不到参数编码）后将%25xy解码成%xy，然后把%xy传递给目标资源，目标资源（java）使用URLDecoder.decode(request.getParameter(“参数名”),“UTF-8”);完成解码。</p>
+<p><strong>总结</strong>：</p>
+<p>1、URL路径部分不要出现中文;</p>
+<p>2、使用encodeURI进行2次编码;</p>
+<p>3、在openModelDialog()打开的模式窗体里没办法用request.getParameter正确获取参数。</p>
+<p><strong>示例</strong></p>
+<p>前台JS提交页面时：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> name=<span class="built_in">document</span>.myForm.username.value;</span><br><span class="line"><span class="keyword">var</span> url=<span class="string">"Ajax.do?method=check&amp;name="</span>+<span class="built_in">encodeURI</span>(<span class="built_in">encodeURI</span>(name));</span><br><span class="line">xmlHttp.open(<span class="string">"GET"</span>,url,<span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+<p>后台Action中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String name = request.getParameter(<span class="string">"name"</span>);</span><br><span class="line">name = URLDecoder.decode(name, <span class="string">"UTF-8"</span>);</span><br></pre></td></tr></table></figure>
+<p>servlet返回数据时，将字符编码设置为utf-8就可以了，因为Ajax只支持utf-8</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">response.setContentType(<span class="string">"text/xml;charset=utf-8"</span>);</span><br><span class="line">PrintWriter out = response.getWriter();</span><br><span class="line">out.print(result);</span><br></pre></td></tr></table></figure>
+<h1>请求转发：RequestDispatcher</h1>
+<p>在Servlet中，一般通过RequestDispatcher对象实现请求转发。</p>
+<h2 id="获取RequestDispatcher对象的两种方式">获取RequestDispatcher对象的两种方式</h2>
+<ul>
+<li>通过ServletContext的getRequestDispatcher(String path)方法。</li>
+<li>通过request对象提供的getRequestDispatche(String path)方法。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.annotation.WebServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Request对象实现请求转发</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@WebServlet</span>(urlPatterns = &#123;<span class="string">"/request_requestDispatcher"</span>&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Request_RequestDispatcher</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span></span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line"> </span><br><span class="line">       String data=<span class="string">"大家好，我正在总结JavaWeb"</span>;</span><br><span class="line">       <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * 将数据存放到request对象中,此时把request对象当作一个Map容器来使用</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">       request.setAttribute(<span class="string">"data"</span>, data);</span><br><span class="line">       <span class="comment">//客户端访问Request_RequestDispatcher这个Servlet后，</span></span><br><span class="line">       <span class="comment">//Request_RequestDispatcher通知服务器将请求转发(forward)到request_requestDispatcher.jsp页面进行处理</span></span><br><span class="line">       request.getRequestDispatcher(<span class="string">"/request_requestDispatcher.jsp"</span>).forward(request, response);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">       doGet(request, response);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">%@</span> <span class="attr">page</span> <span class="attr">language</span>=<span class="string">"java"</span> <span class="attr">import</span>=<span class="string">"java.util.*"</span> <span class="attr">pageEncoding</span>=<span class="string">"UTF-8"</span>%&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">title</span>&gt;</span>Request对象实现请求转发<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">使用Java代码取出存储在request对象中的数据：</span><br><span class="line"><span class="tag">&lt;<span class="name">h3</span> <span class="attr">style</span>=<span class="string">"color:red;"</span>&gt;</span><span class="tag">&lt;<span class="name">%=(String)request.getAttribute("data")%</span>&gt;</span><span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">使用EL表达式取出存储在request对象中的数据：</span><br><span class="line"><span class="tag">&lt;<span class="name">h3</span> <span class="attr">style</span>=<span class="string">"color:red;"</span>&gt;</span>$&#123;data&#125;<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="请求重定向和请求转发的区别">请求重定向和请求转发的区别</h2>
+<ul>
+<li>一个web资源收到客户端请求后，通知服务器去调用另外一个web资源进行处理，称之为请求转发/307。</li>
+</ul>
+<p>注意请求转发时浏览器地址栏的Url不会改变，请求转发前后都在服务器内部的同一请求过程中完成的，共享同一请求域。</p>
+<ul>
+<li>一个web资源收到客户端请求后，通知浏览器去访问另外一个web资源进行处理，称之为请求重定向/302。</li>
+</ul>
+<p>请求重定向后，浏览器地址栏的Url会发生变化，指向重定向后的web资源。重定向的每次访问请求是不同的请求过程，有独立的请求域，不能实现域对象共享。</p>
+<h1>从request获取各种路径</h1>
+<p><strong>quest.getRealPath()</strong></p>
+<p>获取当前运行文件在服务器上的绝对路径：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">request.getRealPath(<span class="string">"url"</span>); <span class="comment">// 虚拟目录映射为实际目录 </span></span><br><span class="line">request.getRealPath(<span class="string">"./"</span>);    <span class="comment">// 网页所在的目录 </span></span><br><span class="line">request.getRealPath(<span class="string">"../"</span>); <span class="comment">// 网页所在目录的上一层目录</span></span><br></pre></td></tr></table></figure>
+<p>这个方法已经不推荐使用了，代替方法是</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">request.getSession().getServletContext().getRealPath()</span><br></pre></td></tr></table></figure>
+<p><strong>request.getRequestURI()</strong></p>
+<p>得到包含工程名的当前页面全路径：</p>
+<p>结果：/TEST/test.jsp</p>
+<p><strong>request.getContextPath()</strong></p>
+<p>获取应用的web目录的名称 （工程名）。</p>
+<p>结果：/TEST</p>
+<p><strong>request.getServletPath()</strong></p>
+<p>得到当前页面所在目录下全名称。</p>
+<p>结果：如果页面在jsp目录下， /TEST/jsp/test.jsp</p>
+<p>以上以工程名为TEST为例。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>06-HTTPSERVLETREQUEST</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">获取主机信息及请求URL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">获取请求头</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">获取请求参数：getParameter</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#getAttribute-与getParameter-区别"><span class="nav-text">getAttribute()与getParameter()区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#避免请求参数中文乱码"><span class="nav-text">避免请求参数中文乱码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#post请求中文乱码：request-setCharacterEncoding"><span class="nav-text">post请求中文乱码：request.setCharacterEncoding()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#get请求中文乱码"><span class="nav-text">get请求中文乱码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">请求转发：RequestDispatcher</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取RequestDispatcher对象的两种方式"><span class="nav-text">获取RequestDispatcher对象的两种方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求重定向和请求转发的区别"><span class="nav-text">请求重定向和请求转发的区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">从request获取各种路径</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

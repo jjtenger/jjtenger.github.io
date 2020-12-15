@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="yarn-site.xml文件默认参数：http:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;r2.7.3&#x2F;hadoop-yarn&#x2F;hadoop-yarn-common&#x2F;yarn-default.xmlyarn-site.xmlyarn-site.xml：ResourceManager、NodeManager相关参数。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;16-YARN%E5%8F%82%E6%95%B0%E8%A7%A3%E8%AF%BB.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="yarn-site.xml文件默认参数：http:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;r2.7.3&#x2F;hadoop-yarn&#x2F;hadoop-yarn-common&#x2F;yarn-default.xmlyarn-site.xmlyarn-site.xml：ResourceManager、NodeManager相关参数。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885820_20200322215907434_30522.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885819_20200322215907094_19960.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885819_20200322215906455_10728.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885820_20200322215907434_30522.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/16-YARN%E5%8F%82%E6%95%B0%E8%A7%A3%E8%AF%BB">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>16-YARN参数解读</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>yarn-site.xml文件默认参数：</p><p><a href="http://hadoop.apache.org/docs/r2.7.3/hadoop-yarn/hadoop-yarn-common/yarn-default.xml" target="_blank" rel="noopener">http://hadoop.apache.org/docs/r2.7.3/hadoop-yarn/hadoop-yarn-common/yarn-default.xml</a></p><h1>yarn-site.xml</h1><p>yarn-site.xml：ResourceManager、NodeManager相关参数。</p><a id="more"></a>
+
+
+
+<h2 id="ResourceManager参数">ResourceManager参数</h2>
+<h3 id="ResourceManager主机地址">ResourceManager主机地址</h3>
+<p><strong>yarn.resourcemanager.hostname</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.hostname<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">value</span>&gt;</span>node1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">description</span>&gt;</span>ResourceManager所在的节点<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="ResourceManager访问地址">ResourceManager访问地址</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>yarn.resourcemanager.address</td>
+<td>${yarn.resourcemanager.hostname}:8032</td>
+<td>The address of the applications manager interface in the RM.</td>
+</tr>
+<tr>
+<td>yarn.resourcemanager.scheduler.address</td>
+<td>${yarn.resourcemanager.hostname}:8030</td>
+<td>The address of the scheduler interface.</td>
+</tr>
+<tr>
+<td>yarn.resourcemanager.resource-tracker.address</td>
+<td>${yarn.resourcemanager.hostname}:8031</td>
+<td>ResourceManager 对NodeManager暴露的地址</td>
+</tr>
+<tr>
+<td>yarn.resourcemanager.admin.address</td>
+<td>${yarn.resourcemanager.hostname}:8033</td>
+<td>ResourceManager 对管理员暴露的访问地址</td>
+</tr>
+<tr>
+<td>yarn.resourcemanager.webapp.address</td>
+<td>${yarn.resourcemanager.hostname}:8088</td>
+<td>ResourceManager对外Web地址</td>
+</tr>
+</tbody>
+</table>
+<p><strong>yarn.resourcemanager.webapp.address</strong></p>
+<p>如果外网客户端无法访问该网页，则修改yarn.resourcemanager.webapp.address配置为：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.webapp.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>0.0.0.0:8088<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>ResourceManager的web服务URI<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="资源调度器">资源调度器</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>yarn.resourcemanager.scheduler.class</td>
+<td>…capacity.CapacityScheduler</td>
+<td>启用的资源调度器主类，目前可用的有FIFO、Capacity Scheduler和Fair Scheduler</td>
+</tr>
+</tbody>
+</table>
+<p>…capacity.CapacityScheduler的完整名称： org.apache.Hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler</p>
+<h3 id="请求处理线程数">请求处理线程数</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>yarn.resourcemanager.resource-tracker.client.thread-count</td>
+<td>50</td>
+<td>处理来自NodeManager的RPC请求的Handler数目</td>
+</tr>
+<tr>
+<td>yarn.resourcemanager.scheduler.client.thread-count</td>
+<td>50</td>
+<td>处理来自ApplicationMaster的RPC请求的Handler数目</td>
+</tr>
+</tbody>
+</table>
+<h3 id="可申请的最小-最大资源数">可申请的最小_最大资源数</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>yarn.scheduler.minimum-allocation-mb</td>
+<td>1024</td>
+<td>单个可申请的最小内存资源量</td>
+</tr>
+<tr>
+<td>yarn.scheduler.maximum-allocation-mb</td>
+<td>8192</td>
+<td>单个可申请的最大内存资源量</td>
+</tr>
+<tr>
+<td>yarn.scheduler.minimum-allocation-vcores</td>
+<td>1</td>
+<td>单个可申请的最小虚拟CPU个数</td>
+</tr>
+<tr>
+<td>yarn.scheduler.maximum-allocation-vcores</td>
+<td>32</td>
+<td>单个可申请的最大虚拟CPU个数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="RM-HA">RM HA</h3>
+<p><strong>yarn.resourcemanager.ha.enabled</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.ha.enabled<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>启用RM高可用性<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>yarn.resourcemanager.cluster-id</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.cluster-id<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>YARN集群ID<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>yarn.resourcemanager.ha.rm-ids</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.ha.rm-ids<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>rm1,rm2<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>启用HA时，群集中的RM节点列表<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>yarn.resourcemanager.hostname.RM</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.hostname.rm1<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>node1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>第1个resourcemanager<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.hostname.rm2<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>node3<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>第2个resourcemanager<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>yarn.resourcemanager.zk-address</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.zk-address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>node1:2181,node2:2181,node3:2181<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Zookeeper列表<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="心跳间隔">心跳间隔</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>yarn.resourcemanager.nodemanagers.heartbeat-interval-ms</td>
+<td>1000（毫秒）</td>
+<td>NodeManager心跳间隔</td>
+</tr>
+</tbody>
+</table>
+<h2 id="NodeManager参数">NodeManager参数</h2>
+<h3 id="NodeManager资源配置">NodeManager资源配置</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>yarn.nodemanager.resource.memory-mb</td>
+<td>8192</td>
+<td>NodeManager总的可用物理内存（这个值通常一定要配置）</td>
+</tr>
+<tr>
+<td>yarn.nodemanager.vmem-pmem-ratio</td>
+<td>2.1</td>
+<td>每使用1MB物理内存，最多可用的虚拟内存数</td>
+</tr>
+<tr>
+<td>yarn.nodemanager.resource.cpu-vcores</td>
+<td>8</td>
+<td>NodeManager总的可用虚拟CPU个数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="中间文件、日志配置">中间文件、日志配置</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>yarn.nodemanager.local-dirs</td>
+<td>${hadoop.tmp.dir}/nm-local-dir</td>
+<td>中间结果存放位置，这个参数通常会配置多个目录，已分摊磁盘IO负载。</td>
+</tr>
+<tr>
+<td>yarn.nodemanager.log-dirs</td>
+<td>${yarn.log.dir}/userlogs</td>
+<td>日志存放地址（可配置多个目录）</td>
+</tr>
+<tr>
+<td>yarn.nodemanager.log.retain-seconds</td>
+<td>10800</td>
+<td>NodeManager上日志最多存放时间（不启用日志聚集功能时有效）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="NodeManager上运行的附属服务">NodeManager上运行的附属服务</h3>
+<p><strong>yarn.nodemanager.aux-services</strong></p>
+<p>NodeManager上运行的附属服务,需配置成mapreduce_shuffle，才可运行MapReduce程序</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>mapreduce_shuffle<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">description</span>&gt;</span>NodeManager上运行的附属服务（运行MapReduce程序）<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>mapred-site.xml</h1>
+<h2 id="启用yarn框架">启用yarn框架</h2>
+<p><strong><a href="http://mapreduce.framework.name" target="_blank" rel="noopener">mapreduce.framework.name</a></strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">description</span>&gt;</span>启用yarn作为资源管理框架<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="jobhistory参数">jobhistory参数</h2>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span>  </span><br><span class="line">       <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.jobhistory.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">       <span class="tag">&lt;<span class="name">value</span>&gt;</span>Master:10020<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span>  </span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span>  </span><br><span class="line">       <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.jobhistory.webapp.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">       <span class="tag">&lt;<span class="name">value</span>&gt;</span>Master:19888<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意：jobhistory要手动启动，即使start-all.sh也不会启动，启动命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sbin/mr-jobhistory-daemon.sh start historyserver</span><br></pre></td></tr></table></figure>
+<p>这样在web上就可以访问Master:19888端口了,这是查看job的history信息的端口</p>
+<h2 id="MapReduce任务参数">MapReduce任务参数</h2>
+<h3 id="map参数">map参数</h3>
+<p><strong>mapreduce.job.maps</strong></p>
+<p>默认启动的map数，默认值 2</p>
+<p><strong>mapred.min.split.size、mapred.max.split.size</strong></p>
+<p>InputSplit大小配置</p>
+<p><strong>mapreduce.map.sort.spill.percent</strong></p>
+<p>Map输出内存缓冲区溢出比例配置</p>
+<p><strong>mpareduce.task.io.sort.mb</strong></p>
+<p>Map输出内存缓冲区大小配置。</p>
+<p>Map Task输出排序缓冲区所占内存大小，默认值 100。</p>
+<h3 id="reduce参数">reduce参数</h3>
+<p><strong>mapred.reduce.tasks（mapreduce.job.reduces）</strong></p>
+<p>默认值：1</p>
+<p>说明：默认启动的reduce数。通过该参数可以手动修改reduce的个数。</p>
+<p>在hadoop2中有些参数名称过时了，例如原来的mapred.reduce.tasks改名为mapreduce.job.reduces了，当然，这两个参数你都可以使用，只是第一个参数过时了。</p>
+<p><strong>mapreduce.task.io.sort.factor</strong></p>
+<p>默认值：10</p>
+<p>说明：Reduce Task中合并小文件时，一次合并的文件数据，每次合并的时候选择最小的前10进行合并。</p>
+<h3 id="shuffle参数">shuffle参数</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mapreduce.reduce.shuffle.parallelcopies</td>
+<td>5</td>
+<td>reuduce shuffle阶段并行传输数据的数量</td>
+</tr>
+<tr>
+<td>mapreduce.reduce.shuffle.merge.percent</td>
+<td>0.66</td>
+<td>reduce归并接收map的输出数据可占用的内存配置百分比</td>
+</tr>
+<tr>
+<td>mapreduce.reduce.shuffle.memory.limit.percent</td>
+<td>0.25</td>
+<td>一个单一的shuffle的最大内存使用限制。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>mapreduce.reduce.shuffle.input.buffer.percent</strong></p>
+<p>Shuffle内存缓存区溢出比例配置。</p>
+<p>该参数控制运行reduce任务的机子上多少比例的内存用作复制buffer(默认值为0.70)</p>
+<h3 id="jobtracker、tasktracker">jobtracker、tasktracker</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mapreduce.jobtracker.handler.count</td>
+<td>10</td>
+<td>JobTracker可以启动的线程数，一般为tasktracker节点的4%</td>
+</tr>
+<tr>
+<td>mapreduce.tasktracker.reduce.tasks.maximum</td>
+<td>2</td>
+<td>一个tasktracker并发执行的reduce数，建议为cpu核数</td>
+</tr>
+<tr>
+<td>mapreduce.tasktracker.http.threads</td>
+<td>40</td>
+<td>map和reduce是通过http进行数据传输的，这个是设置传输的并行线程数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="数据压缩">数据压缩</h3>
+<p><strong>mapreduce.map.output.compress</strong></p>
+<p>Map Task的输出被写出到本地磁盘，而且需要通过网络传输至Reduce Task的节点，只要简单地使用一个快速的压缩算法（如LZO、LZ4、Snappy）就可以带来性能的提升，因为压缩机制的使用避免了Map Tasks与Reduce Tasks之间大量中间结果数据被传输。可以通过设置相应的Job配置属性开启：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mapreduce.map.output.compress：true</span><br><span class="line">mapreduce.map.output.compress.codec：CompressionCodec全限定类名</span><br></pre></td></tr></table></figure>
+<p>也可以通过Configuration API进行设置：</p>
+<p>new API：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">conf.setBoolean(Job.MAP_OUTPUT_COMPRESS, <span class="keyword">true</span>);</span><br><span class="line">conf.setClass(Job.MAP_OUTPUT_COMPRESS_CODEC, GzipCodec.class, CompressionCodec.class);</span><br><span class="line">Job job = <span class="keyword">new</span> Job(conf);</span><br></pre></td></tr></table></figure>
+<p>old API：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">conf.setCompressMapOutput(<span class="keyword">true</span>);</span><br><span class="line">conf.setMapOutputCompressorClass(GzipCodec.class);</span><br></pre></td></tr></table></figure>
+<p><strong>mapreduce.output.fileoutputformat.compress</strong></p>
+<p>如果MapReduce Job的结果输出需要使用压缩，可以通过设置Job的相关配置属性来实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mapreduce.output.fileoutputformat.compress：true</span><br><span class="line">mapreduce.output.fileoutputformat.compress.codec：CompressionCodec全限定类名</span><br></pre></td></tr></table></figure>
+<p>也可以通过FileOutputFormat提供的静态方法设置，如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FileOutputFormat.setCompressOutput(job, <span class="keyword">true</span>);</span><br><span class="line">FileOutputFormat.setOutputCompressorClass(job, GzipCodec.class);</span><br></pre></td></tr></table></figure>
+<p>不同的输出文件格式可能相应的设置属性会有不同。</p>
+<h2 id="jvm参数">jvm参数</h2>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mapred.child.java.opts</td>
+<td>-Xmx200m</td>
+<td>jvm启动的子线程可以使用的最大内存。</td>
+</tr>
+<tr>
+<td>mapreduce.job.jvm.numtasks</td>
+<td>1</td>
+<td>一个jvm可连续启动多个同类型任务。 默认情况下， tasktracker会为每个需要执行的task新开JVM。这会引入创建与销毁JVM的开销。可以通过该配置参数设置JVM重用，在执行完task后，tasktracker不必销毁该JVM，而执行新的task。默认为1，也就是执行过一个task后就销毁。可以设置为-1， 一直保持重用。</td>
+</tr>
+</tbody>
+</table>
+<h1>参数调优工具</h1>
+<p>参照</p>
+<p><a href="http://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.6.0/index.html" target="_blank" rel="noopener">http://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.6.0/index.html</a></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885820_20200322215907434_30522.png" alt></p>
+<p>单击“Command Line Installation”超链接后的PDF图标，即可打开HDP安装文档。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885819_20200322215907094_19960.png" alt></p>
+<p>单击“1.10. Determining HDP Memory Configuration Settings”条目，跳转到对应页面</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885819_20200322215906455_10728.png" alt></p>
+<p>单击“Download Companion Files”连接，可以看到下载/安装命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget http://public-repo-1.hortonworks.com/HDP/tools/2.6.0.3/hdp_manual_install_rpm_helper_files-2.6.0.3.8.tar.gz</span><br><span class="line">tar zxvf hdp_manual_install_rpm_helper_files-2.6.0.3.8.tar.gz</span><br></pre></td></tr></table></figure>
+<p>使用示例：</p>
+<p>假设，某个节点有4核8G内存1块硬盘，该节点同时安装HBase，通过下面命令即可获得优化参数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@nb0 scripts]# python yarn-utils.py -c 4 -m 8 -d 1 -k True</span><br><span class="line"> Using cores=4 memory=8GB disks=1 hbase=True</span><br><span class="line"> Profile: cores=4 memory=5120MB reserved=3GB usableMem=5GB disks=1</span><br><span class="line"> Num Container=3</span><br><span class="line"> Container Ram=1536MB</span><br><span class="line"> Used Ram=4GB</span><br><span class="line"> Unused Ram=3GB</span><br><span class="line"> yarn.scheduler.minimum-allocation-mb=1536</span><br><span class="line"> yarn.scheduler.maximum-allocation-mb=4608</span><br><span class="line"> yarn.nodemanager.resource.memory-mb=4608</span><br><span class="line"> mapreduce.map.memory.mb=1536</span><br><span class="line"> mapreduce.map.java.opts=-Xmx1228m</span><br><span class="line"> mapreduce.reduce.memory.mb=3072</span><br><span class="line"> mapreduce.reduce.java.opts=-Xmx2457m</span><br><span class="line"> yarn.app.mapreduce.am.resource.mb=3072</span><br><span class="line"> yarn.app.mapreduce.am.command-opts=-Xmx2457m</span><br><span class="line"> mapreduce.task.io.sort.mb=614</span><br></pre></td></tr></table></figure>
+<p>选项说明</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-c</td>
+<td>每一个客户机的核数目</td>
+</tr>
+<tr>
+<td>-m</td>
+<td>每一个客户机拥有的内存总数</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>每一个客户机拥有的磁盘数目</td>
+</tr>
+<tr>
+<td>-k</td>
+<td>如果Hbase安装了为”True”，否则为”False”</td>
+</tr>
+</tbody>
+</table>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>16-YARN参数解读</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">yarn-site.xml</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ResourceManager参数"><span class="nav-text">ResourceManager参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ResourceManager主机地址"><span class="nav-text">ResourceManager主机地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ResourceManager访问地址"><span class="nav-text">ResourceManager访问地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源调度器"><span class="nav-text">资源调度器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求处理线程数"><span class="nav-text">请求处理线程数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可申请的最小-最大资源数"><span class="nav-text">可申请的最小_最大资源数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RM-HA"><span class="nav-text">RM HA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#心跳间隔"><span class="nav-text">心跳间隔</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NodeManager参数"><span class="nav-text">NodeManager参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NodeManager资源配置"><span class="nav-text">NodeManager资源配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中间文件、日志配置"><span class="nav-text">中间文件、日志配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NodeManager上运行的附属服务"><span class="nav-text">NodeManager上运行的附属服务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">mapred-site.xml</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启用yarn框架"><span class="nav-text">启用yarn框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jobhistory参数"><span class="nav-text">jobhistory参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MapReduce任务参数"><span class="nav-text">MapReduce任务参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#map参数"><span class="nav-text">map参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reduce参数"><span class="nav-text">reduce参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shuffle参数"><span class="nav-text">shuffle参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jobtracker、tasktracker"><span class="nav-text">jobtracker、tasktracker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据压缩"><span class="nav-text">数据压缩</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jvm参数"><span class="nav-text">jvm参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">参数调优工具</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1.准备LBS SDK现在正是趁热打铁的好时机，新建一个LBSTest项目，包名应该就会自动被命名为com.example.lbstest。另外需要注意，本章中所写的代码建议你都在手机上运行，虽然模拟器中也提供了模拟地理位置的功能，但在手机上可以得到真实的位置数据，你的感受会更加深刻。在开始编码之前，我们还需要先将百度LBS开放平台的SDK准备好，下载地址是：http:&#x2F;&#x2F;lbsyun.baidu">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81&#x2F;45-%E4%BD%BF%E7%94%A8%E7%99%BE%E5%BA%A6%E5%AE%9A%E4%BD%8D.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="1.准备LBS SDK现在正是趁热打铁的好时机，新建一个LBSTest项目，包名应该就会自动被命名为com.example.lbstest。另外需要注意，本章中所写的代码建议你都在手机上运行，虽然模拟器中也提供了模拟地理位置的功能，但在手机上可以得到真实的位置数据，你的感受会更加深刻。在开始编码之前，我们还需要先将百度LBS开放平台的SDK准备好，下载地址是：http:&#x2F;&#x2F;lbsyun.baidu">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506158_20200318123204947_31023.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506157_20200318123204232_8379.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506155_20200318123203721_31776.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506153_20200318123202810_16912.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506152_20200318123202001_5670.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506152_20200318123201491_30770.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506151_20200318123200981_24869.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506150_20200318123200471_16715.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506147_20200318123159955_1233.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506145_20200318123159343_2415.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506144_20200318123158733_10823.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506142_20200318123158214_5565.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.008Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584506158_20200318123204947_31023.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/45-%E4%BD%BF%E7%94%A8%E7%99%BE%E5%BA%A6%E5%AE%9A%E4%BD%8D">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/">ANDROID第一行代码</a></li>
+            <li>45-使用百度定位</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>1.准备LBS SDK</h1><p>现在正是趁热打铁的好时机，新建一个LBSTest项目，包名应该就会自动被命名为com.example.lbstest。另外需要注意，本章中所写的代码建议你都在手机上运行，虽然模拟器中也提供了模拟地理位置的功能，但在手机上可以得到真实的位置数据，你的感受会更加深刻。</p><p>在开始编码之前，我们还需要先将百度LBS开放平台的SDK准备好，下载地址是：<a href="http://lbsyun.baidu.com/sdk/download%E3%80%82%E6%9C%AC%E7%AB%A0%E4%B8%AD%E6%88%91%E4%BB%AC%E4%BC%9A%E7%94%A8%E5%88%B0%E5%9F%BA%E7%A1%80%E5%9C%B0%E5%9B%BE%E5%92%8C%E5%AE%9A%E4%BD%8D%E5%8A%9F%E8%83%BD%E8%BF%99%E4%B8%A4%E4%B8%AASDK%EF%BC%8C%E5%B0%86%E5%AE%83%E4%BB%AC%E5%8B%BE%E9%80%89%E4%B8%8A%EF%BC%8C%E7%84%B6%E5%90%8E%E7%82%B9%E5%87%BB%E2%80%9C%E5%BC%80%E5%8F%91%E5%8C%85%E2%80%9D%E4%B8%8B%E8%BD%BD%E6%8C%89%E9%92%AE%E5%8D%B3%E5%8F%AF%EF%BC%8C%E5%A6%82%E5%9B%BE%E6%89%80%E7%A4%BA%E3%80%82" target="_blank" rel="noopener">http://lbsyun.baidu.com/sdk/download。本章中我们会用到基础地图和定位功能这两个SDK，将它们勾选上，然后点击“开发包”下载按钮即可，如图所示。</a></p><a id="more"></a>
+
+
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584506158_20200318123204947_31023.png" alt></p>
+<p>下载完成后对该压缩包解压，其中会有一个libs目录，这里面的内容就是我们所需要的一切了，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584506157_20200318123204232_8379.png" alt></p>
+<p>libs目录下的内容又分为两部分，BaiduLBS_Android.jar这个文件是Java层要使用到的，其他子目录下的so文件是Native层要用到的。so文件是用C/C++语言进行编写，然后再用NDK编译出来的。当然这里我们并不需要去编写C/C++的代码，因为百度都已经做好了封装，但是我们需要将libs目录下的每一个文件都放置到正确的位置。</p>
+<p>首先观察一下当前的项目结构，你会发现app模块下面有一个libs目录，这里就是用来存放所有的Jar包的，我们将BaiduLBS_Android.jar复制到这里，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584506155_20200318123203721_31776.png" alt></p>
+<p>接下来展开src/main目录，右击该目录→New→Directory，再创建一个名为<strong>jniLibs的目录，这里就是专门用来存放so文件</strong>的，然后把压缩包里的其他所有目录直接复制到这里，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584506153_20200318123202810_16912.png" alt></p>
+<p>另外，虽然所有新创建的项目中，app/build.gradle文件都会默认配置以下这段声明：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    compile fileTree(dir: <span class="string">'libs'</span>, <span class="attr">include</span>: [<span class="string">'*.jar'</span>])</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这表示会将libs目录下所有以.jar结尾的文件添加到当前项目的引用中。但是由于我们是直接将Jar包复制到libs目录下的，并<strong>没有修改gradle文件</strong>，因此不会弹出我们平时熟悉的SyncNow提示。这个时候<strong>必须手动点击一下Android Studio顶部工具栏中的Sync按钮（图中最左边的按钮），不然项目将无法引用到Jar包中提供的任何接口。</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584506152_20200318123202001_5670.png" alt></p>
+<p>点击Sync按钮之后，<strong>libs目录下的jar文件就会多出一个向右的箭头</strong>，这就表示项目已经能引用到这些Jar包了，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584506152_20200318123201491_30770.png" alt></p>
+<p>好了，这样我们就把LBS的SDK都准备好了，接下来开始编码吧。</p>
+<h1>2.确定自己位置的经纬度</h1>
+<p>首先修改activity_main.xml中的代码，如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">TextView</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/position_text_view"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>布局文件中的内容非常简单，只有一个TextView控件，用于稍后显示当前位置的经纬度信息。</p>
+<p>然后修改AndroidManifest.xml文件中的代码，如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">package</span>=<span class="string">"com.example.lbstest"</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.ACCESS_COARSE_LOCATION"</span>/&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.ACCESS_FINE_LOCATION"</span>/&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.ACCESS_WIFI_STATE"</span>/&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.ACCESS_NETWORK_STATE"</span>/&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.CHANGE_WIFI_STATE"</span>/&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.READ_PHONE_STATE"</span>/&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.INTERNET"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.MOUNT_UNMOUNT_FILESYSTEMS"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.WAKE_LOCK"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:allowBackup</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:icon</span>=<span class="string">"@mipmap/ic_launcher"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:label</span>=<span class="string">"@string/app_name"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:supportsRtl</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:theme</span>=<span class="string">"@style/AppTheme"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta-data</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:name</span>=<span class="string">"com.baidu.lbsapi.API_KEY"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:value</span>=<span class="string">"i6VD2fHKM3msMfZtIOXAhFSzDiYGFIwL"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".MainActivity"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.MAIN"</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.LAUNCHER"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">service</span> <span class="attr">android:name</span>=<span class="string">"com.baidu.location.f"</span> <span class="attr">android:enabled</span>=<span class="string">"true"</span> <span class="attr">android:process</span>=<span class="string">":remote"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">service</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>AndroidManifest.xml文件改动比较多，我们来仔细阅读一下。可以看到，这里首先添加了很多行权限声明，每一个权限都是百度LBS SDK内部要用到的。然后在**<code>&lt;application&gt;</code>标签的内部添加了一个<code>&lt;meta-data&gt;</code>标签，这个标签的android:name部分是固定的，必须填com.baidu.lbsapi.API_KEY，android:value部分则应该填入我们在前面申请到的API Key。**最后，还需要再注册一个LBS SDK中的服务，不用对这个服务的名字感到疑惑，因为百度LBS SDK中的代码都是混淆过的。</p>
+<p>接下来修改MainActivity中的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> LocationClient mLocationClient;</span><br><span class="line">    <span class="keyword">private</span> TextView positionText;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">         <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">         mLocationClient = <span class="keyword">new</span> LocationClient(getApplicationContext());</span><br><span class="line">         mLocationClient.registerLocationListener(<span class="keyword">new</span> MyLocationListener());</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        positionText = (TextView) findViewById(R.id.position_text_view);</span><br><span class="line">        List&lt;String&gt; permissionList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">if</span> (ContextCompat.checkSelfPermission(MainActivity.<span class="keyword">this</span>, Manifest.</span><br><span class="line">                permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED) &#123;</span><br><span class="line">            permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (ContextCompat.checkSelfPermission(MainActivity.<span class="keyword">this</span>, Manifest.</span><br><span class="line">                permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) &#123;</span><br><span class="line">            permissionList.add(Manifest.permission.READ_PHONE_STATE);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (ContextCompat.checkSelfPermission(MainActivity.<span class="keyword">this</span>, Manifest.</span><br><span class="line">                permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) &#123;</span><br><span class="line">            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!permissionList.isEmpty()) &#123;</span><br><span class="line">            String [] permissions = permissionList.toArray(<span class="keyword">new</span> String[permissionList.size()]);</span><br><span class="line">            ActivityCompat.requestPermissions(MainActivity.<span class="keyword">this</span>, permissions, <span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            requestLocation();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">requestLocation</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mLocationClient.start();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onRequestPermissionsResult</span><span class="params">(<span class="keyword">int</span> requestCode, String[] permissions,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span>[] grantResults)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (requestCode) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">if</span> (grantResults.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> result : grantResults) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (result != PackageManager.PERMISSION_GRANTED) &#123;</span><br><span class="line">                            Toast.makeText(<span class="keyword">this</span>, <span class="string">"必须同意所有权限才能使用本程序"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">                            finish();</span><br><span class="line">                            <span class="keyword">return</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    requestLocation();</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    Toast.makeText(<span class="keyword">this</span>, <span class="string">"发生未知错误"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">                    finish();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyLocationListener</span> <span class="keyword">implements</span> <span class="title">BDLocationListener</span> </span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceiveLocation</span><span class="params">(BDLocation location)</span> </span>&#123;</span><br><span class="line">            runOnUiThread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    StringBuilder currentPosition = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">                    currentPosition.append(<span class="string">"纬度："</span>).append(location.getLatitude()).append(<span class="string">"\n"</span>);</span><br><span class="line">                    currentPosition.append(<span class="string">"经线："</span>).append(location.getLongitude()).append(<span class="string">"\n"</span>);</span><br><span class="line">                    currentPosition.append(<span class="string">"定位方式："</span>);</span><br><span class="line">                    <span class="keyword">if</span> (location.getLocType() == BDLocation.TypeGpsLocation) &#123;</span><br><span class="line">                        currentPosition.append(<span class="string">"GPS"</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (location.getLocType() == BDLocation.TypeNetWorkLocation) &#123;</span><br><span class="line">                        currentPosition.append(<span class="string">"网络"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    positionText.setText(currentPosition);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onConnectHotSpotMessage</span><span class="params">(String s, <span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，在onCreate()方法中，我们首先创建了一个LocationClient的实例，**LocationClient的构建函数接收一个Context参数，这里调用getApplicationContext()方法来获取一个全局的Context参数并传入。**然后调用LocationClient的registerLocationListener()方法来注册一个定位监听器，<strong>当获取到位置信息的时候，就会回调这个定位监听器。</strong></p>
+<p>接下来看一下这里运行时权限的用法，由于我们在AndroidManifest.xml中声明了很多权限，参考一下“Android权限机制详解”中的危险权限表格可以发现，其中ACCESS_COARSE_LOCATION、ACCESS_FINE_LOCATION、READ_PHONE_STATE、WRITE_EXTER-NAL_STORAGE这4个权限是需要进行运行时权限处理的，不过由于ACCESS_COARSE_LOCATION和ACCESS_FINE_LOCATION都属于同一个权限组，因此两者只要申请其一就可以了。</p>
+<p>那么怎样才能在运行时一次性申请3个权限呢？这里我们使用了一种新的用法，首先创建一个空的List集合，然后**依次判断这3个权限有没有被授权，如果没被授权就添加到List集合中，最后将List转换成数组，再调用ActivityCompat.requestPermissions()方法一次性申请。**除此之外，onRequestPermissionsResult()方法中对权限申请结果的逻辑处理也和之前有所不同，这次我们通过一个循环将申请的每个权限都进行了判断，如果有任何一个权限被拒绝，那么就直接调用finish()方法关闭当前程序，只有当所有权限都被用户同意了，才会调用requestLocation()方法开始地理位置定位。</p>
+<p>requestLocation()方法中的代码比较简单，只是<strong>调用了一下LocationClient的start()方法就能开始定位了。定位的结果会回调到我们前面注册的监听器当中，也就是MyLocationListener。</strong></p>
+<p>观察一下MyLocationListener的onReceiveLocation()方法中，在这里我们通过BDLocation的getLatitude()方法获取当前位置的纬度，通过getLongitude()方法获取当前位置的经度，通过getLocType()方法获取当前的定位方式，最终将结果组装成一个字符串，显示到TextView上面。</p>
+<p>现在我们可以来运行一下程序了，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584506151_20200318123200981_24869.png" alt></p>
+<p>毫无疑问，打开程序首先就会弹出运行时权限的申请对话框，注意看对话框的底部，提示我们一共有3项权限申请，当前是第1项，授权了第1项后就会显示第2项，这里我们全部点击允许，然后就会立刻开始定位了，结果如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584506150_20200318123200471_16715.png" alt></p>
+<p>可以看到，设备当前的经纬度信息已经成功定位出来了。</p>
+<p>不过，在默认情况下，<strong>调用LocationClient的start()方法只会定位一次</strong>，如果我们正在快速移动中，怎样才能实时更新当前的位置呢？为此，百度LBS SDK提供了一系列的设置方法，来允许我们更改默认的行为，修改MainActivity中的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">requestLocation</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        initLocation();</span><br><span class="line">        mLocationClient.start();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initLocation</span><span class="params">()</span></span>&#123;</span><br><span class="line">        LocationClientOption option = <span class="keyword">new</span> LocationClientOption();</span><br><span class="line">        option.setScanSpan(<span class="number">5000</span>);</span><br><span class="line">        mLocationClient.setLocOption(option);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDestroy();</span><br><span class="line">        mLocationClient.stop();</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里增加了一个initLocation()方法，在initLocation()方法中我们**创建了一个LocationClientOption对象，然后调用它的setScanSpan()方法来设置更新的间隔。**这里传入了5000，表示每5秒钟会更新一下当前的位置。</p>
+<p>最后要记得，<strong>在活动被销毁的时候一定要调用LocationClient的stop()方法来停止定位，不然程序会持续在后台不停地进行定位，从而严重消耗手机的电量。</strong></p>
+<p>现在重新运行一下程序，然后拿着手机随处移动，你会发现界面上的经纬度信息也会跟着一起变化的。</p>
+<h1>3.选择定位模式</h1>
+<p>还记得在本章刚开始的时候说过，Android中主要有两种定位方式吗？一种是通过GPS定位，一种是通过网络定位。而从上一小节中的例子中应该可以看出，我们一直是使用的网络定位。那么如何才能切换到精确度更高的GPS定位呢？本小节我们就来学习一下。</p>
+<p>首先，GPS定位功能必须要由用户主动去启用才行，不然任何应用程序都无法使用GPS获取到手机当前的位置信息。进入手机的设置→位置信息，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584506147_20200318123159955_1233.png" alt></p>
+<p>我们可以通过顶部的开关来控制定位功能是开启还是关闭，另外，点击“模式”可以选择具体的定位模式，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584506145_20200318123159343_2415.png" alt></p>
+<p>其中，高精确度模式表示允许使用GPS、无线网络、蓝牙或移动网络来进行定位，节电模式表示仅允许使用无线网络、蓝牙或移动网络来进行定位，而仅限设备模式表示仅允许使用GPS来进行定位。也就是说，如果我们想要使用GPS定位功能，这里必须要选择高精确度模式，或者仅限设备模式。</p>
+<p>当然，你并不需要担心一旦启用GPS定位功能后，手机的电量就会直线下滑，这只是表明你已经同意让应用程序来对你的手机进行GPS定位了，但只有当定位操作真正开始的时候，才会影响到手机的电量。</p>
+<p>开启了GPS定位功能之后，再回来看一下代码。我们可以在initLocation()方法中对百度LBS SDK的定位模式进行指定，<strong>一共有3种模式可选：Hight_Accuracy、Battery_Saving和Device_Sensors。</strong></p>
+<ul>
+<li>Hight_Accuracy表示高精确度模式，会在GPS信号正常的情况下优先使用GPS定位，在无法接收GPS信号的时候使用网络定位。</li>
+<li>Battery_Saving表示节电模式，只会使用网络进行定位。</li>
+<li>Device_Sensors表示传感器模式，只会使用GPS进行定位。<br>
+其中，Hight_Accuracy是默认的模式，也就是说，我们即使不修改任何代码，只要拿着手机走到室外去，让手机可以接收到GPS信号，就会自动切换到GPS定位模式了。</li>
+</ul>
+<p>当然我们也可以强制指定只使用GPS进行定位，修改MainActivity中的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initLocation</span><span class="params">()</span></span>&#123;</span><br><span class="line">        LocationClientOption option = <span class="keyword">new</span> LocationClientOption();</span><br><span class="line">        option.setScanSpan(<span class="number">5000</span>);</span><br><span class="line">        option.setLocationMode(LocationClientOption.LocationMode.Device_Sensors);</span><br><span class="line">        mLocationClient.setLocOption(option);</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里调用了<strong>setLocationMode()方法</strong>来将定位模式指定成传感器模式，也就是说只能使用GPS进行定位。</p>
+<p>重新运行一下程序，然后拿着你的手机走到室外去，结果如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584506144_20200318123158733_10823.png" alt></p>
+<h1>4.看得懂的位置信息</h1>
+<p>话说回来，刚才我们虽然成功获取到了设备当前位置的经纬度信息，但遗憾的是，这种经纬度的值一般人是根本看不懂的，相信谁也无法立刻答出南纬25度、东经148度是什么地方吧？为了能够更加直观地阅读，我们还需要学习一下如何获取看得懂的位置信息。</p>
+<p>幸运的是，百度LBS SDK在这方面提供了非常好的支持，我们只需要进行一些简单的接口调用就能得到当前位置各种丰富的地址信息，下面就来一起看一下吧。修改MainActivity中的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initLocation</span><span class="params">()</span></span>&#123;</span><br><span class="line">        LocationClientOption option = <span class="keyword">new</span> LocationClientOption();</span><br><span class="line">        option.setScanSpan(<span class="number">5000</span>);</span><br><span class="line">        option.setIsNeedAddress(<span class="keyword">true</span>);</span><br><span class="line">        mLocationClient.setLocOption(option);</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyLocationListener</span> <span class="keyword">implements</span> <span class="title">BDLocationListener</span> </span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceiveLocation</span><span class="params">(BDLocation location)</span> </span>&#123;</span><br><span class="line">            runOnUiThread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    StringBuilder currentPosition = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">                    currentPosition.append(<span class="string">"纬度："</span>).append(location.getLatitude()).append(<span class="string">"\n"</span>);</span><br><span class="line">                    currentPosition.append(<span class="string">"经线："</span>).append(location.getLongitude()).append(<span class="string">"\n"</span>);</span><br><span class="line">                    currentPosition.append(<span class="string">"国家："</span>).append(location.getCountry()).append(<span class="string">"\n"</span>);</span><br><span class="line">                    currentPosition.append(<span class="string">"省："</span>).append(location.getProvince()).append(<span class="string">"\n"</span>);</span><br><span class="line">                    currentPosition.append(<span class="string">"市："</span>).append(location.getCity()).append(<span class="string">"\n"</span>);</span><br><span class="line">                    currentPosition.append(<span class="string">"区："</span>).append(location.getDistrict()).append(<span class="string">"\n"</span>);</span><br><span class="line">                    currentPosition.append(<span class="string">"街道："</span>).append(location.getStreet()).append(<span class="string">"\n"</span>);</span><br><span class="line">                    currentPosition.append(<span class="string">"定位方式："</span>);</span><br><span class="line">                    <span class="keyword">if</span> (location.getLocType() == BDLocation.TypeGpsLocation) &#123;</span><br><span class="line">                        currentPosition.append(<span class="string">"GPS"</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (location.getLocType() == BDLocation.TypeNetWorkLocation) &#123;</span><br><span class="line">                        currentPosition.append(<span class="string">"网络"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    positionText.setText(currentPosition);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先在initLocation()方法中，我们<strong>调用了LocationClientOption的setIsNeedAddress()方法，并传入true，这就表示我们需要获取当前位置详细的地址信息。</strong></p>
+<p>接下来在MyLocationListener的onReceiveLocation()方法就可以获取到各种丰富的地址信息了，调用getCountry()方法可以得到当前所在国家，调用getProvince()方法可以得到当前所在省份，以此类推。</p>
+<p><strong>另外还有一点需要注意，由于获取地址信息一定需要用到网络，因此即使我们将定位模式指定成了Device_Sensors，也会自动开启网络定位功能。</strong></p>
+<p>现在重新运行一下程序，结果如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584506142_20200318123158214_5565.png" alt></p>
+<p>可以看到，手机当前位置的地址信息已经成功显示出来了。如果你带着手机移动了较远的距离，界面上显示的位置也会跟着一起变化的。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/">ANDROID第一行代码</a></li>
+            <li>45-使用百度定位</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">1.准备LBS SDK</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">2.确定自己位置的经纬度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">3.选择定位模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">4.看得懂的位置信息</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

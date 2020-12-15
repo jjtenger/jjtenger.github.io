@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="批量导入数据的方法向HBase表中导入一条数据可以使用HBase Shell的put命令或HBase API的Put类，但是面对海量数据如何批量导入呢？一般有三种方法：ImportTsv工具、编写MapReduce程序和Hive外表。本节重点介绍ImportTsv工具和编写MapReduce程序两种方法，Hive外表将在Hive中介绍。（导入数据到外表）">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;05-HBase%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="批量导入数据的方法向HBase表中导入一条数据可以使用HBase Shell的put命令或HBase API的Put类，但是面对海量数据如何批量导入呢？一般有三种方法：ImportTsv工具、编写MapReduce程序和Hive外表。本节重点介绍ImportTsv工具和编写MapReduce程序两种方法，Hive外表将在Hive中介绍。（导入数据到外表）">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/05-HBase%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HBASE学习笔记</a></li>
+            <li>05-HBASE批量导入</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>批量导入数据的方法</h1><p>向HBase表中导入一条数据可以使用HBase Shell的put命令或HBase API的Put类，但是面对海量数据如何批量导入呢？</p><p>一般有三种方法：ImportTsv工具、编写MapReduce程序和Hive外表。</p><p>本节重点介绍ImportTsv工具和编写MapReduce程序两种方法，Hive外表将在Hive中介绍。（<a href="../../Hive/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/07-Hive%E5%A4%96%E8%A1%A8.md">导入数据到外表</a>）</p><a id="more"></a>
+
+
+
+<h1>准备数据</h1>
+<p>生成数据</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# cd data</span><br><span class="line">[root@node1 data]# ls</span><br><span class="line">books.txt  cite75_99.txt  ncdc.txt  rs.txt  temperature.txt  word1.txt</span><br><span class="line">[root@node1 data]# vi gen.sh</span><br><span class="line">[root@node1 data]# cat gen.sh </span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"> </span><br><span class="line">for i in &#123;1..100000&#125;</span><br><span class="line">do</span><br><span class="line">  echo -e $i'\t'$RANDOM'\t'$RANDOM'\t'$RANDOM</span><br><span class="line">done;</span><br><span class="line">[root@node1 data]# chmod 777 gen.sh</span><br><span class="line">[root@node1 data]# ./gen.sh &gt; mydata.txt</span><br><span class="line">[root@node1 data]# tail -5 mydata.txt</span><br><span class="line">99996   6512    21537   7475</span><br><span class="line">99997   9544    22444   1030</span><br><span class="line">99998   18157   11864   16616</span><br><span class="line">99999   28231   10187   21657</span><br><span class="line">100000  21188   27568   14994</span><br><span class="line">[root@node1 data]#</span><br></pre></td></tr></table></figure>
+<p>将生成的数据上传到HDFS</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 data]# hdfs dfs -mkdir -p input</span><br><span class="line">[root@node1 data]# hdfs dfs -put mydata.txt input</span><br><span class="line">[root@node1 data]# hdfs dfs -ls input</span><br><span class="line">Found 1 items</span><br><span class="line">-rw-r--r--   3 root supergroup    2287354 2017-08-05 05:30 input/mydata.txt</span><br><span class="line">[root@node1 data]#</span><br></pre></td></tr></table></figure>
+<p>创建表</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 data]# hbase shell</span><br><span class="line">SLF4J: Class path contains multiple SLF4J bindings.</span><br><span class="line">SLF4J: Found binding in [jar:file:/opt/hbase-1.2.6/lib/slf4j-log4j12-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]</span><br><span class="line">SLF4J: Found binding in [jar:file:/opt/hadoop-2.7.3/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]</span><br><span class="line">SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.</span><br><span class="line">SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]</span><br><span class="line">HBase Shell; enter 'help&lt;RETURN&gt;' for list of supported commands.</span><br><span class="line">Type "exit&lt;RETURN&gt;" to leave the HBase Shell</span><br><span class="line">Version 1.2.6, rUnknown, Mon May 29 02:25:32 CDT 2017</span><br><span class="line"></span><br><span class="line">hbase(main):001:0&gt; create 'mydata','info'</span><br><span class="line">0 row(s) in 1.8170 seconds</span><br><span class="line">=&gt; Hbase::Table - mydata</span><br><span class="line">hbase(main):002:0&gt; quit</span><br><span class="line">[root@node1 data]#</span><br></pre></td></tr></table></figure>
+<h1>ImportTsv工具</h1>
+<p>执行导入命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hbase org.apache.hadoop.hbase.mapreduce.ImportTsv </span><br><span class="line">-Dimporttsv.columns=HBASE_ROW_KEY,info:data1,info:data2,info:data3 mydata input/mydata.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# hbase org.apache.hadoop.hbase.mapreduce.ImportTsv \</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> -Dimporttsv.columns=HBASE_ROW_KEY,info:data1,info:data2,info:data3 mydata input/mydata.txt</span></span><br><span class="line">SLF4J: Class path contains multiple SLF4J bindings.</span><br><span class="line">SLF4J: Found binding in [jar:file:/opt/hbase-1.2.6/lib/slf4j-log4j12-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]</span><br><span class="line">SLF4J: Found binding in [jar:file:/opt/hadoop-2.7.3/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]</span><br><span class="line">SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.</span><br><span class="line">SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]</span><br><span class="line">2017-08-05 05:37:23,936 INFO  [main] zookeeper.RecoverableZooKeeper: Process identifier=hconnection-0x292b08d6 connecting to ZooKeeper ensemble=node1:2181,node2:2181,node3:2181</span><br><span class="line">2017-08-05 05:37:23,970 INFO  [main] zookeeper.ZooKeeper: Client environment:zookeeper.version=3.4.6-1569965, built on 02/20/2014 09:09 GMT</span><br><span class="line">2017-08-05 05:37:23,970 INFO  [main] zookeeper.ZooKeeper: Client environment:host.name=node1</span><br><span class="line">2017-08-05 05:37:23,971 INFO  [main] zookeeper.ZooKeeper: Client environment:java.version=1.8.0_112</span><br><span class="line">2017-08-05 05:37:23,971 INFO  [main] zookeeper.ZooKeeper: Client environment:java.vendor=Oracle Corporation</span><br><span class="line">2017-08-05 05:37:23,971 INFO  [main] zookeeper.ZooKeeper: Client environment:java.home=/opt/jdk1.8.0_112/jre</span><br><span class="line">2017-08-05 05:37:23,971 INFO  [main] zookeeper.ZooKeeper: Client environment:java.class.path=/opt/hbase-1.2.6/conf:/opt/jdk1.8.0_112/lib/tools.jar:/opt/hbase-1.2.6:/opt/hbase-</span><br><span class="line">2017-08-05 05:37:23,979 INFO  [main] zookeeper.ZooKeeper: Client environment:java.library.path=/opt/hadoop-2.7.3/lib/native</span><br><span class="line">2017-08-05 05:37:23,979 INFO  [main] zookeeper.ZooKeeper: Client environment:java.io.tmpdir=/tmp</span><br><span class="line">2017-08-05 05:37:23,979 INFO  [main] zookeeper.ZooKeeper: Client environment:java.compiler=&lt;NA&gt;</span><br><span class="line">2017-08-05 05:37:23,979 INFO  [main] zookeeper.ZooKeeper: Client environment:os.name=Linux</span><br><span class="line">2017-08-05 05:37:23,979 INFO  [main] zookeeper.ZooKeeper: Client environment:os.arch=amd64</span><br><span class="line">2017-08-05 05:37:23,979 INFO  [main] zookeeper.ZooKeeper: Client environment:os.version=3.10.0-514.el7.x86_64</span><br><span class="line">2017-08-05 05:37:23,979 INFO  [main] zookeeper.ZooKeeper: Client environment:user.name=root</span><br><span class="line">2017-08-05 05:37:23,979 INFO  [main] zookeeper.ZooKeeper: Client environment:user.home=/root</span><br><span class="line">2017-08-05 05:37:23,979 INFO  [main] zookeeper.ZooKeeper: Client environment:user.dir=/root</span><br><span class="line">2017-08-05 05:37:23,981 INFO  [main] zookeeper.ZooKeeper: Initiating client connection, connectString=node1:2181,node2:2181,node3:2181 sessionTimeout=90000 watcher=hconnection-0x292b08d60x0, quorum=node1:2181,node2:2181,node3:2181, baseZNode=/hbase</span><br><span class="line">2017-08-05 05:37:24,030 INFO  [main-SendThread(node1:2181)] zookeeper.ClientCnxn: Opening socket connection to server node1/192.168.80.131:2181. Will not attempt to authenticate using SASL (unknown error)</span><br><span class="line">2017-08-05 05:37:24,055 INFO  [main-SendThread(node1:2181)] zookeeper.ClientCnxn: Socket connection established to node1/192.168.80.131:2181, initiating session</span><br><span class="line">2017-08-05 05:37:24,103 INFO  [main-SendThread(node1:2181)] zookeeper.ClientCnxn: Session establishment complete on server node1/192.168.80.131:2181, sessionid = 0x15dafce38380006, negotiated timeout = 40000</span><br><span class="line">2017-08-05 05:37:26,136 INFO  [main] Configuration.deprecation: io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum</span><br><span class="line">2017-08-05 05:37:26,351 INFO  [main] client.ConnectionManager$HConnectionImplementation: Closing zookeeper sessionid=0x15dafce38380006</span><br><span class="line">2017-08-05 05:37:26,372 INFO  [main] zookeeper.ZooKeeper: Session: 0x15dafce38380006 closed</span><br><span class="line">2017-08-05 05:37:26,372 INFO  [main-EventThread] zookeeper.ClientCnxn: EventThread shut down</span><br><span class="line">2017-08-05 05:37:26,977 INFO  [main] Configuration.deprecation: io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum</span><br><span class="line">2017-08-05 05:37:31,821 INFO  [main] input.FileInputFormat: Total input paths to process : 1</span><br><span class="line">2017-08-05 05:37:32,132 INFO  [main] mapreduce.JobSubmitter: number of splits:1</span><br><span class="line">2017-08-05 05:37:32,460 INFO  [main] Configuration.deprecation: io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum</span><br><span class="line">2017-08-05 05:37:33,154 INFO  [main] mapreduce.JobSubmitter: Submitting tokens for job: job_1501893260326_0001</span><br><span class="line">2017-08-05 05:37:34,742 INFO  [main] impl.YarnClientImpl: Submitted application application_1501893260326_0001</span><br><span class="line">2017-08-05 05:37:34,945 INFO  [main] mapreduce.Job: The url to track the job: http://node1:8088/proxy/application_1501893260326_0001/</span><br><span class="line">2017-08-05 05:37:34,946 INFO  [main] mapreduce.Job: Running job: job_1501893260326_0001</span><br><span class="line">2017-08-05 05:37:56,389 INFO  [main] mapreduce.Job: Job job_1501893260326_0001 running in uber mode : false</span><br><span class="line">2017-08-05 05:37:56,390 INFO  [main] mapreduce.Job:  map 0% reduce 0%</span><br><span class="line">2017-08-05 05:38:17,452 INFO  [main] mapreduce.Job:  map 15% reduce 0%</span><br><span class="line">2017-08-05 05:38:20,567 INFO  [main] mapreduce.Job:  map 46% reduce 0%</span><br><span class="line">2017-08-05 05:38:23,686 INFO  [main] mapreduce.Job:  map 71% reduce 0%</span><br><span class="line">2017-08-05 05:38:26,787 INFO  [main] mapreduce.Job:  map 100% reduce 0%</span><br><span class="line">2017-08-05 05:38:27,826 INFO  [main] mapreduce.Job: Job job_1501893260326_0001 completed successfully</span><br><span class="line">2017-08-05 05:38:28,034 INFO  [main] mapreduce.Job: Counters: 31</span><br><span class="line">   File System Counters</span><br><span class="line">       FILE: Number of bytes read=0</span><br><span class="line">       FILE: Number of bytes written=150773</span><br><span class="line">       FILE: Number of read operations=0</span><br><span class="line">       FILE: Number of large read operations=0</span><br><span class="line">       FILE: Number of write operations=0</span><br><span class="line">       HDFS: Number of bytes read=2287457</span><br><span class="line">       HDFS: Number of bytes written=0</span><br><span class="line">       HDFS: Number of read operations=2</span><br><span class="line">       HDFS: Number of large read operations=0</span><br><span class="line">       HDFS: Number of write operations=0</span><br><span class="line">   Job Counters</span><br><span class="line">       Launched map tasks=1</span><br><span class="line">       Data-local map tasks=1</span><br><span class="line">       Total time spent by all maps in occupied slots (ms)=27098</span><br><span class="line">       Total time spent by all reduces in occupied slots (ms)=0</span><br><span class="line">       Total time spent by all map tasks (ms)=27098</span><br><span class="line">       Total vcore-seconds taken by all map tasks=27098</span><br><span class="line">       Total megabyte-seconds taken by all map tasks=27748352</span><br><span class="line">   Map-Reduce Framework</span><br><span class="line">       Map input records=100000</span><br><span class="line">       Map output records=100000</span><br><span class="line">       Input split bytes=103</span><br><span class="line">       Spilled Records=0</span><br><span class="line">       Failed Shuffles=0</span><br><span class="line">       Merged Map outputs=0</span><br><span class="line">       GC time elapsed (ms)=946</span><br><span class="line">       CPU time spent (ms)=12890</span><br><span class="line">       Physical memory (bytes) snapshot=128389120</span><br><span class="line">       Virtual memory (bytes) snapshot=2108084224</span><br><span class="line">       Total committed heap usage (bytes)=30474240</span><br><span class="line">   ImportTsv</span><br><span class="line">       Bad Lines=0</span><br><span class="line">   File Input Format Counters</span><br><span class="line">       Bytes Read=2287354</span><br><span class="line">   File Output Format Counters</span><br><span class="line">       Bytes Written=0</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+<h1>MapReduce程序导入</h1>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Put;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.mapreduce.TableOutputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.util.Bytes;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.LongWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.NullWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Text;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Job;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.mapreduce.TableReducer;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.TextInputFormat;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BatchImport</span> </span>&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">BatchImportMapper</span> <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">LongWritable</span>, <span class="title">Text</span>, <span class="title">LongWritable</span>, <span class="title">Text</span>&gt; </span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">map</span><span class="params">(LongWritable key, Text value, Context context)</span></span></span><br><span class="line"><span class="function">               <span class="keyword">throws</span> java.io.IOException, InterruptedException </span>&#123;</span><br><span class="line">           <span class="comment">// super.setup( context );</span></span><br><span class="line">           <span class="comment">//System.out.println(key + ":" + value);</span></span><br><span class="line">           context.write(key, value);</span><br><span class="line">       &#125;;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">BatchImportReducer</span> <span class="keyword">extends</span> <span class="title">TableReducer</span>&lt;<span class="title">LongWritable</span>, <span class="title">Text</span>, <span class="title">NullWritable</span>&gt; </span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">reduce</span><span class="params">(LongWritable key, Iterable&lt;Text&gt; values, Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">           <span class="keyword">for</span> (Text text : values) &#123;</span><br><span class="line">               <span class="keyword">final</span> String[] splited = text.toString().split(<span class="string">"\t"</span>);</span><br><span class="line">               <span class="keyword">final</span> Put put = <span class="keyword">new</span> Put(Bytes.toBytes(splited[<span class="number">0</span>]));<span class="comment">// 第一列行键</span></span><br><span class="line">               put.addColumn(Bytes.toBytes(<span class="string">"info"</span>), Bytes.toBytes(<span class="string">"data1"</span>), Bytes.toBytes(splited[<span class="number">1</span>]));</span><br><span class="line">               put.addColumn(Bytes.toBytes(<span class="string">"info"</span>), Bytes.toBytes(<span class="string">"data2"</span>), Bytes.toBytes(splited[<span class="number">2</span>]));</span><br><span class="line">               put.addColumn(Bytes.toBytes(<span class="string">"info"</span>), Bytes.toBytes(<span class="string">"data3"</span>), Bytes.toBytes(splited[<span class="number">3</span>]));</span><br><span class="line">               context.write(NullWritable.get(), put);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       <span class="keyword">final</span> Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">       conf.set(<span class="string">"hbase.rootdir"</span>, <span class="string">"hdfs://node:9000/hbase"</span>);</span><br><span class="line">       <span class="comment">// 设置Zookeeper,直接设置IP地址</span></span><br><span class="line">       conf.set(<span class="string">"hbase.zookeeper.quorum"</span>, <span class="string">"node"</span>);</span><br><span class="line">       <span class="comment">// 设置hbase表名称(先在shell下创建一个表：create 'mydata','info')</span></span><br><span class="line">       conf.set(TableOutputFormat.OUTPUT_TABLE, <span class="string">"mydata"</span>);</span><br><span class="line">       <span class="comment">// 将该值改大，防止hbase超时退出</span></span><br><span class="line">       conf.set(<span class="string">"dfs.socket.timeout"</span>, <span class="string">"180000"</span>);</span><br><span class="line"> </span><br><span class="line">       System.setProperty(<span class="string">"HADOOP_USER_NAME"</span>, <span class="string">"jjt"</span>);</span><br><span class="line">       <span class="comment">// 设置fs.defaultFS</span></span><br><span class="line">       conf.set(<span class="string">"fs.defaultFS"</span>, <span class="string">"hdfs://node:9000"</span>);</span><br><span class="line">       <span class="comment">// 设置yarn.resourcemanager节点</span></span><br><span class="line">       conf.set(<span class="string">"yarn.resourcemanager.hostname"</span>, <span class="string">"node"</span>);</span><br><span class="line"> </span><br><span class="line">       Job job = Job.getInstance(conf);</span><br><span class="line">       job.setJobName(<span class="string">"HBaseBatchImport"</span>);</span><br><span class="line">       job.setMapperClass(BatchImportMapper.class);</span><br><span class="line">       job.setReducerClass(BatchImportReducer.class);</span><br><span class="line">       <span class="comment">// 设置map的输出，不设置reduce的输出类型</span></span><br><span class="line">       job.setMapOutputKeyClass(LongWritable.class);</span><br><span class="line">       job.setMapOutputValueClass(Text.class);</span><br><span class="line">       job.setInputFormatClass(TextInputFormat.class);</span><br><span class="line">       <span class="comment">// 不再设置输出路径，而是设置输出格式类型</span></span><br><span class="line">       job.setOutputFormatClass(TableOutputFormat.class);</span><br><span class="line">       FileInputFormat.setInputPaths(job, <span class="string">"hdfs://node:9000/user/jjt/hbaseDemo/input/mydata.txt"</span>);</span><br><span class="line">       <span class="keyword">boolean</span> flag=job.waitForCompletion(<span class="keyword">true</span>);</span><br><span class="line">       System.out.println(flag);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HBASE学习笔记</a></li>
+            <li>05-HBASE批量导入</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">批量导入数据的方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">准备数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">ImportTsv工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">MapReduce程序导入</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Servlet监听器是Servlet规范中定义的一种特殊类，它用于监听web应用程序中的ServletContext, HttpSession和 ServletRequest等域对象的创建与销毁事件，以及监听这些域对象中的属性发生修改的事件。Servlet监听器的分类在Servlet规范中定义了多种类型的监听器，它们用于监听的事件源分别为ServletContext，HttpSession和Ser">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;17-Listener%E7%9B%91%E5%90%AC%E5%99%A8.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Servlet监听器是Servlet规范中定义的一种特殊类，它用于监听web应用程序中的ServletContext, HttpSession和 ServletRequest等域对象的创建与销毁事件，以及监听这些域对象中的属性发生修改的事件。Servlet监听器的分类在Servlet规范中定义了多种类型的监听器，它们用于监听的事件源分别为ServletContext，HttpSession和Ser">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.020Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/17-Listener%E7%9B%91%E5%90%AC%E5%99%A8">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>17-LISTENER监听器</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>Servlet监听器是Servlet规范中定义的一种特殊类，它用于监听web应用程序中的ServletContext, HttpSession和 ServletRequest等域对象的创建与销毁事件，以及监听这些域对象中的属性发生修改的事件。</p><h1>Servlet监听器的分类</h1><p>在Servlet规范中定义了多种类型的监听器，它们用于监听的事件源分别为ServletContext，HttpSession和ServletRequest这三个域对象</p><a id="more"></a>
+
+
+<p>Servlet规范针对这三个对象上的操作，又把多种类型的监听器划分为三种类型：</p>
+<ul>
+<li>监听域对象自身的创建和销毁的事件监听器。</li>
+<li>监听域对象中的属性的增加和删除的事件监听器。</li>
+<li>监听绑定到HttpSession域中的某个对象的状态的事件监听器。</li>
+</ul>
+<h1>监听域对象创建和销毁</h1>
+<h2 id="ServletContextListener接口：监听ServletContext域对象">ServletContextListener接口：监听ServletContext域对象</h2>
+<p>ServletContextListener接口用于监听ServletContext对象的创建和销毁事件。实现了ServletContextListener接口的类都可以对ServletContext对象的创建和销毁进行监听。</p>
+<ul>
+<li>当ServletContext对象被创建时，激发contextInitialized (ServletContextEvent sce)方法。</li>
+<li>当ServletContext对象被销毁时，激发contextDestroyed(ServletContextEvent sce)方法。</li>
+</ul>
+<p>ServletContext域对象创建和销毁时机：</p>
+<ul>
+<li>创建：服务器启动针对每一个Web应用创建ServletContext</li>
+<li>销毁：服务器关闭前先关闭代表每一个web应用的ServletContext</li>
+</ul>
+<p>代码示例：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletContextEvent;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletContextListener;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@ClassName</span>: ServletContextListener_Demo01</span></span><br><span class="line"><span class="comment">* <span class="doctag">@Description</span>: ServletContextListener_Demo01类实现了ServletContextListener接口，</span></span><br><span class="line"><span class="comment">*                 因此可以对ServletContext对象的创建和销毁这两个动作进行监听。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServletContextListener_Demo01</span> <span class="keyword">implements</span> <span class="title">ServletContextListener</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextInitialized</span><span class="params">(ServletContextEvent sce)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"ServletContext对象创建"</span>);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextDestroyed</span><span class="params">(ServletContextEvent sce)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"ServletContext对象销毁"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>监听器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span> <span class="attr">xmlns</span>=<span class="string">"http://java.sun.com/xml/ns/javaee"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://java.sun.com/xml/ns/javaee</span></span></span><br><span class="line"><span class="tag"><span class="string"> http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">version</span>=<span class="string">"3.0"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment">&lt;!-- 注册针对ServletContext对象进行监听的监听器 --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">description</span>&gt;</span>ServletContextListener监听器<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!--实现了ServletContextListener接口的监听器类 --&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>..demo.ServletContextListener_Demo01<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="HttpSessionListener接口：监听HttpSession域对象">HttpSessionListener接口：监听HttpSession域对象</h2>
+<p>HttpSessionListener 接口用于监听HttpSession对象的创建和销毁。</p>
+<ul>
+<li>创建一个Session时，激发sessionCreated (HttpSessionEvent se) 方法。</li>
+<li>销毁一个Session时，激发sessionDestroyed (HttpSessionEvent se) 方法。</li>
+</ul>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpSessionEvent;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpSessionListener;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@ClassName</span>: HttpSessionListener_Demo01</span></span><br><span class="line"><span class="comment">* <span class="doctag">@Description</span>: HttpSessionListener_Demo01类实现了HttpSessionListener接口，</span></span><br><span class="line"><span class="comment">*                 因此可以对HttpSession对象的创建和销毁这两个动作进行监听。</span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span>: 孤傲苍狼</span></span><br><span class="line"><span class="comment">* <span class="doctag">@date</span>: 2014-9-9 下午11:04:33</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HttpSessionListener_Demo01</span> <span class="keyword">implements</span> <span class="title">HttpSessionListener</span></span>&#123;</span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sessionCreated</span><span class="params">(HttpSessionEvent se)</span> </span>&#123;</span><br><span class="line">       System.out.println(se.getSession() + <span class="string">"创建了！！"</span>);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/* HttpSession的销毁时机需要在web.xml中进行配置，如下：</span></span><br><span class="line"><span class="comment">    * &lt;session-config&gt;</span></span><br><span class="line"><span class="comment">             &lt;session-timeout&gt;1&lt;/session-timeout&gt;</span></span><br><span class="line"><span class="comment">         &lt;/session-config&gt;</span></span><br><span class="line"><span class="comment">         这样配置就表示session在1分钟之后就被销毁</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sessionDestroyed</span><span class="params">(HttpSessionEvent se)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"session销毁了！！"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>JSP测试页面</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span> %&gt;</span><br><span class="line"> </span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;HttpSessionListener监听器监听HttpSession对象的创建&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">一访问JSP页面，HttpSession就创建了，创建好的Session的Id是：$&#123;pageContext.session.id&#125;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>监听器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span> <span class="attr">xmlns</span>=<span class="string">"http://java.sun.com/xml/ns/javaee"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://java.sun.com/xml/ns/javaee</span></span></span><br><span class="line"><span class="tag"><span class="string"> http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">version</span>=<span class="string">"3.0"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment">&lt;!--注册针对HttpSession对象进行监听的监听器--&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">description</span>&gt;</span>HttpSessionListener监听器<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>..demo.HttpSessionListener_Demo01<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line"> <span class="comment">&lt;!-- 配置HttpSession对象的销毁时机 --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">session-config</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!--配置HttpSession对象的1分钟之后销毁 --&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">session-timeout</span>&gt;</span>1<span class="tag">&lt;/<span class="name">session-timeout</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">session-config</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="ServletRequestListener接口：监听ServletRequest域对象">ServletRequestListener接口：监听ServletRequest域对象</h2>
+<p>ServletRequestListener接口用于监听ServletRequest对象的创建和销毁。</p>
+<ul>
+<li>Request对象被创建时，监听器的requestInitialized(ServletRequestEvent sre)方法将会被调用。</li>
+<li>Request对象被销毁时，监听器的requestDestroyed(ServletRequestEvent sre)方法将会被调用。</li>
+</ul>
+<p>ServletRequest域对象创建和销毁时机：</p>
+<ul>
+<li>创建：用户每一次访问都会创建request对象。</li>
+<li>销毁：当前访问结束，request对象就会销毁。</li>
+</ul>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> _6_Listener.servletRequest_listener.demo;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletRequestEvent;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletRequestListener;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@ClassName</span>: ServletRequestListener_Demo01</span></span><br><span class="line"><span class="comment">* <span class="doctag">@Description</span>: ServletRequestListener_Demo01类实现了ServletRequestListener接口，</span></span><br><span class="line"><span class="comment">*                 因此可以对ServletRequest对象的创建和销毁这两个动作进行监听。</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServletRequestListener_Demo01</span> <span class="keyword">implements</span> <span class="title">ServletRequestListener</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestDestroyed</span><span class="params">(ServletRequestEvent sre)</span> </span>&#123;</span><br><span class="line">       System.out.println(sre.getServletRequest() + <span class="string">"销毁了！！"</span>);</span><br><span class="line"> </span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestInitialized</span><span class="params">(ServletRequestEvent sre)</span> </span>&#123;</span><br><span class="line">       System.out.println(sre.getServletRequest() + <span class="string">"创建了！！"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>监听器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span> <span class="attr">xmlns</span>=<span class="string">"http://java.sun.com/xml/ns/javaee"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://java.sun.com/xml/ns/javaee</span></span></span><br><span class="line"><span class="tag"><span class="string"> http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">version</span>=<span class="string">"3.0"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment">&lt;!--注册针对ServletRequest对象进行监听的监听器--&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">description</span>&gt;</span>ServletRequestListener监听器<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>..demo.ServletRequestListener_Demo01<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>监听域对象属性变更</h1>
+<p>用来监听ServletContext, HttpSession, HttpServletRequest这三个对象中的属性变更信息事件。</p>
+<p>这三个监听器接口分别是ServletContextAttributeListener, HttpSessionAttributeListener 和ServletRequestAttributeListener，这三个接口中都定义了三个方法来处理被监听对象中的属性的增加，删除和替换的事件，同一个事件在这三个接口中对应的方法名称完全相同，只是接受的参数类型不同。</p>
+<h2 id="attributeAdded-方法：监听属性增加">attributeAdded()方法：监听属性增加</h2>
+<p>当向被监听对象中增加一个属性时，web容器就调用事件监听器的attributeAdded方法进行响应，这个方法接收一个事件类型的参数，监听器可以通过这个参数来获得正在增加属性的域对象和被保存到域中的属性对象。</p>
+<p>各个域属性监听器中的完整语法定义为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public void attributeAdded(ServletContextAttributeEvent scae)</span><br><span class="line"></span><br><span class="line">public void attributeAdded(HttpSessionBindingEvent hsbe)</span><br><span class="line"></span><br><span class="line">public void attributeAdded(ServletRequestAttributeEvent srae)</span><br></pre></td></tr></table></figure>
+<h2 id="attributeRemoved-方法：监听属性删除">attributeRemoved()方法：监听属性删除</h2>
+<p>当删除被监听对象中的一个属性时，web容器调用事件监听器的attributeRemoved方法进行响应。</p>
+<p>各个域属性监听器中的完整语法定义为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public void attributeRemoved(ServletContextAttributeEvent scae)</span><br><span class="line"></span><br><span class="line">public void attributeRemoved(HttpSessionBindingEvent hsbe)</span><br><span class="line"></span><br><span class="line">public void attributeRemoved(ServletRequestAttributeEvent srae)</span><br></pre></td></tr></table></figure>
+<h2 id="attributeReplaced-方法：监听属性替换">attributeReplaced()方法：监听属性替换</h2>
+<p>当监听器的域对象中的某个属性被替换时，web容器调用事件监听器的attributeReplaced方法进行响应。</p>
+<p>各个域属性监听器中的完整语法定义为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public void attributeReplaced(ServletContextAttributeEvent scae)</span><br><span class="line"></span><br><span class="line">public void attributeReplaced(HttpSessionBindingEvent hsbe)</span><br><span class="line"></span><br><span class="line">public void attributeReplaced(ServletRequestAttributeEvent srae)</span><br></pre></td></tr></table></figure>
+<p>示例</p>
+<p><strong>（1）监听ServletContext域属性变化</strong></p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.text.MessageFormat;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletContextAttributeEvent;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletContextAttributeListener;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@ClassName</span>: MyServletContextAttributeListener</span></span><br><span class="line"><span class="comment">* <span class="doctag">@Description</span>: ServletContext域对象中属性的变更的事件监听器</span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span>: 孤傲苍狼</span></span><br><span class="line"><span class="comment">* <span class="doctag">@date</span>: 2014-9-11 下午10:53:04</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyServletContextAttributeListener</span> <span class="keyword">implements</span> <span class="title">ServletContextAttributeListener</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">attributeAdded</span><span class="params">(ServletContextAttributeEvent scab)</span> </span>&#123;</span><br><span class="line">        String str =MessageFormat.format(</span><br><span class="line">                <span class="string">"ServletContext域对象中添加了属性:&#123;0&#125;，属性值是:&#123;1&#125;"</span></span><br><span class="line">                ,scab.getName()</span><br><span class="line">                ,scab.getValue());</span><br><span class="line">        System.out.println(str);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">attributeRemoved</span><span class="params">(ServletContextAttributeEvent scab)</span> </span>&#123;</span><br><span class="line">        String str =MessageFormat.format(</span><br><span class="line">                <span class="string">"ServletContext域对象中删除属性:&#123;0&#125;，属性值是:&#123;1&#125;"</span></span><br><span class="line">                ,scab.getName()</span><br><span class="line">                ,scab.getValue());</span><br><span class="line">        System.out.println(str);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">attributeReplaced</span><span class="params">(ServletContextAttributeEvent scab)</span> </span>&#123;</span><br><span class="line">        String str =MessageFormat.format(</span><br><span class="line">                <span class="string">"ServletContext域对象中替换了属性:&#123;0&#125;的值"</span></span><br><span class="line">                ,scab.getName());</span><br><span class="line">        System.out.println(str);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>JSP测试页面</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;ServletContextAttributeListener监听器测试&lt;/title&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">  &lt;body&gt;</span><br><span class="line">        &lt;%</span><br><span class="line">           <span class="comment">//往application域对象中添加属性</span></span><br><span class="line">           application.setAttribute(<span class="string">"name"</span>, <span class="string">"孤傲苍狼"</span>);</span><br><span class="line">          <span class="comment">//替换application域对象中name属性的值</span></span><br><span class="line">           application.setAttribute(<span class="string">"name"</span>, <span class="string">"gacl"</span>);</span><br><span class="line">           <span class="comment">//移除application域对象中name属性</span></span><br><span class="line">           application.removeAttribute(<span class="string">"name"</span>);</span><br><span class="line">           %&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>监听器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span> <span class="attr">xmlns</span>=<span class="string">"http://java.sun.com/xml/ns/javaee"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://java.sun.com/xml/ns/javaee</span></span></span><br><span class="line"><span class="tag"><span class="string"> http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">version</span>=<span class="string">"3.0"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">     <span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">description</span>&gt;</span>MyServletContextAttributeListener监听器<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>..demo.MyServletContextAttributeListener<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>（2）监听HttpSession和HttpServletRequest域属性变化</strong></p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.text.MessageFormat;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletRequestAttributeEvent;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletRequestAttributeListener;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpSessionAttributeListener;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpSessionBindingEvent;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyRequestAndSessionAttributeListener</span> <span class="keyword">implements</span> <span class="title">HttpSessionAttributeListener</span>, <span class="title">ServletRequestAttributeListener</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">attributeAdded</span><span class="params">(ServletRequestAttributeEvent srae)</span> </span>&#123;</span><br><span class="line">        String str =MessageFormat.format(</span><br><span class="line">                <span class="string">"ServletRequest域对象中添加了属性:&#123;0&#125;，属性值是:&#123;1&#125;"</span></span><br><span class="line">                ,srae.getName()</span><br><span class="line">                ,srae.getValue());</span><br><span class="line">        System.out.println(str);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">attributeRemoved</span><span class="params">(ServletRequestAttributeEvent srae)</span> </span>&#123;</span><br><span class="line">        String str =MessageFormat.format(</span><br><span class="line">                <span class="string">"ServletRequest域对象中删除属性:&#123;0&#125;，属性值是:&#123;1&#125;"</span></span><br><span class="line">                ,srae.getName()</span><br><span class="line">                ,srae.getValue());</span><br><span class="line">        System.out.println(str);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">attributeReplaced</span><span class="params">(ServletRequestAttributeEvent srae)</span> </span>&#123;</span><br><span class="line">        String str =MessageFormat.format(</span><br><span class="line">                <span class="string">"ServletRequest域对象中替换了属性:&#123;0&#125;的值"</span></span><br><span class="line">                ,srae.getName());</span><br><span class="line">        System.out.println(str);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">attributeAdded</span><span class="params">(HttpSessionBindingEvent se)</span> </span>&#123;</span><br><span class="line">        String str =MessageFormat.format(</span><br><span class="line">                <span class="string">"HttpSession域对象中添加了属性:&#123;0&#125;，属性值是:&#123;1&#125;"</span></span><br><span class="line">                ,se.getName()</span><br><span class="line">                ,se.getValue());</span><br><span class="line">        System.out.println(str);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">attributeRemoved</span><span class="params">(HttpSessionBindingEvent se)</span> </span>&#123;</span><br><span class="line">        String str = MessageFormat.format(</span><br><span class="line">                <span class="string">"HttpSession域对象中删除属性:&#123;0&#125;，属性值是:&#123;1&#125;"</span></span><br><span class="line">                ,se.getName()</span><br><span class="line">                ,se.getValue());</span><br><span class="line">        System.out.println(str);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">attributeReplaced</span><span class="params">(HttpSessionBindingEvent se)</span> </span>&#123;</span><br><span class="line">        String str = MessageFormat.format(</span><br><span class="line">                <span class="string">"HttpSession域对象中替换了属性:&#123;0&#125;的值"</span></span><br><span class="line">                ,se.getName());</span><br><span class="line">        System.out.println(str);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>JSP测试页面</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;RequestAndSessionAttributeListener监听器测试&lt;/title&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;%</span><br><span class="line">           <span class="comment">//往session域对象中添加属性</span></span><br><span class="line">           session.setAttribute(<span class="string">"aa"</span>, <span class="string">"bb"</span>);</span><br><span class="line">          <span class="comment">//替换session域对象中aa属性的值</span></span><br><span class="line">           session.setAttribute(<span class="string">"aa"</span>, <span class="string">"xx"</span>);</span><br><span class="line">           <span class="comment">//移除session域对象中aa属性</span></span><br><span class="line">           session.removeAttribute(<span class="string">"aa"</span>);</span><br><span class="line"> </span><br><span class="line">           <span class="comment">//往request域对象中添加属性</span></span><br><span class="line">           request.setAttribute(<span class="string">"aa"</span>, <span class="string">"bb"</span>);</span><br><span class="line">          <span class="comment">//替换request域对象中aa属性的值</span></span><br><span class="line">           request.setAttribute(<span class="string">"aa"</span>, <span class="string">"xx"</span>);</span><br><span class="line">           <span class="comment">//移除request域对象中aa属性</span></span><br><span class="line">           request.removeAttribute(<span class="string">"aa"</span>);</span><br><span class="line">    %&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>监听器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span> <span class="attr">xmlns</span>=<span class="string">"http://java.sun.com/xml/ns/javaee"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://java.sun.com/xml/ns/javaee</span></span></span><br><span class="line"><span class="tag"><span class="string"> http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">version</span>=<span class="string">"3.0"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">     <span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">description</span>&gt;</span>MyRequestAndSessionAttributeListener监听器<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>..demo.MyRequestAndSessionAttributeListener<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>Session域中属性对象的自我感知</h1>
+<h2 id="Session域中的对象状态">Session域中的对象状态</h2>
+<p>保存在Session域中的对象可以有多种状态：</p>
+<ul>
+<li>绑定(session.setAttribute(“bean”,Object))到Session中；</li>
+<li>从 Session域中解除(session.removeAttribute(“bean”))绑定；</li>
+<li>钝化(序列化):随Session对象持久化到一个存储设备中；</li>
+<li>活化(反序列化):随Session对象从一个存储设备中恢复。</li>
+</ul>
+<h2 id="自身状态监听接口（无需配置）">自身状态监听接口（无需配置）</h2>
+<p>Servlet规范中定义了两个特殊的监听器接口HttpSessionBindingListener和HttpSessionActivationListener来帮助JavaBean对象了解自己在Session域中的这些状态，实现这两个接口的类不需要web.xml文件中进行注册。</p>
+<h3 id="HttpSessionBindingListener接口">HttpSessionBindingListener接口</h3>
+<p>实现了HttpSessionBindingListener接口的JavaBean对象可以感知自己被绑定到Session中和Session中删除的事件：</p>
+<ul>
+<li>当对象被绑定到HttpSession对象中时，web服务器调用该对象的void valueBound(HttpSessionBindingEvent event)方法；</li>
+<li>当对象从HttpSession对象中解除绑定时，web服务器调用该对象的void valueUnbound(HttpSessionBindingEvent event)方法。</li>
+</ul>
+<h3 id="HttpSessionActivationListener接口">HttpSessionActivationListener接口</h3>
+<p>实现了HttpSessionActivationListener接口的JavaBean对象可以感知自己被活化(反序列化)和钝化(序列化)的事件:</p>
+<ul>
+<li>
+<p>当绑定到HttpSession对象中的javabean对象将要随HttpSession对象被钝化(序列化)之前，web服务器调用该javabean对象的void sessionWillPassivate(HttpSessionEvent event) 方法。这样javabean对象就可以知道自己将要和HttpSession对象一起被序列化(钝化)到硬盘中。</p>
+</li>
+<li>
+<p>当绑定到HttpSession对象中的javabean对象将要随HttpSession对象被活化(反序列化)之后，web服务器调用该javabean对象的void sessionDidActive(HttpSessionEvent event)方法。这样javabean对象就可以知道自己将要和 HttpSession对象一起被反序列化(活化)回到内存中。</p>
+</li>
+</ul>
+<h1>常见应用</h1>
+<h2 id="统计当前在线人数">统计当前在线人数</h2>
+<p>统计当前在线人数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletContext;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpSessionEvent;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpSessionListener;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 统计当前在线用户个数</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OnLineCountListener</span> <span class="keyword">implements</span> <span class="title">HttpSessionListener</span> </span>&#123;</span><br><span class="line">   </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sessionCreated</span><span class="params">(HttpSessionEvent se)</span> </span>&#123;</span><br><span class="line">        ServletContext context = se.getSession().getServletContext();</span><br><span class="line">        Integer onLineCount = (Integer) context.getAttribute(<span class="string">"onLineCount"</span>);</span><br><span class="line">        <span class="keyword">if</span>(onLineCount==<span class="keyword">null</span>)&#123;</span><br><span class="line">            context.setAttribute(<span class="string">"onLineCount"</span>, <span class="number">1</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            onLineCount++;</span><br><span class="line">            context.setAttribute(<span class="string">"onLineCount"</span>, onLineCount);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sessionDestroyed</span><span class="params">(HttpSessionEvent se)</span> </span>&#123;</span><br><span class="line">        ServletContext context = se.getSession().getServletContext();</span><br><span class="line">        Integer onLineCount = (Integer) context.getAttribute(<span class="string">"onLineCount"</span>);</span><br><span class="line">        <span class="keyword">if</span>(onLineCount==<span class="keyword">null</span>)&#123;</span><br><span class="line">            context.setAttribute(<span class="string">"onLineCount"</span>, <span class="number">1</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            onLineCount--;</span><br><span class="line">            context.setAttribute(<span class="string">"onLineCount"</span>, onLineCount);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="定义Session集合及定时销毁机制">定义Session集合及定时销毁机制</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletContextEvent;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletContextListener;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpSession;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpSessionEvent;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpSessionListener;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 当一个Web应用创建的Session很多时，为了避免Session占用太多的内存，我们可以选择手动将这些内存中的session销毁，</span></span><br><span class="line"><span class="comment">* 那么此时也可以借助监听器技术来实现。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SessionScanerListener</span> <span class="keyword">implements</span> <span class="title">HttpSessionListener</span>,<span class="title">ServletContextListener</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Field</span>: list</span></span><br><span class="line"><span class="comment">    *          定义一个集合存储服务器创建的HttpSession</span></span><br><span class="line"><span class="comment">    *        LinkedList不是一个线程安全的集合</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * private List&lt;HttpSession&gt; list = new LinkedList&lt;HttpSession&gt;();</span></span><br><span class="line"><span class="comment">     * 这样写涉及到线程安全问题,SessionScanerListener对象在内存中只有一个</span></span><br><span class="line"><span class="comment">     * sessionCreated可能会被多个人同时调用，</span></span><br><span class="line"><span class="comment">     * 当有多个人并发访问站点时，服务器同时为这些并发访问的人创建session</span></span><br><span class="line"><span class="comment">     * 那么sessionCreated方法在某一时刻内会被几个线程同时调用，几个线程并发调用sessionCreated方法</span></span><br><span class="line"><span class="comment">     * sessionCreated方法的内部处理是往一个集合中添加创建好的session，那么在加session的时候就会</span></span><br><span class="line"><span class="comment">     * 涉及到几个Session同时抢夺集合中一个位置的情况，所以往集合中添加session时，一定要保证集合是线程安全的才行</span></span><br><span class="line"><span class="comment">     * 如何把一个集合做成线程安全的集合呢？</span></span><br><span class="line"><span class="comment">     * 可以使用使用 Collections.synchronizedList(List&lt;T&gt; list)方法将不是线程安全的list集合包装线程安全的list集合</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//使用 Collections.synchronizedList(List&lt;T&gt; list)方法将LinkedList包装成一个线程安全的集合</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;HttpSession&gt; list = Collections.synchronizedList(<span class="keyword">new</span> LinkedList&lt;HttpSession&gt;());</span><br><span class="line">    <span class="comment">//定义一个对象，让这个对象充当一把锁，用这把锁来保证往list集合添加的新的session和遍历list集合中的session这两个操作达到同步</span></span><br><span class="line">    <span class="keyword">private</span> Object lock = <span class="keyword">new</span> Object();</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sessionCreated</span><span class="params">(HttpSessionEvent se)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"session被创建了!!"</span>);</span><br><span class="line">        HttpSession session = se.getSession();</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">synchronized</span> (lock)&#123;</span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             *将该操作加锁进行锁定，当有一个thread-1(线程1)在调用这段代码时，会先拿到lock这把锁，然后往集合中添加session，</span></span><br><span class="line"><span class="comment">             *在添加session的这个过程中假设有另外一个thread-2(线程2)来访问了，thread-2可能是执行定时器任务的，</span></span><br><span class="line"><span class="comment">             *当thread-2要调用run方法遍历list集合中的session时，结果发现遍历list集合中的session的那段代码被锁住了，</span></span><br><span class="line"><span class="comment">             *而这把锁正在被往集合中添加session的那个thread-1占用着，因此thread-2只能等待thread-1操作完成之后才能够进行操作</span></span><br><span class="line"><span class="comment">             *当thread-1添加完session之后，就把lock放开了，此时thread-2拿到lock，就可以执行遍历list集合中的session的那段代码了</span></span><br><span class="line"><span class="comment">             *通过这把锁就保证了往集合中添加session和变量集合中的session这两步操作不能同时进行，必须按照先来后到的顺序来进行。</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            list.add(session);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sessionDestroyed</span><span class="params">(HttpSessionEvent se)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"session被销毁了了!!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/* Web应用启动时触发这个事件</span></span><br><span class="line"><span class="comment">     * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextInitialized</span><span class="params">(ServletContextEvent sce)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"web应用初始化"</span>);</span><br><span class="line">        <span class="comment">//创建定时器</span></span><br><span class="line">        Timer timer = <span class="keyword">new</span> Timer();</span><br><span class="line">        <span class="comment">//每隔30秒就定时执行任务</span></span><br><span class="line">        timer.schedule(<span class="keyword">new</span> MyTask(list,lock), <span class="number">0</span>, <span class="number">1000</span>*<span class="number">30</span>);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextDestroyed</span><span class="params">(ServletContextEvent sce)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"web应用关闭"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@ClassName</span>: MyTask</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Description</span>:定时器要定时执行的任务</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@author</span>: 孤傲苍狼</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@date</span>: 2014-9-11 上午12:02:36</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">MyTask</span> <span class="keyword">extends</span> <span class="title">TimerTask</span> </span>&#123;</span><br><span class="line">   </span><br><span class="line">        <span class="comment">//存储HttpSession的list集合</span></span><br><span class="line">        <span class="keyword">private</span> List&lt;HttpSession&gt; list;</span><br><span class="line">        <span class="comment">//存储传递过来的锁</span></span><br><span class="line">        <span class="keyword">private</span> Object lock;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">MyTask</span><span class="params">(List&lt;HttpSession&gt; list,Object lock)</span></span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.list = list;</span><br><span class="line">            <span class="keyword">this</span>.lock = lock;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/* run方法指明了任务要做的事情</span></span><br><span class="line"><span class="comment">         * @see java.util.TimerTask#run()</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="comment">//将该操作加锁进行锁定</span></span><br><span class="line">            <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                System.out.println(<span class="string">"定时器执行！！"</span>);</span><br><span class="line">                ListIterator&lt;HttpSession&gt; it = list.listIterator();</span><br><span class="line">                <span class="comment">/**</span></span><br><span class="line"><span class="comment">                 * 迭代list集合中的session，在迭代list集合中的session的过程中可能有别的用户来访问，</span></span><br><span class="line"><span class="comment">                 * 用户一访问，服务器就会为该用户创建一个session,此时就会调用sessionCreated往list集合中添加新的session，</span></span><br><span class="line"><span class="comment">                 * 然而定时器在定时执行扫描遍历list集合中的session时是无法知道正在遍历的list集合又添加的新的session进来了，</span></span><br><span class="line"><span class="comment">                 * 这样就导致了往list集合添加的新的session和遍历list集合中的session这两个操作无法达到同步</span></span><br><span class="line"><span class="comment">                 * 那么解决的办法就是把"list.add(session)和while(it.hasNext())&#123;//迭代list集合&#125;"这两段代码做成同步，</span></span><br><span class="line"><span class="comment">                 * 保证当有一个线程在访问"list.add(session)"这段代码时，另一个线程就不能访问"while(it.hasNext())&#123;//迭代list集合&#125;"这段代码</span></span><br><span class="line"><span class="comment">                 * 为了能够将这两段不相干的代码做成同步，只能定义一把锁(Object lock)，然后给这两步操作加上同一把锁，</span></span><br><span class="line"><span class="comment">                 * 用这把锁来保证往list集合添加的新的session和遍历list集合中的session这两个操作达到同步</span></span><br><span class="line"><span class="comment">                 * 当在执行往list集合添加的新的session操作时，就必须等添加完成之后才能够对list集合进行迭代操作，</span></span><br><span class="line"><span class="comment">                 * 当在执行对list集合进行迭代操作时，那么必须等到迭代操作结束之后才能够往往list集合添加的新的session</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                <span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">                    HttpSession session = (HttpSession) it.next();</span><br><span class="line">                    <span class="comment">/**</span></span><br><span class="line"><span class="comment">                     * 如果当前时间-session的最后访问时间&gt;1000*15(15秒)</span></span><br><span class="line"><span class="comment">                     * session.getLastAccessedTime()获取session的最后访问时间</span></span><br><span class="line"><span class="comment">                     */</span></span><br><span class="line">                    <span class="keyword">if</span>(System.currentTimeMillis()-session.getLastAccessedTime()&gt;<span class="number">1000</span>*<span class="number">30</span>)&#123;</span><br><span class="line">                        <span class="comment">//手动销毁session</span></span><br><span class="line">                        session.invalidate();</span><br><span class="line">                        <span class="comment">//移除集合中已经被销毁的session</span></span><br><span class="line">                        it.remove();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>17-LISTENER监听器</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Servlet监听器的分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">监听域对象创建和销毁</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ServletContextListener接口：监听ServletContext域对象"><span class="nav-text">ServletContextListener接口：监听ServletContext域对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HttpSessionListener接口：监听HttpSession域对象"><span class="nav-text">HttpSessionListener接口：监听HttpSession域对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ServletRequestListener接口：监听ServletRequest域对象"><span class="nav-text">ServletRequestListener接口：监听ServletRequest域对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">监听域对象属性变更</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#attributeAdded-方法：监听属性增加"><span class="nav-text">attributeAdded()方法：监听属性增加</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attributeRemoved-方法：监听属性删除"><span class="nav-text">attributeRemoved()方法：监听属性删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attributeReplaced-方法：监听属性替换"><span class="nav-text">attributeReplaced()方法：监听属性替换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Session域中属性对象的自我感知</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Session域中的对象状态"><span class="nav-text">Session域中的对象状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自身状态监听接口（无需配置）"><span class="nav-text">自身状态监听接口（无需配置）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpSessionBindingListener接口"><span class="nav-text">HttpSessionBindingListener接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpSessionActivationListener接口"><span class="nav-text">HttpSessionActivationListener接口</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">常见应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#统计当前在线人数"><span class="nav-text">统计当前在线人数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义Session集合及定时销毁机制"><span class="nav-text">定义Session集合及定时销毁机制</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

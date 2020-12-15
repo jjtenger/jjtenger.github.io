@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="列数据库列数据库，可称为列式数据库、列存储数据库。列数据库是以列相关存储架构进行数据存储的数据库，主要适合于批量数据处理和即时查询。相对应的是行式数据库，数据以行相关的存储体系架构进行空间分配，主要适合于大批量的数据处理，常用于联机事务型数据处理。从上图可以很清楚地看到，行式存储下一张表的数据都是放在一起的，但列式存储下都被分开保存了。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;01-HBase%E6%A6%82%E8%BF%B0.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="列数据库列数据库，可称为列式数据库、列存储数据库。列数据库是以列相关存储架构进行数据存储的数据库，主要适合于批量数据处理和即时查询。相对应的是行式数据库，数据以行相关的存储体系架构进行空间分配，主要适合于大批量的数据处理，常用于联机事务型数据处理。从上图可以很清楚地看到，行式存储下一张表的数据都是放在一起的，但列式存储下都被分开保存了。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887143_20200322222443097_9720.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887143_20200322222442884_22663.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887143_20200322222442675_31807.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887143_20200322222442248_22122.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887142_20200322222441930_15941.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887142_20200322222441613_29565.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584887143_20200322222443097_9720.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/01-HBase%E6%A6%82%E8%BF%B0">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HBASE学习笔记</a></li>
+            <li>01-HBASE概述</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>列数据库</h1><p>列数据库，可称为列式数据库、列存储数据库。列数据库是以列相关存储架构进行数据存储的数据库，主要适合于批量数据处理和即时查询。相对应的是行式数据库，数据以行相关的存储体系架构进行空间分配，主要适合于大批量的数据处理，常用于联机事务型数据处理。</p><p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584887143_20200322222443097_9720.png" alt></p><p>从上图可以很清楚地看到，行式存储下一张表的数据都是放在一起的，但列式存储下都被分开保存了。</p><a id="more"></a>
+
+
+
+<table>
+<thead>
+<tr>
+<th>优缺点</th>
+<th>行式存储</th>
+<th>列式存储</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>优点</td>
+<td>数据被保存在一起 INSERT/UPDATE容易</td>
+<td>查询时只有涉及到的列会被读取； 投影(projection)很高效； 任何列都能作为索引。</td>
+</tr>
+<tr>
+<td>缺点</td>
+<td>选择(Selection)时即使只涉及某几列， 所有数据也都会被读取</td>
+<td>选择完成时，被选择的列要重新组装 INSERT/UPDATE比较麻烦。</td>
+</tr>
+</tbody>
+</table>
+<h1>HBase特点</h1>
+<ul>
+<li>海量存储：PB级别；</li>
+<li>列式（列族）存储：面向列表（族）的存储和权限控制，列（族）独立检索；</li>
+<li>易扩展：包括基于上层处理能力（RegionServer）的扩展和基于存储的扩展（HDFS）；</li>
+<li>高并发：并发情况下，单机IO延迟下降很少；</li>
+<li>稀疏：空值不占存储空间（关系数据库，空值位置必须存储NULL值）；</li>
+<li>无固定列模式：每一行都有一个可以排序的主键和任意多的列，列可以根据需要动态增加，同一张表中不同的行可以有截然不同的列；</li>
+<li>数据多版本：每个单元中的数据可以有多个版本（默认版本号是插入时的时间戳）；</li>
+<li>数据类型单一：只有字符串。</li>
+</ul>
+<p>HBase适用于巨量大、 查询简单（基于rowkey或者rowkey范围查询）、不涉及到复杂关联的使用场景。比如海量订单流水数据（长久保存）、交易记录、数据库历史数据等。</p>
+<h1>HBase数据存储模式</h1>
+<p>HBase数据存储模式可以这样类比表示（一个HBase数据表中）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;RowKey,List&lt;Map&lt;Column,List&lt;Value,Timestamp&gt;&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584887143_20200322222442884_22663.png" alt></p>
+<p>HBase依赖于HDFS来存储数据。在HDFS看来，HBase表中的每条数据都可以简单的理解成key-value对，其中key可以理解成是由：rowkey+column family+column qualifier+timestamp+type 组成。</p>
+<h2 id="Rowkey（主键）">Rowkey（主键）</h2>
+<p>和传统主键完全一样，HBase中用于唯一的区分某一行的数据。</p>
+<p>HBase只支持3种查询方式：基于Rowkey的单行查询和范围扫描，以及全表扫描。因此Rowkey对HBase的性能影响非常大，其设计尤为重要，需要兼顾基于Rowkey的两种查询方式。</p>
+<h2 id="Column-Family（列族）">Column Family（列族）</h2>
+<p>HBase通过列族划分数据的存储（创建表时就必须指定列族，类似关系型数据库创建表须指定具体的列），一个列族的所有列存储在同一个底层的存储文件中，就是HFile。</p>
+<p>列族下面可以包含任意多的列。但列族本身不是越多越好，官方推荐小于或者等于3，一般使用1个列族。</p>
+<h2 id="Column（列）">Column（列）</h2>
+<p>Column：属于某一个columnfamily，可表示为：familyName:columnName，每条记录可动态添加。</p>
+<h2 id="TimeStamp（时间戳）">TimeStamp（时间戳）</h2>
+<p>Version Number，类型为Long。实现HBase多版本的关键。HBase中使用不同的timestamp来标识相同rowkey行对应的不同版本的数据。相同rowkey的数据按照timestamp倒序排列，默认查询的是最新的版本，用户也可以指定timestamp值来读取旧版本数据。写入数据的时候，如果没有指定timestamp，HBase会自动添加一个timestamp，其值和服务器时间保持一致。</p>
+<h1>组件及架构</h1>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584887143_20200322222442675_31807.jpg" alt></p>
+<h2 id="Zookeeper">Zookeeper</h2>
+<p>HBase通过Zookeeper来做master的高可用、RegionServer的监控、元数据的入口以及集群配置的维护等工作。具体工作如下：</p>
+<ul>
+<li>通过Zoopkeeper来保证集群中只有1个master在运行，如果master异常，会通过竞争机制产生新的master提供服务；</li>
+<li>通过Zoopkeeper来监控RegionServer的状态，当RegionSevrer有异常的时候，通过回调的形式通知Master；</li>
+<li>通过Zoopkeeper存储元数据的统一入口地址。</li>
+</ul>
+<h2 id="HMaster">HMaster</h2>
+<p>master节点的主要职责如下：</p>
+<ul>
+<li>为RegionServer分配Region；</li>
+<li>维护整个集群的负载均衡；</li>
+<li>维护集群的元数据信息；</li>
+<li>发现失效的Region，并将失效的Region分配到正常的RegionServer上；</li>
+<li>当RegionSever失效的时候，协调对应Hlog的拆分。</li>
+</ul>
+<h2 id="HRegionServer">HRegionServer</h2>
+<p>HregionServer直接对接用户的读写请求，是真正的“干活”的节点。它的功能概括如下：</p>
+<ul>
+<li>管理master为其分配的Region；</li>
+<li>处理来自客户端的读写请求；</li>
+<li>负责和底层HDFS的交互，存储数据到HDFS；</li>
+<li>负责Region变大以后的拆分；</li>
+<li>负责Storefile的合并工作。</li>
+</ul>
+<p>Client直接通过HRegionServer读写数据（从HMaster中获取元数据，找到RowKey所在的HRegion/HRegionServer后）。</p>
+<h2 id="HRegion">HRegion</h2>
+<p>Region是HBase中分布式存储和负载均衡的最小单元，类似关系型数据库中分区或者分片的概念。</p>
+<p>HBase表中所有行都按照row key的字典序排列，HMaster会将一个大表的数据基于Rowkey的不同范围在行的方向上分割为多个Region，然后将不同Region分布到不同RegionServer上。</p>
+<p>每个表开始只有一个Region，随着数据增多，Region体积不断增大，当增大到一个阀值的时候，Region就会等分会两个新的Region，依此产生越来越多的Region。</p>
+<h2 id="Client">Client</h2>
+<p>包含了访问HBase的接口，另外还维护了对应的cache来加速HBase的访问，比如cache的.META.元数据的信息。</p>
+<h2 id="HDFS">HDFS</h2>
+<p>HDFS为HBase提供最终的底层数据存储服务，同时为HBase提供高可用（Hlog存储在HDFS）的支持，具体功能概括如下：</p>
+<ul>
+<li>提供元数据和表数据的底层分布式存储服务；</li>
+<li>数据多副本，保证的高可靠和高可用性。</li>
+</ul>
+<p>在HDFS看来，HBase表中的每条数据都可以简单的理解成key-value对，其中key可以理解成是由：rowkey+column family+column qualifier+timestamp+type 组成。</p>
+<h1>基本读写原理</h1>
+<h2 id="Region寻址">Region寻址</h2>
+<p>在HBase 0.96版本以前，HBase有两个特殊的表，分别是-ROOT-表和.META.表，其中-ROOT-的位置存储在ZooKeeper中，-ROOT-本身存储了 .META. Table的RegionInfo信息，并且-ROOT-不会分裂，只有一个region。而.META.表可以被切分成多个region。读取的流程如下图所示（RS1 - RS3 均为RegionServer）：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584887143_20200322222442248_22122.png" alt></p>
+<p>0.96版本以后，将-ROOT-表去掉了：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584887142_20200322222441930_15941.png" alt></p>
+<p>访问路径变成了3步：</p>
+<p>第1步：Client请求ZK获取.META.所在的RegionServer的地址。</p>
+<p>第2步：Client请求.META.所在的RegionServer获取访问数据所在的RegionServer地址，client会将.META.的相关信息cache下来，以便下一次快速访问。</p>
+<p>第3步：Client请求数据所在的RegionServer，获取所需要的数据。</p>
+<p>总结去掉-ROOT-的原因有如下2点：</p>
+<p>其一：提高性能</p>
+<p>其二：2层结构已经足以满足集群的需求。</p>
+<p>这里还有一个问题需要说明，那就是Client会缓存.META.的数据，用来加快访问，既然有缓存，那它什么时候更新？如果.META.更新了，比如Region1不在RerverServer2上了，被转移到了RerverServer3上。client的缓存没有更新会有什么情况？</p>
+<p>其实，Client的元数据缓存不更新，当.META.的数据发生更新。如上面的例子，由于Region1的位置发生了变化，Client再次根据缓存去访问的时候，会出现错误，当出现异常达到重试次数后就会去.META.所在的RegionServer获取最新的数据，如果.META.所在的RegionServer也变了，Client就会去ZK上获取.META.所在的RegionServer的最新地址。</p>
+<h2 id="HBase写入">HBase写入</h2>
+<p>HBase的写入流程如下图所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584887142_20200322222441613_29565.png" alt></p>
+<p>从上图可以看出分为3步骤：</p>
+<p>第1步：Client获取数据写入的Region所在的RegionServer</p>
+<p>第2步：请求写Hlog</p>
+<p>第3步：请求写MemStore（内存）</p>
+<p>只有当写Hlog和写MemStore都成功了才算请求写入完成。MemStore后续会逐渐刷到HDFS（磁盘）中，生成一个HFile文件。</p>
+<h3 id="Write-Ahead-Log">Write-Ahead-Log</h3>
+<p>HBase的WAL（Write-Ahead-Log）机制是必须的，一个RegionServer通常与一个HLog一一对应，数据写入Region之前先写HLog能够保障数据的安全，当RegionServer出现异常，需要使用Hlog来恢复数据。</p>
+<p>HLog使用Hadoop的SequenceFile存储日志，而HLog是一直连续不断追加写文件的，它强烈依赖SequenceFile的append功能。事实上正是HLog对append功能的强烈需求，或多或少推动了HDFS在最近的版本中添加了文件追加功能。</p>
+<h3 id="MemStore数据刷盘">MemStore数据刷盘</h3>
+<p>HBase 对新增的数据以及要更新的数据（理解成key-value对），都直接先写入MemStore结构中，MemStore是完全的内存结构，且是key有序的。数据写入MemStore后，不会立即刷盘，在达到一定的上限之后会进行刷盘操作，从内存flush到HDFS中（磁盘中），生成一个HFile文件。HFile文件同样是key有序的，并且是持久化的位于HDFS系统中的。通过这种机制，HBase对表的所有的插入和更新都转换成对HDFS的HFile文件的创建。</p>
+<p>具体是哪些场景会触发刷盘的操作呢？总结成如下：</p>
+<ol>
+<li>
+<p>当所有Memstore占整个heap的最大比例的时候，会触发刷盘的操作。这个比例通过参数hbase.regionserver.global.Memstore.upperLimit设置，默认为整个heap内存的40%。此外，当flush到一定比例时会停止刷盘。这个比例通过另外一个参数hbase.regionserver.global.Memstore.lowerLimit设置，默认是整个heap内存的35%。这么做主要是为了减少刷盘对业务带来的影响，实现平滑系统负载的目的。</p>
+</li>
+<li>
+<p>另外，当MemStore的大小达到hbase.hregion.Memstore.flush.size大小的时候也会触发刷盘，默认128M大小。</p>
+</li>
+<li>
+<p>如果RegionServer的Hlog数量达到上限，会强制刷盘。</p>
+</li>
+</ol>
+<p>如果Hlog太多的话，会导致RegionServer故障恢复的时间太长，因此HBase会对Hlog的最大个数做限制，限制参数是hase.regionserver.max.logs，默认是32个。</p>
+<ol start="4">
+<li>
+<p>可以通过hbase shell或者java api手工触发flush的操作。</p>
+</li>
+<li>
+<p>正常关闭RegionServer时会触发刷盘的操作，全部数据刷盘后就不需要再使用Hlog恢复数据。</p>
+</li>
+<li>
+<p>当RegionServer出现故障的时候，其上面的Region会迁移到其他正常的RegionServer上，在恢复完Region的数据后，会触发刷盘，当刷盘完成后才会提供给业务访问。</p>
+</li>
+</ol>
+<h3 id="HFile文件合并">HFile文件合并</h3>
+<p>上述过程中，每当MemStore结构flush到HDFS上时，就会产生一个新的HFile文件，随着时间的推移，会产生一连串的HFile文件。HFile文件一直在产生，HFile文件组成的列表一直在增大，而计算机资源是有限的，并且查询的性能也依赖HFile队列的长度，因此我们还需要一种合并HFile文件的机制，以保持适度的HFile文件个数。</p>
+<p>HBase中实现这种机制采用的是LSM树（一种NOSQL系统广泛使用的结构），LSM能够将多个内部key有序的小HFile文件合并生成一个大的HFile文件，当新的大的HFile文件生成后，HBase就能够删除原有的一系列旧的小的HFile文件，从而保持HFile队列不至于过长，查询操作也不至于查询过多的HFile文件。</p>
+<p>在LSM合并HFile的时候，HBase还会做很重要的两件事：</p>
+<p>（1）将更新过的数据的旧版本的数据删除掉，只留下最新的版本；</p>
+<p>（2）将标有删除标记（下面一节会讲到）的数据删除掉。</p>
+<h2 id="HBase查询">HBase查询</h2>
+<p>当HBase执行查询操作时（可以理解为给出key，要找到value），首先查询内存中的MemStroe结构，如果命中，就返回结果，因为MemStore中的数据永远是最新的，如果不命中，就从前到后遍历之前产生的HFile文件队列（按创建时间排序，最近产生的在最前面，较早产生的在最后面），在每个HFile文件中查找key，看是否命中，如果命中即可返回（最新的数据排在最前面），如果不命中一直查找下去，直到所有HFile文件被搜索完结束。</p>
+<p>由此可见，查询操作最坏情况下可能要遍历所有HFile文件，最好情况下在内存中MemStore即可命中，这也是为什么HBase查询性能波动大的原因。当然HBase也不会真的很傻的去遍历每个HFile文件中的内容，这个性能是无法忍受的，它采取了一些优化的措施：</p>
+<p>（1）引入bloomfilter，对HFile中的key进行hash，当查询时，对查询key先过bloomfilter，看查询key是否可能在该HFile中，如果可能在，则进入第2步，不在则直接跳过该HFile；</p>
+<p>（2）还记得吗？HFile是key有序的（具体实现是类SSTable结构），在有序的key上查找就有各种优化技术了，而不是单纯的遍历了。</p>
+<h2 id="HBase删除">HBase删除</h2>
+<p>HBase删除操作也是基于HBase的写入机制。非常的简单，对将要删除的key-value对进行打标，通常是对key进行打标，将key中的type字段打标成“删除”标记，并将打标后的数据append到MemStore中，MemStore再flush到HFile中，HFile合并时，检查这个标记，所有带有“删除”标记的记录将被删除而不会合并到新的HFile中，这样HBase就完成了数据的删除操作。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HBASE学习笔记</a></li>
+            <li>01-HBASE概述</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">列数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HBase特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HBase数据存储模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Rowkey（主键）"><span class="nav-text">Rowkey（主键）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Column-Family（列族）"><span class="nav-text">Column Family（列族）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Column（列）"><span class="nav-text">Column（列）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TimeStamp（时间戳）"><span class="nav-text">TimeStamp（时间戳）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">组件及架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Zookeeper"><span class="nav-text">Zookeeper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HMaster"><span class="nav-text">HMaster</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HRegionServer"><span class="nav-text">HRegionServer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HRegion"><span class="nav-text">HRegion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Client"><span class="nav-text">Client</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS"><span class="nav-text">HDFS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">基本读写原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Region寻址"><span class="nav-text">Region寻址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HBase写入"><span class="nav-text">HBase写入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Write-Ahead-Log"><span class="nav-text">Write-Ahead-Log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MemStore数据刷盘"><span class="nav-text">MemStore数据刷盘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HFile文件合并"><span class="nav-text">HFile文件合并</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HBase查询"><span class="nav-text">HBase查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HBase删除"><span class="nav-text">HBase删除</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

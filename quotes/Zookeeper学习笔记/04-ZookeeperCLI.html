@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="ZooKeeper命令行界面（CLI）用于与ZooKeeper集合进行交互以进行开发。它有助于调试和解决不同的选项。使用zkCli.sh连接到zookeeper一般语法：1.&#x2F;zkCli.sh -timeout 0 -r -server ip:port示例：1234# 连接到主机h1 超时时间3秒.&#x2F;zkCli.sh -timeout 3000 -server h1:2181# 有类似如下的命令提">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;04-ZookeeperCLI.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="ZooKeeper命令行界面（CLI）用于与ZooKeeper集合进行交互以进行开发。它有助于调试和解决不同的选项。使用zkCli.sh连接到zookeeper一般语法：1.&#x2F;zkCli.sh -timeout 0 -r -server ip:port示例：1234# 连接到主机h1 超时时间3秒.&#x2F;zkCli.sh -timeout 3000 -server h1:2181# 有类似如下的命令提">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584897561_20200323011352579_16584.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.044Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584897561_20200323011352579_16584.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/04-ZookeeperCLI">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ZOOKEEPER学习笔记</a></li>
+            <li>04-ZOOKEEPERCLI</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>ZooKeeper命令行界面（CLI）用于与ZooKeeper集合进行交互以进行开发。它有助于调试和解决不同的选项。</p><h1>使用zkCli.sh连接到zookeeper</h1><p>一般语法：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./zkCli.sh -timeout 0 -r -server ip:port</span><br></pre></td></tr></table></figure><p>示例：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 连接到主机h1 超时时间3秒</span></span><br><span class="line">./zkCli.sh -timeout 3000 -server h1:2181</span><br><span class="line"><span class="meta">#</span><span class="bash"> 有类似如下的命令提示符就表示连接成功了</span></span><br><span class="line">[zk: h1:2181(CONNECTED) 0]</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+
+
+<p>随便敲个字母就可以显示出使用帮助了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[zk: h1:2181(CONNECTED) 1] h</span><br><span class="line">ZooKeeper -server host:port cmd args</span><br><span class="line">    stat path [watch]</span><br><span class="line">    set path data [version]</span><br><span class="line">    ls path [watch]</span><br><span class="line">    delquota [-n|-b] path</span><br><span class="line">    ls2 path [watch]</span><br><span class="line">    setAcl path acl</span><br><span class="line">    setquota -n|-b val path</span><br><span class="line">    history </span><br><span class="line">    redo cmdno</span><br><span class="line">    printwatches on|off</span><br><span class="line">    delete path [version]</span><br><span class="line">    sync path</span><br><span class="line">    listquota path</span><br><span class="line">    rmr path</span><br><span class="line">    get path [watch]</span><br><span class="line">    create [-s] [-e] path data acl</span><br><span class="line">    addauth scheme auth</span><br><span class="line">    quit </span><br><span class="line">    getAcl path</span><br><span class="line">    close </span><br><span class="line">    connect host:port</span><br></pre></td></tr></table></figure>
+<h1>创建Znodes：create</h1>
+<p>用给定的路径创建一个znode。flag参数指定创建的znode是临时的，持久的还是顺序的。默认情况下，所有znode都是持久的。</p>
+<p>语法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create [-s] [-e] path data acl</span><br></pre></td></tr></table></figure>
+<p>s:可选，表示该节点为顺序节点</p>
+<p>e:可选，表示该节点为临时节点</p>
+<p>path:节点路径</p>
+<p>data:节点数据</p>
+<p>acl:访问控制列表</p>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create /FirstZnode “Myfirstzookeeper-app"</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 0] create /FirstZnode “Myfirstzookeeper-app"</span><br><span class="line">Created /FirstZnode</span><br></pre></td></tr></table></figure>
+<h2 id="e：创建临时节点">-e：创建临时节点</h2>
+<p>当会话过期或客户端断开连接时， <strong>临时节点</strong> （flag：-e）将被自动删除。</p>
+<p>要创建 <strong>临时节点</strong> ，请添加flag： <strong>-e</strong> ，如下所示。</p>
+<p>语法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create -e /path /data</span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create -e /SecondZnode “Ephemeral-data"</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 2] create -e /SecondZnode “Ephemeral-data"</span><br><span class="line">Created /SecondZnode</span><br></pre></td></tr></table></figure>
+<p>记住当客户端断开连接时，临时节点将被删除。你可以通过退出ZooKeeper CLI，然后重新打开CLI来尝试。</p>
+<h2 id="s：创建顺序节点">-s：创建顺序节点</h2>
+<p><strong>顺序节点</strong> 保证znode路径将是唯一的。ZooKeeper集合将向znode路径填充10位序列号。例如，znode路径 /myapp 将转换为/myapp0000000001，下一个序列号将为/myapp0000000002。如果没有指定flag，则znode被认为是持久的。</p>
+<p>要创建 <strong>顺序节点</strong> ，请添加flag： <strong>-s</strong> ，如下所示。</p>
+<p>语法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create -s /path /data</span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create -s /FirstZnode second-data</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 2] create -s /FirstZnode “second-data"</span><br><span class="line">Created /FirstZnode0000000023</span><br></pre></td></tr></table></figure>
+<h2 id="创建子项-子节点">创建子项/子节点</h2>
+<p>创建子节点类似于创建新的znode。子znode的路径必须包括父路径。</p>
+<p>语法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create /parent/path/subnode/path /data</span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create /FirstZnode/Child1 firstchildren</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 16] create /FirstZnode/Child1 “firstchildren"</span><br><span class="line">created /FirstZnode/Child1</span><br><span class="line">[zk: localhost:2181(CONNECTED) 17] create /FirstZnode/Child2 “secondchildren"</span><br><span class="line">created /FirstZnode/Child2</span><br></pre></td></tr></table></figure>
+<h1>获取数据：get</h1>
+<p>返回znode的关联数据和指定znode的元数据。例如上次修改数据的时间，修改的位置以及数据的相关信息。</p>
+<p>你还可以在该命令中监视数据相关的通知（见Watch）。</p>
+<p>语法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get /path</span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get /FirstZnode</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 1] get /FirstZnode</span><br><span class="line">“Myfirstzookeeper-app"</span><br><span class="line">cZxid = 0x7f</span><br><span class="line">ctime = Tue Sep 29 16:15:47 IST 2015</span><br><span class="line">mZxid = 0x7f</span><br><span class="line">mtime = Tue Sep 29 16:15:47 IST 2015</span><br><span class="line">pZxid = 0x7f</span><br><span class="line">cversion = 0</span><br><span class="line">dataVersion = 0</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line">dataLength = 22</span><br><span class="line">numChildren = 0</span><br></pre></td></tr></table></figure>
+<p>要访问顺序节点，必须输入znode的完整路径。</p>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get /FirstZnode0000000023</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 1] get /FirstZnode0000000023</span><br><span class="line">“Second-data"</span><br><span class="line">cZxid = 0x80</span><br><span class="line">ctime = Tue Sep 29 16:25:47 IST 2015</span><br><span class="line">mZxid = 0x80</span><br><span class="line">mtime = Tue Sep 29 16:25:47 IST 2015</span><br><span class="line">pZxid = 0x80</span><br><span class="line">cversion = 0</span><br><span class="line">dataVersion = 0</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line">dataLength = 13</span><br><span class="line">numChildren = 0</span><br></pre></td></tr></table></figure>
+<h1>Watch（监视）：get…[watch]</h1>
+<p>当指定的znode或znode的子数据更改时，监视器会显示通知。你只能在 <strong>get</strong> 命令中设置 <strong>watch</strong> 。</p>
+<p>语法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get /path [watch]</span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get /FirstZnode 1</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 1] get /FirstZnode 1</span><br><span class="line">“Myfirstzookeeper-app"</span><br><span class="line">cZxid = 0x7f</span><br><span class="line">ctime = Tue Sep 29 16:15:47 IST 2015</span><br><span class="line">mZxid = 0x7f</span><br><span class="line">mtime = Tue Sep 29 16:15:47 IST 2015</span><br><span class="line">pZxid = 0x7f</span><br><span class="line">cversion = 0</span><br><span class="line">dataVersion = 0</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line">dataLength = 22</span><br><span class="line">numChildren = 0</span><br></pre></td></tr></table></figure>
+<p>输出类似于普通的<strong>get</strong> 命令，但它会在后台等待znode更改。</p>
+<h1>设置数据：set</h1>
+<p>设置指定znode的数据。完成此设置操作后，你可以使用<strong>get</strong> CLI命令检查数据。</p>
+<p>语法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set path data [version]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>path : 节点路径</li>
+<li>data : 新数据</li>
+<li>version : 版本号，要么不写，要么和上一次查询出的版本号一致</li>
+</ul>
+<p>该操作会影响节点的mZxid、dataVersion和mtime属性。</p>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set /SecondZnode Data-updated</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 1] get /SecondZnode “Data-updated"</span><br><span class="line">cZxid = 0x82</span><br><span class="line">ctime = Tue Sep 29 16:29:50 IST 2015</span><br><span class="line">mZxid = 0x83</span><br><span class="line">mtime = Tue Sep 29 16:29:50 IST 2015</span><br><span class="line">pZxid = 0x82</span><br><span class="line">cversion = 0</span><br><span class="line">dataVersion = 1</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x15018b47db00000</span><br><span class="line">dataLength = 14</span><br><span class="line">numChildren = 0</span><br></pre></td></tr></table></figure>
+<p>如果你在 <strong>get</strong> 命令中分配了 <strong>watch</strong> 选项（如上一个命令），则输出将类似如下所示。</p>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 1] get /FirstZnode “Mysecondzookeeper-app"</span><br><span class="line">WATCHER: :</span><br><span class="line">WatchedEvent state:SyncConnected type:NodeDataChanged path:/FirstZnode</span><br><span class="line">cZxid = 0x7f</span><br><span class="line">ctime = Tue Sep 29 16:15:47 IST 2015</span><br><span class="line">mZxid = 0x84</span><br><span class="line">mtime = Tue Sep 29 17:14:47 IST 2015</span><br><span class="line">pZxid = 0x7f</span><br><span class="line">cversion = 0</span><br><span class="line">dataVersion = 1</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line">dataLength = 23</span><br><span class="line">numChildren = 0</span><br></pre></td></tr></table></figure>
+<h1>列出子项：ls、ls2</h1>
+<p>ls命令用于列出和显示znode的子项。</p>
+<p>语法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls /path</span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls /MyFirstZnode</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 2] ls /MyFirstZnode</span><br><span class="line">[mysecondsubnode, myfirstsubnode]</span><br></pre></td></tr></table></figure>
+<p>ls2是ls的升级版，列出子节点的同时列出节点的状态信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls2 path [watch]</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[zk: h1:2181(CONNECTED) 15] ls2 /</span><br><span class="line">[zookeeper] # 子节点列表</span><br><span class="line">cZxid = 0x0</span><br><span class="line">ctime = Thu Jan 01 08:00:00 CST 1970</span><br><span class="line">mZxid = 0x0</span><br><span class="line">mtime = Thu Jan 01 08:00:00 CST 1970</span><br><span class="line">pZxid = 0x0</span><br><span class="line">cversion = -1</span><br><span class="line">dataVersion = 0</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line">dataLength = 0</span><br><span class="line">numChildren = 1</span><br><span class="line">[zk: h1:2181(CONNECTED) 16]</span><br></pre></td></tr></table></figure>
+<h1>检查状态：stat</h1>
+<p>状态描述指定的znode的元数据。它包含时间戳，版本号，ACL，数据长度和子znode等细项。</p>
+<p>语法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stat /path</span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stat /</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[zk: h1:2181(CONNECTED) 11] stat /</span><br><span class="line"><span class="meta">#</span><span class="bash"> 节点被创建时的事务ID</span></span><br><span class="line">cZxid = 0x0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 节点创建时间</span></span><br><span class="line">ctime = Thu Jan 01 08:00:00 CST 1970</span><br><span class="line"><span class="meta">#</span><span class="bash"> 最近一次更新时的事务ID</span></span><br><span class="line">mZxid = 0x0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 最近一次更新时间</span></span><br><span class="line">mtime = Thu Jan 01 08:00:00 CST 1970</span><br><span class="line"><span class="meta">#</span><span class="bash"> 该节点的子节点列表最近一次被修改的事务ID</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加、删除子节点会影响该值</span></span><br><span class="line">pZxid = 0x0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 子节点版本号</span></span><br><span class="line">cversion = -1</span><br><span class="line"><span class="meta">#</span><span class="bash"> 数据版本号</span></span><br><span class="line">dataVersion = 0</span><br><span class="line"><span class="meta">#</span><span class="bash"> ACL版本号</span></span><br><span class="line">aclVersion = 0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建临时节点的事务ID</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果是持久节点,则该值为0x0</span></span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 当前节点的数据长度</span></span><br><span class="line">dataLength = 0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 当前节点的子节点数目</span></span><br><span class="line">numChildren = 1</span><br></pre></td></tr></table></figure>
+<h1>移除Znode：rmr、delete</h1>
+<p>rmr移除指定的znode并递归其所有子节点。只有在这样的znode可用的情况下才会发生。</p>
+<p>语法</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rmr /path</span><br></pre></td></tr></table></figure>
+<p>示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rmr /FirstZnode</span><br></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 10] rmr /FirstZnode</span><br><span class="line">[zk: localhost:2181(CONNECTED) 11] get /FirstZnode</span><br><span class="line">Node does not exist: /FirstZnode</span><br></pre></td></tr></table></figure>
+<p>delete只能删除不含子节点的节点。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete path [version]</span><br></pre></td></tr></table></figure>
+<p>path ：要删除的节点的路径</p>
+<h1>history、redo</h1>
+<p>history : 列出命令历史。</p>
+<p>redo : 该命令可以重新执行指定命令编号的历史命令，命令编号可以通过history查看。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[zk: h1:2181(CONNECTED) 70] history</span><br><span class="line">60 - ls /zookeeper</span><br><span class="line">61 - get /node_2</span><br><span class="line">……………………</span><br><span class="line">……………………</span><br><span class="line"><span class="meta">#</span><span class="bash"> 重新执行编号为60的命令</span></span><br><span class="line">[zk: h1:2181(CONNECTED) 71] redo 60</span><br><span class="line">[quota]</span><br><span class="line">[zk: h1:2181(CONNECTED) 72]</span><br></pre></td></tr></table></figure>
+<h1>ZooKeeper四字命令</h1>
+<p>ZooKeeper支持某些特定的四字命令字母与其的交互。它们大多是查询命令，用来获取ZooKeeper服务的当前状态及相关信息。</p>
+<p>用户在客户端可以通过telnet或nc向ZooKeeper提交相应的命令。ZooKeeper常用四字命令见下表1所示：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>conf</td>
+<td>输出相关服务配置的详细信息。</td>
+</tr>
+<tr>
+<td>cons</td>
+<td>列出所有连接到服务器的客户端的完全的连接/会话的详细信息。包括“接受/发送”的包数量、会话id、操作延迟、最后的操作执行等等信息。</td>
+</tr>
+<tr>
+<td>dump</td>
+<td>列出未经处理的会话和临时节点。</td>
+</tr>
+<tr>
+<td>envi</td>
+<td>输出关于服务环境的详细信息（区别于conf命令）。</td>
+</tr>
+<tr>
+<td>reqs</td>
+<td>列出未经处理的请求</td>
+</tr>
+<tr>
+<td>ruok</td>
+<td>测试服务是否处于正确状态。如果确实如此，那么服务返回“imok”，否则不做任何相应。</td>
+</tr>
+<tr>
+<td>stat</td>
+<td>输出关于性能和连接的<a href="http://cpro.baidu.com/cpro/ui/uijs.php?rs=1&amp;u=http%3A%2F%2Fwww%2Eaboutyun%2Ecom%2Fthread%2D9310%2D1%2D1%2Ehtml&amp;p=baidu&amp;c=news&amp;n=10&amp;t=tpclicked3_hc&amp;q=92051019_cpr&amp;k=%BF%CD%BB%A7%B6%CB&amp;k0=%B7%FE%CE%F1%C6%F7&amp;kdi0=8&amp;k1=%BF%CD%BB%A7%B6%CB&amp;kdi1=8&amp;k2=%B9%A4%BE%DF&amp;kdi2=8&amp;k3=server&amp;kdi3=8&amp;k4=%D0%C5%CF%A2&amp;kdi4=8&amp;sid=2b40e62e3da04e2d&amp;ch=0&amp;tu=u1692056&amp;jk=9bee373b69b8c1f0&amp;cf=29&amp;fv=14&amp;stid=9&amp;urlid=0&amp;luki=2&amp;seller_id=1&amp;di=128" target="_blank" rel="noopener">客户端</a>的列表。</td>
+</tr>
+<tr>
+<td>wchs</td>
+<td>列出服务器watch的详细信息。</td>
+</tr>
+<tr>
+<td>wchc</td>
+<td>通过session列出服务器watch的详细信息，它的输出是一个与watch相关的会话的列表。</td>
+</tr>
+<tr>
+<td>wchp</td>
+<td>通过路径列出<a href="http://cpro.baidu.com/cpro/ui/uijs.php?rs=1&amp;u=http%3A%2F%2Fwww%2Eaboutyun%2Ecom%2Fthread%2D9310%2D1%2D1%2Ehtml&amp;p=baidu&amp;c=news&amp;n=10&amp;t=tpclicked3_hc&amp;q=92051019_cpr&amp;k=%B7%FE%CE%F1%C6%F7&amp;k0=%B7%FE%CE%F1%C6%F7&amp;kdi0=8&amp;k1=%BF%CD%BB%A7%B6%CB&amp;kdi1=8&amp;k2=%B9%A4%BE%DF&amp;kdi2=8&amp;k3=server&amp;kdi3=8&amp;k4=%D0%C5%CF%A2&amp;kdi4=8&amp;sid=2b40e62e3da04e2d&amp;ch=0&amp;tu=u1692056&amp;jk=9bee373b69b8c1f0&amp;cf=29&amp;fv=14&amp;stid=9&amp;urlid=0&amp;luki=1&amp;seller_id=1&amp;di=128" target="_blank" rel="noopener">服务器</a>watch的详细<a href="http://cpro.baidu.com/cpro/ui/uijs.php?rs=1&amp;u=http%3A%2F%2Fwww%2Eaboutyun%2Ecom%2Fthread%2D9310%2D1%2D1%2Ehtml&amp;p=baidu&amp;c=news&amp;n=10&amp;t=tpclicked3_hc&amp;q=92051019_cpr&amp;k=%D0%C5%CF%A2&amp;k0=%B7%FE%CE%F1%C6%F7&amp;kdi0=8&amp;k1=%BF%CD%BB%A7%B6%CB&amp;kdi1=8&amp;k2=%B9%A4%BE%DF&amp;kdi2=8&amp;k3=server&amp;kdi3=8&amp;k4=%D0%C5%CF%A2&amp;kdi4=8&amp;sid=2b40e62e3da04e2d&amp;ch=0&amp;tu=u1692056&amp;jk=9bee373b69b8c1f0&amp;cf=29&amp;fv=14&amp;stid=9&amp;urlid=0&amp;luki=5&amp;seller_id=1&amp;di=128" target="_blank" rel="noopener">信息</a>。它输出一个与session相关的路径。</td>
+</tr>
+</tbody>
+</table>
+<p>下图是ZooKeeper四字命令的简单用例：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584897561_20200323011352579_16584.png" alt></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ZOOKEEPER学习笔记</a></li>
+            <li>04-ZOOKEEPERCLI</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用zkCli.sh连接到zookeeper</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">创建Znodes：create</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#e：创建临时节点"><span class="nav-text">-e：创建临时节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#s：创建顺序节点"><span class="nav-text">-s：创建顺序节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建子项-子节点"><span class="nav-text">创建子项/子节点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">获取数据：get</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Watch（监视）：get…[watch]</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">设置数据：set</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">列出子项：ls、ls2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">检查状态：stat</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">移除Znode：rmr、delete</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">history、redo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">ZooKeeper四字命令</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

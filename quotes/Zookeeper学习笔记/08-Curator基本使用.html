@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Curator是Netflix公司开源的一套zookeeper客户端框架，解决了很多Zookeeper客户端非常底层的细节开发工作，包括连接重连、反复注册Watcher和NodeExistsException异常等等。Patrixck Hunt（Zookeeper）以一句“Guava is to Java that Curator to Zookeeper”给Curator予高度评价。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;08-Curator%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Curator是Netflix公司开源的一套zookeeper客户端框架，解决了很多Zookeeper客户端非常底层的细节开发工作，包括连接重连、反复注册Watcher和NodeExistsException异常等等。Patrixck Hunt（Zookeeper）以一句“Guava is to Java that Curator to Zookeeper”给Curator予高度评价。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.044Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/08-Curator%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ZOOKEEPER学习笔记</a></li>
+            <li>08-CURATOR基本使用</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>Curator是Netflix公司开源的一套zookeeper客户端框架，解决了很多Zookeeper客户端非常底层的细节开发工作，包括连接重连、反复注册Watcher和NodeExistsException异常等等。Patrixck Hunt（Zookeeper）以一句“Guava is to Java that Curator to Zookeeper”给Curator予高度评价。</p><a id="more"></a>
+<h1>引子和趣闻</h1>
+<p>Zookeeper名字的由来是比较有趣的，下面的片段摘抄自《从PAXOS到ZOOKEEPER分布式一致性原理与实践》一书：</p>
+<p>Zookeeper最早起源于雅虎的研究院的一个研究小组。在当时，研究人员发现，在雅虎内部很多大型的系统需要依赖一个类似的系统进行分布式协调，但是这些系统往往存在分布式单点问题。所以雅虎的开发人员就试图开发一个通用的无单点问题的分布式协调框架。在立项初期，考虑到很多项目都是用动物的名字来命名的(例如著名的Pig项目)，雅虎的工程师希望给这个项目也取一个动物的名字。时任研究院的首席科学家Raghu Ramakrishnan开玩笑说：再这样下去，我们这儿就变成动物园了。此话一出，大家纷纷表示就叫动物园管理员吧——因为各个以动物命名的分布式组件放在一起，雅虎的整个分布式系统看上去就像一个大型的动物园了，而Zookeeper正好用来进行分布式环境的协调——于是，Zookeeper的名字由此诞生了。</p>
+<p>Curator无疑是Zookeeper客户端中的瑞士军刀，它译作&quot;馆长&quot;或者’‘管理者’'，不知道是不是开发小组有意而为之，笔者猜测有可能这样命名的原因是说明Curator就是Zookeeper的馆长(脑洞有点大：Curator就是动物园的园长)。</p>
+<p>Curator包含了几个包：</p>
+<ul>
+<li><strong>curator-framework：</strong> 对zookeeper的底层api的一些封装；</li>
+<li><strong>curator-client：</strong> 提供一些客户端的操作，例如重试策略等；</li>
+<li><strong>curator-recipes：</strong> 封装了一些高级特性，如：Cache事件监听、选举、分布式锁、分布式计数器、分布式Barrier等。</li>
+</ul>
+<p>Maven依赖(使用curator的版本：2.12.0，对应Zookeeper的版本为：3.4.x， <strong>如果跨版本会有兼容性问题，很有可能导致节点操作失败</strong> )：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-framework<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-recipes<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>创建并启动客户端</h1>
+<h2 id="使用静态工程方法创建客户端会话">使用静态工程方法创建客户端会话</h2>
+<p>一个例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RetryPolicy retryPolicy = <span class="keyword">new</span> ExponentialBackoffRetry(<span class="number">1000</span>, <span class="number">3</span>);</span><br><span class="line">CuratorFramework client = CuratorFrameworkFactory.newClient(</span><br><span class="line">                        connectionInfo,</span><br><span class="line">                        <span class="number">5000</span>,</span><br><span class="line">                        <span class="number">3000</span>,</span><br><span class="line">                        retryPolicy);</span><br></pre></td></tr></table></figure>
+<p>newClient静态工厂方法包含四个主要参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>connectionString</td>
+<td>服务器列表，格式：host1:port1,host2:port2,…</td>
+</tr>
+<tr>
+<td>retryPolicy</td>
+<td>重试策略,内建有四种重试策略,也可以自行实现RetryPolicy接口</td>
+</tr>
+<tr>
+<td>sessionTimeoutMs</td>
+<td>会话超时时间，单位毫秒，默认60000ms</td>
+</tr>
+<tr>
+<td>connectionTimeoutMs</td>
+<td>连接创建超时时间，单位毫秒，默认60000ms</td>
+</tr>
+</tbody>
+</table>
+<h2 id="使用Fluent风格的Api创建客户端会话">使用Fluent风格的Api创建客户端会话</h2>
+<p>核心参数变为流式设置，一个列子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">RetryPolicy retryPolicy = <span class="keyword">new</span> ExponentialBackoffRetry(<span class="number">1000</span>, <span class="number">3</span>);</span><br><span class="line">CuratorFramework client = CuratorFrameworkFactory.builder()</span><br><span class="line">        .connectString(connectionInfo)</span><br><span class="line">        .sessionTimeoutMs(<span class="number">5000</span>)</span><br><span class="line">        .connectionTimeoutMs(<span class="number">5000</span>)</span><br><span class="line">        .retryPolicy(retryPolicy)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+<h2 id="创建包含隔离命名空间的客户端会话">创建包含隔离命名空间的客户端会话</h2>
+<p>为了实现不同的Zookeeper业务之间的隔离，需要为每个业务分配一个独立的命名空间（ <strong>NameSpace</strong> ），即指定一个Zookeeper的根路径（官方术语： <strong>为Zookeeper添加“Chroot”特性</strong> ）。</p>
+<p>例如（下面的例子）当客户端指定了独立命名空间为“/base”，那么该客户端对Zookeeper上的数据节点的操作都是基于该目录进行的。通过设置Chroot可以将客户端应用与Zookeeper服务端的一课子树相对应，在多个应用共用一个Zookeeper集群的场景下，这对于实现不同应用之间的相互隔离十分有意义。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">RetryPolicy retryPolicy = <span class="keyword">new</span> ExponentialBackoffRetry(<span class="number">1000</span>, <span class="number">3</span>);</span><br><span class="line">CuratorFramework client = CuratorFrameworkFactory.builder()</span><br><span class="line">        .connectString(connectionInfo)</span><br><span class="line">        .sessionTimeoutMs(<span class="number">5000</span>)</span><br><span class="line">        .connectionTimeoutMs(<span class="number">5000</span>)</span><br><span class="line">        .retryPolicy(retryPolicy)</span><br><span class="line">        .namespace(<span class="string">"base"</span>)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+<h2 id="启动客户端">启动客户端</h2>
+<p>当创建会话成功，得到client的实例然后可以直接调用其start( )方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.start();</span><br></pre></td></tr></table></figure>
+<h1>创建数据节点</h1>
+<p><strong>Zookeeper的节点创建模式：</strong></p>
+<ul>
+<li>PERSISTENT：持久化</li>
+<li>PERSISTENT_SEQUENTIAL：持久化并且带序列号</li>
+<li>EPHEMERAL：临时</li>
+<li>EPHEMERAL_SEQUENTIAL：临时并且带序列号</li>
+</ul>
+<p><strong>创建一个节点，初始内容为空</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.create().forPath(<span class="string">"path"</span>);</span><br></pre></td></tr></table></figure>
+<p>注意：如果没有设置节点属性，节点创建模式默认为持久化节点，内容默认为空。</p>
+<p><strong>创建一个节点，附带初始化内容</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.create().forPath(<span class="string">"path"</span>,<span class="string">"init"</span>.getBytes());</span><br></pre></td></tr></table></figure>
+<p><strong>创建一个节点，指定创建模式（临时节点），内容为空</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.create().withMode(CreateMode.EPHEMERAL).forPath(<span class="string">"path"</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>创建一个节点，指定创建模式（临时节点），附带初始化内容</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.create().withMode(CreateMode.EPHEMERAL).forPath(<span class="string">"path"</span>,<span class="string">"init"</span>.getBytes());</span><br></pre></td></tr></table></figure>
+<p><strong>创建一个节点，指定创建模式（临时节点），附带初始化内容，并且自动递归创建父节点</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">client.create()</span><br><span class="line">   .creatingParentContainersIfNeeded()</span><br><span class="line">   .withMode(CreateMode.EPHEMERAL)</span><br><span class="line">   .forPath(<span class="string">"path"</span>,<span class="string">"init"</span>.getBytes());</span><br></pre></td></tr></table></figure>
+<p>这个creatingParentContainersIfNeeded()接口非常有用，因为一般情况开发人员在创建一个子节点必须判断它的父节点是否存在，如果不存在直接创建会抛出NoNodeException，使用creatingParentContainersIfNeeded()之后Curator能够自动递归创建所有所需的父节点。</p>
+<h1>删除数据节点</h1>
+<p><strong>删除一个节点</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.delete().forPath(<span class="string">"path"</span>);</span><br></pre></td></tr></table></figure>
+<p>注意，此方法只能删除 <strong>叶子节点</strong> ，否则会抛出异常。</p>
+<p><strong>删除一个节点，并且递归删除其所有的子节点</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.delete().deletingChildrenIfNeeded().forPath(<span class="string">"path"</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>删除一个节点，强制指定版本进行删除</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.delete().withVersion(<span class="number">10086</span>).forPath(<span class="string">"path"</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>删除一个节点，强制保证删除</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.delete().guaranteed().forPath(<span class="string">"path"</span>);</span><br></pre></td></tr></table></figure>
+<p>guaranteed()接口是一个保障措施，只要客户端会话有效，那么Curator会在后台持续进行删除操作，直到删除节点成功。</p>
+<p><strong>注意</strong> ：上面的多个流式接口是可以自由组合的，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.delete().guaranteed().deletingChildrenIfNeeded().withVersion(<span class="number">10086</span>).forPath(<span class="string">"path"</span>);</span><br></pre></td></tr></table></figure>
+<h1>读取数据节点数据</h1>
+<p><strong>读取一个节点的数据内容</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.getData().forPath(<span class="string">"path"</span>);</span><br></pre></td></tr></table></figure>
+<p>注意，此方法返的返回值是byte[ ];</p>
+<p><strong>读取一个节点的数据内容，同时获取到该节点的stat</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Stat stat = <span class="keyword">new</span> Stat();</span><br><span class="line">client.getData().storingStatIn(stat).forPath(<span class="string">"path"</span>);</span><br></pre></td></tr></table></figure>
+<h1>更新数据节点数据</h1>
+<p><strong>更新一个节点的数据内容</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.setData().forPath(<span class="string">"path"</span>,<span class="string">"data"</span>.getBytes());</span><br></pre></td></tr></table></figure>
+<p>注意：该接口会返回一个Stat实例</p>
+<p><strong>更新一个节点的数据内容，强制指定版本进行更新</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.setData().withVersion(<span class="number">10086</span>).forPath(<span class="string">"path"</span>,<span class="string">"data"</span>.getBytes());</span><br></pre></td></tr></table></figure>
+<h1>检查节点是否存在</h1>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.checkExists().forPath(<span class="string">"path"</span>);</span><br></pre></td></tr></table></figure>
+<p>注意：该方法返回一个Stat实例，用于检查ZNode是否存在的操作。可以调用额外的方法(监控或者后台处理)并在最后调用forPath( )指定要操作的ZNode。</p>
+<h1>获取某个节点的所有子节点路径</h1>
+<p>获取某个节点的所有子节点路径</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.getChildren().forPath(<span class="string">"path"</span>);</span><br></pre></td></tr></table></figure>
+<p>注意：该方法的返回值为 <code>List&lt;String&gt;</code> ，获得ZNode的子节点Path列表。 可以调用额外的方法(监控、后台处理或者获取状态watch, background or get stat) 并在最后调用forPath()指定要操作的父ZNode。</p>
+<h1>事务</h1>
+<p>CuratorFramework的实例包含inTransaction( )接口方法，调用此方法开启一个ZooKeeper事务。可以复合create，setData，check，and/or delete 等操作然后调用commit()作为一个原子操作提交。</p>
+<p>一个例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">client.inTransaction().check().forPath(<span class="string">"path"</span>)</span><br><span class="line">	.and()</span><br><span class="line">	.create().withMode(CreateMode.EPHEMERAL).forPath(<span class="string">"path"</span>, <span class="string">"data"</span>.getBytes())</span><br><span class="line">	.and()</span><br><span class="line">	.setData().withVersion(<span class="number">10086</span>).forPath(<span class="string">"path"</span>, <span class="string">"data2"</span>.getBytes())</span><br><span class="line">	.and()</span><br><span class="line">	.commit();</span><br></pre></td></tr></table></figure>
+<h1>异步接口</h1>
+<p>上面提到的创建、删除、更新、读取等方法都是同步的。</p>
+<p>Curator提供了异步接口，引入了 <strong>BackgroundCallback接口用于处理异步接口调用之后服务端返回的结果信息</strong> 。</p>
+<p><strong>BackgroundCallback</strong> 接口中一个重要的回调值为CuratorEvent，里面包含事件类型、响应吗和节点的详细信息。</p>
+<h2 id="事件类型（CuratorEventType）">事件类型（CuratorEventType）</h2>
+<table>
+<thead>
+<tr>
+<th>事件类型</th>
+<th>对应CuratorFramework实例的方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CREATE</td>
+<td>#create()</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>#delete()</td>
+</tr>
+<tr>
+<td>EXISTS</td>
+<td>#checkExists()</td>
+</tr>
+<tr>
+<td>GET_DATA</td>
+<td>#getData()</td>
+</tr>
+<tr>
+<td>SET_DATA</td>
+<td>#setData()</td>
+</tr>
+<tr>
+<td>CHILDREN</td>
+<td>#getChildren()</td>
+</tr>
+<tr>
+<td>SYNC</td>
+<td>#sync(String,Object)</td>
+</tr>
+<tr>
+<td>GET_ACL</td>
+<td>#getACL()</td>
+</tr>
+<tr>
+<td>SET_ACL</td>
+<td>#setACL()</td>
+</tr>
+<tr>
+<td>WATCHED</td>
+<td>#Watcher(Watcher)</td>
+</tr>
+<tr>
+<td>CLOSING</td>
+<td>#close()</td>
+</tr>
+</tbody>
+</table>
+<h2 id="响应码-getResultCode">响应码(#getResultCode())</h2>
+<table>
+<thead>
+<tr>
+<th>响应码</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>OK，即调用成功</td>
+</tr>
+<tr>
+<td>-4</td>
+<td>ConnectionLoss，即客户端与服务端断开连接</td>
+</tr>
+<tr>
+<td>-110</td>
+<td>NodeExists，即节点已经存在</td>
+</tr>
+<tr>
+<td>-112</td>
+<td>SessionExpired，即会话过期</td>
+</tr>
+</tbody>
+</table>
+<p>一个异步创建节点的例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Executor executor = Executors.newFixedThreadPool(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">client.create()</span><br><span class="line">      .creatingParentsIfNeeded()</span><br><span class="line">      .withMode(CreateMode.EPHEMERAL)</span><br><span class="line">      .inBackground((curatorFramework, curatorEvent) -&gt; &#123; </span><br><span class="line">         System.out.println(String.format(<span class="string">"eventType:%s,resultCode:%s"</span>,</span><br><span class="line">             curatorEvent.getType(),curatorEvent.getResultCode()));</span><br><span class="line">      &#125;,executor)</span><br><span class="line">      .forPath(<span class="string">"path"</span>);</span><br></pre></td></tr></table></figure>
+<p>注意：如果#inBackground()方法不指定executor，那么会默认使用Curator的EventThread去进行异步处理。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ZOOKEEPER学习笔记</a></li>
+            <li>08-CURATOR基本使用</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">引子和趣闻</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">创建并启动客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用静态工程方法创建客户端会话"><span class="nav-text">使用静态工程方法创建客户端会话</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Fluent风格的Api创建客户端会话"><span class="nav-text">使用Fluent风格的Api创建客户端会话</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建包含隔离命名空间的客户端会话"><span class="nav-text">创建包含隔离命名空间的客户端会话</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动客户端"><span class="nav-text">启动客户端</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">创建数据节点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">删除数据节点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">读取数据节点数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">更新数据节点数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">检查节点是否存在</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">获取某个节点的所有子节点路径</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">事务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">异步接口</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#事件类型（CuratorEventType）"><span class="nav-text">事件类型（CuratorEventType）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#响应码-getResultCode"><span class="nav-text">响应码(#getResultCode())</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

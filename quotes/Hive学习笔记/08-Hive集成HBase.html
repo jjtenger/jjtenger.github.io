@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Hive提供了与HBase的集成，使得能够在HBase表上使用HQL语句进行查询、插入操作以及进行Join和Union等复杂查询应用场景 将ETL操作的数据存入HBase  HBase作为Hive的数据源  构建低延时的数据仓库 创建表从Hive中创建HBase表首先需要启动HBase.使用HQL语句创建一个指向HBase的Hive表">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;08-Hive%E9%9B%86%E6%88%90HBase.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Hive提供了与HBase的集成，使得能够在HBase表上使用HQL语句进行查询、插入操作以及进行Join和Union等复杂查询应用场景 将ETL操作的数据存入HBase  HBase作为Hive的数据源  构建低延时的数据仓库 创建表从Hive中创建HBase表首先需要启动HBase.使用HQL语句创建一个指向HBase的Hive表">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584894001_20200323001730073_24430.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584894000_20200323001729661_24080.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584894000_20200323001729350_15569.jpg">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.016Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584894001_20200323001730073_24430.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/08-Hive%E9%9B%86%E6%88%90HBase">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HIVE学习笔记</a></li>
+            <li>08-HIVE集成HBASE</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>Hive提供了与HBase的集成，使得能够在HBase表上使用HQL语句进行查询、插入操作以及进行Join和Union等复杂查询</p><h1>应用场景</h1><ol>
+<li><strong>将ETL操作的数据存入HBase</strong></li>
+</ol><p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584894001_20200323001730073_24430.png" alt></p><ol start="2">
+<li><strong>HBase作为Hive的数据源</strong></li>
+</ol><p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584894000_20200323001729661_24080.jpg" alt></p><ol start="3">
+<li><strong>构建低延时的数据仓库</strong></li>
+</ol><p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584894000_20200323001729350_15569.jpg" alt></p><h1>创建表</h1><h2 id="从Hive中创建HBase表">从Hive中创建HBase表</h2><p>首先需要启动HBase.</p><p><strong>使用HQL语句创建一个指向HBase的Hive表</strong></p><a id="more"></a>
+
+
+
+
+
+
+
+
+
+
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> hbase_table_1(<span class="keyword">key</span> <span class="built_in">int</span>, <span class="keyword">value</span> <span class="keyword">string</span>) //Hive中的表名hbase_table_1</span><br><span class="line"><span class="keyword">STORED</span> <span class="keyword">BY</span> <span class="string">'org.apache.hadoop.hive.hbase.HBaseStorageHandler'</span>  //指定存储处理器</span><br><span class="line"><span class="keyword">WITH</span> SERDEPROPERTIES (<span class="string">"hbase.columns.mapping"</span> = <span class="string">":key,cf1:val"</span>) //声明列族，列名</span><br><span class="line">TBLPROPERTIES (<span class="string">"hbase.table.name"</span> = <span class="string">"xyz"</span>, <span class="string">"hbase.mapred.output.outputtable"</span> = <span class="string">"xyz"</span>);  </span><br><span class="line">//hbase.table.name声明HBase表名，为可选属性默认与Hive的表名相同，</span><br><span class="line">//hbase.mapred.output.outputtable指定插入数据时写入的表，如果以后需要往该表插入数据就需要指定该值</span><br></pre></td></tr></table></figure>
+<p><strong>通过HBase shell可以查看刚刚创建的HBase表的属性</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hbase shell</span></span><br><span class="line">HBase Shell; enter 'help&lt;RETURN&gt;' for list of supported commands.</span><br><span class="line">Version: 0.20.3, r902334, Mon Jan 25 13:13:08 PST 2010</span><br><span class="line">hbase(main):001:0&gt; list</span><br><span class="line">xyz                                                                                                           </span><br><span class="line">1 row(s) in 0.0530 seconds</span><br><span class="line">hbase(main):002:0&gt; describe "xyz"</span><br><span class="line">DESCRIPTION                                                           ENABLED                               </span><br><span class="line">  &#123;NAME =&gt; 'xyz', FAMILIES =&gt; [&#123;NAME =&gt; 'cf1', COMPRESSION =&gt; 'NONE', VE true                                  </span><br><span class="line">  RSIONS =&gt; '3', TTL =&gt; '2147483647', BLOCKSIZE =&gt; '65536', IN_MEMORY =&gt;                                       </span><br><span class="line">  'false', BLOCKCACHE =&gt; 'true'&#125;]&#125;                                                                            </span><br><span class="line">1 row(s) in 0.0220 seconds</span><br><span class="line"></span><br><span class="line">hbase(main):003:0&gt; scan "xyz"</span><br><span class="line">ROW                          COLUMN+CELL                                                                      </span><br><span class="line">0 row(s) in 0.0060 seconds</span><br></pre></td></tr></table></figure>
+<p><strong>使用HQL向HBase表中插入数据</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> OVERWRITE <span class="keyword">TABLE</span> hbase_table_1 <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> pokes <span class="keyword">WHERE</span> foo=<span class="number">98</span>;</span><br></pre></td></tr></table></figure>
+<p><strong>在HBase端查看插入的数据</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):009:0&gt; scan "xyz"</span><br><span class="line">ROW                          COLUMN+CELL                                                                      </span><br><span class="line"> 98                          column=cf1:val, timestamp=1267737987733, value=val_98                            </span><br><span class="line">1 row(s) in 0.0110 seconds</span><br></pre></td></tr></table></figure>
+<h2 id="从Hive中映射HBase">从Hive中映射HBase</h2>
+<p><strong>创建一个指向已经存在的HBase表的Hive表</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">EXTERNAL</span> <span class="keyword">TABLE</span> hbase_table_2(<span class="keyword">key</span> <span class="built_in">int</span>, <span class="keyword">value</span> <span class="keyword">string</span>) </span><br><span class="line"><span class="keyword">STORED</span> <span class="keyword">BY</span> <span class="string">'org.apache.hadoop.hive.hbase.HBaseStorageHandler'</span></span><br><span class="line"><span class="keyword">WITH</span> SERDEPROPERTIES (<span class="string">"hbase.columns.mapping"</span> = <span class="string">"cf1:val"</span>)</span><br><span class="line">TBLPROPERTIES(<span class="string">"hbase.table.name"</span> = <span class="string">"some_existing_table"</span>,</span><br><span class="line"> <span class="string">"hbase.mapred.output.outputtable"</span> = <span class="string">"some_existing_table"</span>);</span><br></pre></td></tr></table></figure>
+<p>该Hive表为一个外部表，所以删除该表并不会删除HBase表中的数据。</p>
+<p><strong>注意</strong></p>
+<ul>
+<li>建表或映射表的时候如果没有指定:key则第一个列默认就是行键</li>
+<li>HBase对应的Hive表中没有时间戳概念，默认返回的就是最新版本的值</li>
+<li>由于HBase中没有数据类型信息，所以在存储数据的时候都转化为String类型</li>
+</ul>
+<h1>字段映射规则</h1>
+<h2 id="列及列族的映射">列及列族的映射</h2>
+<p>如下表：value1和value2来自列族a对应的b、c列，value3来自列族d对应的e列</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> hbase_table_1(<span class="keyword">key</span> <span class="built_in">int</span>, value1 <span class="keyword">string</span>, value2 <span class="built_in">int</span>, value3 <span class="built_in">int</span>) </span><br><span class="line"><span class="keyword">STORED</span> <span class="keyword">BY</span> <span class="string">'org.apache.hadoop.hive.hbase.HBaseStorageHandler'</span></span><br><span class="line"><span class="keyword">WITH</span> SERDEPROPERTIES (</span><br><span class="line"><span class="string">"hbase.columns.mapping"</span> = <span class="string">":key,a:b,a:c,d:e"</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> OVERWRITE <span class="keyword">TABLE</span> hbase_table_1 <span class="keyword">SELECT</span> foo, bar, foo+<span class="number">1</span>, foo+<span class="number">2</span> </span><br><span class="line"><span class="keyword">FROM</span> pokes <span class="keyword">WHERE</span> foo=<span class="number">98</span> <span class="keyword">OR</span> foo=<span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="Hive-Map类型映射为列族">Hive Map类型映射为列族</h2>
+<p>如下表，通过Hive的Map数据类型映射HBase表，这样每行都可以有不同的列组合，列名与map中的key对应，列值与map中的value对应</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> hbase_table_1(<span class="keyword">value</span> <span class="keyword">map</span>&lt;<span class="keyword">string</span>,<span class="built_in">int</span>&gt;, row_key <span class="built_in">int</span>) </span><br><span class="line"><span class="keyword">STORED</span> <span class="keyword">BY</span> <span class="string">'org.apache.hadoop.hive.hbase.HBaseStorageHandler'</span></span><br><span class="line"><span class="keyword">WITH</span> SERDEPROPERTIES (</span><br><span class="line"><span class="string">"hbase.columns.mapping"</span> = <span class="string">"cf:,:key"</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> OVERWRITE <span class="keyword">TABLE</span> hbase_table_1 <span class="keyword">SELECT</span> <span class="keyword">map</span>(bar, foo), foo <span class="keyword">FROM</span> pokes </span><br><span class="line"><span class="keyword">WHERE</span> foo=<span class="number">98</span> <span class="keyword">OR</span> foo=<span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+<p>cf为列族，其列名对应map中的bar，列值对应map中的foo。</p>
+<p><strong>在HBase下查看数据</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):012:0&gt; scan "hbase_table_1"</span><br><span class="line">ROW                          COLUMN+CELL                                                                      </span><br><span class="line"> 100                         column=cf:val_100, timestamp=1267739509194, value=100                            </span><br><span class="line"> 98                          column=cf:val_98, timestamp=1267739509194, value=98                              </span><br><span class="line">2 row(s) in 0.0080 seconds</span><br></pre></td></tr></table></figure>
+<p><strong>在Hive下查看数据</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> select * from hbase_table_1;</span></span><br><span class="line">Total MapReduce jobs = 1</span><br><span class="line">Launching Job 1 out of 1</span><br><span class="line">...</span><br><span class="line">OK</span><br><span class="line">&#123;"val_100":100&#125;    100</span><br><span class="line">&#123;"val_98":98&#125;    98</span><br><span class="line">Time taken: 3.808 seconds</span><br></pre></td></tr></table></figure>
+<p>注意:由于map中的key是作为HBase的列名使用的，所以map中的key类型必须为String类型</p>
+<p><strong>以下映射语句都会报错</strong></p>
+<p><strong>（1）</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> hbase_table_1(<span class="keyword">key</span> <span class="built_in">int</span>, <span class="keyword">value</span> <span class="keyword">map</span>&lt;<span class="built_in">int</span>,<span class="built_in">int</span>&gt;) </span><br><span class="line"><span class="keyword">STORED</span> <span class="keyword">BY</span> <span class="string">'org.apache.hadoop.hive.hbase.HBaseStorageHandler'</span></span><br><span class="line"><span class="keyword">WITH</span> SERDEPROPERTIES (</span><br><span class="line"><span class="string">"hbase.columns.mapping"</span> = <span class="string">":key,cf:"</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>原因：map中的key必须是String</p>
+<p><strong>（2）</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> hbase_table_1(<span class="keyword">key</span> <span class="built_in">int</span>, <span class="keyword">value</span> <span class="keyword">string</span>) </span><br><span class="line"><span class="keyword">STORED</span> <span class="keyword">BY</span> <span class="string">'org.apache.hadoop.hive.hbase.HBaseStorageHandler'</span></span><br><span class="line"><span class="keyword">WITH</span> SERDEPROPERTIES (</span><br><span class="line"><span class="string">"hbase.columns.mapping"</span> = <span class="string">":key,cf:"</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>原因：当hbase.columns.mapping中的列族后面为空时(形如cf:),说明在Hive中其对应的数据类型为map，而这条语句中对应的是String所以报错</p>
+<h2 id="Hive-Struct类型映射">Hive Struct类型映射</h2>
+<p>如下：创建一张指向HBase的Hive表，行键有两个字段，字段之间使用~分隔</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">EXTERNAL</span> <span class="keyword">TABLE</span> delimited_example(<span class="keyword">key</span> <span class="keyword">struct</span>&lt;f1:<span class="keyword">string</span>, f2:<span class="keyword">string</span>&gt;, <span class="keyword">value</span> <span class="keyword">string</span>) </span><br><span class="line"><span class="keyword">ROW</span> <span class="keyword">FORMAT</span> <span class="keyword">DELIMITED</span> </span><br><span class="line">COLLECTION ITEMS <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">'~'</span> </span><br><span class="line"><span class="keyword">STORED</span> <span class="keyword">BY</span> <span class="string">'org.apache.hadoop.hive.hbase.HBaseStorageHandler'</span> </span><br><span class="line"><span class="keyword">WITH</span> SERDEPROPERTIES (</span><br><span class="line">  <span class="string">'hbase.columns.mapping'</span>=<span class="string">':key,f:c1'</span>);</span><br></pre></td></tr></table></figure>
+<p>其中，COLLECTION ITEMS TERMINATED BY：定义了一个字段中各个item的分隔符。</p>
+<p>注意与FIELDS TERMINATED BY：字段与字段之间的分隔符区别。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HIVE学习笔记</a></li>
+            <li>08-HIVE集成HBASE</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">创建表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#从Hive中创建HBase表"><span class="nav-text">从Hive中创建HBase表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从Hive中映射HBase"><span class="nav-text">从Hive中映射HBase</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">字段映射规则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#列及列族的映射"><span class="nav-text">列及列族的映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive-Map类型映射为列族"><span class="nav-text">Hive Map类型映射为列族</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive-Struct类型映射"><span class="nav-text">Hive Struct类型映射</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

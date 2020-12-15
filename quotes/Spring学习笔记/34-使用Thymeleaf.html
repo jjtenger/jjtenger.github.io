@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="尽管JSP已经存在了很长的时间，并且在Java Web服务器中无处不在，但是它却存在一些缺陷。JSP最明显的问题在于它看起来像HTML或XML，但它其实上并不是。大多数的JSP模板都是采用HTML的形式，但是又掺杂上了各种JSP标签库的标签，使其变得很混乱。这些标签库能够以很便利的方式为JSP带来动态渲染的强大功能，但是它也摧毁了我们想维持一个格式良好的文档的可能性。作为一个极端的样例，如下的JS">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;34-%E4%BD%BF%E7%94%A8Thymeleaf.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="尽管JSP已经存在了很长的时间，并且在Java Web服务器中无处不在，但是它却存在一些缺陷。JSP最明显的问题在于它看起来像HTML或XML，但它其实上并不是。大多数的JSP模板都是采用HTML的形式，但是又掺杂上了各种JSP标签库的标签，使其变得很混乱。这些标签库能够以很便利的方式为JSP带来动态渲染的强大功能，但是它也摧毁了我们想维持一个格式良好的文档的可能性。作为一个极端的样例，如下的JS">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808262_20200322002043303_31489.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808257_20200322002043092_15959.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808255_20200322002042575_2026.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808253_20200322002042162_16912.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808250_20200322002041649_20892.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808249_20200322002041132_4092.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808248_20200322002040922_563.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808244_20200322002040703_22602.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.040Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808262_20200322002043303_31489.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/34-%E4%BD%BF%E7%94%A8Thymeleaf">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>34-使用THYMELEAF</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>尽管JSP已经存在了很长的时间，并且在Java Web服务器中无处不在，但是它却存在一些缺陷。JSP最明显的问题在于它看起来像HTML或XML，但它其实上并不是。大多数的JSP模板都是采用HTML的形式，但是又掺杂上了各种JSP标签库的标签，使其变得很混乱。这些标签库能够以很便利的方式为JSP带来动态渲染的强大功能，但是它也摧毁了我们想维持一个格式良好的文档的可能性。作为一个极端的样例，如下的JSP标签甚至作为HTML参数的值：</p><a id="more"></a>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808262_20200322002043303_31489.png" alt></p>
+<p>标签库和JSP缺乏良好格式的一个副作用就是它很少能够与其产生的HTML类似。所以，在Web浏览器或HTML编辑器中查看未经渲染的JSP模板是非常令人困惑的，而且得到的结果看上去也非常丑陋。这个结果是不完整的——在视觉上这简直就是一场灾难！因为JSP并不是真正的HTML，很多浏览器和编辑器展现的效果都很难在审美上接近模板最终所渲染出来的效果。</p>
+<p>同时，JSP规范是与Servlet规范紧密耦合的。这意味着它只能用在基于Servlet的Web应用之中。JSP模板不能作为通用的模板（如格式化Email），也不能用于非Servlet的Web应用。</p>
+<p>多年来，在Java应用中，有多个项目试图挑战JSP在视图领域的统治性地位。最新的挑战者是Thymeleaf，它展现了一些切实的承诺，是一项很令人兴奋的可选方案。Thymeleaf模板是原生的，不依赖于标签库。它能在接受原始HTML的地方进行编辑和渲染。因为它没有与Servlet规范耦合，因此Thymeleaf模板能够进入JSP所无法涉足的领域。现在，我们看一下如何在Spring MVC中使用Thymeleaf。</p>
+<h1>配置Thymeleaf视图解析器</h1>
+<p>为了要在Spring中使用Thymeleaf，我们需要配置三个启用Thymeleaf与Spring集成的bean：</p>
+<ul>
+<li>ThymeleafViewResolver：将逻辑视图名称解析为Thymeleaf模板视图；</li>
+<li>SpringTemplateEngine：处理模板并渲染结果；</li>
+<li>TemplateResolver：加载Thymeleaf模板。</li>
+</ul>
+<p>如下为声明这些bean的Java配置。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808257_20200322002043092_15959.png" alt></p>
+<p>如果你更愿意使用XML来配置bean，那么如下的 <code>&lt;bean&gt;</code> 声明能够完成该任务。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808255_20200322002042575_2026.png" alt></p>
+<p>不管使用哪种配置方式，Thymeleaf都已经准备就绪了，它可以将响应中的模板渲染到Spring MVC控制器所处理的请求中。</p>
+<p>ThymeleafViewResolver是Spring MVC中ViewResolver的一个实现类。像其他的视图解析器一样，它会接受一个逻辑视图名称，并将其解析为视图。不过在该场景下，视图会是一个Thymeleaf模板。</p>
+<p>需要注意的是ThymeleafViewResolver bean中注入了一个对SpringTemplate Engine bean的引用。SpringTemplateEngine会在Spring中启用Thymeleaf引擎，用来解析模板，并基于这些模板渲染结果。可以看到，我们为其注入了一个TemplateResolver bean的引用。</p>
+<p>TemplateResolver会最终定位和查找模板。与之前配置InternalResourceViewResolver类似，它使用了prefix和suffix属性。前缀和后缀将会与逻辑视图名组合使用，进而定位Thymeleaf引擎。它的templateMode属性被设置成了HTML 5，这表明我们预期要解析的模板会渲染成HTML 5输出。</p>
+<p>所有的Thymeleaf bean都已经配置完成了，那么接下来我们该创建几个视图了。</p>
+<h1>Thymeleaf简单使用</h1>
+<p>Thymeleaf在很大程度上就是HTML文件，与JSP不同，它没有什么特殊的标签或标签库。Thymeleaf之所以能够发挥作用，是因为它通过自定义的命名空间，为标准的HTML标签集合添加Thymeleaf属性。如下的程序清单展现了home.html，也就是使用Thymeleaf命名空间的首页模板。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808253_20200322002042162_16912.png" alt></p>
+<p>首页模板相对来讲很简单，只使用了th:href属性。这个属性与对应的原生HTML属性很类似，也就是href属性，并且可以按照相同的方式来使用。<strong>th:href属性的特殊之处在于它的值中可以包含Thymeleaf表达式，用来计算动态的值</strong>。它会渲染成一个标准的href属性，其中会包含在渲染时动态创建得到的值。这是Thymeleaf命名空间中很多属性的运行方式：它们对应标准的HTML属性，并且具有相同的名称，但是会渲染一些计算后得到的值。在本例中，使用th:href属性的三个地方都用到了“@{}”表达式，用来计算相对于URL的路径（就像在JSP页面中，我们可能会使用的JSTL  <code>&lt;c:url&gt;</code> 标签或Spring <code>&lt;s:url&gt;</code> 标签类似）。</p>
+<p>尽管home.html是一个相当简单的Thymeleaf模板，但是它依然很有价值，这在于它与纯HTML模板非常接近。唯一的区别之处在于th:href属性，否则的话，它就是基础且功能丰富的HTML文件。</p>
+<p>这意味着Thymeleaf模板与JSP不同，它能够按照原始的方式进行编辑甚至渲染，而不必经过任何类型的处理器。当然，我们需要Thymeleaf来处理模板并渲染得到最终期望的输出。即便如此，如果没有任何特殊的处理，home.html也能够加载到Web浏览器中，并且看上去与完整渲染的效果很类似。为了更加清晰地阐述这一点，下图对比了home.jsp（上方）和home.html（下方）在Web浏览器中的显式效果。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808250_20200322002041649_20892.png" alt></p>
+<p>可以看到，在Web浏览器中，JSP模板的渲染效果很糟糕。尽管我们可以看到一些熟悉的元素，但是JSP标签库的声明也显示了出来。在链接前出现了一些令人费解的未闭合标记，这是Web浏览器没有正常解析 <code>&lt;s:url&gt;</code> 标签的结果。</p>
+<p>与之相反，Thymeleaf模板的渲染效果基本上没有任何错误。稍微有点问题的是链接部分，Web浏览器并不会像处理href属性那样处理th:href，所以链接并没有渲染为链接的样子。除了这些细微的问题，模板的渲染效果与我们的预期完全符合。</p>
+<p>像home.jsp这样的模板作为Thymeleaf入门是很合适的。但是Spring的JSP标签所擅长的是表单绑定。如果我们抛弃JSP的话，那是不是也要抛弃表单绑定呢？不必担心。Thymeleaf提供了与之相匹敌的功能。</p>
+<h1>借助Thymeleaf实现表单绑定</h1>
+<p>表单绑定是Spring MVC的一项重要特性。它能够将表单提交的数据填充到命令对象中，并将其传递给控制器，而在展现表单的时候，表单中也会填充命令对象中的值。如果没有表单绑定功能的话，我们需要确保HTML表单域要映射后端命令对象中的属性，并且在校验失败后展现表单的时候，还要负责确保输入域中值要设置为命令对象的属性。</p>
+<p>但是，如果有表单绑定的话，它就会负责这些事情了。为了复习一下表单绑定是如何运行的，下面展现了在registration.jsp中的First Name输入域：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808249_20200322002041132_4092.png" alt></p>
+<p>在这里，调用了Spring表单绑定标签库的 <code>&lt;sf:input&gt;</code> 标签，它会渲染出一个HTML  <code>&lt;input&gt;</code> 标签，并且其value属性设置为后端对象firstName属性的值。它还使用了Spring的 <code>&lt;sf:label&gt;</code> 标签及其cssErrorClass属性，如果出现校验错误的话，会将文本标记渲染为红色。</p>
+<p>但是，我们本节讨论的并不是JSP，而是使用Thymeleaf替换JSP。因此，我们不能使用Spring的JSP标签实现表单绑定，而是<strong>使用Thymeleaf的Spring方言。</strong></p>
+<p>作为阐述的样例，请参考如下的Thymeleaf模板片段，它会渲染First Name输入域：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808248_20200322002040922_563.png" alt></p>
+<p>在这里，我们不再使用Spring JSP标签中的cssClassName属性，而是在标准的HTML标签上使用th:class属性。th:class属性会渲染为一个class属性，它的值是根据给定的表达式计算得到的。<strong>在上面的这两个th:class属性中，它会直接检查firstName域有没有校验错误。如果有的话，class属性在渲染时的值为error。如果这个域没有错误的话，将不会渲染class属性。</strong></p>
+<p><code>&lt;input&gt;</code> 标签使用了<strong>th:field属性，用来引用后端对象的firstName域</strong>。这可能与你的预期有点差别。在Thymeleaf模板中，我们在很多情况下所使用的属性都对应于标准的HTML属性，因此貌似使用th:value属性来设置 <code>&lt;input&gt;</code> 标签的value属性才是合理的。其实不然，因为我们是在将这个输入域绑定到后端对象的firstName属性上，因此使用th:field属性引用firstName域。<strong>通过使用th:field，我们将value属性设置为firstName的值，同时还会将name属性设置为firstName。</strong></p>
+<p>为了阐述Thymeleaf是如何实际运行的，如下的程序清单展示了完整的注册表单模板。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808244_20200322002040703_22602.png" alt></p>
+<p>上面程序清单使用了相同的Thymeleaf属性和<code>*{}</code>表达式，为所有的表单域绑定后端对象。这其实重复了我们在First Name域中所做的事情。</p>
+<p>但是，需要注意我们在表单的顶部了也使用了Thymeleaf，它会用来渲染所有的错误。<code>&lt;div&gt;</code> 元素使用th:if属性来检查是否有校验错误。如果有的话，会渲染 <code>&lt;div&gt;</code> ，否则的话，它将不会渲染。</p>
+<p>在 <code>&lt;div&gt;</code> 中，会使用一个无顺序的列表来展现每项错误。<code>&lt;li&gt;</code> 标签上的th:each属性将会通知Thymeleaf为每项错误都渲染一个 <code>&lt;li&gt;</code> ，在每次迭代中会将当前错误设置到一个名为err的变量中。</p>
+<p><code>&lt;li&gt;</code> 标签还有一个<strong>th:text属性</strong>。这个命令会通知Thymeleaf计算某一个表达式（在本例中，也就是err变量）并将它的值渲染为 <code>&lt;li&gt;</code> 标签的内容体。实际上的效果就是每项错误对应一个 <code>&lt;li&gt;</code> 元素，并展现错误的文本。</p>
+<p>你可能会想知道<code>${}</code>和<code>*{}</code>括起来的表达式到底有什么区别。<strong><code>${}</code>表达式（如${spitter}）是变量表达式（variable expression）</strong>。一般来讲，它们会是对象图导航语言（Object-Graph Navigation Language，OGNL）表达式（<a href="http://commons.apache.org/proper/commons-ognl/" target="_blank" rel="noopener">http://commons.apache.org/proper/commons-ognl/</a>）。但在使用Spring的时候，它们是SpEL表达式。在${spitter}这个例子中，它会解析为key为spitter的model属性。</p>
+<p>而对于<code>*{}</code>表达式，它们是选择表达式（selection expression）。变量表达式是基于整个SpEL上下文计算的，而选择表达式是基于某一个选中对象计算的。在本例的表单中，选中对象就是 <code>&lt;form&gt;</code> 标签中th:object属性所设置的对象：模型中的Spitter对象。因此，<code>*{firstName}</code>表达式就会计算为Spitter对象的firstName属性。</p>
+<h1>Thymeleaf3语法详解</h1>
+<p>Thymeleaf是Spring boot推荐使用的模版引擎，除此之外常见的还有Freemarker和Jsp。Jsp应该是我们最早接触的模版引擎。而Freemarker工作中也很常见（<a href="http://www.cnblogs.com/itdragon/p/7750903.html" target="_blank" rel="noopener">Freemarker教程</a>）。</p>
+<p>今天我们从三个方面学习Thymeleaf的语法：有常见的TH属性，四种标准表达式用法，在SpringBoot中的应用。还在等什么，一起来学吧！</p>
+<h2 id="th属性">th属性</h2>
+<h3 id="常用th属性解读">常用th属性解读</h3>
+<p>html有的属性，Thymeleaf基本都有，而常用的属性大概有七八个。其中th属性执行的优先级从1~8，数字越低优先级越高。</p>
+<p>一、<strong>th:text</strong> ：设置当前元素的文本内容，相同功能的还有<strong>th:utext</strong>，两者的区别在于前者不会转义html标签，后者会。优先级不高：order=7</p>
+<p>二、<strong>th:value</strong>：设置当前元素的value值，类似修改指定属性的还有<strong>th:src</strong>，<strong>th:href</strong>。优先级不高：order=6</p>
+<p>三、<strong>th:each</strong>：遍历循环元素，和th:text或th:value一起使用。注意该属性修饰的标签位置，详细往后看。优先级很高：order=2</p>
+<p>四、<strong>th:if</strong>：条件判断，类似的还有<strong>th:unless</strong>，<strong>th:switch</strong>，<strong>th:case</strong>。优先级较高：order=3</p>
+<p>五、<strong>th:insert</strong>：代码块引入，类似的还有<strong>th:replace</strong>，<strong>th:include</strong>，三者的区别较大，若使用不恰当会破坏html结构，常用于公共代码块提取的场景。优先级最高：order=1</p>
+<p>六、<strong>th:fragment</strong>：定义代码块，方便被th:insert引用。优先级最低：order=8</p>
+<p>七、<strong>th:object</strong>：声明变量，一般和*{}一起配合使用，达到偷懒的效果。优先级一般：order=4</p>
+<p>八、<strong>th:attr</strong>：修改任意属性，实际开发中用的较少，因为有丰富的其他th属性帮忙，类似的还有th:attrappend，th:attrprepend。优先级一般：order=5</p>
+<h3 id="常用th属性使用">常用th属性使用</h3>
+<p>使用Thymeleaf属性需要注意点以下五点：</p>
+<p>一、若要使用Thymeleaf语法，首先要声明名称空间： xmlns:th=“<a href="http://www.thymeleaf.org" target="_blank" rel="noopener">http://www.thymeleaf.org</a>”</p>
+<p>二、设置文本内容 th:text，设置input的值 th:value，循环输出 th:each，条件判断 th:if，插入代码块 th:insert，定义代码块 th:fragment，声明变量 th:object</p>
+<p>三、th:each 的用法需要格外注意，打个比方：如果你要循环一个div中的p标签，则th:each属性必须放在p标签上。若你将th:each属性放在div上，则循环的是将整个div。</p>
+<p>四、变量表达式中提供了很多的内置方法，该内置方法是用#开头，请不要与#{}消息表达式弄混。</p>
+<p>五、th:insert，th:replace，th:include 三种插入代码块的效果相似，但区别很大。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="comment">&lt;!--名称空间--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Thymeleaf 语法<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>ITDragon Thymeleaf 语法<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--th:text 设置当前元素的文本内容，常用，优先级不高--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">th:text</span>=<span class="string">"$&#123;thText&#125;"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">th:utext</span>=<span class="string">"$&#123;thUText&#125;"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--th:value 设置当前元素的value值，常用，优先级仅比th:text高--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">th:value</span>=<span class="string">"$&#123;thValue&#125;"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--th:each 遍历列表，常用，优先级很高，仅此于代码块的插入--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--th:each 修饰在div上，则div层重复出现，若只想p标签遍历，则修饰在p标签上--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">th:each</span>=<span class="string">"message : $&#123;thEach&#125;"</span>&gt;</span> <span class="comment">&lt;!-- 遍历整个div-p，不推荐--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span> <span class="attr">th:text</span>=<span class="string">"$&#123;message&#125;"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span> <span class="comment">&lt;!--只遍历p，推荐使用--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span> <span class="attr">th:text</span>=<span class="string">"$&#123;message&#125;"</span> <span class="attr">th:each</span>=<span class="string">"message : $&#123;thEach&#125;"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--th:if 条件判断，类似的有th:switch，th:case，优先级仅次于th:each, 其中#strings是变量表达式的内置方法--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">th:text</span>=<span class="string">"$&#123;thIf&#125;"</span> <span class="attr">th:if</span>=<span class="string">"$&#123;not #strings.isEmpty(thIf)&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--th:insert 把代码块插入当前div中，优先级最高，类似的有th:replace，th:include，~&#123;&#125; ：代码块表达式 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">th:insert</span>=<span class="string">"~&#123;grammar/common::thCommon&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--th:object 声明变量，和*&#123;&#125; 一起使用--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">th:object</span>=<span class="string">"$&#123;thObject&#125;"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>ID: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"*&#123;id&#125;"</span> /&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="comment">&lt;!--th:text="$&#123;thObject.id&#125;"--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>TH: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"*&#123;thName&#125;"</span> /&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="comment">&lt;!--$&#123;thObject.thName&#125;--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>DE: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"*&#123;desc&#125;"</span> /&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="comment">&lt;!--$&#123;thObject.desc&#125;--&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>后台给负责给变量赋值，和跳转页面。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.itdragon.entities.ThObject;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.ui.ModelMap;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThymeleafController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"thymeleaf"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">thymeleaf</span><span class="params">(ModelMap map)</span> </span>&#123;</span><br><span class="line">        map.put(<span class="string">"thText"</span>, <span class="string">"th:text 设置文本内容 &lt;b&gt;加粗&lt;/b&gt;"</span>);</span><br><span class="line">        map.put(<span class="string">"thUText"</span>, <span class="string">"th:utext 设置文本内容 &lt;b&gt;加粗&lt;/b&gt;"</span>);</span><br><span class="line">        map.put(<span class="string">"thValue"</span>, <span class="string">"thValue 设置当前元素的value值"</span>);</span><br><span class="line">        map.put(<span class="string">"thEach"</span>, Arrays.asList(<span class="string">"th:each"</span>, <span class="string">"遍历列表"</span>));</span><br><span class="line">        map.put(<span class="string">"thIf"</span>, <span class="string">"msg is not null"</span>);</span><br><span class="line">        map.put(<span class="string">"thObject"</span>, <span class="keyword">new</span> ThObject(<span class="number">1L</span>, <span class="string">"th:object"</span>, <span class="string">"用来偷懒的th属性"</span>));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"grammar/thymeleaf"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="标准表达式语法">标准表达式语法</h2>
+<ul>
+<li>${…} 变量表达式，Variable Expressions</li>
+<li>@{…} 链接表达式，Link URL Expressions</li>
+<li>#{…} 消息表达式，Message Expressions</li>
+<li>~{…} 代码块表达式，Fragment Expressions</li>
+<li>*{…} 选择变量表达式，Selection Variable Expressions</li>
+</ul>
+<p>变量表达式使用频率最高，其功能也是非常的丰富。所以我们先从简单的代码块表达式开始，然后是消息表达式，再是链接表达式，最后是变量表达式，随带介绍选择变量表达式。</p>
+<h3 id="…-代码块表达式">~{…} 代码块表达式</h3>
+<h4 id="支持两种语法结构">支持两种语法结构</h4>
+<p>推荐：~{templatename::fragmentname}</p>
+<p>支持：~{templatename::#id}</p>
+<p>templatename：模版名，Thymeleaf会根据模版名解析完整路径：/resources/templates/templatename.html，要注意文件的路径。</p>
+<p>fragmentname：片段名，Thymeleaf通过th:fragment声明定义代码块，即：th:fragment=“fragmentname”</p>
+<p>id：HTML的id选择器，使用时要在前面加上#号，不支持class选择器。</p>
+<h4 id="代码块表达式的使用">代码块表达式的使用</h4>
+<p>代码块表达式需要配合th属性（th:insert，th:replace，th:include）一起使用。</p>
+<ul>
+<li><strong>th:insert</strong>：将代码块片段整个插入到使用了th:insert的HTML标签中，</li>
+<li><strong>th:replace</strong>：将代码块片段整个替换使用了th:replace的HTML标签中，</li>
+<li><strong>th:include</strong>：将代码块片段包含的内容插入到使用了th:include的HTML标签中，</li>
+</ul>
+<p>用一个官方例子来区分三者的不同，第三部分会通过实战再次用到该知识。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--th:fragment定义代码块标识--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">footer</span> <span class="attr">th:fragment</span>=<span class="string">"copy"</span>&gt;</span></span><br><span class="line">    © 2011 The Good Thymes Virtual Grocery</span><br><span class="line"><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--三种不同的引入方式--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">th:insert</span>=<span class="string">"footer :: copy"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">th:replace</span>=<span class="string">"footer :: copy"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">th:include</span>=<span class="string">"footer :: copy"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--th:insert是在div中插入代码块，即多了一层div--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">footer</span>&gt;</span></span><br><span class="line">    © 2011 The Good Thymes Virtual Grocery</span><br><span class="line">    <span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--th:replace是将代码块代替当前div，其html结构和之前一致--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">footer</span>&gt;</span></span><br><span class="line">    © 2011 The Good Thymes Virtual Grocery</span><br><span class="line"><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--th:include是将代码块footer的内容插入到div中，即少了一层footer--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    © 2011 The Good Thymes Virtual Grocery</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="…-消息表达式">#{…} 消息表达式</h3>
+<p>消息表达式一般用于国际化的场景。结构：th:text=“#{msg}” 。会在第三部分的实战详细介绍。</p>
+<h3 id="…-链接表达式">@{…} 链接表达式</h3>
+<h4 id="链接表达式好处">链接表达式好处</h4>
+<p>不管是静态资源的引用，form表单的请求，凡是链接都可以用@{…} 。这样可以动态获取项目路径，即便项目名变了，依然可以正常访问</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#修改项目名，链接表达式会自动修改路径，避免资源文件找不到。</span><br><span class="line">server.context-path=/itdragon</span><br></pre></td></tr></table></figure>
+<h4 id="链接表达式结构">链接表达式结构</h4>
+<p>无参：@{/xxx}</p>
+<p>有参：@{/xxx(k1=v1,k2=v2)} 对应url结构：xxx?k1=v1&amp;k2=v2</p>
+<p>引入本地资源：@{/项目本地的资源路径}</p>
+<p>引入外部资源：@{/webjars/资源在jar包中的路径}</p>
+<p>列举：第三部分的实战引用会详细使用该表达式</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/webjars/bootstrap/4.0.0/css/bootstrap.css&#125;"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/main/css/itdragon.css&#125;"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">class</span>=<span class="string">"form-login"</span> <span class="attr">th:action</span>=<span class="string">"@&#123;/user/login&#125;"</span> <span class="attr">th:method</span>=<span class="string">"post"</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"btn btn-sm"</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/login.html(l='zh_CN')&#125;"</span>&gt;</span>中文<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"btn btn-sm"</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/login.html(l='en_US')&#125;"</span>&gt;</span>English<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="…-变量表达式">${…}变量表达式</h3>
+<p>变量表达式有丰富的内置方法，使其更强大，更方便。</p>
+<h4 id="变量表达式功能">变量表达式功能</h4>
+<p>一、可以获取对象的属性和方法</p>
+<p>二、可以使用ctx，vars，locale，request，response，session，servletContext内置对象</p>
+<p>三、可以使用dates，numbers，strings，objects，arrays，lists，sets，maps等内置方法（重点介绍）</p>
+<h4 id="常用的内置对象">常用的内置对象</h4>
+<p>一、<strong>ctx</strong> ：上下文对象。</p>
+<p>二、<strong>vars</strong> ：上下文变量。</p>
+<p>三、<strong>locale</strong>：上下文的语言环境。</p>
+<p>四、<strong>request</strong>：（仅在web上下文）的 HttpServletRequest 对象。</p>
+<p>五、<strong>response</strong>：（仅在web上下文）的 HttpServletResponse 对象。</p>
+<p>六、<strong>session</strong>：（仅在web上下文）的 HttpSession 对象。</p>
+<p>七、<strong>servletContext</strong>：（仅在web上下文）的 ServletContext 对象</p>
+<p>这里以常用的Session举例，用户刊登成功后，会把用户信息放在Session中，Thymeleaf通过内置对象将值从session中获取。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// java 代码将用户名放在session中</span><br><span class="line">session.setAttribute(&quot;userinfo&quot;,username);</span><br><span class="line">// Thymeleaf通过内置对象直接获取</span><br><span class="line">th:text=&quot;$&#123;session.userinfo&#125;&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="常用的内置方法">常用的内置方法</h4>
+<p>一、<strong>strings</strong>：字符串格式化方法，常用的Java方法它都有。比如：equals，equalsIgnoreCase，length，trim，toUpperCase，toLowerCase，indexOf，substring，replace，startsWith，endsWith，contains，containsIgnoreCase等</p>
+<p>二、<strong>numbers</strong>：数值格式化方法，常用的方法有：formatDecimal等</p>
+<p>三、<strong>bools</strong>：布尔方法，常用的方法有：isTrue，isFalse等</p>
+<p>四、<strong>arrays</strong>：数组方法，常用的方法有：toArray，length，isEmpty，contains，containsAll等</p>
+<p>五、<strong>lists</strong>，<strong>sets</strong>：集合方法，常用的方法有：toList，size，isEmpty，contains，containsAll，sort等</p>
+<p>六、<strong>maps</strong>：对象方法，常用的方法有：size，isEmpty，containsKey，containsValue等</p>
+<p>七、<strong>dates</strong>：日期方法，常用的方法有：format，year，month，hour，createNow等</p>
+<p>文章底部提供了对应的官网链接</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>ITDragon Thymeleaf 内置方法<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>ITDragon Thymeleaf 内置方法<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h3</span>&gt;</span>#strings <span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">th:if</span>=<span class="string">"$&#123;not #strings.isEmpty(itdragonStr)&#125;"</span> &gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>Old Str : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123;itdragonStr&#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>toUpperCase : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #strings.toUpperCase(itdragonStr) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>toLowerCase : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #strings.toLowerCase(itdragonStr) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>equals : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #strings.equals(itdragonStr, 'itdragonblog') &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>equalsIgnoreCase : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #strings.equalsIgnoreCase(itdragonStr, 'itdragonblog') &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>indexOf : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #strings.indexOf(itdragonStr, 'r') &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>substring : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #strings.substring(itdragonStr, 2, 8) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>replace : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #strings.replace(itdragonStr, 'it', 'IT') &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>startsWith : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #strings.startsWith(itdragonStr, 'it') &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>contains : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #strings.contains(itdragonStr, 'IT') &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">h3</span>&gt;</span>#numbers <span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>formatDecimal 整数部分随意，小数点后保留两位，四舍五入: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #numbers.formatDecimal(itdragonNum, 0, 2) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>formatDecimal 整数部分保留五位数，小数点后保留两位，四舍五入: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #numbers.formatDecimal(itdragonNum, 5, 2) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">h3</span>&gt;</span>#bools <span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">th:if</span>=<span class="string">"$&#123; #bools.isTrue(itdragonBool) &#125;"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span> <span class="attr">th:text</span>=<span class="string">"$&#123;itdragonBool&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">h3</span>&gt;</span>#arrays <span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">th:if</span>=<span class="string">"$&#123;not #arrays.isEmpty(itdragonArray)&#125;"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>length : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #arrays.length(itdragonArray) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>contains : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #arrays.contains(itdragonArray, 5) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>containsAll : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #arrays.containsAll(itdragonArray, itdragonArray) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h3</span>&gt;</span>#lists <span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">th:if</span>=<span class="string">"$&#123;not #lists.isEmpty(itdragonList)&#125;"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>size : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #lists.size(itdragonList) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>contains : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #lists.contains(itdragonList, 0) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>sort : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #lists.sort(itdragonList) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h3</span>&gt;</span>#maps <span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">th:if</span>=<span class="string">"$&#123;not #maps.isEmpty(itdragonMap)&#125;"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>size : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #maps.size(itdragonMap) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>containsKey : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #maps.containsKey(itdragonMap, 'thName') &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>containsValue : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #maps.containsValue(itdragonMap, '#maps') &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h3</span>&gt;</span>#dates <span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>format : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #dates.format(itdragonDate) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>custom format : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #dates.format(itdragonDate, 'yyyy-MM-dd HH:mm:ss') &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>day : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #dates.day(itdragonDate) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>month : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #dates.month(itdragonDate) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>monthName : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #dates.monthName(itdragonDate) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>year : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #dates.year(itdragonDate) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>dayOfWeekName : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #dates.dayOfWeekName(itdragonDate) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>hour : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #dates.hour(itdragonDate) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>minute : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #dates.minute(itdragonDate) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>second : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #dates.second(itdragonDate) &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>createNow : <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">"$&#123; #dates.createNow() &#125;"</span>/&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>后台给负责给变量赋值，和跳转页面。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"varexpressions"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">varexpressions</span><span class="params">(ModelMap map)</span> </span>&#123;</span><br><span class="line">  map.put(<span class="string">"itdragonStr"</span>, <span class="string">"itdragonBlog"</span>);</span><br><span class="line">  map.put(<span class="string">"itdragonBool"</span>, <span class="keyword">true</span>);</span><br><span class="line">  map.put(<span class="string">"itdragonArray"</span>, <span class="keyword">new</span> Integer[]&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;);</span><br><span class="line">  map.put(<span class="string">"itdragonList"</span>, Arrays.asList(<span class="number">1</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">4</span>,<span class="number">0</span>));</span><br><span class="line">  Map itdragonMap = <span class="keyword">new</span> HashMap();</span><br><span class="line">  itdragonMap.put(<span class="string">"thName"</span>, <span class="string">"$&#123; #... &#125;"</span>);</span><br><span class="line">  itdragonMap.put(<span class="string">"desc"</span>, <span class="string">"变量表达式内置方法"</span>);</span><br><span class="line">  map.put(<span class="string">"itdragonMap"</span>, itdragonMap);</span><br><span class="line">  map.put(<span class="string">"itdragonDate"</span>, <span class="keyword">new</span> Date());</span><br><span class="line">  map.put(<span class="string">"itdragonNum"</span>, <span class="number">888.888</span>D);</span><br><span class="line">  <span class="keyword">return</span> <span class="string">"grammar/varexpressions"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2>
+<p>一、Thymeleaf 是Spring Boot 官方推荐的Java模版引擎框架，其文件扩展名为.html</p>
+<p>二、Thymeleaf 几乎支持所有的html属性，用于赋值的th:text和th:value，用于循环遍历的th:each，用于条件判断的th:if</p>
+<p>三、Thymeleaf 提供四种标准的表达式，有丰富内置方法的${}，用于国际化的#{}，用于代码插入的~{}，用于处理链接的@{}</p>
+<p>四、一定要注意循环遍历的th:each和代码插入的th:insert用法，尽量避免破坏html结构的细节问题</p>
+<p>参考文献：</p>
+<p><a href="https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appendix-a-expression-basic-objects" target="_blank" rel="noopener">https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appendix-a-expression-basic-objects</a></p>
+<p><a href="https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appendix-b-expression-utility-objects" target="_blank" rel="noopener">https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appendix-b-expression-utility-objects</a></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>34-使用THYMELEAF</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">配置Thymeleaf视图解析器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Thymeleaf简单使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">借助Thymeleaf实现表单绑定</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Thymeleaf3语法详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#th属性"><span class="nav-text">th属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用th属性解读"><span class="nav-text">常用th属性解读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用th属性使用"><span class="nav-text">常用th属性使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标准表达式语法"><span class="nav-text">标准表达式语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#…-代码块表达式"><span class="nav-text">~{…} 代码块表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#支持两种语法结构"><span class="nav-text">支持两种语法结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码块表达式的使用"><span class="nav-text">代码块表达式的使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#…-消息表达式"><span class="nav-text">#{…} 消息表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#…-链接表达式"><span class="nav-text">@{…} 链接表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#链接表达式好处"><span class="nav-text">链接表达式好处</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#链接表达式结构"><span class="nav-text">链接表达式结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#…-变量表达式"><span class="nav-text">${…}变量表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#变量表达式功能"><span class="nav-text">变量表达式功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常用的内置对象"><span class="nav-text">常用的内置对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常用的内置方法"><span class="nav-text">常用的内置方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

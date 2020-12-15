@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Jsp+Javabean开发模式Jsp+Javabean开发模式的架构图如下图。在Jsp+Javabean架构中，JSP负责控制逻辑、表现逻辑、业务对象（javabean）的调用。JSP+JavaBean模式适合开发业务逻辑不太复杂的web应用程序，这种模式下，JavaBean用于封装业务数据，JSP即负责处理用户请求，又显示数据。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;18-JavaWeb%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Jsp+Javabean开发模式Jsp+Javabean开发模式的架构图如下图。在Jsp+Javabean架构中，JSP负责控制逻辑、表现逻辑、业务对象（javabean）的调用。JSP+JavaBean模式适合开发业务逻辑不太复杂的web应用程序，这种模式下，JavaBean用于封装业务数据，JSP即负责处理用户请求，又显示数据。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584779770_20200321162658519_24481.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584779770_20200321162658201_30473.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584779770_20200321162657989_32308.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584779769_20200321162657271_17536.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584779769_20200321162657044_7610.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584779769_20200321162656625_30791.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584779769_20200321162656293_5149.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584779768_20200321162655978_166.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584779768_20200321162655549_26301.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.020Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584779770_20200321162658519_24481.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/18-JavaWeb%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>18-JAVAWEB开发模式</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>Jsp+Javabean开发模式</h1><p>Jsp+Javabean开发模式的架构图如下图。</p><p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584779770_20200321162658519_24481.png" alt></p><p>在Jsp+Javabean架构中，JSP负责控制逻辑、表现逻辑、业务对象（javabean）的调用。</p><p>JSP+JavaBean模式适合开发业务逻辑不太复杂的web应用程序，这种模式下，JavaBean用于封装业务数据，JSP即负责处理用户请求，又显示数据。</p><a id="more"></a>
+
+
+
+
+<p>代码示例：JSP+JavaBean开发模式编写计算器</p>
+<p>首先分析一下jsp和javabean各自的职责，jsp负责显示计算器(calculator)页面，供用户输入计算数据，并显示计算后的结 果，javaBean负责接收用户输入的计算数据并且进行计算，JavaBean具有firstNum、secondNum、result、 operator属性，并提供一个calculate方法。</p>
+<p>1、编写CalculatorBean，负责接收用户输入的计算数据并且进行计算</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.math.BigDecimal;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* CalculatorBean，负责接收用户输入的计算数据并且进行计算</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CalculatorBean</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//用户输入的第一个数</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">double</span> firstNum;</span><br><span class="line">   <span class="comment">//用户输入的第二个数</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">double</span> secondNum;</span><br><span class="line">   <span class="comment">//用户选择的操作运算符</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">char</span> operator = <span class="string">'+'</span>;</span><br><span class="line">   <span class="comment">//运算结果</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">double</span> result;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getFirstNum</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> firstNum;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFirstNum</span><span class="params">(<span class="keyword">double</span> firstNum)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.firstNum = firstNum;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getSecondNum</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> secondNum;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSecondNum</span><span class="params">(<span class="keyword">double</span> secondNum)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.secondNum = secondNum;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">char</span> <span class="title">getOperator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> operator;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOperator</span><span class="params">(<span class="keyword">char</span> operator)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.operator = operator;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getResult</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> result;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setResult</span><span class="params">(<span class="keyword">double</span> result)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.result = result;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 用于计算</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">calculate</span><span class="params">()</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">       <span class="keyword">switch</span> (<span class="keyword">this</span>.operator) &#123;</span><br><span class="line">           <span class="keyword">case</span> <span class="string">'+'</span>: &#123;</span><br><span class="line">               <span class="keyword">this</span>.result = <span class="keyword">this</span>.firstNum + <span class="keyword">this</span>.secondNum;</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">case</span> <span class="string">'-'</span>: &#123;</span><br><span class="line">               <span class="keyword">this</span>.result = <span class="keyword">this</span>.firstNum - <span class="keyword">this</span>.secondNum;</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">case</span> <span class="string">'*'</span>: &#123;</span><br><span class="line">               <span class="keyword">this</span>.result = <span class="keyword">this</span>.firstNum * <span class="keyword">this</span>.secondNum;</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">case</span> <span class="string">'/'</span>: &#123;</span><br><span class="line">               <span class="keyword">if</span> (<span class="keyword">this</span>.secondNum == <span class="number">0</span>) &#123;</span><br><span class="line">                   <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"被除数不能为0!!!"</span>);</span><br><span class="line">               &#125;</span><br><span class="line">               <span class="keyword">this</span>.result = <span class="keyword">this</span>.firstNum / <span class="keyword">this</span>.secondNum;</span><br><span class="line">               <span class="comment">// 四舍五入</span></span><br><span class="line">               <span class="keyword">this</span>.result = <span class="keyword">new</span> BigDecimal(<span class="keyword">this</span>.result).setScale(<span class="number">2</span>,</span><br><span class="line">                       BigDecimal.ROUND_HALF_UP).doubleValue();</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">default</span>:</span><br><span class="line">               <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"对不起，传入的运算符非法！！"</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2、编写calculator.jsp，负责显示计算器(calculator)页面，供用户输入计算数据，并显示计算后的结果</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%--使用develop_mode.model1_jsp_javaBean.demo.CalculatorBean --%&gt;</span><br><span class="line">&lt;jsp:useBean id=<span class="string">"calcBean"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"develop_mode.model1_jsp_javaBean.demo.CalculatorBean"</span>/&gt;</span><br><span class="line">&lt;%--接收用户输入的参数 --%&gt;</span><br><span class="line">&lt;jsp:setProperty name=<span class="string">"calcBean"</span> property=<span class="string">"*"</span>/&gt;</span><br><span class="line">&lt;%</span><br><span class="line">   <span class="comment">//使用CalculatorBean进行计算</span></span><br><span class="line">   calcBean.calculate();</span><br><span class="line">%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;使用【jsp+javabean开发模式】开发的简单计算器&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;br/&gt;</span><br><span class="line">计算结果是：</span><br><span class="line">&lt;jsp:getProperty name=<span class="string">"calcBean"</span> property=<span class="string">"firstNum"</span>/&gt;</span><br><span class="line">&lt;jsp:getProperty name=<span class="string">"calcBean"</span> property=<span class="string">"operator"</span>/&gt;</span><br><span class="line">&lt;jsp:getProperty name=<span class="string">"calcBean"</span> property=<span class="string">"secondNum"</span>/&gt;</span><br><span class="line">=</span><br><span class="line">&lt;jsp:getProperty name=<span class="string">"calcBean"</span> property=<span class="string">"result"</span>/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;br/&gt;&lt;hr&gt; &lt;br/&gt;</span><br><span class="line">&lt;form action=<span class="string">"$&#123;pageContext.request.contextPath&#125;/jsp/develop_mode/model1_jsp_javaBean/calculator.jsp"</span> method=<span class="string">"post"</span>&gt;</span><br><span class="line">   &lt;table border=<span class="string">"1px"</span>&gt;</span><br><span class="line">       &lt;tr&gt;</span><br><span class="line">           &lt;td colspan="2"&gt;简单的计算器&lt;/td&gt;</span><br><span class="line">       &lt;/tr&gt;</span><br><span class="line">       &lt;tr&gt;</span><br><span class="line">           &lt;td&gt;第一个参数&lt;/td&gt;</span><br><span class="line">           &lt;td&gt;&lt;input type="text" name="firstNum"&gt;&lt;/td&gt;</span><br><span class="line">       &lt;/tr&gt;</span><br><span class="line">       &lt;tr&gt;</span><br><span class="line">           &lt;td&gt;运算符&lt;/td&gt;</span><br><span class="line">           &lt;td&gt;&lt;select name=<span class="string">"operator"</span>&gt;</span><br><span class="line">               &lt;option value="+"&gt;+&lt;/option&gt;</span><br><span class="line">               &lt;option value="-"&gt;-&lt;/option&gt;</span><br><span class="line">               &lt;option value="*"&gt;*&lt;/option&gt;</span><br><span class="line">               &lt;option value="/"&gt;/&lt;/option&gt;</span><br><span class="line">           &lt;/select&gt;&lt;/td&gt;</span><br><span class="line">       &lt;/tr&gt;</span><br><span class="line">       &lt;tr&gt;</span><br><span class="line">           &lt;td&gt;第二个参数&lt;/td&gt;</span><br><span class="line">           &lt;td&gt;&lt;input type="text" name="secondNum"&gt;&lt;/td&gt;</span><br><span class="line">       &lt;/tr&gt;</span><br><span class="line">       &lt;tr&gt;</span><br><span class="line">           &lt;td colspan="2"&gt;&lt;input type="submit" value="计算"&gt;&lt;/td&gt;</span><br><span class="line">       &lt;/tr&gt;</span><br><span class="line">   &lt;/table&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h1>Servlet+JSP+JavaBean开发模式</h1>
+<h2 id="Web开发中的请求-响应模型">Web开发中的请求-响应模型</h2>
+<p>Web开发中的请求-响应模型</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584779770_20200321162658201_30473.png" alt></p>
+<h2 id="MVC（Model-View-Controller）">MVC（Model-View-Controller）</h2>
+<p>MVC模型：是一种架构型的模式，本身不引入新功能，只是帮助我们将开发的结构组织的更加合理，使展示与模型分离、流程控制逻辑、业务逻辑调用与展示逻辑分离。</p>
+<h3 id="相关概念">相关概念</h3>
+<ul>
+<li>Model（模型）：数据模型，提供要展示的数据，因此包含数据和行为，可以认为是领域模型(domain)或JavaBean组件（包含数据和行为），不过现在一般都分离开来：Value Object（数据） 和 服务层（行为）。也就是模型提供了模型数据查询和模型数据的状态更新等功能，包括数据和业务。</li>
+<li>View（视图）：负责进行模型的展示，一般就是我们见到的用户界面，客户想看到的东西。</li>
+<li>Controller（控制器）：接收用户请求，委托给模型进行处理（状态改变），处理完毕后把返回的模型数据返回给视图，由视图负责展示。 也就是说控制器做了个调度员的工作。</li>
+</ul>
+<p>在标准的MVC中模型能主动推数据给视图进行更新（观察者设计模式，在模型上注册视图，当模型更新时自动更新视图），但在Web开发中模型是无法主动推给视图（无法主动更新用户界面），因为在Web开发是请求-响应模型。Web MVC模式下，如果用户想要视图更新，需要再发送一次请求（即请求-响应模型）。</p>
+<h3 id="标准MVC模型">标准MVC模型</h3>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584779770_20200321162657989_32308.png" alt></p>
+<h3 id="Web-MVC模型">Web MVC模型</h3>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584779769_20200321162657271_17536.png" alt></p>
+<h2 id="基于MVC的Servlet-JSP-JavaBean开发模式">基于MVC的Servlet+JSP+JavaBean开发模式</h2>
+<p>Servlet+JSP+JavaBean架构其实可以认为就是我们所说的Web MVC模型，只是控制器采用Servlet、模型采用JavaBean、视图采用JSP。具体架构和代码如图所示。</p>
+<p>从Servlet+JSP+JavaBean(Web MVC)架构可以看出，视图和模型分离了，控制逻辑和展示逻辑分离了。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584779769_20200321162657044_7610.png" alt></p>
+<h3 id="Servlet控制器">Servlet控制器</h3>
+<p>控制器controller示例代码</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584779769_20200321162656625_30791.png" alt></p>
+<h3 id="JSP视图">JSP视图</h3>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584779769_20200321162656293_5149.png" alt></p>
+<h3 id="JavaBean模型">JavaBean模型</h3>
+<p>模型model示例代码</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584779768_20200321162655978_166.png" alt></p>
+<p>代码示例：</p>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/%E5%9F%BA%E4%BA%8EMVC%E7%9A%84Servlet%2BJSP%2BJavaBean%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F.zip" target="_blank" rel="noopener">基于MVC的Servlet+JSP+JavaBean开发模式</a></p>
+<h2 id="Servlet-JSP-JavaBean开发模式的缺点">Servlet+JSP+JavaBean开发模式的缺点</h2>
+<p>Servlet+JSP+JavaBean(Web MVC)架构虽然实现了视图和模型分离以及控制逻辑和展示逻辑分离，但也有一些比较严重的缺点</p>
+<h3 id="Servlet作为控制器的缺点">Servlet作为控制器的缺点</h3>
+<p>此处的控制器使用Servlet，使用Servlet作为控制器有以下几个缺点：</p>
+<p>1、 控制逻辑会比较复杂，其实我们可以按照规约，如请求参数submitFlag=toLogin，我们其实可以直接调用toLogin方法，来简化控制逻辑；而且每个模块基本需要一个控制器，造成控制逻辑可能很复杂。现在流行的Web MVC框架(如Struts2)都支持&quot;请求参数submitFlag=toAdd，就可以直接调用toAdd方法&quot;这样的处理机制，在Struts2中类似这样的处理机制就称为&quot;动态方法调用&quot;</p>
+<p>2、请求参数到模型的封装比较麻烦，如果能交给框架来做这件事情，我们可以从中得到解放。</p>
+<p>请求参数到模型的封装代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 收集参数</span></span><br><span class="line">String username = req.getParameter(<span class="string">"username"</span>);</span><br><span class="line">String password = req.getParameter(<span class="string">"password"</span>);</span><br><span class="line"><span class="comment">// 封装参数</span></span><br><span class="line">UserBean user = <span class="keyword">new</span> UserBean();</span><br><span class="line">user.setUsername(username);</span><br><span class="line">user.setPassword(password);</span><br></pre></td></tr></table></figure>
+<p>当有几十个甚至上百个参数需要封装到模型中时，这样写恐怕就痛苦万分了，要写几十次甚至上百次这样的代码，估计写到吐了，所以现在流行的Web MVC框架(如Struts2)都提供了非常方便的获取参数，封装参数到模型的机制，减少这些繁琐的工作。</p>
+<p>3、选择下一个视图，严重依赖Servlet API，这样很难或基本不可能更换视图。</p>
+<p>例如：使用Servlet API提供的request对象的getRequestDispatcher方法选择要展示给用户看的视图</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">toLogin</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">  <span class="comment">//使用Servlet API提供的request对象的getRequestDispatcher方法选择视图</span></span><br><span class="line">  <span class="comment">// 此处和JSP视图技术紧密耦合，更换其他视图技术几乎不可能</span></span><br><span class="line">  request.getRequestDispatcher(<span class="string">"/mvc/login.jsp"</span>).forward(request, response);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>4、给视图传输要展示的模型数据，也需要使用Servlet API，更换视图技术也要一起更换，很麻烦。</p>
+<p>例如：使用Servlet API提供的request对象给视图传输要展示的模型数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//使用Servlet API提供的request对象给视图login.jsp传输要展示的模型数据(user)</span></span><br><span class="line">request.setAttribute(<span class="string">"user"</span>, user);</span><br><span class="line">request.getRequestDispatcher(<span class="string">"/mvc/login.jsp"</span>).forward(request, response)</span><br></pre></td></tr></table></figure>
+<h3 id="JavaBean作为模型的缺点">JavaBean作为模型的缺点</h3>
+<p>此处模型使用JavaBean，JavaBean组件类既负责收集封装数据，又要进行业务逻辑处理，这样可能造成JavaBean组件类很庞大，所以一般现在项目都是采用三层架构，而不直接采用JavaBean。</p>
+<h3 id="视图的缺点">视图的缺点</h3>
+<p>现在被绑定在JSP，很难更换视图，比如Velocity、FreeMarker；比如我要支持Excel、PDF视图等等。</p>
+<h2 id="基于MVC的Web项目架构">基于MVC的Web项目架构</h2>
+<p>在MyEclipse中新创建一个webmvcframework项目，导入项目所需要的第三方库(jar包)，创建项目包结构，在java开发中，架构的层次是以包的形式体现出来的。</p>
+<p>项目所需要的第三方库(jar包)：</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>开发包名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>dom4j-1.6.1.jar</td>
+<td>dom4j用于操作XML文件</td>
+</tr>
+<tr>
+<td>2</td>
+<td>jaxen-1.1-beta-6.jar</td>
+<td>用于解析XPath表达式</td>
+</tr>
+<tr>
+<td>3</td>
+<td>commons-beanutils-1.8.0.jar</td>
+<td>工具类，用于处理bean对象</td>
+</tr>
+<tr>
+<td>4</td>
+<td>commons-logging.jar</td>
+<td>commons-beanutils-1.8.0.jar的依赖jar包</td>
+</tr>
+<tr>
+<td>5</td>
+<td>jstl.jar</td>
+<td>jstl标签库和EL表达式依赖包</td>
+</tr>
+<tr>
+<td>6</td>
+<td>standard.jar</td>
+<td>jstl标签库和EL表达式依赖包</td>
+</tr>
+</tbody>
+</table>
+<p>项目包结构：</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>包名</th>
+<th>描述</th>
+<th>所属层次</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>domain</td>
+<td>存放系统的JavaBean类(只包含简单的属性以及属性对应的get和set方法，不包含具体的业务处理方法)，提供给【数据访问层】、【业务处理层】、【Web层】来使用</td>
+<td>domain(域模型)层</td>
+</tr>
+<tr>
+<td>2</td>
+<td>dao</td>
+<td>存放访问数据库的操作接口类</td>
+<td>数据访问层</td>
+</tr>
+<tr>
+<td>3</td>
+<td>dao.impl</td>
+<td>存放访问数据库的操作接口的实现类</td>
+<td>数据访问层</td>
+</tr>
+<tr>
+<td>4</td>
+<td>service</td>
+<td>存放处理系统业务接口类</td>
+<td>业务处理层</td>
+</tr>
+<tr>
+<td>5</td>
+<td>service.impl</td>
+<td>存放处理系统业务接口的实现类</td>
+<td>业务处理层</td>
+</tr>
+<tr>
+<td>6</td>
+<td>web.controller</td>
+<td>存放作为系统控制器的Servlet</td>
+<td>Web层(表现层)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>web.UI</td>
+<td>存放为用户提供用户界面的servlet(UI指的是user interface)</td>
+<td>Web层(表现层)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>web.filter</td>
+<td>存放系统的用到的过滤器(Filter)</td>
+<td>Web层(表现层)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>web.listener</td>
+<td>存放系统的用到的监听器(Listener)</td>
+<td>Web层(表现层)</td>
+</tr>
+<tr>
+<td>10</td>
+<td>util</td>
+<td>存放系统的通用工具类，提供给数据访问层、业务处理层、Web层来使用</td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td>junit.test</td>
+<td>存放系统的测试类</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>一个良好的JavaWeb项目架构应该具有以上的11个包，这样显得层次分明，各个层之间的职责也很清晰明了，搭建JavaWeb项目架构时，就按照上面的1~11的序号顺序创建包：</p>
+<p>domain→dao→dao.impl→service→service.impl→web.controller→web.UI→web.filter→web.listener→util→junit.test</p>
+<p>包的层次创建好了，项目的架构也就定下来了，当然，在实际的项目开发中，也不一定是完完全全按照上面说的来创建包的层次结构，而是根据项目的实际情况，可能还需要创建其他的包，这个得根据项目的需要来定了。</p>
+<p>在src目录(类目录)下面，创建用于保存用户数据的xml文件(DB.xml)。</p>
+<p>在WEB-INF目录下创建一个pages目录，pages目录存放系统的一些受保护(不允许用户直接通过URL地址访问)的jsp页面，用户要想访问这些受保护的jsp页面，那么只能通过me.gacl.web.UI这个包里面的Servlet。</p>
+<p>创建好的项目如下图(图-1)所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584779768_20200321162655549_26301.png" alt></p>
+<h2 id="基于Servlet-JSP-JavaBean开发模式的用户登录注册系统">基于Servlet+JSP+JavaBean开发模式的用户登录注册系统</h2>
+<p><strong>搭建开发环境</strong></p>
+<ul>
+<li>创建web项目；</li>
+<li>导入项目所需的开发包；</li>
+<li>创建程序的包名，在java中是以包来体现项目的分层架构的。</li>
+</ul>
+<p><strong>开发domain</strong></p>
+<p>把一张要操作的表当成一个VO类(VO类只定义属性以及属性对应的get和set方法，没有涉及到具体业务的操作方法)，VO表示的是值对象，通俗地说，就是把表中的每一条记录当成一个对象，表中的每一个字段就作为这个对象的属性。每往表中插入一条记录，就相当于是把一个VO类的实例对象插入到数据表中，对数据表进行操作时，都是直接把一个VO类的对象写入到表中，一个VO类对象就是一条记录。每一个VO对象可以表示一张表中的一行记录，VO类的名称要和表的名称一致或者对应。</p>
+<p><strong>开发dao</strong></p>
+<ul>
+<li>DAO操作接口</li>
+</ul>
+<p>每一个DAO操作接口规定了，一张表在一个项目中的具体操作方法，此接口的名称最好按照如下格式编写：“表名称Dao”。 DAO接口里面的所有方法按照以下的命名编写： 更新数据库：doXxx() ，查询数据库：findXxx()或getXxx()；</p>
+<ul>
+<li>DAO操作接口的实现类</li>
+</ul>
+<p>实现类中完成具体的增删改查操作。此实现类完成的只是数据库中最核心的操作，并没有专门处理数据库的打开和关闭，因为这些操作与具体的业务操作无关；</p>
+<p><strong>开发service</strong></p>
+<p>service对web层提供所有的业务服务。</p>
+<p><strong>开发web层。</strong></p>
+<p>完整源代码如下：</p>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/%E5%9F%BA%E4%BA%8EServlet%2BJSP%2BJavaBean%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E6%B3%A8%E5%86%8C%E7%B3%BB%E7%BB%9F.zip" target="_blank" rel="noopener">用户登录注册系统</a></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>18-JAVAWEB开发模式</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Jsp+Javabean开发模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Servlet+JSP+JavaBean开发模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Web开发中的请求-响应模型"><span class="nav-text">Web开发中的请求-响应模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVC（Model-View-Controller）"><span class="nav-text">MVC（Model-View-Controller）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相关概念"><span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标准MVC模型"><span class="nav-text">标准MVC模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web-MVC模型"><span class="nav-text">Web MVC模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于MVC的Servlet-JSP-JavaBean开发模式"><span class="nav-text">基于MVC的Servlet+JSP+JavaBean开发模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Servlet控制器"><span class="nav-text">Servlet控制器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSP视图"><span class="nav-text">JSP视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaBean模型"><span class="nav-text">JavaBean模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet-JSP-JavaBean开发模式的缺点"><span class="nav-text">Servlet+JSP+JavaBean开发模式的缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Servlet作为控制器的缺点"><span class="nav-text">Servlet作为控制器的缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaBean作为模型的缺点"><span class="nav-text">JavaBean作为模型的缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#视图的缺点"><span class="nav-text">视图的缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于MVC的Web项目架构"><span class="nav-text">基于MVC的Web项目架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于Servlet-JSP-JavaBean开发模式的用户登录注册系统"><span class="nav-text">基于Servlet+JSP+JavaBean开发模式的用户登录注册系统</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

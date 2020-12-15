@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Tomcat目录构成bin：存放脚本文件，其中startup.bat&#x2F;shutdown.bat脚本用来启动Tomcat服务器；conf：存放配置文件，其中server.xml文件是配置的核心文件；lib：存放库文件；logs：存放日志文件，可以用来查询Tomcat服务器的运行情况；temp：临时文件目录；">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;02-Tomcat%E6%9C%8D%E5%8A%A1%E5%99%A8.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Tomcat目录构成bin：存放脚本文件，其中startup.bat&#x2F;shutdown.bat脚本用来启动Tomcat服务器；conf：存放配置文件，其中server.xml文件是配置的核心文件；lib：存放库文件；logs：存放日志文件，可以用来查询Tomcat服务器的运行情况；temp：临时文件目录；">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.020Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/02-Tomcat%E6%9C%8D%E5%8A%A1%E5%99%A8">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>02-TOMCAT服务器</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>Tomcat目录构成</h1><p>bin：存放脚本文件，其中startup.bat/shutdown.bat脚本用来启动Tomcat服务器；</p><p>conf：存放配置文件，其中server.xml文件是配置的核心文件；</p><p>lib：存放库文件；</p><p>logs：存放日志文件，可以用来查询Tomcat服务器的运行情况；</p><p>temp：临时文件目录；</p><a id="more"></a>
+
+
+
+
+
+<p>webapps：web应用所在目录，提供外界访问的web资源；</p>
+<p>work：Tomcat的工作目录。</p>
+<h1>Tomcat服务器请求处理</h1>
+<p>Tomcat服务器的启动是基于server.xml配置文件的。Tomcat启动的时候首先会启动一个Server（服务器），Server中就会启动Service（服务），Service中就会启动多个Connector(连接器)，每个连接器都在等待客户机的连接。</p>
+<p>当有用户使用浏览器去访问服务器上面的web资源时，首先是连接到Connector(连接器)，Connector(连接器)是不处理用户的请求的，而是将用户的请求交给一个Engine(引擎)去处理，Engine(引擎)接收到请求后就会解析用户想要访问的Host，然后将请求交给相应的Host，Host收到请求后就会解析出用户想要访问该Host下面的哪一个Web应用,一个web应用对应一个Context。</p>
+<p>server.xml配置文件示例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version='1.0' encoding='utf-8'?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Server</span> <span class="attr">port</span>=<span class="string">"8005"</span> <span class="attr">shutdown</span>=<span class="string">"SHUTDOWN"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">Service</span> <span class="attr">name</span>=<span class="string">"Catalina"</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">"8080"</span> <span class="attr">protocol</span>=<span class="string">"HTTP/1.1"</span> <span class="attr">connectionTimeout</span>=<span class="string">"20000"</span> <span class="attr">redirectPort</span>=<span class="string">"8443"</span> /&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">"8443"</span> <span class="attr">protocol</span>=<span class="string">"org.apache.coyote.http11.Http11Protocol"</span> <span class="attr">maxThreads</span>=<span class="string">"150"</span> <span class="attr">SSLEnabled</span>=<span class="string">"true"</span> <span class="attr">scheme</span>=<span class="string">"https"</span> <span class="attr">secure</span>=<span class="string">"true"</span> <span class="attr">clientAuth</span>=<span class="string">"false"</span> <span class="attr">sslProtocol</span>=<span class="string">"TLS"</span> <span class="attr">keystoreFile</span>=<span class="string">"conf/.keystore"</span> <span class="attr">keystorePass</span>=<span class="string">"123456"</span>/&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">"8009"</span> <span class="attr">protocol</span>=<span class="string">"AJP/1.3"</span> <span class="attr">redirectPort</span>=<span class="string">"8443"</span> /&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">Engine</span> <span class="attr">name</span>=<span class="string">"Catalina"</span> <span class="attr">defaultHost</span>=<span class="string">"localhost"</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">Host</span> <span class="attr">name</span>=<span class="string">"localhost"</span> <span class="attr">appBase</span>=<span class="string">"webapps"</span> <span class="attr">unpackWARs</span>=<span class="string">"true"</span> <span class="attr">autoDeploy</span>=<span class="string">"true"</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">Valve</span> <span class="attr">className</span>=<span class="string">"org.apache.catalina.valves.AccessLogValve"</span> <span class="attr">directory</span>=<span class="string">"logs"</span> <span class="attr">prefix</span>=<span class="string">"localhost_access_log."</span> <span class="attr">suffix</span>=<span class="string">".txt"</span> <span class="attr">pattern</span>=<span class="string">"%h %l %u %t "</span>%<span class="attr">r</span>" %<span class="attr">s</span> %<span class="attr">b</span>" /&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">Host</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">Host</span> <span class="attr">name</span>=<span class="string">"www.gacl.cn"</span> <span class="attr">appBase</span>=<span class="string">"F:\JavaWebApps"</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">Context</span> <span class="attr">path</span>=<span class="string">""</span> <span class="attr">docBase</span>=<span class="string">"F:\JavaWebApps\JavaWebDemo1"</span>/&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">Host</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">Engine</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">Service</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Server</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>Tomcat服务器配置</h1>
+<p>Tomcat的所有配置都放在conf文件夹之中，里面的server.xml文件是配置的核心文件。</p>
+<h2 id="Java环境配量配置">Java环境配量配置</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">JAVA_HOME：JDK安装路径；</span><br><span class="line"></span><br><span class="line">Path：%JAVA_HOME%\bin</span><br></pre></td></tr></table></figure>
+<h2 id="服务器端口配置">服务器端口配置</h2>
+<p>通过server.xml文件中<code>&lt;Connector&gt;</code>标签的port属性配置。</p>
+<p>例如：将Tomcat服务器的启动端口由默认的8080改成8081端口</p>
+<h3 id="Tomcat服务器启动端口默认配置">Tomcat服务器启动端口默认配置</h3>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">"8080"</span> <span class="attr">protocol</span>=<span class="string">"HTTP/1.1"</span> </span></span><br><span class="line"><span class="tag"><span class="attr">connectionTimeout</span>=<span class="string">"20000"</span> <span class="attr">redirectPort</span>=<span class="string">"8443"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="将Tomcat服务器启动端口修改成8081端口">将Tomcat服务器启动端口修改成8081端口</h3>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">"8081"</span> <span class="attr">protocol</span>=<span class="string">"HTTP/1.1"</span> </span></span><br><span class="line"><span class="tag"><span class="attr">connectionTimeout</span>=<span class="string">"20000"</span> <span class="attr">redirectPort</span>=<span class="string">"8443"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这样就把原来默认Tomcat默认的的8080端口改成了8081端口了，需要注意的是，一旦服务器中*.xml文件改变了，则Tomcat服务器就必须重新启动，重新启动之后将重新读取新的配置信息。因为已经在server.xml文件中将Tomcat的启动端口修改成了8081，所以Tomcat服务器启动时就以8081端口启动了，如下图所示：</p>
+<h2 id="虚拟目录映射">虚拟目录映射</h2>
+<p>Web应用开发好后，若想供外界访问，需要把Web应用所在目录交给Web服务器管理，这个过程称之为虚似目录的映射。那么在Tomcat服务器中，如何进行虚拟目录的映射呢？总共有如下的几种方式。</p>
+<p><strong>方式一：在server.xml文件的<code>&lt;Host&gt;</code>标签内部配置<code>&lt;Context&gt;</code>标签。</strong></p>
+<p>其中Context表示上下文，代表一个JavaWeb应用，path属性用来配置虚似目录，必须以&quot;/&quot;开头，docBase属性配置虚似目录对应的Web应用硬盘实际路径；该方法已不建议使用。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Host</span> <span class="attr">name</span>=<span class="string">"localhost"</span> <span class="attr">appBase</span>=<span class="string">"webapps"</span> <span class="attr">unpackWARs</span>=<span class="string">"true"</span> </span></span><br><span class="line"><span class="tag">   <span class="attr">autoDeploy</span>=<span class="string">"true"</span> <span class="attr">xmlValidation</span>=<span class="string">"false"</span> <span class="attr">xmlNamespaceAware</span>=<span class="string">"false"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">Context</span> <span class="attr">path</span>=<span class="string">"/JavaWebApp"</span> <span class="attr">docBase</span>=<span class="string">"F:\JavaWebDemoProject"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Host</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>方式二：自动映射</strong></p>
+<p>将JavaWeb应用(目录/war包)放到webapps目录中，Tomcat会自动管理该目录下的所有web应用，并将它们映射成同名的虚似目录。</p>
+<p><strong>方式三：localhost目录下添加目录映射xml</strong></p>
+<p>在Tomcat服务器的\conf\Catalina\localhost目录下添加xml文件，文件名称即虚似目录的名称，在文件中使用<context>标签映射JavaWeb应用，<context>标签的docBase属性配置Web应用硬盘实际路径。该方法可以实现热部署。</context></context></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Context</span> <span class="attr">docBase</span>=<span class="string">"F:\JavaWebDemoProject"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="虚似主机配置">虚似主机配置</h2>
+<p>Tomcat虚似主机配置:通过在server.xml文件中添加<host>标签，其中name属性指定主机名，appBase属性指定该虚似主机中存放Web应用的目录，tomcat默认自带一个名称为localhost的虚拟主机。</host></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Host</span> <span class="attr">name</span>=<span class="string">"www.gacl.cn"</span> <span class="attr">appBase</span>=<span class="string">"F:\JavaWebApps"</span>&gt;</span><span class="tag">&lt;/<span class="name">Host</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="https连接器配置">https连接器配置</h2>
+<p>Tomcat服务器启动时候会启动多个Connector(连接器)，而Tomcat服务器的连接器又分为加密连接器和非加密连接器。</p>
+<p>由加密原理可知，要想以加密的方式访问Tomcat服务器，首先得<strong>针对服务器生成一份数字证书</strong>。<strong>然后再在Tomcat里面配置一个加密Connector</strong>，让服务器收到浏览器的请求之后，会向浏览器出示它的数字证书。</p>
+<h3 id="生成数字证书">生成数字证书</h3>
+<p>制作证书的工具：<code>&lt;JAVA_HOME&gt;\bin\keytool.exe</code></p>
+<p>命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//使用keytool生成一个名字为tomcat的证书</span><br><span class="line">//存放位置：用户文件夹/.keystore（密钥库文件）</span><br><span class="line">keytool -genkey -alias tomcat -keyalg RSA</span><br><span class="line">//查看.keystore密钥库里面的所有证书</span><br><span class="line">keytool -list -keystore .keystore</span><br></pre></td></tr></table></figure>
+<p>将生成的.keystore密钥库文件拷贝到Tomcat服务器的conf目录下。</p>
+<h3 id="配置https连接器">配置https连接器</h3>
+<p>修改server.xml文件，配置https连接器，代码如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//keystoreFile="conf/.keystore" 用来指明密钥库文件的所在路径；</span><br><span class="line">//keystorePass="123456"指明密钥库的访问密码。</span><br><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">port</span>=<span class="string">"8443"</span> </span></span><br><span class="line"><span class="tag">  <span class="attr">protocol</span>=<span class="string">"org.apache.coyote.http11.Http11Protocol"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">maxThreads</span>=<span class="string">"150"</span> <span class="attr">SSLEnabled</span>=<span class="string">"true"</span> <span class="attr">scheme</span>=<span class="string">"https"</span> <span class="attr">secure</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">clientAuth</span>=<span class="string">"false"</span> <span class="attr">sslProtocol</span>=<span class="string">"TLS"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">keystoreFile</span>=<span class="string">"conf/.keystore"</span> <span class="attr">keystorePass</span>=<span class="string">"123456"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在server.xml文件中配置了一个端口是8443的加密连接器，浏览器访问8443端口时，将会以加密的方式来访问web服务器。而该连接器收到浏览器的请求后，将会向浏览器出示配置好数字证书，浏览器再用数字证书里面的公钥来加密请求数据。</p>
+<p>由于密钥库里面的证书是我们手工生成的，没有经过CA的认证，在访问加密连接器时，浏览器会出现&quot;证书错误，导航已阻止&quot;，点击“继续浏览此网站”就可以继续访问了。为了让浏览器信任我们生成的数字证书，需要将数字证书安装到系统当中，具体步骤请百度。</p>
+<h3 id="加密原理">加密原理</h3>
+<ul>
+<li><strong>对称加密</strong></li>
+</ul>
+<p>又称为单密钥加密，**同一个密钥可以同时用作信息的加密和解密。**常用的对称加密有：DES、IDEA、RC2、RC4、SKIPJACK、RC5、AES算法等。</p>
+<ul>
+<li><strong>非对称加密</strong></li>
+</ul>
+<p>非对称加密算法需要一对不同的密钥：公开密钥和私有密钥。如果用公开密钥对数据进行加密，只有用对应的私有密钥才能解密，反之亦然。</p>
+<p>非对称加密工作原理：发送方首先拿到接收方生成的公钥，并使用该公钥对发送信息进行加密，而接收方收到信息后使用自己的私钥解密。这样信息即使被第三方截获，由于没有相应的私钥，也无法进行解密。</p>
+<p>非对称性加密存在的问题：发送方如何确定拿到的公钥一定是接收方发的呢？只能靠一个第三方机构(CA机构，即证书授权机构(Certificate Authority))来担保。接收方首先将公钥发给CA机构进行签名认证，获得数字证书，证书中包含了CA的担保认证签名和接收方的公钥。接收方将该证书发送给发送方后，发送方通过证书中CA的签名，确定当前拿到的公钥是不是接收方发出的。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>02-TOMCAT服务器</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Tomcat目录构成</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Tomcat服务器请求处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Tomcat服务器配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java环境配量配置"><span class="nav-text">Java环境配量配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器端口配置"><span class="nav-text">服务器端口配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tomcat服务器启动端口默认配置"><span class="nav-text">Tomcat服务器启动端口默认配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将Tomcat服务器启动端口修改成8081端口"><span class="nav-text">将Tomcat服务器启动端口修改成8081端口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟目录映射"><span class="nav-text">虚拟目录映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚似主机配置"><span class="nav-text">虚似主机配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#https连接器配置"><span class="nav-text">https连接器配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成数字证书"><span class="nav-text">生成数字证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置https连接器"><span class="nav-text">配置https连接器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加密原理"><span class="nav-text">加密原理</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

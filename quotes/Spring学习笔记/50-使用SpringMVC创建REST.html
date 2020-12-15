@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="作为开发人员，我们经常关注于构建伟大的软件来解决业务问题。数据只是软件完成工作时要处理的原材料。但是如果你问一下业务人员，数据和软件谁更重要的话，他们很可能会选择数据。数据是许多业务的生命之血。软件通常是可以替换的，但是多年积累的数据是永远不能替换的。你是不是觉得有些奇怪，既然数据如此重要，为何在开发软件的时候却经常将其视为事后才考虑的事情？以我们前面上一章所介绍的远程服务为例，这些服务是以操作和">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;50-%E4%BD%BF%E7%94%A8SpringMVC%E5%88%9B%E5%BB%BAREST.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="作为开发人员，我们经常关注于构建伟大的软件来解决业务问题。数据只是软件完成工作时要处理的原材料。但是如果你问一下业务人员，数据和软件谁更重要的话，他们很可能会选择数据。数据是许多业务的生命之血。软件通常是可以替换的，但是多年积累的数据是永远不能替换的。你是不是觉得有些奇怪，既然数据如此重要，为何在开发软件的时候却经常将其视为事后才考虑的事情？以我们前面上一章所介绍的远程服务为例，这些服务是以操作和">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854940_20200322132432476_9754.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854940_20200322132432054_18798.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854940_20200322132431842_21761.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854939_20200322132431627_23151.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854939_20200322132431413_3399.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854939_20200322132431200_18339.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854939_20200322132430982_24954.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854938_20200322132430664_25005.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854938_20200322132430446_22896.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854938_20200322132430230_10858.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854938_20200322132429916_23092.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854938_20200322132429701_13000.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854937_20200322132429386_11873.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854937_20200322132428962_2618.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854937_20200322132428749_12757.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854937_20200322132428531_6284.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854927_20200322132428313_23014.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854927_20200322132428098_13356.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854927_20200322132427783_21382.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854927_20200322132427567_16932.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854926_20200322132427352_19180.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854926_20200322132427139_31311.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854926_20200322132426924_13504.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854926_20200322132426711_22935.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854926_20200322132426497_12005.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854925_20200322132426284_11579.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854925_20200322132425968_22346.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854925_20200322132425650_17779.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854925_20200322132425434_22896.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854925_20200322132425221_4836.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854924_20200322132424908_32642.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854924_20200322132424698_2503.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854924_20200322132424381_23096.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854924_20200322132424165_28336.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854924_20200322132423853_8923.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854923_20200322132423640_31830.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854923_20200322132423426_25884.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854923_20200322132423211_28363.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854923_20200322132423001_21158.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854923_20200322132422787_16392.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854922_20200322132422574_28816.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854922_20200322132422362_4793.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854922_20200322132422149_10005.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854922_20200322132421835_15268.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854921_20200322132421623_11842.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854921_20200322132421410_24365.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854921_20200322132421198_28283.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854921_20200322132420886_32700.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854921_20200322132420674_16896.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854920_20200322132420464_29464.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854920_20200322132420151_9433.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854920_20200322132419940_20456.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854920_20200322132419722_23256.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.044Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584854940_20200322132432476_9754.jpg">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/50-%E4%BD%BF%E7%94%A8SpringMVC%E5%88%9B%E5%BB%BAREST">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>50-使用SPRINGMVC创建REST</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>作为开发人员，我们经常关注于构建伟大的软件来解决业务问题。数据只是软件完成工作时要处理的原材料。但是如果你问一下业务人员，数据和软件谁更重要的话，他们很可能会选择数据。数据是许多业务的生命之血。软件通常是可以替换的，但是多年积累的数据是永远不能替换的。</p><p>你是不是觉得有些奇怪，既然数据如此重要，为何在开发软件的时候却经常将其视为事后才考虑的事情？以我们前面上一章所介绍的远程服务为例，这些服务是以操作和处理为中心的，而不是信息和资源。</p><a id="more"></a>
+
+<p>近几年来，以信息为中心的表述性状态转移（Representational State Transfer，REST）已成为替换传统SOAP Web服务的流行方案。SOAP一般会关注行为和处理，而REST关注的是要处理的数据。</p>
+<p>从Spring 3.0版本开始，Spring为创建REST API提供了良好的支持。Spring的REST实现在Spring 3.1、3.2和如今的4.0版本中不断得到发展。</p>
+<p>好消息是Spring对REST的支持是构建在Spring MVC之上的，所以我们已经了解了许多在Spring中使用REST所需的知识。在本章中，我们将基于已了解的Spring MVC知识来开发处理RESTful资源的控制器。但在深入了解细节之前，先让我们看看使用REST到底是什么。</p>
+<h1>了解REST</h1>
+<p>我敢打赌这并不是你第一次听到或读到REST这个词。近些年来，关于REST已经有了许多讨论，在软件开发中你可能会发现有一种很流行的做法，那就是在推动REST替换SOAP Web服务的时候，会谈论到SOAP的不足。</p>
+<p>诚然，对于许多应用程序而言，使用SOAP可能会有些大材小用了，而REST提供了一个更简单的可选方案。另外，很多的现代化应用都会有移动或富JavaScript客户端，它们都会使用运行在服务器上REST API。</p>
+<p>问题在于并不是每个人都清楚REST到底是什么。结果就出现了许多误解。有很多打着REST幌子的事情其实并不符合REST真正的本意。在谈论Spring如何支持REST之前，我们需要对REST是什么达成共识。</p>
+<h2 id="REST的基础知识">REST的基础知识</h2>
+<p>当谈论REST时，有一种常见的错误就是将其视为“基于URL的Web服务”——将REST作为另一种类型的远程过程调用（remote procedure call，RPC）机制，就像SOAP一样，只不过是通过简单的HTTP URL来触发，而不是使用SOAP大量的XML命名空间。</p>
+<p>恰好相反，REST与RPC几乎没有任何关系。RPC是面向服务的，并关注于行为和动作；而REST是面向资源的，强调描述应用程序的事物和名词。</p>
+<p>为了理解REST是什么，我们将它的首字母缩写拆分为不同的构成部分：</p>
+<ul>
+<li>表述性（<em>Representational</em>）：REST资源实际上可以用各种形式来进行表述，包括XML、JSON（JavaScript Object Notation）甚至HTML——最适合资源使用者的任意形式；</li>
+<li>状态（<em>State</em>）：当使用REST的时候，我们更关注资源的状态而不是对资源采取的行为；</li>
+<li>转移（<em>Transfer</em>）：REST涉及到转移资源数据，它以某种表述性形式从一个应用转移到另一个应用。</li>
+</ul>
+<p>更简洁地讲， <strong>REST就是将资源的状态以最适合客户端或服务端的形式从服务器端转移到客户端（或者反过来）。</strong></p>
+<p>在REST中，资源通过URL进行识别和定位。至于RESTful URL的结构并没有严格的规则，但是URL应该能够识别资源，而不是简单的发一条命令到服务器上。再次强调，关注的核心是事物，而不是行为。</p>
+<p>REST中会有行为，它们是通过HTTP方法来定义的。具体来讲，也就是GET、POST、PUT、DELETE、PATCH以及其他的HTTP方法构成了REST中的动作。这些HTTP方法通常会匹配为如下的CRUD动作：</p>
+<ul>
+<li>Create：POST</li>
+<li>Read：GET</li>
+<li>Update：PUT或PATCH</li>
+<li>Delete：DELETE</li>
+</ul>
+<p>尽管通常来讲，HTTP方法会映射为CRUD动作，但这并不是严格的限制。有时候，PUT可以用来创建新资源，POST可以用来更新资源。实际上，POST请求非幂等性（non-idempotent）的特点使其成为一个非常灵活的方法，对于无法适应其他HTTP方法语义的操作，它都能够胜任。</p>
+<p>基于对REST的这种观点，所以我尽量避免使用诸如REST服务、REST Web服务或类似的术语，这些术语会不恰当地强调行为。相反，我更愿意强调REST面向资源的本质，并讨论RESTful资源。</p>
+<h2 id="Spring是如何支持REST的">Spring是如何支持REST的</h2>
+<p>Spring很早就有导出REST资源的需求。从3.0版本开始，Spring针对Spring MVC的一些增强功能对REST提供了良好的支持。当前的4.0版本中，Spring支持以下方式来创建REST资源：</p>
+<ul>
+<li>控制器可以处理所有的HTTP方法，包含四个主要的REST方法：GET、PUT、DELETE以及POST。Spring 3.2及以上版本还支持PATCH方法；</li>
+<li>借助@PathVariable注解，控制器能够处理参数化的URL（将变量输入作为URL的一部分）；</li>
+<li>借助Spring的视图和视图解析器，资源能够以多种方式进行表述，包括将模型数据渲染为XML、JSON、Atom以及RSS的View实现；</li>
+<li>可以使用ContentNegotiatingViewResolver来选择最适合客户端的表述；</li>
+<li>借助 <strong>@ResponseBody</strong> 注解和各种HttpMethodConverter实现，能够替换基于视图的渲染方式；</li>
+<li>类似地， <strong>@RequestBody</strong> 注解以及HttpMethodConverter实现可以将传入的HTTP数据转化为传入控制器处理方法的Java对象；</li>
+<li>借助 <strong>RestTemplate</strong> ，Spring应用能够方便地使用REST资源。</li>
+</ul>
+<p>本章中，我们将会介绍Spring RESTful的所有特性，首先介绍如何借助Spring MVC生成资源。然后我们会转向REST的客户端，看一下如何使用这些资源。那么，就从了解RESTful Spring MVC控制器是什么样子开始吧。</p>
+<h2 id="创建第一个REST端点">创建第一个REST端点</h2>
+<p>借助Spring的支持来实现REST功能有一个很有利的地方，那就是我们已经掌握了很多创建RESTful控制器的知识。在前面，我们学到了创建Web应用的知识，它们可以用在通过REST API暴资源上。首先，我们会在名为SpittleApiController的新控制器中创建第一个REST端点。</p>
+<p>如下的程序清单展现了这个新REST控制器起始的样子，它会提供Spittle资源。这是一个很简单的开始，但是在本章中，随着不断学习Spring REST编程模型的细节，我们将会不断构建这个控制器。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854940_20200322132432476_9754.jpg" alt></p>
+<p>让我们仔细看一下上面的程序清单。你能够看出来它服务于一个REST资源而不是Web页面吗？</p>
+<p>可能看不出来！按照这个控制器的写法，并没有地方表明它是RESTful、服务于资源的控制器。当发起对“/spittles”的GET请求时，将会调用spittles()方法。它会查找并返回Spittle列表，而这个列表会通过注入的SpittleRepository获取到。列表会放到模型中，用于视图的渲染。对于基于浏览器的Web应用，这可能意味着模型数据会渲染到HTML页面中。</p>
+<p>但是，我们现在讨论的是创建REST API。在这种情况下，HTML并不是合适的数据表述形式。</p>
+<p>表述是REST中很重要的一个方面。它是关于客户端和服务器端针对某一资源是如何通信的。任何给定的资源都几乎可以用任意的形式来进行表述。如果资源的使用者愿意使用JSON，那么资源就可以用JSON格式来表述。如果使用者喜欢尖括号，那相同的资源可以用XML来进行表述。同时，如果用户在浏览器中查看资源的话，可能更愿意以HTML的方式来展现（或者PDF、Excel及其他便于人类阅读的格式）。资源没有变化——只是它的表述方式变化了。</p>
+<p>注意：尽管Spring支持多种资源表述形式，但是在定义REST API的时候，不一定要全部使用它们。对于大多数客户端来说，用JSON和XML来进行表述就足够了。</p>
+<p>当然，如果内容要由人类用户来使用的话，那么我们可能需要支持HTML格式的资源。根据资源的特点和应用的需求，我们还可能选择使用PDF文档或Excel表格来展现资源。对于非人类用户的使用者，比如其他的应用或调用REST端点的代码，资源表述的首选应该是XML和JSON。借助Spring同时支持这两种方案非常简单，所以没有必要做一个非此即彼的选择。</p>
+<p>按照我的意见，我推荐至少要支持JSON。JSON使用起来至少会像XML一样简单（很多人会说JSON会更加简单），并且如果客户端是JavaScript（最近一段时间以来，这种做法越来越常见）的话，JSON更是会成为优胜者，因为在JavaScript中使用JSON数据根本就不需要编排和解排（marshaling/demarshaling）。</p>
+<p>需要了解的是控制器本身通常并不关心资源如何表述。控制器以Java对象的方式来处理资源。控制器完成了它的工作之后，资源才会被转化成最适合客户端的形式。</p>
+<p>Spring提供了两种方法将资源的Java表述形式转换为发送给客户端的表述形式：</p>
+<ul>
+<li>内容协商（<em>Content negotiation</em>）：选择一个视图，它能够将模型渲染为呈现给客户端的表述形式；</li>
+<li>消息转换器（<em>Message conversion</em>）：通过一个消息转换器将控制器所返回的对象转换为呈现给客户端的表述形式。</li>
+</ul>
+<p>鉴于我们在前面已经讨论过视图解析器，并且已经熟悉了基于视图的渲染，所以首先看一下如何使用内容协商来选择视图或视图解析器，它们将资源渲染为客户端能够接受的形式。</p>
+<h1>内容协商</h1>
+<h2 id="根据请求选择视图：ContentNegotiatingViewResolver">根据请求选择视图：ContentNegotiatingViewResolver</h2>
+<p>当控制器的处理方法完成时，通常会返回一个逻辑视图名。如果方法不直接返回逻辑视图名（例如方法返回void），那么逻辑视图名会根据请求的URL判断得出。DispatcherServlet接下来会将视图的名字传递给一个视图解析器，要求它来帮助确定应该用哪个视图来渲染请求结果。</p>
+<p>在面向人类访问的Web应用程序中，选择的视图通常来讲都会渲染为HTML。视图解析方案是个简单的一维活动。如果根据视图名匹配上了视图，那这就是我们要用的视图了。</p>
+<p>当要将视图名解析为能够产生资源表述的视图时，我们就有另外一个维度需要考虑了。视图不仅要匹配视图名，而且所选择的视图要适合客户端。如果客户端想要JSON，那么渲染HTML的视图就不行了——尽管视图名可能匹配。</p>
+<p>Spring的 <strong>ContentNegotiatingViewResolver</strong> 是一个特殊的视图解析器，它考虑到了客户端所需要的内容类型。按照其最简单的形式，ContentNegotiatingViewResolver可以按照下述形式进行配置：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854940_20200322132432054_18798.png" alt></p>
+<p>在这个简单的bean声明背后会涉及到很多事情。要理解ContentNegotiatingViewResolver是如何工作的，这涉及内容协商的两个步骤：</p>
+<p>1．确定请求的媒体类型；</p>
+<p>2．找到适合请求媒体类型的最佳视图。</p>
+<p>让我们深入了解每个步骤来了解ContentNegotiatingViewResolver是如何完成其任务的，首先从弄明白客户端需要什么类型的内容开始。</p>
+<h2 id="确定请求的媒体类型">确定请求的媒体类型</h2>
+<p>在内容协商两步骤中，第一步是确定客户端想要什么类型的内容表述。表面上看，这似乎是一个很简单的事情。难道请求的Accept头部信息不是已经很清楚地表明要发送什么样的表述给客户端吗？</p>
+<p>遗憾的是，Accept头部信息并不总是可靠的。如果客户端是Web浏览器，那并不能保证客户端需要的类型就是浏览器在Accept头部所发送的值。Web浏览器一般只接受对人类用户友好的内容类型（如text/html），所以没有办法（除了面向开发人员的浏览器插件）指定不同的内容类型。</p>
+<p><strong>ContentNegotiatingViewResolver将会考虑到Accept头部信息并使用它所请求的媒体类型，但是它会首先查看URL的文件扩展名。如果URL在结尾处有文件扩展名的话，ContentNegotiatingViewResolver将会基于该扩展名确定所需的类型。</strong> 如果扩展名是“.json”的话，那么所需的内容类型必须是“application/json”。如果扩展名是“.xml”，那么客户端请求的就是“application/xml”。当然，“.html”扩展名表明客户端所需的资源表述为HTML（text/html）。</p>
+<p><strong>如果根据文件扩展名不能得到任何媒体类型的话，那就会考虑请求中的Accept头部信息。</strong> 在这种情况下，Accept头部信息中的值就表明了客户端想要的MIME类型，没有必要再去查找了。</p>
+<p><strong>最后，如果没有Accept头部信息，并且扩展名也无法提供帮助的话，ContentNegotiatingViewResolver将会使用“/”作为默认的内容类型，这就意味着客户端必须要接收服务器发送的任何形式的表述。</strong></p>
+<p>一旦内容类型确定之后，ContentNegotiatingViewResolver就该将逻辑视图名解析为渲染模型的View。 <strong>与Spring的其他视图解析器不同，ContentNegotiatingViewResolver本身不会解析视图。而是委托给其他的视图解析器，让它们来解析视图。</strong></p>
+<p>ContentNegotiatingViewResolver要求其他的视图解析器将逻辑视图名解析为视图。解析得到的每个视图都会放到一个列表中。这个列表装配完成后，ContentNegotiatingViewResolver会循环客户端请求的所有媒体类型，在候选的视图中查找能够产生对应内容类型的视图。第一个匹配的视图会用来渲染模型。</p>
+<h2 id="视图选择策略：ContentNegotiatingViewResolver">视图选择策略：ContentNegotiatingViewResolver</h2>
+<p>在上述的选择过程中，我们阐述了确定所请求媒体类型的默认策略。但是通过为其设置一个 <strong>ContentNegotiationManager</strong> ，我们能够改变它的行为。借助ContentNegotiationManager，我们所能做到的事情如下所示：</p>
+<ul>
+<li>指定默认的内容类型，如果根据请求无法得到内容类型的话，将会使用默认值；</li>
+<li>通过请求参数指定内容类型；</li>
+<li>忽视请求的Accept头部信息；</li>
+<li>将请求的扩展名映射为特定的媒体类型；</li>
+<li>将JAF（Java Activation Framework）作为根据扩展名查找媒体类型的备用方案。</li>
+</ul>
+<p>有三种配置ContentNegotiationManager的方法：</p>
+<ul>
+<li>直接声明一个ContentNegotiationManager类型的bean；</li>
+<li>通过ContentNegotiationManagerFactoryBean间接创建bean；</li>
+<li>重载WebMvcConfigurerAdapter的configureContentNegotiation()方法。</li>
+</ul>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854940_20200322132431842_21761.png" alt></p>
+<p>直接创建ContentNegotiationManager有一些复杂，除非有充分的原因，否则我们不会愿意这样做。后两种方案能够让创建ContentNegotiationManager更加简单。</p>
+<p><strong>注意：ContentNegotiationManager是Spring中相对比较新的功能，是在Spring 3.2中引入的。在Spring 3.2之前，ContentNegotiatingViewResolver的很多行为都是通过直接设置ContentNegotiatingViewResolver的属性进行配置的。</strong> 从Spring 3.2开始，ContentNegotiatingViewResolver的大多数Setter方法都废弃了，鼓励通过ContentNegotiationManager来进行配置。尽管我不会在本章中介绍配置ContentNegotiatingViewResolver的旧方法，但是我们在创建ContentNegotiationManager所设置的很多属性，在ContentNegotiatingViewResolver中都有对应的属性。如果你使用较早版本的Spring的话，应该能够很容易地将新的配置方式对应到旧配置方式中。</p>
+<p>一般而言，如果我们使用XML配置ContentNegotiationManager的话，那最有用的将会是ContentNegotiationManagerFactoryBean。例如，我们可能希望在XML中配置ContentNegotiationManager使用“application/json”作为默认的内容类型：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854939_20200322132431627_23151.png" alt></p>
+<p>因为ContentNegotiationManagerFactoryBean是FactoryBean的实现，所以它会创建一个ContentNegotiationManager bean。这个ContentNegotiationManager能够注入到ContentNegotiatingViewResolver的contentNegotiationManager属性中。</p>
+<p>如果使用Java配置的话，获得ContentNegotiationManager的最简便方法就是扩展WebMvcConfigurerAdapter并重载configureContentNegotiation()方法。在创建Spring MVC应用的时候，我们很可能已经扩展了WebMvcConfigurerAdapter。例如，在Spittr应用中，我们已经有了WebMvcConfigurerAdapter的扩展类，名为WebConfig，所以需要做的就是重载configureContentNegotiation()方法。如下就是configureContentNegotiation()的一个实现，它设置了默认的内容类型：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854939_20200322132431413_3399.png" alt></p>
+<p>我们可以看到，configureContentNegotiation()方法给定了一个 <strong>ContentNegotiationConfigurer</strong> 对象。ContentNegotiationConfigurer中的一些方法对应于ContentNegotiationManager的Setter方法，这样我们就能在ContentNegotiationManager创建时，设置任意内容协商相关的属性。在本例中，我们调用defaultContentType()方法将默认的内容类型设置为“application/json”。</p>
+<p>现在，我们已经有了ContentNegotiationManager bean，接下来就需要将它注入到ContentNegotiatingViewResolver的contentNegotiationManager属性中。这需要我们稍微修改一下之前声明ContentNegotiatingViewResolver的@Bean方法：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854939_20200322132431200_18339.png" alt></p>
+<p>这个@Bean方法注入了ContentNegotiationManager，并使用它调用了setContentNegotiationManager()。这样的结果就是ContentNegotiatingViewResolver将会使用ContentNegotiationManager所定义的行为。</p>
+<p>配置ContentNegotiationManager有很多的细节，在这里无法对它们进行一一介绍。如下的程序清单是一个非常简单的配置样例，当我使用ContentNegotiatingViewResolver的时候，通常会采用这种用法：它默认会使用HTML视图，但是对特定的视图名称将会渲染为JSON输出。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854939_20200322132430982_24954.jpg" alt></p>
+<p>除了上面程序清单中的内容以外，还应该有一个能够处理HTML的视图解析器（如InternalResourceViewResolver或TilesViewResolver）。在大多数场景下，ContentNegotiatingViewResolver会假设客户端需要HTML，如ContentNegotiationManager配置所示。但是，如果客户端指定了它想要JSON（通过在请求路径上使用“.json”扩展名或Accept头部信息）的话，那么ContentNegotiatingViewResolver将会查找能够处理JSON视图的视图解析器。</p>
+<p><strong>如果逻辑视图的名称为“spittles”，那么我们所配置的BeanNameViewResolver将会解析spittles()方法中所声明的View。这是因为bean名称匹配逻辑视图的名称。如果没有匹配的View的话，ContentNegotiatingViewResolver将会采用默认的行为，将其输出为HTML。</strong></p>
+<p>ContentNegotiatingViewResolver一旦能够确定客户端想要什么样的媒体类型，接下来就是查找渲染这种内容的视图。</p>
+<h3 id="ContentNegotiatingViewResolver的优势与限制">ContentNegotiatingViewResolver的优势与限制</h3>
+<p>ContentNegotiatingViewResolver最大的优势在于，它在Spring MVC之上构建了REST资源表述层，控制器代码无需修改。相同的一套控制器方法能够为面向人类的用户产生HTML内容，也能针对不是人类的客户端产生JSON或XML。</p>
+<p>如果面向人类用户的接口与面向非人类客户端的接口之间有很多重叠的话，那么内容协商是一种很便利的方案。在实践中，面向人类用户的视图与REST API在细节上很少能够处于相同的级别。如果面向人类用户的接口与面向非人类客户端的接口之间没有太多重叠的话，那么ContentNegotiatingViewResolver的优势就体现不出来了。</p>
+<p>ContentNegotiatingViewResolver还有一个严重的限制。作为ViewResolver的实现，它只能决定资源该如何渲染到客户端，并没有涉及到客户端要发送什么样的表述给控制器使用。如果客户端发送JSON或XML的话，那么ContentNegotiatingViewResolver就无法提供帮助了。</p>
+<p>ContentNegotiatingViewResolver还有一个相关的小问题，所选中的View会渲染模型给客户端，而不是资源。这里有个细微但很重要的区别。当客户端请求JSON格式的Spittle对象列表时，客户端希望得到的响应可能如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854938_20200322132430664_25005.png" alt></p>
+<p>而模型是key-value组成的Map，那么响应可能会如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854938_20200322132430446_22896.png" alt></p>
+<p>尽管这不是很严重的问题，但确实可能不是客户端所预期的结果。</p>
+<p>因为有这些限制， <strong>我通常建议不要使用ContentNegotiatingViewResolver</strong> 。我更加倾向于使用Spring的消息转换功能来生成资源表述。接下来，我们看一下如何在控制器代码中使用Spring的消息转换器。</p>
+<h1>消息转换</h1>
+<p>消息转换（message conversion）提供了一种更为直接的方式，它能够将控制器产生的数据转换为服务于客户端的表述形式。当使用消息转换功能时，DispatcherServlet不再需要那么麻烦地将模型数据传送到视图中。实际上，这里根本就没有模型，也没有视图，只有控制器产生的数据，以及消息转换器（message converter）转换数据之后所产生的资源表述。</p>
+<p>Spring自带了各种各样的转换器，如下表所示，这些转换器满足了最常见的将对象转换为表述的需要。</p>
+<p>例如，假设客户端通过请求的Accept头信息表明它能接受“application/json”，并且Jackson JSON在类路径下，那么处理方法返回的对象将交给MappingJacksonHttpMessageConverter，并由它转换为返回客户端的JSON表述形式。另一方面，如果请求的头信息表明客户端想要“text/xml”格式，那么Jaxb2RootElementHttpMessageConverter将会为客户端产生XML响应。</p>
+<p>注意，表中的HTTP信息转换器除了其中的五个以外都是自动注册的，所以要使用它们的话，不需要Spring配置。但是为了支持它们，你需要添加一些库到应用程序的类路径下。例如，如果你想使用MappingJacksonHttpMessageConverter来实现JSON消息和Java对象的互相转换，那么需要将Jackson JSON Processor库添加到类路径中。类似地，如果你想使用Jaxb2RootElementHttpMessageConverter来实现XML消息和Java对象的互相转换，那么需要JAXB库。如果信息是Atom或RSS格式的话，那么AtomFeedHttpMessageConverter和RssChannelHttpMessageConverter会需要Rome库。</p>
+<table>
+<thead>
+<tr>
+<th>信息转换器</th>
+<th>描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AtomFeedHttpMessageConverter</td>
+<td>Rome Feed对象和Atom feed（媒体类型application/atom+xml）之间的互相转换。 <em>如果 Rome 包在类路径下将会进行注册</em></td>
+</tr>
+<tr>
+<td>BufferedImageHttpMessageConverter</td>
+<td>BufferedImages与图片二进制数据之间互相转换</td>
+</tr>
+<tr>
+<td>ByteArrayHttpMessageConverter</td>
+<td>读取/写入字节数组。从所有媒体类型（<em>/</em>）中读取，并以application/octet-stream格式写入</td>
+</tr>
+<tr>
+<td>FormHttpMessageConverter</td>
+<td>将application/x-www-form-urlencoded内容读入到 <code>MultiValueMap&lt;String,String&gt;</code> 中，也会将 <code>MultiValueMap&lt;String,String&gt;</code> 写入到application/x-www-form- urlencoded中或将 <code>MultiValueMap&lt;String, Object&gt;</code> 写入到multipart/form-data中</td>
+</tr>
+<tr>
+<td>Jaxb2RootElementHttpMessageConverter</td>
+<td>在XML（text/xml或application/xml）和使用JAXB2注解的对象间互相读取和写入。 <em>如果 JAXB v2 库在类路径下，将进行注册</em></td>
+</tr>
+<tr>
+<td>MappingJacksonHttpMessageConverter</td>
+<td>在JSON和类型化的对象或非类型化的HashMap间互相读取和写入。 <em>如果 Jackson JSON 库在类路径下，将进行注册</em></td>
+</tr>
+<tr>
+<td>MappingJackson2HttpMessageConverter</td>
+<td>在JSON和类型化的对象或非类型化的HashMap间互相读取和写入。 <em>如果 Jackson 2 JSON 库在类路径下，将进行注册</em></td>
+</tr>
+<tr>
+<td>MarshallingHttpMessageConverter</td>
+<td>使用注入的编排器和解排器（marshaller和unmarshaller）来读入和写入XML。支持的编排器和解排器包括Castor、JAXB2、JIBX、XMLBeans以及Xstream</td>
+</tr>
+<tr>
+<td>ResourceHttpMessageConverter</td>
+<td>读取或写入Resource</td>
+</tr>
+<tr>
+<td>RssChannelHttpMessageConverter</td>
+<td>在RSS feed和Rome Channel对象间互相读取或写入。 <em>如果 Rome 库在类路径下，将进行注册</em></td>
+</tr>
+<tr>
+<td>SourceHttpMessageConverter</td>
+<td>在XML和javax.xml.transform.Source对象间互相读取和写入。 <em>默认注册</em></td>
+</tr>
+<tr>
+<td>StringHttpMessageConverter</td>
+<td>将所有媒体类型（<em>/</em>）读取为String。将String写入为text/plain</td>
+</tr>
+<tr>
+<td>XmlAwareFormHttpMessageConverter</td>
+<td>FormHttpMessageConverter的扩展，使用SourceHttp MessageConverter来支持基于XML的部分</td>
+</tr>
+</tbody>
+</table>
+<p>你可能已经猜到了，为了支持消息转换，我们需要对Spring MVC的编程模型进行一些小调整。</p>
+<h2 id="在响应体中返回资源：-ResponseBody">在响应体中返回资源：@ResponseBody</h2>
+<p>正常情况下，当处理方法返回Java对象（除String外或View的实现以外）时，这个对象会放在模型中并在视图中渲染使用。但是，如果使用了消息转换功能的话，我们需要告诉Spring跳过正常的模型/视图流程，并使用消息转换器。有不少方式都能做到这一点，但是最简单的方法是为控制器方法添加 <strong>@ResponseBody注解</strong> 。</p>
+<p>重新看一下spittles()方法，我们可以为其添加@ResponseBody注解，这样就能让Spring将方法返回的 <code>List&lt;Spittle&gt;</code> 转换为响应体：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854938_20200322132430230_10858.jpg" alt></p>
+<p>@ResponseBody注解会告知Spring，我们要将返回的对象作为资源发送给客户端，并将其转换为客户端可接受的表述形式。更具体地讲， <strong>DispatcherServlet将会考虑到请求中Accept头部信息，并查找能够为客户端提供所需表述形式的消息转换器。</strong></p>
+<p>举例来讲，假设客户端的Accept头部信息表明它接受“application/json”，并且Jackson JSON库位于应用的类路径下，那么将会选择MappingJacksonHttpMessageConverter或MappingJackson2HttpMessageConverter（这取决于类路径下是哪个版本的Jackson）。消息转换器会将控制器返回的Spittle列表转换为JSON文档，并将其写入到响应体中。响应大致会如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854938_20200322132429916_23092.png" alt></p>
+<h3 id="Jackson使用注意">Jackson使用注意</h3>
+<p>注意在默认情况下，Jackson JSON库在将返回的对象转换为JSON资源表述时，会使用反射。对于简单的表述内容来讲，这没有什么问题。但是如果你重构了Java类型，比如添加、移除或重命名属性，那么所产生的JSON也将会发生变化（如果客户端依赖这些属性的话，那客户端有可能会出错）。</p>
+<p>但是，我们可以在Java类型上使用Jackson的映射注解，从而改变产生JSON的行为。这样我们就能更多地控制所产生的JSON，从而防止它影响到API或客户端。Jackson映射注解的内容超出了本书的讨论范围，不过关于这个主题，在<a href="http://wiki.fasterxml.com/Jackson-Annotations" target="_blank" rel="noopener">http://wiki.fasterxml.com/Jackson-Annotations</a>上有一些有用的文档。</p>
+<p>谈及Accept头部信息，请注意getSpitter()的@RequestMapping注解。在这里，我使用了produces属性表明这个方法只处理预期输出为JSON的请求。也就是说，这个方法只会处理Accept头部信息包含“application/json”的请求。其他任何类型的请求，即使它的URL匹配指定的路径并且是GET请求也不会被这个方法处理。这样的请求会被其他的方法来进行处理（如果存在适当方法的话），或者返回客户端HTTP 406（Not Acceptable）响应。</p>
+<h2 id="在请求体中接收资源：-RequestBody">在请求体中接收资源：@RequestBody</h2>
+<p>到目前为止，我们只关注了REST端点如何为客户端提供资源。但是REST并不是只读的，REST API也可以接受来自客户端的资源表述。如果要让控制器将客户端发送的JSON和XML转换为它所使用的Java对象，那是非常不方便的。在处理逻辑离开控制器的时候，Spring的消息转换器能够将对象转换为表述——它们能不能在表述传入的时候完成相同的任务呢？</p>
+<p>@ResponseBody能够告诉Spring在把数据发送给客户端的时候，要使用某一个消息器，与之类似， <strong>@RequestBody也能告诉Spring查找一个消息转换器，将来自客户端的资源表述转换为对象。</strong> 例如，假设我们需要一种方式将客户端提交的新Spittle保存起来。我们可以按照如下的方式编写控制器方法来处理这种请求：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854938_20200322132429701_13000.png" alt></p>
+<p>如果忽略掉注解的话，那saveSpittle()是一个非常简单的方法。它接受一个Spittle对象作为参数，并使用SpittleRepository进行保存，最终返回spittleRepository.save()方法所得到的Spittle对象。</p>
+<p>但是，通过使用注解，它会变得更加有意思也更加强大。@RequestMapping表明它只能处理“/spittles”（在类级别的@RequestMapping中进行了声明）的POST请求。POST请求体中预期要包含一个Spittle的资源表述。因为Spittle参数上使用了@RequestBody，所以Spring将会查看请求中的Content-Type头部信息，并查找能够将请求体转换为Spittle的消息转换器。</p>
+<p>例如，如果客户端发送的Spittle数据是JSON表述形式，那么Content-Type头部信息可能就会是“application/json”。在这种情况下，DispatcherServlet会查找能够将JSON转换为Java对象的消息转换器。如果Jackson 2库在类路径中，那么MappingJackson2HttpMessageConverter将会担此重任，将JSON表述转换为Spittle，然后传递到saveSpittle()方法中。这个方法还使用了@ResponseBody注解，因此方法返回的Spittle对象将会转换为某种资源表述，发送给客户端。</p>
+<p>注意，@RequestMapping有一个consumes属性，我们将其设置为“application/json”。consumes属性的工作方式类似于produces，不过它会关注请求的Content-Type头部信息。它会告诉Spring这个方法只会处理对“/spittles”的POST请求，并且要求请求的Content-Type头部信息为“application/json”。如果无法满足这些条件的话，会由其他方法（如果存在合适的方法的话）来处理请求。</p>
+<h2 id="控制器默认启用消息转换：-RestController">控制器默认启用消息转换：@RestController</h2>
+<p>当处理请求时，@ResponseBody和@RequestBody是启用消息转换的一种简洁和强大方式。但是，如果你所编写的控制器有多个方法，并且每个方法都需要信息转换功能的话，那么这些注解就会带来一定程度的重复性。</p>
+<p>Spring 4.0引入了@RestController注解，能够在这个方面给我们提供帮助。 <strong>如果在控制器类上使用@RestController来代替@Controller的话，Spring将会为该控制器的所有处理方法应用消息转换功能。我们不必为每个方法都添加@ResponseBody了</strong> 。我们所定义的SpittleController可能就会如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854937_20200322132429386_11873.jpg" alt></p>
+<p>上面程序清单的关键点在于代码中此时不包含什么。这两个处理器方法都没有使用@ResponseBody注解，因为控制器使用了@RestController，所以它的方法所返回的对象将会通过消息转换机制，产生客户端所需的资源表述。</p>
+<p>到目前为止，我们看到了如何使用Spring MVC编程模型将RESTful资源发布到响应体之中。但是响应除了负载以外还会有其他的内容。头部信息和状态码也能够为客户端提供响应的有用信息。接下来，我们看一下在提供资源的时候，如何填充头部信息和设置状态码。</p>
+<h2 id="提供资源之外的其他内容">提供资源之外的其他内容</h2>
+<p>@ResponseBody提供了一种很有用的方式，能够将控制器返回的Java对象转换为发送到客户端的资源表述。实际上，将资源表述发送给客户端只是整个过程的一部分。一个好的REST API不仅能够在客户端和服务器之间传递资源，它还能够给客户端提供额外的元数据，帮助客户端理解资源或者在请求中出现了什么情况。</p>
+<p>例如，我们为SpittleController添加一个新的处理器方法，它会提供单个Spittle对象：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854937_20200322132428962_2618.png" alt></p>
+<p>在这里，通过id参数传入了一个ID，然后根据它调用Repository的findOne()方法，查找Spittle对象。处理器方法会返回findOne()方法得到的Spittle对象，消息转换器会负责产生客户端所需的资源表述。</p>
+<p>非常简单，对吧？我们没办法让它更棒了。它还能更好吗？如果根据给定的ID，无法找到某个Spittle对象的ID属性能够与之匹配，findOne()方法返回null的时候，你觉得会发生什么呢？结果就是spittleById()方法会返回null，响应体为空，不会返回任何有用的数据给客户端。同时，响应中默认的HTTP状态码是200（OK），表示所有的事情运行正常。</p>
+<p>但是，所有的事情都是不对的。客户端要求Spittle对象，但是它什么都没有得到。它既没有收到Spittle对象也没有收到任何消息表明出现了错误。服务器实际上是在说：“这是一个没用的响应，但是能够告诉你一切都正常！”</p>
+<p>现在，我们考虑一下在这种场景下应该发生什么。至少，状态码不应该是200，而应该是404（Not Found），告诉客户端它们所要求的内容没有找到。如果响应体中能够包含错误信息而不是空的话就更好了。</p>
+<p>Spring提供了多种方式来处理这样的场景：</p>
+<ul>
+<li>使用@ResponseStatus注解可以指定状态码；</li>
+<li>控制器方法可以返回ResponseEntity对象，该对象能够包含更多响应相关的元数据；</li>
+<li>异常处理器能够应对错误场景，这样处理器方法就能关注于正常的状况。</li>
+</ul>
+<p>在这个方面，Spring提供了很多的灵活性，其实也不存在唯一正确的方式。我不会用某一种固定的策略来处理所有的错误或涵盖所有的场景，而是会向读者展现多种修改spittleById()的方法，以应对Spittle无法找到的场景。</p>
+<h3 id="使用ResponseEntity">使用ResponseEntity</h3>
+<p>作为@ResponseBody的替代方案，控制器方法可以返回一个ResponseEntity对象。ResponseEntity中可以包含响应相关的元数据（如头部信息和状态码）以及要转换成资源表述的对象。</p>
+<p>因为ResponseEntity允许我们指定响应的状态码，所以当无法找到Spittle的时候，我们可以返回HTTP 404错误。如下是新版本的spittleById()，它会返回ResponseEntity：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854937_20200322132428749_12757.png" alt></p>
+<p>像前面一样，路径中得到的ID用来从Repository中检索Spittle。如果找到的话，状态码设置为HttpStatus.OK（这是之前的默认值），但是如果Repository返回null的话，状态码设置为HttpStatus.NOT_FOUND，这会转换为HTTP 404。最后，会创建一个新的ResponseEntity，它会把Spittle和状态码传送给客户端。</p>
+<p>注意这个spittleById()方法没有使用@ResponseBody注解。除了包含响应头信息、状态码以及负载以外，ResponseEntity还包含了@ResponseBody的语义，因此负载部分将会渲染到响应体中，就像之前在方法上使用@ResponseBody注解一样。 <strong>如果返回ResponseEntity的话，那就没有必要在方法上使用@ResponseBody注解了。</strong></p>
+<p>我们在正确的方向上走出了第一步，如果所要求的Spittle无法找到的话，客户端能够得到一个合适的状态码。但是在本例中，响应体依然为空。我们可能会希望在响应体中包含一些错误信息。我们重试一次，首先定义一个包含错误信息的Error对象：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854937_20200322132428531_6284.png" alt></p>
+<p>然后，我们可以修改spittleById()，让它返回Error：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854927_20200322132428313_23014.png" alt></p>
+<p>现在，这个方法的行为已经符合我们的预期了。如果找到Spittle的话，就会把返回的对象以及200（OK）的状态码封装到ResponseEntity中。另一方面，如果findOne()返回null的话，将会创建一个Error对象，并将其与404（Not Found）状态码一起封装到ResponseEntity中，然后返回。</p>
+<p>你也许觉得我们可以到此结束这个话题了。毕竟，方法按照我们期望的方式在运行。但是，还有一点事情让我不太舒服。</p>
+<p>首先，这比我们开始的时候更为复杂。涉及到了更多的逻辑，包括条件语句。另外，方法返回 <code>ResponseEntity&lt;?&gt;</code> 感觉有些问题。ResponseEntity所使用的泛型为它的解析或出现错误留下了太多的空间。不过，我们可以借助错误处理器来修正这些问题。</p>
+<h3 id="处理错误">处理错误</h3>
+<p>spittleById()方法中的if代码块是处理错误的，但这是控制器中错误处理器（error handler）所擅长的领域。错误处理器能够处理导致问题的场景，这样常规的处理器方法就能只关心正常的逻辑处理路径了。我们重构一下代码来使用错误处理器。首先，定义能够对应SpittleNotFoundException的错误处理器：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854927_20200322132428098_13356.png" alt></p>
+<p>@ExceptionHandler注解能够用到控制器方法中，用来处理特定的异常。这里，它表明如果在控制器的任意处理方法中抛出SpittleNotFoundException异常，就会调用spittleNotFound()方法来处理异常。</p>
+<p>至于SpittleNotFoundException，它是一个很简单异常类：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854927_20200322132427783_21382.png" alt></p>
+<p>现在，我们可以移除掉spittleById()方法中大多数的错误处理代码：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854927_20200322132427567_16932.png" alt></p>
+<p>这个版本的spittleById()方法确实干净了很多。除了对返回值进行null检查，它完全关注于成功的场景，也就是能够找到请求的Spittle。同时，在返回类型中，我们能移除掉奇怪的泛型了。</p>
+<p>不过，我们能够让代码更加干净一些。现在我们已经知道spittleById()将会返回Spittle并且HTTP状态码始终会是200（OK），那么就可以不再使用ResponseEntity，而是将其替换为@ResponseBody：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854926_20200322132427352_19180.png" alt></p>
+<p>当然，如果控制器类上使用了@RestController，我们甚至不再需要@ResponseBody：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854926_20200322132427139_31311.png" alt></p>
+<p>鉴于错误处理器的方法会始终返回Error，并且HTTP状态码为404（Not Found），那么现在我们可以对spittleNotFound()方法进行类似的清理：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854926_20200322132426924_13504.png" alt></p>
+<p><strong>因为spittleNotFound()方法始终会返回Error，所以使用ResponseEntity的唯一原因就是能够设置状态码。但是通过为spittleNotFound()方法添加@ResponseStatus(HttpStatus.NOT_FOUND)注解，我们可以达到相同的效果，而且可以不再使用ResponseEntity了。</strong></p>
+<p>同样，如果控制器类上使用了@RestController，那么就可以移除掉@ResponseBody，让代码更加干净：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854926_20200322132426711_22935.png" alt></p>
+<p>在一定程度上，我们已经圆满达到了想要的效果。为了设置响应状态码，我们首先使用ResponseEntity，但是稍后我们借助异常处理器以及@ResponseStatus，避免使用ResponseEntity，从而让代码更加整洁。</p>
+<p>似乎，我们不再需要使用ResponseEntity了。但是，有一种场景ResponseEntity能够很好地完成，但是其他的注解或异常处理器却做不到。现在，我们看一下如何在响应中设置头部信息。</p>
+<h3 id="在响应中设置头部信息">在响应中设置头部信息</h3>
+<p>在saveSpittle()方法中，我们在处理POST请求的过程中创建了一个新的Spittle资源。但是，按照目前的写法，我们无法准确地与客户端交流。</p>
+<p>在saveSpittle()处理完请求之后，服务器在响应体中包含了Spittle的表述以及HTTP状态码200（OK），将其返回给客户端。这里没有什么大问题，但是还不是完全准确。</p>
+<p>当然，假设处理请求的过程中成功创建了资源，状态可以视为OK。但是，我们不仅仅需要说“OK”。我们创建了新的内容，HTTP状态码也将这种情况告诉给了客户端。不过，HTTP 201不仅能够表明请求成功完成，而且还能描述创建了新资源。如果我们希望完整准确地与客户端交流，那么响应是不是应该为201（Created），而不仅仅是200（OK）呢？</p>
+<p>根据我们目前所学到的知识，这个问题解决起来很容易。我们需要做的就是为saveSpittle()方法添加@ResponseStatus注解，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854926_20200322132426497_12005.png" alt></p>
+<p>这应该能够完成我们的任务，现在状态码能够精确反应发生了什么情况。它告诉客户端我们新创建了资源。问题已经得以解决！</p>
+<p>但这只是问题的一部分。客户端知道新创建了资源，你觉得客户端会不会感兴趣新创建的资源在哪里呢？毕竟，这是一个新创建的资源，会有一个新的URL与之关联。难道客户端只能猜测新创建资源的URL是什么吗？我们能不能以某种方式将其告诉客户端？</p>
+<p><strong>当创建新资源的时候，将资源的URL放在响应的Location头部信息中，并返回给客户端是一种很好的方式。</strong> 因此，我们需要有一种方式来填充响应头部信息，此时我们的老朋友ResponseEntity就能提供帮助了。</p>
+<p>如下的程序清单展现了一个新版本的saveSpittle()，它会返回ResponseEntity用来告诉客户端新创建的资源。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854925_20200322132426284_11579.jpg" alt></p>
+<p>在这个新的版本中，我们创建了一个HttpHeaders实例，用来存放希望在响应中包含的头部信息值。 <strong>HttpHeaders是<code>MultiValueMap&lt;String, String&gt;</code>的特殊实现，它有一些便利的Setter方法（如setLocation()），用来设置常见的HTTP头部信息。</strong> 在得到新创建Spittle资源的URL之后，接下来使用这个头部信息来创建ResponseEntity。</p>
+<p>哇！原本简单的saveSpittle()方法瞬间变得臃肿了。但是，更值得关注的是，它使用硬编码值的方式来构建Location头部信息。URL中“localhost”以及“8080”这两个部分尤其需要注意，因为如果我们将应用部署到其他地方，而不是在本地运行的话，它们就不适用了。</p>
+<p>我们其实没有必要手动构建URL，Spring提供了 <strong>UriComponentsBuilder</strong> ，可以给我们一些帮助。它是一个构建类，通过逐步指定URL中的各种组成部分（如host、端口、路径以及查询），我们能够使用它来构建UriComponents实例。借助UriComponentsBuilder所构建的UriComponents对象，我们就能获得适合设置给Location头部信息的URI。</p>
+<p><strong>为了使用UriComponentsBuilder，我们需要做的就是在处理器方法中将其作为一个参数</strong> ，如下面的程序清单所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854925_20200322132425968_22346.jpg" alt></p>
+<p>在处理器方法所得到的UriComponentsBuilder中，会预先配置已知的信息如host、端口以及Servlet内容。它会从处理器方法所对应的请求中获取这些基础信息。基于这些信息，代码会通过设置路径的方式构建UriComponents其余的部分。</p>
+<p>注意，路径的构建分为两步。第一步调用path()方法，将其设置为“/spittles/”，也就是这个控制器所能处理的基础路径。然后，在第二次调用path()的时候，使用了已保存Spittle的ID。我们可以推断出来，每次调用path()都会基于上次调用的结果。</p>
+<p>在路径设置完成之后，调用build()方法来构建UriComponents对象，根据这个对象调用toUri()就能得到新创建Spittle的URI。</p>
+<p>在REST API中暴资源只代表了会话的一端。如果发布的API没有人关心和使用的话，那也没有什么价值。通常来讲，移动或JavaScript应用会是REST API的客户端，但是Spring应用也完全可以使用这些资源。我们换个方向，看一下如何编写Spring代码实现RESTful交互的客户端。</p>
+<h1>编写REST客户端：RestTemplate</h1>
+<p>作为客户端，编写与REST资源交互的代码可能会比较乏味，并且所编写的代码都是样板式的。例如，假设我们需要借助Facebook的Graph API，编写方法来获取某人的Facebook基本信息。不过，获取基本信息的代码会有点复杂，如下面的程序清单所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854925_20200322132425650_17779.jpg" alt></p>
+<p>你可以看到，在使用REST资源的时候涉及很多代码。这里我甚至还偷懒使用了Jakarta Commons HTTP Client发起请求并使用Jackson JSON processor解析响应。</p>
+<p>仔细看一下fetchFacebookProfile()方法，你可能会发现方法中只有少量代码与获取Facebook个人信息直接相关。如果你要编写另一个方法来使用其他的REST资源，很可能会有很多代码是与fetchFacebookProfile()相同的。</p>
+<p>另外，还有一些地方可能会抛出的IOException异常。因为IOException是检查型异常，所以要么捕获它，要么抛出它。在本示例中，我选择捕获它并在它的位置重新抛出一个非检查型异常RuntimeException。</p>
+<p>鉴于在资源使用上有如此之多的样板代码，你可能会觉得最好的方式是封装通用代码并参数化可变的部分。这正是Spring的 <strong>RestTemplate</strong> 所做的事情。就像JdbcTemplate处理了JDBC数据访问时的丑陋部分，RestTemplate让我们在使用RESTful资源时免于编写那些乏味的代码。</p>
+<p>稍后，我们将会看到如何借助RestTemplate重写fetchFacebookProfile()方法，这会戏剧性的简化该方法并消除掉样板式代码。但首先，让我们整体了解一下RestTemplate提供的所有REST操作。</p>
+<h2 id="了解RestTemplate的操作">了解RestTemplate的操作</h2>
+<p>RestTemplate定义了36个与REST资源交互的方法，其中的大多数都对应于HTTP的方法。但是，在本章中我没有足够的篇幅涵盖所有的36个方法。其实，这里面只有11个独立的方法，其中有十个有三种重载形式，而第十一个则重载了六次，这样一共形成了36个方法。下表描述了RestTemplate所提供的11个独立方法。</p>
+<p>除了TRACE以外，RestTemplate涵盖了所有的HTTP动作。除此之外，execute()和exchange()提供了较低层次的通用方法来使用任意的HTTP方法。</p>
+<p>表中的大多数操作都以三种方法的形式进行了重载：</p>
+<ul>
+<li>一个使用java.net.URI作为URL格式，不支持参数化URL；</li>
+<li>一个使用String作为URL格式，并使用Map指明URL参数；</li>
+<li>一个使用String作为URL格式，并使用可变参数列表指明URL参数。</li>
+</ul>
+<p>明确了RestTemplate所提供的11个操作以及各个变种如何工作之后，你就能以自己的方式编写使用REST资源的客户端了。我们通过对四个主要HTTP方法的支持（也就是GET、PUT、DELETE和POST）来研究RestTemplate的操作。我们从GET方法的getForObject()和getForEntity()开始。</p>
+<table>
+<thead>
+<tr>
+<th>方　　法</th>
+<th>描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>delete()</td>
+<td>在特定的URL上对资源执行HTTP DELETE操作</td>
+</tr>
+<tr>
+<td>exchange()</td>
+<td>在URL上执行特定的HTTP方法，返回包含对象的ResponseEntity，这个对象是从响应体中映射得到的</td>
+</tr>
+<tr>
+<td>execute()</td>
+<td>在URL上执行特定的HTTP方法，返回一个从响应体映射得到的对象</td>
+</tr>
+<tr>
+<td>getForEntity()</td>
+<td>发送一个HTTP GET请求，返回的ResponseEntity包含了响应体所映射成的对象</td>
+</tr>
+<tr>
+<td>getForObject()</td>
+<td>发送一个HTTP GET请求，返回的请求体将映射为一个对象</td>
+</tr>
+<tr>
+<td>headForHeaders()</td>
+<td>发送HTTP HEAD请求，返回包含特定资源URL的HTTP头</td>
+</tr>
+<tr>
+<td>optionsForAllow()</td>
+<td>发送HTTP OPTIONS请求，返回对特定URL的Allow头信息</td>
+</tr>
+<tr>
+<td>postForEntity()</td>
+<td>POST数据到一个URL，返回包含一个对象的ResponseEntity，这个对象是从响应体中映射得到的</td>
+</tr>
+<tr>
+<td>postForLocation()</td>
+<td>POST数据到一个URL，返回新创建资源的URL</td>
+</tr>
+<tr>
+<td>postForObject()</td>
+<td>POST数据到一个URL，返回根据响应体匹配形成的对象</td>
+</tr>
+<tr>
+<td>put()</td>
+<td>PUT资源到特定的URL</td>
+</tr>
+</tbody>
+</table>
+<h2 id="GET资源">GET资源</h2>
+<p>你可能意识到在上表中列出了两种执行GET请求的方法：getForObject()和getForEntity()。正如之前所描述的，每个方法又有三种形式的重载。三个getForObject()方法的签名如下：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854925_20200322132425434_22896.png" alt></p>
+<p>类似地，getForEntity()方法的签名如下：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854925_20200322132425221_4836.png" alt></p>
+<p>除了返回类型，getForEntity()方法就是getForObject()方法的镜像。实际上，它们的工作方式大同小异。它们都执行根据URL检索资源的GET请求。它们都将资源根据responseType参数匹配为一定的类型。唯一的区别在于getForObject()只返回所请求类型的对象，而getForEntity()方法会返回请求的对象以及响应相关的额外信息。</p>
+<p>让我们首先看一下稍微简单的getForObject()方法。然后再看看如何使用getForEntity()方法来从GET响应中获取更多的信息。</p>
+<h3 id="检索资源：getForObject">检索资源：getForObject()</h3>
+<p>getForObject()方法是检索资源的合适选择。我们请求一个资源并按照所选择的Java类型接收该资源。作为getForObject()能够做什么的一个简单示例，让我们看一下fetchFacebookProfile()的另一个实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Profile <span class="title">fetchFacebookProfile</span><span class="params">(String id)</span></span>&#123;</span><br><span class="line">    RestTemplate rest = <span class="keyword">new</span> RestTemplate(); </span><br><span class="line">    <span class="keyword">return</span> rest.getForobject(<span class="string">"http://graph.facebook.com/&#123;id&#125;"</span>, Profile.class, id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面程序清单中，fetchFacebookProfile()涉及十多行代码。通过使用RestTemplate，现在减少到了几行。</p>
+<p>fetchFacebookProfile()首先构建了一个RestTemplate的实例（另一种可行的方式是注入实例）。接下来，它调用了getForObject()来得到Facebook个人信息。为了做到这一点，它要求结果是Profile对象。在接收到Profile对象后，该方法将其返回给调用者。</p>
+<p>注意，在这个新版本的fetchFacebookProfile ()中，我们没有使用字符串连接来构建URL，而是利用了 <strong>RestTemplate可以接受参数化URL</strong> 这一功能。URL中的{id}占位符最终将会用方法的id参数来填充。 <strong>getForObject()方法的最后一个参数是大小可变的参数列表，每个参数都会按出现顺序插入到指定URL的占位符中</strong> 。</p>
+<p>另外一种替代方案是将id参数放到Map中，并以id作为key，然后将这个Map作为最后一个参数传递给getForObject()：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Spittle[] fetchFacebookProfile(String id) &#123;</span><br><span class="line">    Map&lt;String,String&gt; urlVariables = <span class="keyword">new</span> HashMap&lt;String,String&gt;();</span><br><span class="line">    ur1Variables.put(<span class="string">"id"</span>, id); </span><br><span class="line">    RestTemplate rest = <span class="keyword">new</span> RestTemplate(); </span><br><span class="line">    <span class="keyword">return</span> rest.getForobject(<span class="string">"http://graph.facebook.com/&#123;id&#125;"</span>, Profile.class, urlVariables);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里没有任何形式的JSON解析和对象映射。在表面之下， <strong>getForObject()为我们将响应体转换为对象。它实现这些需要依赖消息转换器表中所列的HTTP消息转换器，与带有@ResponseBody注解的Spring MVC处理方法所使用的一样。</strong></p>
+<p>这个方法也没有任何异常处理。这不是因为getForObject()不能抛出异常，而是因为它抛出的异常都是非检查型的。 <strong>如果在getForObject()中有错误，将抛出非检查型RestClientException异常（或者它的一些子类）。如果愿意的话，你可以捕获它——但编译器不会强制你捕获它。</strong></p>
+<h3 id="抽取响应的元数据：getForEntity">抽取响应的元数据：getForEntity()</h3>
+<p>作为getForObject()的一个替代方案，RestTemplate还提供了getForEntity()。getForEntity()方法与getForObject()方法的工作很相似。getForObject()只返回资源（通过HTTP信息转换器将其转换为Java对象），getForEntity()会在ResponseEntity中返回相同的对象，而且ResponseEntity还带有关于响应的额外信息，如HTTP状态码和响应头。</p>
+<p>我们可能想使用ResponseEntity所做的事就是获取响应头的一个值。例如，假设除了获取资源，还想要知道资源的最后修改时间。假设服务端在LastModified头部信息中提供了这个信息，我们可以这样像这样使用getHeaders()方法：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854924_20200322132424908_32642.png" alt></p>
+<p>getHeaders()方法返回一个HttpHeaders对象，该对象提供了多个便利的方法来查询响应头，包括getLastModified()，它将返回从1970年1月1日开始的毫秒数。</p>
+<p>除了getLastModified()，HttpHeaders还包含如下的方法来获取头信息：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854924_20200322132424698_2503.png" alt></p>
+<p>为了实现更通用的HTTP头信息访问，HttpHeaders提供了get()方法和getFirst()方法。两个方法都接受String参数来标识所需要的头信息。get()将会返回一个String值的列表，其中的每个值都是赋给该头部信息的，而getFirst()方法只会返回第一个头信息的值。</p>
+<p>如果你对响应的HTTP状态码感兴趣，那么你可以调用getStatusCode()方法。例如，考虑下面这个获取Spittle对象的方法：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854924_20200322132424381_23096.jpg" alt></p>
+<p>在这里，如果服务器响应304状态，这意味着服务器端的内容自从上一次请求之后再也没有修改。在这种情况下，将会抛出自定义的NotModifiedException异常来表明客户端应该检查它的缓存来获取Spittle。</p>
+<h2 id="PUT资源">PUT资源</h2>
+<p>为了对数据进行PUT操作，RestTemplate提供了三个简单的put()方法。就像其他的RestTemplate方法一样，put()方法有三种形式：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854924_20200322132424165_28336.png" alt></p>
+<p>按照它最简单的形式，put()接受一个java.net.URI，用来标识（及定位）要将资源发送到服务器上，另外还接受一个对象，这代表了资源的Java表述。</p>
+<p>例如，以下展现了如何使用基于URI版本的put()方法来更新服务器上的Spittle资源：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854924_20200322132423853_8923.png" alt></p>
+<p>在这里，尽管方法签名很简单，但是使用java.net.URI作为参数的影响很明显。为了创建所更新Spittle对象的URL，我们要进行字符串拼接。</p>
+<p>从getForObject()和getForEntity()方法中我们也看到了，使用基于String的其他put()方法能够为我们减少创建URI的不便。这些方法可以将URI指定为模板并对可变部分插入值。以下是使用基于String的put()方法重写的updateSpittle()：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854923_20200322132423640_31830.png" alt></p>
+<p>现在的URI使用简单的String模板来进行表示。当RestTemplate发送PUT请求时，URI模板将{id}部分用spittle.getId()方法的返回值来进行替换。就像getForObject()和getForEntity()一样，这个版本的put()方法最后一个参数是大小可变的参数列表， <strong>每一个值会出现按照顺序赋值给占位符变量。</strong></p>
+<p>你还可以将模板参数作为Map传递进来：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854923_20200322132423426_25884.png" alt></p>
+<p><strong>当使用Map来传递模板参数时，Map条目的每个key值与URI模板中占位符变量的名字相同。</strong></p>
+<p>在所有版本的put()中，第二个参数都是表示资源的Java对象，它将按照指定的URI发送到服务器端。在本示例中，它是一个Spittle对象。RestTemplate将使用消息转换器表中的某个HTTP消息转换器将Spittle对象转换为一种表述形式，并在请求体中将其发送到服务器端。</p>
+<p>对象将被转换成什么样的内容类型很大程度上取决于传递给put()方法的类型。如果给定一个String值，那么将会使用StringHttpMessageConverter：这个值直接被写到请求体中，内容类型设置为“text/plain”。如果给定一个 <code>MultiValueMap&lt;String,String&gt;</code> ，那么这个Map中的值将会被FormHttpMessageConverter以“application/x-www-form-urlencoded”的格式写到请求体中。</p>
+<p>因为我们传递进来的是Spittle对象，所以需要一个能够处理任意对象的信息转换器。如果在类路径下包含Jackson 2库，那么MappingJacksonHttpMessageConverter将以application/json格式将Spittle写到请求中。</p>
+<h2 id="DELETE资源">DELETE资源</h2>
+<p>当你不需要在服务端保留某个资源时，那么可能需要调用RestTemplate的delete()方法。就像PUT方法那样，delete()方法有三个版本，它们的签名如下：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854923_20200322132423211_28363.png" alt></p>
+<p>很容易吧，delete()方法是所有RestTemplate方法中最简单的。你唯一要提供的就是要删除资源的URI。例如，为了删除指定ID的Spittle，你可以这样调用delete()：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854923_20200322132423001_21158.png" alt></p>
+<p>这很简单，但在这里我们还是依赖字符串连接来创建URI对象。所以，我们再看一个更简单的delete()方法，它能够使得我们免于这些麻烦：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854923_20200322132422787_16392.png" alt></p>
+<p>现在我已经为你展现了最简单的RestTemplate方法，让我们看看RestTemplate最多样化的一组方法——它们能够支持HTTP POST请求。</p>
+<h2 id="POST资源数据">POST资源数据</h2>
+<p>RestTemplate有三个不同类型的方法来发送POST请求。当你再乘上每个方法的三个不同变种，那就是有九个方法来POST数据到服务器端。这些方法中有两个的名字看起来比较类似。postForObject()和postForEntity()对POST请求的处理方式与发送GET请求的getForObject()和getForEntity()方法是类似的。另一个方法是getForLocation()，它是POST请求所特有的。</p>
+<h3 id="在POST请求中获取响应对象">在POST请求中获取响应对象</h3>
+<p>假设你正在使用RestTemplate来POST一个新的Spitter对象到Spittr应用程序的REST API。因为这是一个全新的Spitter，服务端并不知道它。因此，它还不是真正的REST资源，也没有URL。另外，在服务端创建之前，客户端并不知道Spitter的ID。</p>
+<p>POST资源到服务端的一种方式是使用RestTemplate的postForObject()方法。postForObject()方法的三个变种签名如下：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854922_20200322132422574_28816.png" alt></p>
+<p>在所有情况下，第一个参数都是资源要POST到的URL，第二个参数是要发送的对象，而第三个参数是预期返回的Java类型。在将URL作为String类型的两个版本中，第四个参数指定了URL变量（要么是可变参数列表，要么是一个Map）。</p>
+<p>当POST新的Spitter资源到Spitter REST API时，它们应该发送到http://localhost:8080/spittr-api/spitters，这里会有一个应对POST请求的处理方法来保存对象。因为这个URL不需要URL参数，所以我们可以使用任何版本的postForObject()。但为了保持尽可能简单，我们可以这样调用：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854922_20200322132422362_4793.png" alt></p>
+<p>postSpitterForObject()方法给定了一个新创建的Spitter对象，并使用postForObject()将其发送到服务器端。在响应中，它接收到一个Spitter对象并将其返回给调用者。</p>
+<p>就像getForEntity()方法一样，你可能想得到请求带回来的一些元数据。在这种情况下，postForEntity()是更合适的方法。postForEntity()方法有着与postForObject()几乎相同的一组签名：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854922_20200322132422149_10005.png" alt></p>
+<p>假设除了要获取返回的Spitter资源，还要查看响应中Location头信息的值。在这种情况下，你可以这样调用postForEntity()：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854922_20200322132421835_15268.png" alt></p>
+<p>与getForEntity()方法一样，postForEntity()返回一个 <code>ResponseEntity&lt;T&gt;</code> 对象。你可以调用这个对象的getBody()方法以获取资源对象（在本示例中是Spitter）。getHeaders()会给你一个HttpHeaders，通过它可以访问响应中返回的各种HTTP头信息。这里，我们调用getLocation()来得到java.net.URI形式的Location头信息。</p>
+<h3 id="在POST请求后获取资源位置">在POST请求后获取资源位置</h3>
+<p>如果要同时接收所发送的资源和响应头，postForEntity()方法是很便利的。但通常你并不需要将资源发送回来（毕竟，将其发送到服务器端是第一位的）。如果你真正需要的是Location头信息的值，那么使用RestTemplate的postForLocation()方法会更简单。</p>
+<p>类似于其他的POST方法，postForLocation()会在POST请求的请求体中发送一个资源到服务器端。但是，响应不再是相同的资源对象，postForLocation()的响应是新创建资源的位置。它有如下三个方法签名：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854921_20200322132421623_11842.png" alt></p>
+<p>为了展示postForLocation()，让我们再次POST一个Spitter。这次，我们希望在返回中包含资源的URL：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854921_20200322132421410_24365.png" alt></p>
+<p>在这里，我们以String的形式将目标URL传递进来，还有要POST的Spitter对象（在本示例中没有URL参数）。在创建资源后，如果服务端在响应的Location头信息中返回新资源的URL，接下来postForLocation()会以String的格式返回该URL。</p>
+<h2 id="交换资源：exchange">交换资源：exchange()</h2>
+<p>到目前为止，我们已经看到RestTemplate的各种方法来GRT、PUT、DELETE以及POST资源。在它们之中，我们看到两个特殊的方法：getForEntity()和postForEntity()，这两个方法将结果资源包含在一个ResponseEntity对象中，通过这个对象我们可以得到响应头和状态码。</p>
+<p>能够从响应中读取头信息是很有用的。但是如果你想在发送给服务端的请求中设置头信息的话，怎么办呢？这就是RestTemplate的exchange()的用武之地。</p>
+<p>像RestTemplate的其他方法一样，exchange()也重载为三个签名格式。一个使用java.net.URI来标识目标URL，而其他两个以String的形式传入URL并带有URL变量。如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854921_20200322132421198_28283.jpg" alt></p>
+<p>exchange()方法使用HttpMethod参数来表明要使用的HTTP动作。根据这个参数的值，exchange()能够执行与其他RestTemplate方法一样的工作。</p>
+<p>例如，从服务器端获取Spitter资源的一种方式是使用RestTemplate的getForEntity()方法，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854921_20200322132420886_32700.png" alt></p>
+<p>在下面的代码片段中，可以看到exchange()也可以完成这项任务：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854921_20200322132420674_16896.png" alt></p>
+<p>通过传入HttpMethod.GET作为HTTP动作，我们会要求exchange()发送一个GET请求。第三个参数是用于在请求中发送资源的，但因为这是一个GET请求，它可以是null。下一个参数表明我们希望将响应转换为Spitter对象。最后一个参数用于替换URL模板中{spitter}占位符的值。</p>
+<p>按照这种方式，exchange()与之前使用的getForEntity()是几乎相同的，但是，不同于getForEntity()——或getForObject()——exchange()方法允许在请求中设置头信息。接下来，我们不再给exchange()传递null，而是传入带有请求头信息的HttpEntity。</p>
+<p>如果不指明头信息，exchange()对Spitter的GET请求会带有如下的头信息：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854920_20200322132420464_29464.png" alt></p>
+<p>让我们看一下Accept头信息。Accept头信息表明它能够接受多种不同的XML内容类型以及application/json。这样服务器端在决定采用哪种格式返回资源时，就有很大的可选空间。假设我们希望服务端以JSON格式发送资源。在这种情况下，我们需要将“application/json”设置为Accept头信息的唯一值。</p>
+<p><strong>设置请求头信息是很简单的，只需构造发送给exchange()方法的HttpEntity对象即可，HttpEntity中包含承载头信息的MultiValueMap</strong> ：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854920_20200322132420151_9433.png" alt></p>
+<p>在这里，我们创建了一个LinkedMultiValueMap并添加值为“application/json”的Accept头信息。接下来，我们构建了一个HttpEntity（使用Object泛型类型），将MultiValueMap作为构造参数传入。 <strong>如果这是一个PUT或POST请求，我们需要为HttpEntity设置在请求体中发送的对象——对于GET请求来说，这是没有必要的。</strong></p>
+<p>现在，我们可以传入HttpEntity来调用exchange()：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854920_20200322132419940_20456.png" alt></p>
+<p>表面上看，结果是一样的。我们得到了请求的Spitter对象。但在表面之下，请求将会带有如下的头信息发送：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584854920_20200322132419722_23256.png" alt></p>
+<p>假设服务器端能够将Spitter序列化为JSON，响应体将会以JSON格式来进行表述。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>50-使用SPRINGMVC创建REST</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">了解REST</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#REST的基础知识"><span class="nav-text">REST的基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring是如何支持REST的"><span class="nav-text">Spring是如何支持REST的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建第一个REST端点"><span class="nav-text">创建第一个REST端点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">内容协商</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#根据请求选择视图：ContentNegotiatingViewResolver"><span class="nav-text">根据请求选择视图：ContentNegotiatingViewResolver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#确定请求的媒体类型"><span class="nav-text">确定请求的媒体类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#视图选择策略：ContentNegotiatingViewResolver"><span class="nav-text">视图选择策略：ContentNegotiatingViewResolver</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ContentNegotiatingViewResolver的优势与限制"><span class="nav-text">ContentNegotiatingViewResolver的优势与限制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">消息转换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#在响应体中返回资源：-ResponseBody"><span class="nav-text">在响应体中返回资源：@ResponseBody</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Jackson使用注意"><span class="nav-text">Jackson使用注意</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在请求体中接收资源：-RequestBody"><span class="nav-text">在请求体中接收资源：@RequestBody</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#控制器默认启用消息转换：-RestController"><span class="nav-text">控制器默认启用消息转换：@RestController</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提供资源之外的其他内容"><span class="nav-text">提供资源之外的其他内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用ResponseEntity"><span class="nav-text">使用ResponseEntity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理错误"><span class="nav-text">处理错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在响应中设置头部信息"><span class="nav-text">在响应中设置头部信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">编写REST客户端：RestTemplate</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#了解RestTemplate的操作"><span class="nav-text">了解RestTemplate的操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GET资源"><span class="nav-text">GET资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#检索资源：getForObject"><span class="nav-text">检索资源：getForObject()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#抽取响应的元数据：getForEntity"><span class="nav-text">抽取响应的元数据：getForEntity()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PUT资源"><span class="nav-text">PUT资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DELETE资源"><span class="nav-text">DELETE资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POST资源数据"><span class="nav-text">POST资源数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在POST请求中获取响应对象"><span class="nav-text">在POST请求中获取响应对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在POST请求后获取资源位置"><span class="nav-text">在POST请求后获取资源位置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#交换资源：exchange"><span class="nav-text">交换资源：exchange()</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

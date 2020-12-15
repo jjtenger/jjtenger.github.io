@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Python语言及其应用-第5章模块、包和程序（P6） Python 同时提供了模块的官网文档（http:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;library） 以及使用指南（https:&#x2F;&#x2F;docs.python.org&#x2F;3.3&#x2F;tutorial&#x2F;stdlib. html）。defaultdict()：创建具有默认值的字典">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8&#x2F;21-Python%E6%A0%87%E5%87%86%E5%BA%93.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Python语言及其应用-第5章模块、包和程序（P6） Python 同时提供了模块的官网文档（http:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;library） 以及使用指南（https:&#x2F;&#x2F;docs.python.org&#x2F;3.3&#x2F;tutorial&#x2F;stdlib. html）。defaultdict()：创建具有默认值的字典">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.032Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/21-Python%E6%A0%87%E5%87%86%E5%BA%93">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>21-PYTHON标准库</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC5%E7%AB%A0%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E7%A8%8B%E5%BA%8F.pdf" target="_blank" rel="noopener">Python语言及其应用-第5章模块、包和程序</a>（P6）</p>
+</blockquote><p>Python 同时提供了模块的官网文档（<a href="http://docs.python.org/3/library%EF%BC%89" target="_blank" rel="noopener">http://docs.python.org/3/library）</a> 以及使用指南（<a href="https://docs.python.org/3.3/tutorial/stdlib" target="_blank" rel="noopener">https://docs.python.org/3.3/tutorial/stdlib</a>.<br>
+html）。</p><h1>defaultdict()：创建具有默认值的字典</h1><a id="more"></a>
+
+
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC5%E7%AB%A0%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E7%A8%8B%E5%BA%8F.pdf" target="_blank" rel="noopener">Python语言及其应用-第5章模块、包和程序</a>（P6-7）</p>
+</blockquote>
+<p>defaultdict() 在创建字典时，对每个新的键都会指定默认值。它的参数是一个函数，它返回赋给缺失键的值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from collections import defaultdict</span><br><span class="line">&gt;&gt;&gt; periodic_table = defaultdict(int)</span><br><span class="line">&gt;&gt;&gt; periodic_table[&apos;Hydrogen&apos;] = 1</span><br><span class="line">&gt;&gt;&gt; periodic_table[&apos;Lead&apos;]</span><br><span class="line">0</span><br><span class="line">&gt;&gt;&gt; periodic_table</span><br><span class="line">defaultdict(&lt;class &apos;int&apos;&gt;, &#123;&apos;Lead&apos;: 0, &apos;Hydrogen&apos;: 1&#125;)</span><br></pre></td></tr></table></figure>
+<p>把函数 int 作为参数传入，会按照 int() 调用，返回整数 0。同样，可以使用函数 int()、 list() 或者 dict() 返回默认空的值： int() 返回 0， list() 返回空列表（[]）， dict() 返回空字典（{}）。如果你删掉该函数参数，新键的初始值会被设置为 None。<br>
+顺便提一下，也可以使用 lambda 来定义你的默认值函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; bestiary = defaultdict(lambda: &apos;Huh?&apos;)</span><br><span class="line">&gt;&gt;&gt; bestiary[&apos;E&apos;]</span><br><span class="line">&apos;Huh?</span><br></pre></td></tr></table></figure>
+<p>defaultdict()的应用实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from collections import defaultdict</span><br><span class="line">&gt;&gt;&gt; food_counter = defaultdict(int)</span><br><span class="line">&gt;&gt;&gt; for food in [&apos;spam&apos;, &apos;spam&apos;, &apos;eggs&apos;, &apos;spam&apos;]:</span><br><span class="line">...     food_counter[food] += 1</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; for food, count in food_counter.items():</span><br><span class="line">...     print(food, count)</span><br><span class="line">...</span><br><span class="line">eggs 1</span><br><span class="line">spam 3</span><br></pre></td></tr></table></figure>
+<p>上面的例子中，如果 food_counter 已经是一个普通的字典而不是 defaultdict 默认字典，那每次试图自增字典元素 <code>food_counter[food]</code> 值时（<code>food_counter[food] += 1</code>）， Python 会抛出一个异常，因为我们没有对它进行初始化。在普通字典中，需要做额外的初始化工作。</p>
+<h1>使用Counter()计数</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC5%E7%AB%A0%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E7%A8%8B%E5%BA%8F.pdf" target="_blank" rel="noopener">Python语言及其应用-第5章模块、包和程序</a>（P7-8）</p>
+</blockquote>
+<p>使用示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from collections import Counter</span><br><span class="line">&gt;&gt;&gt; breakfast = [&apos;spam&apos;, &apos;spam&apos;, &apos;eggs&apos;, &apos;spam&apos;]</span><br><span class="line">&gt;&gt;&gt; breakfast_counter = Counter(breakfast)</span><br><span class="line">&gt;&gt;&gt; breakfast_counter</span><br><span class="line">Counter(&#123;&apos;spam&apos;: 3, &apos;eggs&apos;: 1&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="函数-most-common">函数 most_common()</h2>
+<p>以降序返回所有元素，或者如果给定一个数字，会返回该数字前的的元素：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; breakfast_counter.most_common()</span><br><span class="line">[(&apos;spam&apos;, 3), (&apos;eggs&apos;, 1)]</span><br><span class="line">&gt;&gt;&gt; breakfast_counter.most_common(1)</span><br><span class="line">[(&apos;spam&apos;, 3)]</span><br></pre></td></tr></table></figure>
+<h2 id="组合使用计数器">组合使用计数器</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; lunch = [&apos;eggs&apos;, &apos;eggs&apos;, &apos;bacon&apos;]</span><br><span class="line">&gt;&gt;&gt; lunch_counter = Counter(lunch)</span><br><span class="line">&gt;&gt;&gt; lunch_counter</span><br><span class="line">Counter(&#123;&apos;eggs&apos;: 2, &apos;bacon&apos;: 1&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用 +</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; breakfast_counter + lunch_counter</span><br><span class="line">Counter(&#123;&apos;spam&apos;: 3, &apos;eggs&apos;: 3, &apos;bacon&apos;: 1&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用 -</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; breakfast_counter - lunch_counter</span><br><span class="line">Counter(&#123;&apos;spam&apos;: 3&#125;)</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; lunch_counter - breakfast_counter</span><br><span class="line">Counter(&#123;&apos;bacon&apos;: 1, &apos;eggs&apos;: 1&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用 &amp;<br>
+可以使用交集运算符 &amp; 得到二者共有的项，两者的交集通过取两者中的较小计数：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; breakfast_counter &amp; lunch_counter</span><br><span class="line">Counter(&#123;&apos;eggs&apos;: 1&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用 |<br>
+使用并集运算符 | 得到所有元素，不同于合并，并集没有把计数加起来，而是取其中较大的值：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; breakfast_counter | lunch_counter</span><br><span class="line">Counter(&#123;&apos;spam&apos;: 3, &apos;eggs&apos;: 2, &apos;bacon&apos;: 1&#125;)</span><br></pre></td></tr></table></figure>
+<h1>使用有序字典OrderedDict()按键排序</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC5%E7%AB%A0%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E7%A8%8B%E5%BA%8F.pdf" target="_blank" rel="noopener">Python语言及其应用-第5章模块、包和程序</a>（P9）</p>
+</blockquote>
+<p>在前面几章的代码示例中可以看出，一个字典中键的顺序是不可预知的：你可以按照顺序添加键 a、 b 和 c，但函数 keys() 可能返回 c、 a 和 b。<br>
+有序字典 OrderedDict() 记忆字典键添加的顺序，然后从一个迭代器按照相同的顺序返回。 试着用元组（键， 值）创建一个有序字典：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from collections import OrderedDict</span><br><span class="line">&gt;&gt;&gt; quotes = OrderedDict([</span><br><span class="line">...     (&apos;Moe&apos;, &apos;A wise guy, huh?&apos;),</span><br><span class="line">...     (&apos;Larry&apos;, &apos;Ow!&apos;),</span><br><span class="line">...     (&apos;Curly&apos;, &apos;Nyuk nyuk!&apos;),</span><br><span class="line">...     ])</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">&gt;&gt;&gt; for stooge in quotes:</span><br><span class="line">...     print(stooge)</span><br><span class="line">...</span><br><span class="line">Moe</span><br><span class="line">Larry</span><br><span class="line">Curly</span><br></pre></td></tr></table></figure>
+<h1>双端队列 deque： 栈+队列</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC5%E7%AB%A0%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E7%A8%8B%E5%BA%8F.pdf" target="_blank" rel="noopener">Python语言及其应用-第5章模块、包和程序</a>（P9-10）</p>
+</blockquote>
+<p>deque 是一种双端队列，同时具有栈和队列的特征。它可以从序列的任何一端添加和删除项。<br>
+下面示例从一个词的两端扫向中间，判断是否为回文。函数 popleft() 去掉最左边的项并返回该项， pop() 去掉最右边的项并返回该项。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; def palindrome(word):</span><br><span class="line">...     from collections import deque</span><br><span class="line">...     dq = deque(word)</span><br><span class="line">...     while len(dq) &gt; 1:</span><br><span class="line">...         if dq.popleft() != dq.pop():</span><br><span class="line">...             return False</span><br><span class="line">...      return True</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; palindrome(&apos;radar&apos;)</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; palindrome(&apos;halibut&apos;)</span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+<h1>使用itertools迭代代码结构</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC5%E7%AB%A0%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E7%A8%8B%E5%BA%8F.pdf" target="_blank" rel="noopener">Python语言及其应用-第5章模块、包和程序</a>（P10）</p>
+</blockquote>
+<p>itertools（<a href="https://docs.python.org/3/library/itertools.html%EF%BC%89%E5%8C%85%E5%90%AB%E7%89%B9%E6%AE%8A%E7%94%A8%E9%80%94%E7%9A%84%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%87%BD%E6%95%B0%E3%80%82%E5%9C%A8" target="_blank" rel="noopener">https://docs.python.org/3/library/itertools.html）包含特殊用途的迭代器函数。在</a> for … in 循环中调用迭代函数，每次会返回一项，并记住当前调用的状态。</p>
+<h2 id="chain">chain()</h2>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC5%E7%AB%A0%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E7%A8%8B%E5%BA%8F.pdf" target="_blank" rel="noopener">Python语言及其应用-第5章模块、包和程序</a>（P10）</p>
+</blockquote>
+<p>chain()可以把一组迭代对象串联起来，形成一个更大的迭代器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import itertools</span><br><span class="line">&gt;&gt;&gt; for item in itertools.chain([1, 2], [&apos;a&apos;, &apos;b&apos;]):</span><br><span class="line">...     print(item)</span><br><span class="line">...</span><br><span class="line">1 </span><br><span class="line">2 </span><br><span class="line">a </span><br><span class="line">b</span><br></pre></td></tr></table></figure>
+<h2 id="cycle">cycle()</h2>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC5%E7%AB%A0%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E7%A8%8B%E5%BA%8F.pdf" target="_blank" rel="noopener">Python语言及其应用-第5章模块、包和程序</a>（P10）</p>
+</blockquote>
+<p>cycle() 是一个在它的参数之间循环的无限迭代器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import itertools</span><br><span class="line">&gt;&gt;&gt; for item in itertools.cycle([1, 2]):</span><br><span class="line">...     print(item)</span><br><span class="line">...</span><br><span class="line">1 </span><br><span class="line">2 </span><br><span class="line">1 </span><br><span class="line">2</span><br><span class="line">.</span><br><span class="line">.</span><br></pre></td></tr></table></figure>
+<h2 id="accumulate">accumulate()</h2>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC5%E7%AB%A0%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E7%A8%8B%E5%BA%8F.pdf" target="_blank" rel="noopener">Python语言及其应用-第5章模块、包和程序</a>（P10-11）</p>
+</blockquote>
+<p>accumulate() 计算累积的值。默认的话，它计算的是累加和：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import itertools</span><br><span class="line">&gt;&gt;&gt; for item in itertools.accumulate([1, 2, 3, 4]):</span><br><span class="line">...     print(item)</span><br><span class="line">...</span><br><span class="line">1 </span><br><span class="line">3 </span><br><span class="line">6</span><br><span class="line">10</span><br></pre></td></tr></table></figure>
+<p>你可以把一个函数作为 accumulate() 的第二个参数，代替默认的加法函数。这个参数函数应该接受两个参数，返回单个结果。下面的例子计算的是乘积：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import itertools</span><br><span class="line">&gt;&gt;&gt; def multiply(a, b):</span><br><span class="line">...     return a * b</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; for item in itertools.accumulate([1, 2, 3, 4], multiply):</span><br><span class="line">...     print(item)</span><br><span class="line">...</span><br><span class="line">1 </span><br><span class="line">2 </span><br><span class="line">6</span><br><span class="line">24</span><br></pre></td></tr></table></figure>
+<h1>使用pprint()友好输出</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC5%E7%AB%A0%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E7%A8%8B%E5%BA%8F.pdf" target="_blank" rel="noopener">Python语言及其应用-第5章模块、包和程序</a>（P11）</p>
+</blockquote>
+<p>我们见到的所有示例都用 print()（或者在交互式解释器中用变量名）打印输出。有时输出结果的可读性较差。我们需要一个友好输出函数，比如 pprint()。<br>
+pprint() 尽量排列输出元素从而增加可读性：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; pprint(quotes)</span><br><span class="line">&#123;&apos;Moe&apos;: &apos;A wise guy, huh?&apos;,</span><br><span class="line"> &apos;Larry&apos;: &apos;Ow!&apos;,</span><br><span class="line"> &apos;Curly&apos;: &apos;Nyuk nyuk!&apos;&#125;</span><br></pre></td></tr></table></figure>
+<h1>命名元组</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC6%E7%AB%A0%E5%AF%B9%E8%B1%A1%E5%92%8C%E7%B1%BB.pdf" target="_blank" rel="noopener">Python语言及其应用-第6章对象和类</a>（P18-19）</p>
+</blockquote>
+<p>命名元组是元组的子类， 你既可以通过名称（使用 .name）来访问其中的值，也可以通过位置进行访问（使用 <code>[offset]</code>）。<br>
+我们可以通过将下面两个参数传入 namedtuple 函数来创建命名元组：</p>
+<ul>
+<li>名称；</li>
+<li>由多个域名组成的字符串，各个域名之间由空格隔开。</li>
+</ul>
+<p>命名元组并不是 Python 自动支持的类型，使用之前需要加载与其相关的模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from collections import namedtuple</span><br><span class="line">&gt;&gt;&gt; Duck = namedtuple(&apos;Duck&apos;, &apos;bill tail&apos;)</span><br></pre></td></tr></table></figure>
+<p>构造一个命名元组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; duck = Duck(&apos;wide orange&apos;, &apos;long&apos;)</span><br><span class="line">&gt;&gt;&gt; duck</span><br><span class="line">Duck(bill=&apos;wide orange&apos;, tail=&apos;long&apos;)</span><br><span class="line">&gt;&gt;&gt; duck.bill</span><br><span class="line">&apos;wide orange&apos;</span><br><span class="line">&gt;&gt;&gt; duck.tail</span><br><span class="line">&apos;long&apos;</span><br></pre></td></tr></table></figure>
+<p>也可以用字典来构造一个命名元组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; parts = &#123;&apos;bill&apos;: &apos;wide orange&apos;, &apos;tail&apos;: &apos;long&apos;&#125;</span><br><span class="line">&gt;&gt;&gt; duck2 = Duck(**parts)</span><br><span class="line">&gt;&gt;&gt; duck2</span><br><span class="line">Duck(bill=&apos;wide orange&apos;, tail=&apos;long&apos;)</span><br></pre></td></tr></table></figure>
+<p>注意，上面例子中的 **parts，它是个关键词变量（keyword argument）。它的作用是将 parts 字典中的键和值抽取出来作为参数提供给 Duck() 使用。它与下面这行代码的功能一样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; duck2 = Duck(bill = &apos;wide orange&apos;, tail = &apos;long&apos;)</span><br></pre></td></tr></table></figure>
+<p>命名元组是不可变的，但你可以替换其中某些域的值并返回一个新的命名元组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; duck3 = duck2._replace(tail=&apos;magnificent&apos;, bill=&apos;crushing&apos;)</span><br><span class="line">&gt;&gt;&gt; duck3</span><br><span class="line">Duck(bill=&apos;crushing&apos;, tail=&apos;magnificent&apos;)</span><br></pre></td></tr></table></figure>
+<p>作为总结，我列出了一些使用命名元组的好处：</p>
+<ul>
+<li>它无论看起来还是使用起来都和不可变对象非常相似；</li>
+<li>与使用对象相比，使用命名元组在时间和空间上效率更高；</li>
+<li>可以使用点号（.）对特性进行访问，而不需要使用字典风格的方括号；</li>
+<li>可以把它作为字典的键。</li>
+</ul>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>21-PYTHON标准库</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">defaultdict()：创建具有默认值的字典</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用Counter()计数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#函数-most-common"><span class="nav-text">函数 most_common()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组合使用计数器"><span class="nav-text">组合使用计数器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用有序字典OrderedDict()按键排序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">双端队列 deque： 栈+队列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用itertools迭代代码结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#chain"><span class="nav-text">chain()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cycle"><span class="nav-text">cycle()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#accumulate"><span class="nav-text">accumulate()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用pprint()友好输出</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">命名元组</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

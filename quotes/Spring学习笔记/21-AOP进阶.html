@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="增强方法参数绑定使用JoinPoint类绑定其中JoinPoint类提供访问当前被增强方法的目标对象、代理对象、方法参数等数据；子类ProceedingJoinPoint用于环绕增强，使用proceed()方法来执行目标方法；JoinPoint.StaticPart类提供访问连接点的静态部分，如被增强方法签名、连接点类型等；">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;21-AOP%E8%BF%9B%E9%98%B6.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="增强方法参数绑定使用JoinPoint类绑定其中JoinPoint类提供访问当前被增强方法的目标对象、代理对象、方法参数等数据；子类ProceedingJoinPoint用于环绕增强，使用proceed()方法来执行目标方法；JoinPoint.StaticPart类提供访问连接点的静态部分，如被增强方法签名、连接点类型等；">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.036Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/21-AOP%E8%BF%9B%E9%98%B6">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>21-AOP进阶</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>增强方法参数绑定</h1><h2 id="使用JoinPoint类绑定">使用JoinPoint类绑定</h2><p>其中JoinPoint类提供访问当前被增强方法的目标对象、代理对象、方法参数等数据；</p><p>子类ProceedingJoinPoint用于环绕增强，使用proceed()方法来执行目标方法；</p><p>JoinPoint.StaticPart类提供访问连接点的静态部分，如被增强方法签名、连接点类型等；</p><a id="more"></a>
+
+
+
+
+<p>使用时必须指定增强方法的第一个参数为以上类型参数，然后在方法体中调用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.annotation.Secure;</span><br><span class="line"><span class="keyword">import</span> demo.aop_pointcut.IPointcutService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ParameterBundingAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Before</span>(value=<span class="string">"execution(* sayBefore(*))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========JoinPoint绑定=========="</span>);</span><br><span class="line">       System.out.println(<span class="string">"==kind:"</span> + jp.getKind());</span><br><span class="line">       System.out.println(<span class="string">"==target:"</span> + jp.getTarget());</span><br><span class="line">       System.out.println(<span class="string">"==this:"</span> + jp.getThis());</span><br><span class="line">       System.out.println(<span class="string">"==args:"</span> + jp.getArgs()[<span class="number">0</span>]);</span><br><span class="line">       System.out.println(<span class="string">"==signature:"</span> + jp.getSignature());</span><br><span class="line">       System.out.println(<span class="string">"==toString:"</span> + jp.getStaticPart().toString());</span><br><span class="line">       System.out.println(<span class="string">"==toShortString:"</span> + jp.getStaticPart().toShortString());</span><br><span class="line">       System.out.println(<span class="string">"==toLongString:"</span> + jp.getStaticPart().toLongString());</span><br><span class="line">       </span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="meta">@Before</span>(value=<span class="string">"execution(* sayBefore(*))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">(JoinPoint.StaticPart jp)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========JoinPoint.StaticPart绑定=========="</span>);</span><br><span class="line">       System.out.println(<span class="string">"==kind:"</span> + jp.getKind());</span><br><span class="line">       System.out.println(<span class="string">"==signature:"</span> + jp.getSignature());</span><br><span class="line">       System.out.println(<span class="string">"==toString:"</span> + jp.toString());</span><br><span class="line">       System.out.println(<span class="string">"==toShortString:"</span> + jp.toShortString());</span><br><span class="line">       System.out.println(<span class="string">"==toLongString:"</span> + jp.toLongString());</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="使用关键字-变量名-绑定">使用关键字(变量名)绑定</h2>
+<p>使用关键字(变量名)绑定：</p>
+<ul>
+<li>arg(变量名)绑定连接点方法入参；</li>
+<li>@annotation(变量名)绑定连接点方法的注解对象；</li>
+<li>@args(变量名)绑定连接点方法入参的注解；</li>
+<li>this(变量名)和target(变量名)绑定目标对象实例；</li>
+<li>@within(变量名)和@target(变量名)绑定目标类的注解对象；</li>
+</ul>
+<p>其中变量名指增强方法形参变量名，会绑定至增强方法对应的形参上。</p>
+<p>运行时切入点表达式将首先按变量名查找对应的形参变量的类型，从而得到完整的切点表达式，</p>
+<p>然后根据表达式匹配连接点，然后再将连接点对应信息绑定至形参变量。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> demo.annotation.Secure;</span><br><span class="line"><span class="keyword">import</span> demo.aop_pointcut.IPointcutService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ParameterBundingAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Before</span>(value=<span class="string">"execution(* test(*)) &amp;&amp; args(param)"</span>, argNames=<span class="string">"param"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before1</span><span class="params">(String param)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===arg(param)绑定1:"</span> + param);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Before</span>(value=<span class="string">"execution(* test(*)) &amp;&amp; args(param)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before2</span><span class="params">(String param)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===arg(param)绑定2:"</span> + param);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Before</span>(value=<span class="string">"args(param)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before3</span><span class="params">(String param)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===arg(param)绑定3:"</span> + param);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Before</span>(value=<span class="string">"args(param)"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before4</span><span class="params">(JoinPoint jp, String param)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===arg(param)绑定4:"</span> + param);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//argNames显式指定绑定至连接点相关参数的增强方法对应参数名（按顺序匹配），参见 &lt;aop:before&gt;：定义前置增强</span></span><br><span class="line">   <span class="meta">@Before</span>(value=<span class="string">"args(param) &amp;&amp; target(pointcutService) &amp;&amp; @annotation(secure)"</span>, argNames=<span class="string">"jp,param,pointcutService,secure"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before5</span><span class="params">(JoinPoint jp, String param, IPointcutService pointcutService, Secure secure)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===arg(param)绑定5:"</span> + param);</span><br><span class="line">       System.out.println(<span class="string">"===target绑定:"</span> + pointcutService);</span><br><span class="line">       System.out.println(<span class="string">"===@annotation绑定:"</span> + secure);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="meta">@Pointcut</span>(value=<span class="string">"args(param)"</span>, argNames=<span class="string">"param"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pointcut1</span><span class="params">(String param)</span></span>&#123;&#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Pointcut</span>(value=<span class="string">"@annotation(secure)"</span>, argNames=<span class="string">"secure"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pointcut2</span><span class="params">(Secure secure)</span></span>&#123;&#125;</span><br><span class="line">   </span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"pointcut1(param) &amp;&amp; pointcut2(secure)"</span>, argNames=<span class="string">"jp,param,secure"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before6</span><span class="params">(JoinPoint jp, String param, Secure secure)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===arg(param)绑定6:"</span> + param);</span><br><span class="line">       System.out.println(<span class="string">"===@annotation绑定2:"</span> + secure);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>增强执行顺序</h1>
+<p><strong>同一连接点同一切入位置上：</strong></p>
+<ol>
+<li>
+<p>同一切面的同一切入位置上增强执行顺序不确定；</p>
+</li>
+<li>
+<p>不同切面增强执行顺序可以通过以下方法指定切面优先级：</p>
+</li>
+</ol>
+<p>（1）切面类实现org.springframework.core.Ordered接口（侵入式设计，不推荐）</p>
+<p>（2）注解风格配置：切面类上使用@Order()注解</p>
+<p>（3）Schema风格配置：<code>&lt;aop:aspect&gt;</code> 标签中配置order属性；</p>
+<p>注意：前置/环绕增强中优先级高的先执行，后置/环绕增强中优先级高的后执行。</p>
+<h1>切面实例化模型</h1>
+<p>切面实例化模型：即切面对象的生命周期。</p>
+<p>Spring AOP支持以下实例化模型：</p>
+<ul>
+<li>
+<p>singleton：Sring容器中每个切面只存在一个实例，默认模型。</p>
+</li>
+<li>
+<p>perthis/pertarget：每一个关联对象都创建一个切面实例，其生命周期跟随相关联的对象；通过切面类的@Aspect注解配置（只支持@AspectJ注解），并且在XML配置中对应切面Bean的作用域必须配置为&quot;prototype&quot;， 其中：</p>
+<ul>
+<li>@Aspect(“perthis(切入点表达式)”)：每个切入点表达式匹配的连接点对应的执行对象都会创建一个新的切面实例；</li>
+<li>@Aspect(“pertarget(切入点表达式)”)：每个切入点表达式匹配的连接点对应的目标对象都会创建一个新的切面实例。<br>
+(在大多数情况下，两者行为一致)。</li>
+</ul>
+</li>
+</ul>
+<h1>SpringMVC和Spring配置AOP区别</h1>
+<p>首先Spring MVC和Spring是两个东西，配置文件是分开的，配置文件的加载也是分开的。所以要想给Spring MVC的Controller添加AOP的话，得在Spring MVC的配置文件中配置，要想给Service和Repository添加AOP的话得在Spring的配置文件中配置。</p>
+<p>以一个例子说明，有人配置了Service层的事务AOP之后，事务不起作用。原因是在Spring MVC中配置的扫描规则，将Service也扫描了，此时Spring的配置文件还没有加载，也就还没有对Service层的类添加事务AOP，当加载Spring的配置文件时，再次扫描Service层，发现Service层的类都已经再容器里了，就不往容器里放了，也就是此时加到Spring容器里的Service都是没有添加事务AOP之前的类。</p>
+<p>解决这个问题的思路很简单，就是在Spring MVC的配置文件中配置，只扫描Controller层的类，不扫描Service层的类，Service层的类在Spring的配置文件中扫描。 （也可以把所有配置放在SpringMVC配置中，包括扫描包、AOP配置、事务配置等等）</p>
+<p>要实现上述效果，首先看如下的代码：</p>
+<p>（1）Spring MVC扫描包配置，只扫描带有org.aspectj.lang.annotation.Aspect和org.springframework.stereotype.Controller、org.springframework.web.bind.annotation.ControllerAdvice的标记。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:aspectj-autoproxy</span> <span class="attr">proxy-target-class</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 扫描@Controller组件 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 提示：将com.corp.app该为您的业务系统的包路径 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"cn.osworks.aos;cn.usmaker.system.plugin;com.mycorp.mysystem"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">use-default-filters</span>=<span class="string">"false"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:include-filter</span> <span class="attr">type</span>=<span class="string">"annotation"</span> <span class="attr">expression</span>=<span class="string">"org.aspectj.lang.annotation.Aspect"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:include-filter</span> <span class="attr">type</span>=<span class="string">"annotation"</span> <span class="attr">expression</span>=<span class="string">"org.springframework.stereotype.Controller"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:include-filter</span> <span class="attr">type</span>=<span class="string">"annotation"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">expression</span>=<span class="string">"org.springframework.web.bind.annotation.ControllerAdvice"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:exclude-filter</span> <span class="attr">type</span>=<span class="string">"annotation"</span> <span class="attr">expression</span>=<span class="string">"org.springframework.stereotype.Service"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">context:component-scan</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>use-default-filters=”false”的作用是禁用默认的扫描规则，使用自己配置的扫描规则。也就是在context:component-scan 标签内，context:include-filter 标签里配置的规则，会被扫描，context:exclude-filter 配置的规则不会被扫描。</p>
+<p>（2）Spring配置如下，只扫描org.aspectj.lang.annotation.Aspect和org.springframework.stereotype.Service标记的类。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:aspectj-autoproxy</span>/&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- Spring服务组件扫描(排除@Controller相关组件) --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 请将com.mycorp.mysystem.**改为你的项目扫描路径 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">"cn.osworks.aos;cn.usmaker.system.plugin;com.mycorp.mysystem"</span> <span class="attr">use-default-filters</span>=<span class="string">"false"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:include-filter</span> <span class="attr">type</span>=<span class="string">"annotation"</span> <span class="attr">expression</span>=<span class="string">"org.aspectj.lang.annotation.Aspect"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:include-filter</span> <span class="attr">type</span>=<span class="string">"annotation"</span> <span class="attr">expression</span>=<span class="string">"org.springframework.stereotype.Service"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:exclude-filter</span> <span class="attr">type</span>=<span class="string">"annotation"</span> <span class="attr">expression</span>=<span class="string">"org.springframework.stereotype.Controller"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:exclude-filter</span> <span class="attr">type</span>=<span class="string">"annotation"</span> <span class="attr">expression</span>=<span class="string">"org.springframework.web.bind.annotation.ControllerAdvice"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">context:component-scan</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意Spring MVC中的配置和Spring的配置的一点区别：</p>
+<p>在Spring MVC的配置是</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:aspectj-autoproxy</span> <span class="attr">proxy-target-class</span>=<span class="string">"true"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在Spring中的配置是</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:aspectj-autoproxy</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>配置的切点尽量精准，这点很重要，要代理哪些类就精确的配置到哪些类，不然很容易代理一些Spring和Spring MVC内部使用的类，容易产生错误，甚至启动不起来。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>21-AOP进阶</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">增强方法参数绑定</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用JoinPoint类绑定"><span class="nav-text">使用JoinPoint类绑定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用关键字-变量名-绑定"><span class="nav-text">使用关键字(变量名)绑定</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">增强执行顺序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">切面实例化模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">SpringMVC和Spring配置AOP区别</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="MapReduce Joinreduce joinMapReduce中的join分为好几种，比如有最常见的reduce side join、map side join和semi join等。reduce join在shuffle阶段要进行大量的数据传输，会造成大量的网络IO效率低下，而map side join在处理多个小表关联大表时非常有用。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;23-MapReduce%E5%85%B6%E5%AE%83%E5%BA%94%E7%94%A8.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="MapReduce Joinreduce joinMapReduce中的join分为好几种，比如有最常见的reduce side join、map side join和semi join等。reduce join在shuffle阶段要进行大量的数据传输，会造成大量的网络IO效率低下，而map side join在处理多个小表关联大表时非常有用。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584886822_20200322221759506_29728.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.016Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584886822_20200322221759506_29728.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/23-MapReduce%E5%85%B6%E5%AE%83%E5%BA%94%E7%94%A8">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>23-MAPREDUCE其它应用</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>MapReduce Join</h1><h2 id="reduce-join">reduce join</h2><p>MapReduce中的join分为好几种，比如有最常见的reduce side join、map side join和semi join等。reduce join在shuffle阶段要进行大量的数据传输，会造成大量的网络IO效率低下，而map side join在处理多个小表关联大表时非常有用。</p><a id="more"></a>
+
+
+<p>Map side join是针对以下场景进行的优化：两个待连接表（文件）中，有一个表非常大，而另一个表非常小，以至于小表可以直接存放到内存中。这样我们可以将小表复制多份，让每个map task内存中存在一份（比如存放到hash table中），然后只扫描大表：对于大表中的每一条记录key/value，在hash table中查找是否有相同的key的记录，如果有，则连接后输出即可。</p>
+<h2 id="DistributedCache">DistributedCache</h2>
+<p>为了支持文件复制到内存，Hadoop提供了一个类DistributedCache，使用该类的方法如下：</p>
+<p>用户使用静态方法DistributedCache.addCacheFile()指定要复制的文件，它的参数是文件的URI（如果是HDFS上的文件，可以这样：hdfs://jobtracker:50030/home/XXX/file）。JobTracker在作业启动之前会获取这个URI列表，并将相应的文件拷贝到各个TaskTracker的本地磁盘上。</p>
+<p>用户使用DistributedCache.getLocalCacheFiles()方法获取文件目录，并使用标准的文件读写API读取相应的文件。</p>
+<p>注意：该类已被@Deprecated，替代实现方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.mr.join;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.LongWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Text;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileSplit;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JoinMapper</span> <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">LongWritable</span>, <span class="title">Text</span>, <span class="title">Text</span>, <span class="title">Text</span>&gt;</span>&#123;</span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">map</span><span class="params">(LongWritable key, Text value,Context context)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">       <span class="comment">//当前读取文件的路径</span></span><br><span class="line">       String filePath=((FileSplit)context.getInputSplit()).getPath().toString();</span><br><span class="line">       String joinKey=<span class="string">""</span>;</span><br><span class="line">       String joinValue=<span class="string">""</span>;</span><br><span class="line">       String fileFlag=<span class="string">""</span>;</span><br><span class="line">       String[] array=value.toString().split(<span class="string">","</span>);</span><br><span class="line">       <span class="comment">//判定当前行数据来自哪个文件</span></span><br><span class="line">       <span class="keyword">if</span>(filePath.contains(<span class="string">"dept.txt"</span>))&#123;</span><br><span class="line">           fileFlag=<span class="string">"l"</span>;<span class="comment">//left</span></span><br><span class="line">           joinKey=array[<span class="number">0</span>];<span class="comment">//部门编号</span></span><br><span class="line">           joinValue=array[<span class="number">1</span>];<span class="comment">//部门名</span></span><br><span class="line">       &#125;<span class="keyword">else</span> <span class="keyword">if</span>(filePath.contains(<span class="string">"emp.txt"</span>))&#123;</span><br><span class="line">           fileFlag=<span class="string">"r"</span>;<span class="comment">//right</span></span><br><span class="line">           joinKey=array[array.length-<span class="number">1</span>];<span class="comment">//部门编号</span></span><br><span class="line">           joinValue=array[<span class="number">1</span>];<span class="comment">//雇员名</span></span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//输出键值对，并标记来源文件</span></span><br><span class="line">       context.write(<span class="keyword">new</span> Text(joinKey),<span class="keyword">new</span> Text(joinValue+<span class="string">","</span>+fileFlag));</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>MapReduce二次排序</h1>
+<p>MapReduce框架对处理结果的输出会根据key值进行默认的排序，这个默认排序可以满足一部分需求，但是也是十分有限的。在我们实际的需求当中，往往有要对reduce输出结果进行二次排序的需求。所谓二次排序，先按第1个字段进行排序，然后对第1个字段相同的数据，再按第2个字段进行排序。</p>
+<p>先按照类别排序，对于类别相同的，再按照价格排序，结果如下。</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>价格</th>
+<th>类别</th>
+<th>书名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1002</td>
+<td>39.0</td>
+<td>S1</td>
+<td>C语言</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>39.0</td>
+<td>S1</td>
+<td>计算机基础</td>
+</tr>
+<tr>
+<td>1021</td>
+<td>45.0</td>
+<td>S1</td>
+<td>数据结构</td>
+</tr>
+<tr>
+<td>2010</td>
+<td>48.5</td>
+<td>S2</td>
+<td>C#语言</td>
+</tr>
+<tr>
+<td>2001</td>
+<td>49.0</td>
+<td>S2</td>
+<td>Java</td>
+</tr>
+<tr>
+<td>2030</td>
+<td>60.0</td>
+<td>S2</td>
+<td>MySQL</td>
+</tr>
+<tr>
+<td>2091</td>
+<td>69.0</td>
+<td>S2</td>
+<td>Linux</td>
+</tr>
+<tr>
+<td>2071</td>
+<td>99.0</td>
+<td>S2</td>
+<td>Oracle</td>
+</tr>
+<tr>
+<td>3003</td>
+<td>49.0</td>
+<td>S3</td>
+<td>Hive教程</td>
+</tr>
+<tr>
+<td>3005</td>
+<td>49.5</td>
+<td>S3</td>
+<td>大数据概论</td>
+</tr>
+<tr>
+<td>3004</td>
+<td>56.0</td>
+<td>S3</td>
+<td>HBase教程</td>
+</tr>
+<tr>
+<td>3001</td>
+<td>89.0</td>
+<td>S3</td>
+<td>Hadoop基础</td>
+</tr>
+<tr>
+<td>3002</td>
+<td>98.0</td>
+<td>S3</td>
+<td>Spark基础</td>
+</tr>
+</tbody>
+</table>
+<p>注意，书号1001和书号1002的两本书的key(两个比较字段)是相同的。</p>
+<p><strong>Mapper</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.mr.sort;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.IntWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.LongWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.NullWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Text;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sort2Mapper</span> <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">LongWritable</span>, <span class="title">Text</span>, <span class="title">Text</span>, <span class="title">NullWritable</span>&gt;</span>&#123;</span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">map</span><span class="params">(LongWritable key, Text value,Context context)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">       <span class="comment">//仅将vaule转换为key输出</span></span><br><span class="line">       context.write(value,NullWritable.get());</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Partitioner</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.mr.sort;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Text;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.NullWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* &lt;Text,NullWritable&gt;是Mapper的输出类型</span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> hadron</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyPartitioner</span> <span class="keyword">extends</span> <span class="title">HashPartitioner</span>&lt;<span class="title">Text</span>,<span class="title">NullWritable</span>&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//执行时间越短越好</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPartition</span><span class="params">(Text key, NullWritable value, <span class="keyword">int</span> numReduceTasks)</span> </span>&#123;</span><br><span class="line">     <span class="comment">//按类别划分Partitioner，相同类别的数据划分到一个Partitioner，以便进行下一步排序</span></span><br><span class="line">      <span class="keyword">return</span> (key.toString().split(<span class="string">"\t"</span>)[<span class="number">2</span>].hashCode() &amp; Integer.MAX_VALUE) % numReduceTasks;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Comparator</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.mr.sort;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Text;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.WritableComparable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.WritableComparator;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyComparator</span> <span class="keyword">extends</span> <span class="title">WritableComparator</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="title">MyComparator</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">super</span>(Text.class,<span class="keyword">true</span>);</span><br><span class="line">   &#125;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(WritableComparable k1, WritableComparable k2)</span> </span>&#123;</span><br><span class="line">       String[] a1=k1.toString().split(<span class="string">"\t"</span>);</span><br><span class="line">       String[] a2=k2.toString().split(<span class="string">"\t"</span>);</span><br><span class="line">       <span class="comment">//如果种类字段相同，则比较价格字段</span></span><br><span class="line">       <span class="keyword">if</span>(a1[<span class="number">2</span>].equals(a2[<span class="number">2</span>]))&#123;</span><br><span class="line">           <span class="comment">//如果价格也相同，如果返回0，则认为是相同的书；所以需要进一步比较书名</span></span><br><span class="line">           <span class="keyword">if</span>(a1[<span class="number">1</span>].equals(a2[<span class="number">1</span>]))&#123;</span><br><span class="line">               <span class="keyword">return</span> a1[<span class="number">3</span>].compareTo(a1[<span class="number">3</span>]);</span><br><span class="line">           &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">               <span class="keyword">return</span> a1[<span class="number">1</span>].compareTo(a2[<span class="number">1</span>]);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">           <span class="keyword">return</span> a1[<span class="number">2</span>].compareTo(a2[<span class="number">2</span>]);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Reducer</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.mr.sort;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.IntWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.NullWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Text;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sort2Reducer</span> <span class="keyword">extends</span> <span class="title">Reducer</span>&lt;<span class="title">Text</span>, <span class="title">NullWritable</span>, <span class="title">NullWritable</span>,<span class="title">Text</span>&gt;</span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//相同key值的数据会放一起进行reduce</span></span><br><span class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">reduce</span><span class="params">(Text key, Iterable&lt;NullWritable&gt; values,Context context)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">       context.write(NullWritable.get(),key);</span><br><span class="line">       <span class="comment">/*for(Text value:values)&#123;</span></span><br><span class="line"><span class="comment">           context.write(NullWritable.get(),value);</span></span><br><span class="line"><span class="comment">       &#125;*/</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>主方法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.mr.sort;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.Text;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.IntWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.NullWritable;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Job;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RunJob</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">       <span class="comment">// 设置环境变量HADOOP_USER_NAME，其值是root</span></span><br><span class="line">       System.setProperty(<span class="string">"HADOOP_USER_NAME"</span>, <span class="string">"root"</span>);</span><br><span class="line">       <span class="comment">// Configuration类包含了Hadoop的配置</span></span><br><span class="line">       Configuration config = <span class="keyword">new</span> Configuration();</span><br><span class="line">       <span class="comment">// 设置fs.defaultFS</span></span><br><span class="line">       config.set(<span class="string">"fs.defaultFS"</span>, <span class="string">"hdfs://192.168.80.131:9000"</span>);</span><br><span class="line">       <span class="comment">// 设置yarn.resourcemanager节点</span></span><br><span class="line">       config.set(<span class="string">"yarn.resourcemanager.hostname"</span>, <span class="string">"node1"</span>);</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           FileSystem fs = FileSystem.get(config);</span><br><span class="line">           Job job = Job.getInstance(config);</span><br><span class="line">           job.setJarByClass(RunJob.class);</span><br><span class="line">           job.setJobName(<span class="string">"Sort2"</span>);</span><br><span class="line">           <span class="comment">// 设置Mapper和Reducer类</span></span><br><span class="line">           job.setMapperClass(Sort2Mapper.class);</span><br><span class="line">           job.setReducerClass(Sort2Reducer.class);</span><br><span class="line">           <span class="comment">//设置map方法输出类型</span></span><br><span class="line">           job.setMapOutputKeyClass(Text.class);</span><br><span class="line">           job.setMapOutputValueClass(NullWritable.class);</span><br><span class="line">           <span class="comment">// 设置reduce方法输出key和value的类型</span></span><br><span class="line">           job.setOutputKeyClass(NullWritable.class);</span><br><span class="line">           job.setOutputValueClass(Text.class);</span><br><span class="line">           <span class="comment">//设置自定义工具类</span></span><br><span class="line">           job.setPartitionerClass(MyPartitioner.class);</span><br><span class="line">           job.setSortComparatorClass(MyComparator.class);</span><br><span class="line">           <span class="comment">//job.setGroupingComparatorClass(MyGroup.class);</span></span><br><span class="line">           <span class="comment">//设置Reduce Task数</span></span><br><span class="line">          <span class="comment">//总共有三个类别，所以开启三个reduce任务</span></span><br><span class="line">           <span class="comment">//job.setNumReduceTasks(3);</span></span><br><span class="line">           <span class="comment">// 指定输入输出路径</span></span><br><span class="line">           FileInputFormat.addInputPath(job, <span class="keyword">new</span> Path(<span class="string">"/user/root/input/books.txt"</span>));</span><br><span class="line">           Path outpath = <span class="keyword">new</span> Path(<span class="string">"/user/root/output/"</span>);</span><br><span class="line">           <span class="keyword">if</span> (fs.exists(outpath)) &#123;</span><br><span class="line">               fs.delete(outpath, <span class="keyword">true</span>);</span><br><span class="line">           &#125;</span><br><span class="line">           FileOutputFormat.setOutputPath(job, outpath);</span><br><span class="line">           <span class="comment">// 提交任务，等待执行完成</span></span><br><span class="line">           <span class="keyword">boolean</span> f = job.waitForCompletion(<span class="keyword">true</span>);</span><br><span class="line">           <span class="keyword">if</span> (f) &#123;</span><br><span class="line">               System.out.println(<span class="string">"job任务执行成功"</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>MapReduce全排序</h1>
+<p>MapReduce默认只是保证同一个分区内的Key是有序的，但是不保证全局有序。</p>
+<p>MapReduce全排序的方法一:</p>
+<p>每个map任务对自己的输入数据进行排序，但是无法做到全局排序，需要将数据传递到reduce，然后通过reduce进行一次总的排序，但是这样做的要求是只能有一个reduce任务来完成。并行程度不高，无法发挥分布式计算的特点。</p>
+<p>MapReduce全排序的方法二：</p>
+<p>使用多个partition对map的结果进行分区，且分区后的结果是有区间的，将多个分区结果拼接起来，就是一个连续的全局排序文件。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584886822_20200322221759506_29728.png" alt></p>
+<p>我们可以使用TotalOrderPartitioner类和分区文件实现对map结果的自动分区。（3.Partitioner类.note）</p>
+<p>示例如下：</p>
+<p><strong>准备数据</strong></p>
+<p>编写生成测试数据的脚本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 data]# vi genData.sh</span><br><span class="line">[root@node1 data]# cat genData.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line">for i in &#123;1..100000&#125;;do</span><br><span class="line">   echo -e $RANDOM'\t'$RANDOM</span><br><span class="line">done;</span><br></pre></td></tr></table></figure>
+<p>其中，$RANDOM 是Shell内置的，用于生成五位内的随机正整数。</p>
+<p>执行下面命令生成测试数据：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 data]# sh genData.sh &gt; genData.txt</span><br><span class="line">[root@node1 data]# tail -10 genData.txt</span><br><span class="line">6958    15414</span><br><span class="line">9321    7638</span><br><span class="line">4028    9313</span><br><span class="line">2666    2903</span><br><span class="line">17318   26805</span><br><span class="line">8430    9119</span><br><span class="line">20876   25596</span><br><span class="line">26221   22424</span><br><span class="line">32196   10570</span><br><span class="line">606 6683</span><br></pre></td></tr></table></figure>
+<p>将生成的数据上传到HDFS。</p>
+<p><strong>MapReduce类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.hadron.mr.sort;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configured;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.FileSystem;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.Path;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.io.*;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Job;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Mapper;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Reducer;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.partition.InputSampler;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.partition.TotalOrderPartitioner;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.util.Tool;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.util.ToolRunner;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TotalOrder</span> <span class="keyword">extends</span> <span class="title">Configured</span> <span class="keyword">implements</span> <span class="title">Tool</span> </span>&#123;</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Mapper</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">TotalOrderMapper</span> <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">Text</span>, <span class="title">Text</span>, <span class="title">Text</span>, <span class="title">Text</span>&gt; </span>&#123;</span><br><span class="line">       <span class="meta">@Override</span></span><br><span class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">map</span><span class="params">(Text key, Text value, Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">           <span class="comment">//IntWritable intWritable = new IntWritable(Integer.parseInt(key.toString()));</span></span><br><span class="line">           context.write(key, <span class="keyword">new</span> Text(key + <span class="string">"\t"</span> + value));</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * Reducer</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">TotalOrderReducer</span> <span class="keyword">extends</span> <span class="title">Reducer</span>&lt;<span class="title">Text</span>, <span class="title">Text</span>, <span class="title">Text</span>, <span class="title">NullWritable</span>&gt; </span>&#123;</span><br><span class="line">       <span class="meta">@Override</span></span><br><span class="line">       <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">reduce</span><span class="params">(Text key, Iterable&lt;Text&gt; values, Context context)</span></span></span><br><span class="line"><span class="function">       <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">           <span class="keyword">for</span> (Text value : values)</span><br><span class="line">               context.write(value, NullWritable.get());</span><br><span class="line">           &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * Comparator</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">KeyComparator</span> <span class="keyword">extends</span> <span class="title">WritableComparator</span> </span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">protected</span> <span class="title">KeyComparator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">           <span class="keyword">super</span>(Text.class, <span class="keyword">true</span>);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="meta">@Override</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(WritableComparable k1, WritableComparable k2)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">return</span> k1.compareTo(k2);</span><br><span class="line">           <span class="comment">/*      int v1 = Integer.parseInt(k1.toString());</span></span><br><span class="line"><span class="comment">                   int v2 = Integer.parseInt(k2.toString());</span></span><br><span class="line"><span class="comment">                   return v1 - v2;*/</span></span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">run</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       System.setProperty(<span class="string">"HADOOP_USER_NAME"</span>, <span class="string">"root"</span>);</span><br><span class="line">       <span class="comment">//Configuration config = new Configuration();</span></span><br><span class="line">       Configuration config = getConf();</span><br><span class="line">       <span class="comment">// 设置fs.defaultFS</span></span><br><span class="line">       config.set(<span class="string">"fs.defaultFS"</span>, <span class="string">"hdfs://192.168.1.117:8020"</span>);</span><br><span class="line">       <span class="comment">// 设置yarn.resourcemanager节点</span></span><br><span class="line">       config.set(<span class="string">"yarn.resourcemanager.hostname"</span>, <span class="string">"hds119"</span>);</span><br><span class="line">       FileSystem fs = FileSystem.get(config);</span><br><span class="line">       Job job = Job.getInstance(config);</span><br><span class="line">       job.setJarByClass(TotalOrder.class);</span><br><span class="line">       <span class="comment">// 文件输入格式，第一个\t(tab键)之前的所有内容当做Key（Text），之后全部作为Value（Text）。</span></span><br><span class="line">       job.setInputFormatClass(KeyValueTextInputFormat.class);</span><br><span class="line">       job.setSortComparatorClass(KeyComparator.class);</span><br><span class="line">       <span class="comment">// 输入输出路径</span></span><br><span class="line">       Path inpath = <span class="keyword">new</span> Path(<span class="string">"/user/root/input/genData.txt"</span>);</span><br><span class="line">       FileInputFormat.addInputPath(job, inpath);</span><br><span class="line">       Path outpath = <span class="keyword">new</span> Path(<span class="string">"/user/root/output/"</span>);</span><br><span class="line">       <span class="keyword">if</span> (fs.exists(outpath)) &#123;</span><br><span class="line">           fs.delete(outpath, <span class="keyword">true</span>);</span><br><span class="line">       &#125;</span><br><span class="line">       FileOutputFormat.setOutputPath(job, outpath);</span><br><span class="line">       job.setMapperClass(TotalOrderMapper.class);</span><br><span class="line">       job.setReducerClass(TotalOrderReducer.class);</span><br><span class="line">      <span class="comment">//分为3个reduce同时排序</span></span><br><span class="line">       job.setNumReduceTasks(<span class="number">3</span>);</span><br><span class="line">       job.setMapOutputKeyClass(Text.class);</span><br><span class="line">       job.setMapOutputValueClass(Text.class);</span><br><span class="line">       job.setOutputKeyClass(Text.class);</span><br><span class="line">       job.setOutputValueClass(NullWritable.class);</span><br><span class="line">       <span class="comment">//设置分区文件存放路径</span></span><br><span class="line">       TotalOrderPartitioner.setPartitionFile(job.getConfiguration(), <span class="keyword">new</span> Path(<span class="string">"/user/root/myPartition/"</span>));</span><br><span class="line">       job.setPartitionerClass(TotalOrderPartitioner.class);</span><br><span class="line">       <span class="comment">//参数：被选中概论0.1，选择的样本数，最大读取InputSplit数</span></span><br><span class="line">       InputSampler.Sampler&lt;Text, Text&gt; sampler = <span class="keyword">new</span> InputSampler.RandomSampler&lt;&gt;(<span class="number">0.1</span>, <span class="number">1000</span>, <span class="number">10</span>);</span><br><span class="line">       <span class="comment">//写入分区文件</span></span><br><span class="line">       InputSampler.writePartitionFile(job, sampler);</span><br><span class="line">       job.setJobName(<span class="string">"TotalOrder"</span>);</span><br><span class="line">       <span class="keyword">boolean</span> f = job.waitForCompletion(<span class="keyword">true</span>);</span><br><span class="line">       System.out.println(f);</span><br><span class="line">       <span class="keyword">return</span> f ? <span class="number">0</span> : <span class="number">1</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       <span class="keyword">int</span> exitCode = ToolRunner.run(<span class="keyword">new</span> TotalOrder(), args);</span><br><span class="line">       System.exit(exitCode);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>23-MAPREDUCE其它应用</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">MapReduce Join</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#reduce-join"><span class="nav-text">reduce join</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DistributedCache"><span class="nav-text">DistributedCache</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">MapReduce二次排序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">MapReduce全排序</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="相关概念文件描述符在更多了解Linux的重定向之前，我们需要先知道一些基本的东西，前面我们已经提到过Linux默认提供了三个特殊设备，用于终端的显示和输出，分别为stdin（标准输入，对应于你在终端的输入），stdout（标准输出，对应于终端的输出），stderr（标准错误输出，对应于终端的输出）。   文件描述符 设备文件 说明 默认指向     0 &#x2F;dev&#x2F;stdin 标准输入 终端键盘输入">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;03-%E6%95%B0%E6%8D%AE%E6%B5%81.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="相关概念文件描述符在更多了解Linux的重定向之前，我们需要先知道一些基本的东西，前面我们已经提到过Linux默认提供了三个特殊设备，用于终端的显示和输出，分别为stdin（标准输入，对应于你在终端的输入），stdout（标准输出，对应于终端的输出），stderr（标准错误输出，对应于终端的输出）。   文件描述符 设备文件 说明 默认指向     0 &#x2F;dev&#x2F;stdin 标准输入 终端键盘输入">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584871463_20200322175137765_26093.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584871463_20200322175137448_9408.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584871462_20200322175137133_17384.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584871462_20200322175136403_4315.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584871462_20200322175136085_3965.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.028Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584871463_20200322175137765_26093.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/03-%E6%95%B0%E6%8D%AE%E6%B5%81">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">LINUX学习笔记</a></li>
+            <li>03-数据流</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>相关概念</h1><h2 id="文件描述符">文件描述符</h2><p>在更多了解Linux的重定向之前，我们需要先知道一些基本的东西，前面我们已经提到过Linux默认提供了三个特殊设备，用于终端的显示和输出，分别为stdin（标准输入，对应于你在终端的输入），stdout（标准输出，对应于终端的输出），stderr（标准错误输出，对应于终端的输出）。</p><table>
+<thead>
+<tr>
+<th>文件描述符</th>
+<th>设备文件</th>
+<th>说明</th>
+<th>默认指向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>/dev/stdin</td>
+<td>标准输入</td>
+<td>终端键盘输入</td>
+</tr>
+<tr>
+<td>1</td>
+<td>/dev/stdout</td>
+<td>标准输出</td>
+<td>终端屏幕显示</td>
+</tr>
+<tr>
+<td>2</td>
+<td>/dev/stderr</td>
+<td>标准错误</td>
+<td>终端屏幕显示</td>
+</tr>
+</tbody>
+</table><a id="more"></a>
+
+
+
+<p>其中文件描述符（file descriptor）是内核为了高效管理已被打开的文件所创建的索引，其是一个非负整数（通常是小整数），用于指代被打开的文件，所有执行I/O操作的系统调用都通过文件描述符。程序刚刚启动的时候，0是标准输入，1是标准输出，2是标准错误。如果此时去打开一个新的文件，它的文件描述符会是3。POSIX标准要求每次打开文件时（含socket）必须使用当前进程中最小可用的文件描述符号码，因此，在网络通信过程中稍不注意就有可能造成串话。</p>
+<h2 id="管道">管道</h2>
+<p>管道是什么，管道是一种通信机制，通常用于进程间的通信（也可通过socket进行网络通信），它表现出来的形式就是将前面每一个进程的输出(stdout)直接作为下一个进程的输入(stdin)。</p>
+<p>管道又分为匿名管道和具名管道（这里将不会讨论在源程序中使用系统调用创建并使用管道的情况，它与命令行的管道在内核中实际都是采用相同的机制）。我们在使用一些过滤程序时经常会用到的就是匿名管道，在命令行中由|分隔符表示，|在前面的内容中我们已经多次使用到了。具名管道简单的说就是有名字的管道，通常只会在源程序中用到具名管道。</p>
+<p>示例如下，比如查看/etc目录下有哪些文件和目录，使用ls命令来查看：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls -al /etc</span></span><br></pre></td></tr></table></figure>
+<p>有太多内容，屏幕不能完全显示，这时候可以使用滚动条或快捷键滚动窗口来查看。不过这时候可以使用管道：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls -al /etc | less</span></span><br></pre></td></tr></table></figure>
+<p>通过管道将前一个命令(ls)的输出作为下一个命令(less)的输入，然后就可以一行一行地看。</p>
+<h2 id="重定向">重定向</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;和&gt;&gt;为输出重定向，&lt;和&lt;&lt;为输入重定向。</span><br><span class="line"></span><br><span class="line">当我们在单独使用&lt;、&lt;&lt;和&gt;、&gt;&gt;时，相当于使用 0&lt;、0&lt;&lt;和1&gt;、1&gt;&gt;。</span><br><span class="line"></span><br><span class="line">&gt;和&lt;为&quot;覆盖&quot;操作，&gt;&gt;和&lt;&lt;为&quot;追加&quot;操作。</span><br></pre></td></tr></table></figure>
+<p>初学者这里要注意不要将管道和重定向混淆，管道默认是连接前一个命令的输出到下一个命令的输入，而重定向通常是需要一个文件来建立两个命令的连接。</p>
+<h1>常见数据流</h1>
+<h2 id="默认使用终端的标准输入输出">默认使用终端的标准输入输出</h2>
+<p>默认使用终端的标准输入作为命令的输入，标准输出作为命令的输出</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat</span></span><br><span class="line">（按Ctrl+C退出）</span><br></pre></td></tr></table></figure>
+<h2 id="将一个文件作为命令的输入">将一个文件作为命令的输入</h2>
+<p>将一个文件作为命令的输入，标准输出作为命令的输出</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat Documents/test.c</span></span><br></pre></td></tr></table></figure>
+<h2 id="将管道传入的数据作为命令输入">将管道传入的数据作为命令输入</h2>
+<p>将echo命令通过管道传过来的数据作为cat命令的输入，将标准输出作为命令的输出</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">'hi'</span> | cat</span></span><br></pre></td></tr></table></figure>
+<h2 id="将命令输出重定向到一个文件">将命令输出重定向到一个文件</h2>
+<p>将echo命令的输出从默认的标准输出重定向到一个普通文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">'hello shiyanlou'</span> &gt; redirect</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat redirect</span></span><br></pre></td></tr></table></figure>
+<h2 id="将命令输入重定向到终端上的连续输入">将命令输入重定向到终端上的连续输入</h2>
+<p>在shell脚本中，通常将EOF与&lt;&lt;结合使用，表示后续的输入作为子命令或子Shell的输入，直到遇到EOF为止，再返回到主Shell。</p>
+<p>当shell遇到&lt;&lt;时，它知道下一个词是一个分界符。在该分界符以后的内容都被当作输入，直到shell又看到该分界符(位于单独的一行)。此分界符可以是所定义的任何字符串，不一定要用EOF，只要是“内容段”中没有出现的字符串，都可以用来替代EOF，完全可以换成abcde之类的字符串，只是一个起始和结束的标志罢了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir Documents</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat &gt; Documents/test.c &lt;&lt; EOF</span></span><br><span class="line"><span class="meta">#</span><span class="bash">include &lt;stdio.h&gt;</span></span><br><span class="line">int main()&#123;</span><br><span class="line">    printf("hello world\n");</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<h2 id="标准错误重定向">标准错误重定向</h2>
+<p>重定向标准输出到文件，这是一个很实用的操作，另一个很实用的操作是将标准错误重定向，标准输出和标准错误都被指向伪终端的屏幕显示，所以我们经常看到的一个命令的输出通常是同时包含了标准输出和标准错误的结果的。比如下面的操作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使用cat 命令同时读取两个文件，其中一个存在，另一个不存在</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat Documents/test.c hello.c</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 你可以看到除了正确输出了前一个文件的内容，还在末尾出现了一条错误信息</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 下面我们将输出重定向到一个文件，根据我们前面的经验，这里将在看不到任何输出了</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat Documents/test.c hello.c &gt; somefile</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584871463_20200322175137765_26093.png" alt></p>
+<p>遗憾的是，这里依然出现了那条错误信息，这正是因为如我上面说的那样，标准输出和标准错误虽然都指向终端屏幕，实际它们并不一样。那有的时候我们就是要可以隐藏某些错误或者警告，那又该怎么做呢。这就需要用到我们前面讲的文件描述符了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 将标准错误重定向到标准输出，再将标准输出重定向到文件，注意要将重定向到文件写到前面</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat Documents/test.c hello.c &gt;somefile 2&gt;&amp;1</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 或者只用bash提供的特殊的重定向符号<span class="string">"&amp;"</span>将标准错误和标准输出同时重定向到文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat Documents/test.c hello.c &amp;&gt;somefile</span></span><br></pre></td></tr></table></figure>
+<p>注意你应该在输出重定向文件描述符前加上&amp;（表示描述符指向的文件），否则shell会当做重定向到一个文件名为1的文件中</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584871463_20200322175137448_9408.png" alt></p>
+<p>把标准出错重定向到标准输出，然后扔到/DEV/NULL。通俗的说，就是把所有标准输出和标准出错都扔到垃圾桶里，不予显示:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nohup /mnt/Nand3/H2000G  &gt;/dev/null  2&gt;&amp;1  &amp;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nohup：不挂断地运行命令，忽略所有挂断（SIGHUP）信号（比如终端关闭）。最后一个&amp;是让该命令在后台执行。</span></span><br></pre></td></tr></table></figure>
+<p>command &gt; file 2&gt;&amp;1 和 command 2&gt;&amp;1 &gt;file 区别：</p>
+<p>前者首先将标准输出重定向到file中，2&gt;&amp;1 是标准错误拷贝了标准输出的行为，也就是同样被重定向到file中，最终结果就是标准输出和错误都被重定向到file中。后者首先使用 2&gt;&amp;1 标准错误拷贝了标准输出的行为，但此时标准输出还是在终端。&gt;file 后输出才被重定向到file，但标准错误仍然保持在终端。</p>
+<h2 id="完全屏蔽命令的输出">完全屏蔽命令的输出</h2>
+<p>在Linux中有一个被成为“黑洞”的设备文件，所以导入它的数据都将被“吞噬”。</p>
+<p>在类UNIX系统中，/dev/null，或称空设备，是一个特殊的设备文件，它通常被用于丢弃不需要的输出流，或作为用于输入流的空文件，这些操作通常由重定向完成。读取它则会立即得到一个EOF。</p>
+<p>我们可以利用设个/dev/null屏蔽命令的输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat Documents/test.c nefile 1&gt;/dev/null 2&gt;&amp;1</span></span><br></pre></td></tr></table></figure>
+<p>上面这样的操作将使你得不到任何输出结果。</p>
+<h1>相关命令</h1>
+<h2 id="exec命令">exec命令</h2>
+<h3 id="创建新的输出文件描述符">创建新的输出文件描述符</h3>
+<p>默认在Shell中可以有9个打开的文件描述符，上面我们使用了也是它默认提供的0，1，2号文件描述符，另外我们还可以使用3-8的文件描述符，只是它们默认没有打开而已，你可以使用下面命令查看当前 Shell 进程中打开的文件描述符：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> /dev/fd/;ls -Al</span></span><br></pre></td></tr></table></figure>
+<p>同样使用exec命令可以创建新的文件描述符：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> zsh</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">exec</span> 3&gt;somefile</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 先进入目录，再查看，否则你可能不能得到正确的结果，然后再回到上一次的目录</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> /dev/fd/;ls -Al;<span class="built_in">cd</span> -</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 注意下面的命令&gt;与&amp;之间不应该有空格，如果有空格则会出错</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">"this is test"</span> &gt;&amp;3</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat somefile</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">exit</span></span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584871462_20200322175137133_17384.png" alt></p>
+<h3 id="关闭文件描述符">关闭文件描述符</h3>
+<p>如上面我们打开的3号文件描述符，可以使用如下操作将它关闭：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">exec</span> 3&gt;&amp;-</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> /dev/fd;ls -Al;<span class="built_in">cd</span> -</span></span><br></pre></td></tr></table></figure>
+<h3 id="永久重定向">永久重定向</h3>
+<p>你应该可以看出我们前面的重定向操作都只是临时性的，即只对当前命令有效，那如何做到“永久”有效呢，比如在一个脚本中，你需要某一部分的命令的输出全部进行重定向，难道要让你在每个命令上面加上临时重定向的操作嘛，当然不需要，我们可以使用exec命令实现“永久”重定向。exec命令的作用是使用指定的命令替换当前的Shell，及使用一个进程替换当前进程，或者指定新的重定向：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 先开启一个子Shell</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> zsh</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用<span class="built_in">exec</span>替换当前进程的重定向，将标准输出重定向到一个文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">exec</span> 1&gt;somefile</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 后面你执行的命令的输出都将被重定向到文件中，直到你退出当前子shell，或取消<span class="built_in">exec</span>的重定向（后面将告诉你怎么做）</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">exit</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat somefile</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584871462_20200322175136403_4315.png" alt></p>
+<h2 id="tee命令">tee命令</h2>
+<p>经常你可能还有这样的需求，除了将需要将输出重定向到文件之外也需要将信息打印在终端，那么你可以使用tee命令来实现：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">'hello shiyanlou'</span> | tee hello</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584871462_20200322175136085_3965.png" alt></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">LINUX学习笔记</a></li>
+            <li>03-数据流</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文件描述符"><span class="nav-text">文件描述符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管道"><span class="nav-text">管道</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重定向"><span class="nav-text">重定向</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">常见数据流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#默认使用终端的标准输入输出"><span class="nav-text">默认使用终端的标准输入输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将一个文件作为命令的输入"><span class="nav-text">将一个文件作为命令的输入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将管道传入的数据作为命令输入"><span class="nav-text">将管道传入的数据作为命令输入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将命令输出重定向到一个文件"><span class="nav-text">将命令输出重定向到一个文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将命令输入重定向到终端上的连续输入"><span class="nav-text">将命令输入重定向到终端上的连续输入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标准错误重定向"><span class="nav-text">标准错误重定向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完全屏蔽命令的输出"><span class="nav-text">完全屏蔽命令的输出</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">相关命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#exec命令"><span class="nav-text">exec命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建新的输出文件描述符"><span class="nav-text">创建新的输出文件描述符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭文件描述符"><span class="nav-text">关闭文件描述符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#永久重定向"><span class="nav-text">永久重定向</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tee命令"><span class="nav-text">tee命令</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

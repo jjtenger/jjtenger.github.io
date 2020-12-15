@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="文档型数据库会将数据存储到粗粒度的文档中，而图数据库会将数据存储到多个细粒度的节点中，这些节点之间通过关系建立关联。图数据库中的一个节点通常会对应数据库中的一个概念（concept），它会具备描述节点状态的属性。连接两个节点的关联关系可能也会带有属性。按照其最简单的形式，图数据库比文档数据库更加通用，有可能会成为关系型数据库的无模式（schemaless）替代方案。因为数据的结构是图，所以可以遍历">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;46-%E4%BD%BF%E7%94%A8Neo4j%E6%93%8D%E4%BD%9C%E5%9B%BE%E6%95%B0%E6%8D%AE.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="文档型数据库会将数据存储到粗粒度的文档中，而图数据库会将数据存储到多个细粒度的节点中，这些节点之间通过关系建立关联。图数据库中的一个节点通常会对应数据库中的一个概念（concept），它会具备描述节点状态的属性。连接两个节点的关联关系可能也会带有属性。按照其最简单的形式，图数据库比文档数据库更加通用，有可能会成为关系型数据库的无模式（schemaless）替代方案。因为数据的结构是图，所以可以遍历">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853760_20200322122818119_18593.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853759_20200322122817701_8815.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853759_20200322122817488_29740.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853759_20200322122817273_3346.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853759_20200322122816956_12515.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853759_20200322122816740_5816.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853758_20200322122816528_11674.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853758_20200322122814710_7295.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853758_20200322122814396_20516.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853758_20200322122814085_19634.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853758_20200322122813768_13678.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853757_20200322122813557_16367.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853757_20200322122813348_19881.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853757_20200322122813138_20319.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853757_20200322122812929_23237.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853757_20200322122812720_16537.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853757_20200322122812510_3281.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853756_20200322122812297_11290.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853756_20200322122812085_20216.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853756_20200322122811875_2439.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853756_20200322122811665_24880.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853756_20200322122811455_7442.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853756_20200322122811247_26071.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853755_20200322122811039_11186.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853755_20200322122810827_26587.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853755_20200322122810617_28691.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853755_20200322122810207_23831.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853754_20200322122809989_22634.jpg">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.040Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584853760_20200322122818119_18593.jpg">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/46-%E4%BD%BF%E7%94%A8Neo4j%E6%93%8D%E4%BD%9C%E5%9B%BE%E6%95%B0%E6%8D%AE">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>46-使用NEO4J操作图数据</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>文档型数据库会将数据存储到粗粒度的文档中，而图数据库会将数据存储到多个细粒度的节点中，这些节点之间通过关系建立关联。图数据库中的一个节点通常会对应数据库中的一个概念（concept），它会具备描述节点状态的属性。连接两个节点的关联关系可能也会带有属性。</p><p>按照其最简单的形式，图数据库比文档数据库更加通用，有可能会成为关系型数据库的无模式（schemaless）替代方案。因为数据的结构是图，所以可以遍历关联关系以查找数据中你所关心的内容，这在其他数据库中是很难甚至无法实现的。</p><a id="more"></a>
+
+<p>Spring Data Neo4j提供了很多与Spring Data JPA和Spring Data MongoDB相同的功能，当然所针对的是Neo4j图数据库。它提供了将Java对象映射到节点和关联关系的注解、面向模板的Neo4j访问方式以及Repository实现的自动化生成功能。</p>
+<p>我们稍后会看到如何在Neo4j中使用这些特性，不过首先我们需要配置Spring Data Neo4j。</p>
+<h1>配置Spring Data Neo4j</h1>
+<p>配置Spring Data Neo4j的关键在于声明GraphDatabaseService bean和启用Neo4j Repository自动生成功能。如下的程序清单展现了Spring Data Neo4j所需的基本配置。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853760_20200322122818119_18593.jpg" alt></p>
+<p><strong>@EnableNeo4jRepositories注解</strong> 能够让Spring Data Neo4j自动生成Neo4j Repository实现。它的basePackages属性设置为orders.db包，这样它就会扫描这个包来查找（直接或间接）扩展Repository标记接口的其他接口。</p>
+<p>Neo4jConfig扩展自 <strong>Neo4jConfiguration</strong> ，后者提供了多个便利的方法来配置Spring Data Neo4j。在这些方法中，就包括setBasePackage()，它会在Neo4jConfig的构造器中调用，用来告诉Spring Data Neo4j要在orders包中查找模型类。</p>
+<p>最后一部分是定义 <strong>GraphDatabaseServicebean</strong> 。在本例中，graphDatabaseService()方法使用GraphDatabaseFactory来创建嵌入式的Neo4j数据库。 <strong>在Neo4j中，嵌入式数据库不要与内存数据库相混淆。在这里，“嵌入式”指的是数据库引擎与应用运行在同一个JVM中，作为应用的一部分，而不是独立的服务器。数据依然会持久化到文件系统中</strong> （在本例中，也就是“/tmp/graphdb”中）。</p>
+<p>作为另外的一种方式，你可能会希望配置GraphDatabaseService连接远程的Neo4j服务器。如果spring-data-neo4j-rest库在应用的类路径下，那么我们就可以 <strong>配置SpringRestGraphDatabase</strong> ，它会通过RESTful API来访问远程的Neo4j数据库：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853759_20200322122817701_8815.png" alt></p>
+<p>如上所示，SpringRestGraphDatabase在配置时，假设远程的数据库并不需要认证。但是，在生产环境的配置中，当创建SpringRestGraphDatabase的时候，我们可能希望提供应用的凭证：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853759_20200322122817488_29740.png" alt></p>
+<p>在这里，凭证是通过注入的Environment获取到的，避免了在配置类中的硬编码。</p>
+<p>Spring Data Neo4j同时还提供了XML命名空间。如果你更愿意在XML中配置Spring Data Neo4j的话，那可以使用该命名空间中的 <strong><code>&lt;neo4j:config&gt;</code></strong> 和 <strong><code>&lt;neo4j:repositories&gt;</code></strong> 元素。在功能上，下面程序清单所展示的配置与上面程序清单中的Java配置是相同的。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853759_20200322122817273_3346.jpg" alt></p>
+<p><strong><code>&lt;neo4j:config&gt;</code></strong> 元素配置了如何访问数据库的细节。在本例中，它配置Spring Data Neo4j使用嵌入式的数据库。具体来讲，storeDirectory属性指定了数据要持久化到哪个文件系统路径中。base-package属性设置了模型类定义在哪个包中。</p>
+<p>至于 <strong><code>&lt;neo4j:repositories&gt;</code></strong> 元素，它启用Spring Data Neo4j自动生成Repository实现的功能，它会扫描orders.db包，查找所有扩展Repository的接口。</p>
+<p><strong>如果要配置Spring Data Neo4j访问远程的Neo4j服务器，我们所需要做的就是声明SpringRestGraphDatabasebean，并设置 <code>&lt;neo4j:config&gt;</code> 的graphDatabaseService属性</strong> ：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853759_20200322122816956_12515.png" alt></p>
+<p>不管是通过Java还是通过XML来配置Spring Data Neo4j，我们都需要确保模型类位于基础包所指定的包中（通过@EnableNeo4jRepositories的basePackages属性或 <code>&lt;neo4j:config&gt;</code> 的base-package属性来进行设置）。它们都需要使用注解将其标注为节点实体或关联关系实体。这就是我们接下来的任务。</p>
+<h1>使用注解标注图实体</h1>
+<p>Neo4j定义了两种类型的实体：节点（node）和关联关系（relationship）。一般来讲，节点反映了应用中的事物，而关联关系定义了这些事物是如何联系在一起的。</p>
+<p>Spring Data Neo4j提供了多个注解，它们可以应用在模型类型及其域上，实现Neo4j中的持久化。下表描述了这些注解。</p>
+<table>
+<thead>
+<tr>
+<th>注　　解</th>
+<th>描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@NodeEntity</td>
+<td>将Java类型声明为节点实体</td>
+</tr>
+<tr>
+<td>@RelationshipEntity</td>
+<td>将Java类型声明为关联关系实体</td>
+</tr>
+<tr>
+<td>@StartNode</td>
+<td>将某个属性声明为关联关系实体的开始节点</td>
+</tr>
+<tr>
+<td>@EndNode</td>
+<td>将某个属性声明为关联关系实体的结束节点</td>
+</tr>
+<tr>
+<td>@Fetch</td>
+<td>将实体的属性声明为立即加载</td>
+</tr>
+<tr>
+<td>@GraphId</td>
+<td>将某个属性设置为实体的ID域（这个域的类型必须是Long）</td>
+</tr>
+<tr>
+<td>@GraphProperty</td>
+<td>明确声明某个属性</td>
+</tr>
+<tr>
+<td>@GraphTraversal</td>
+<td>声明某个属性会自动提供一个iterable元素，这个元素是图遍历所构建的</td>
+</tr>
+<tr>
+<td>@Indexed</td>
+<td>声明某个属性应该被索引</td>
+</tr>
+<tr>
+<td>@Labels</td>
+<td>为@NodeEntity声明标签</td>
+</tr>
+<tr>
+<td>@Query</td>
+<td>声明某个属性会自动提供一个iterable元素，这个元素是执行给定的Cypher查询所构建的</td>
+</tr>
+<tr>
+<td>@QueryResult</td>
+<td>声明某个Java或接口能够持有查询的结果</td>
+</tr>
+<tr>
+<td>@RelatedTo</td>
+<td>通过某个属性，声明当前的@NodeEntity与另外一个@NodeEntity之间的关联关系</td>
+</tr>
+<tr>
+<td>@RelatedToVia</td>
+<td>在@NodeEntity上声明某个属性，指定其引用该节点所属的某一个@RelationshipEntity</td>
+</tr>
+<tr>
+<td>@RelationshipType</td>
+<td>将某个域声明为关联实体类型</td>
+</tr>
+<tr>
+<td>@ResultColumn</td>
+<td>在带有@QueryResult注解的类型上，将某个属性声明为获取查询结果集中的某个特定列</td>
+</tr>
+</tbody>
+</table>
+<p>为了了解如何使用其中的某些注解，我们会将其应用到订单/条目样例中。</p>
+<p>在该样例中，数据建模的一种方式就是将订单设定为一个节点，它会与一个或多个条目关联。下图描述了这种模型。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853759_20200322122816740_5816.png" alt></p>
+<p>为了将订单指定为节点，我们需要为Order类添加@NodeEntity注解。如下的程序清单展现了带有@NodeEntity注解的Order类，它还包含了上表中的几个其他注解。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853758_20200322122816528_11674.jpg" alt></p>
+<p>除了 <strong>类级别上的@NodeEntity</strong> ，还要注意 <strong>id属性上使用了@GraphId注解</strong> 。 <strong>Neo4j上的所有实体必要要有一个图ID</strong> 。这大致类似于JPA @Entity以及MongoDB @Document类中使用@Id注解的属性。在这里，@GraphId注解标注的属性必须是Long类型。</p>
+<p>customer和type属性上没有任何注解。只要这些属性不是瞬态 <strong>（transient）</strong> 的，它们都会成为数据库中节点的属性。</p>
+<p>items属性上使用了 <strong>@RelatedTo注解</strong> ，这表明Order与一个Item的Set存在关联关系。type属性实际上就是为关联关系建立了一个文本标记。它可以设置成任意的值，但通常会给定一个易于人类阅读的文本，用来简单描述这个关联关系的特征。</p>
+<p>稍后，你将会看到如何将这个标记用在查询中，实现跨关联关系的查询。</p>
+<p>就Item本身来说，下面展现了如何为其添加注解实现图的持久化。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853758_20200322122814710_7295.jpg" alt></p>
+<p>类似于Order，Item也使用了@NodeEntity注解，将其标记为一个节点。它同时也有一个Long类型的属性，借助@GraphId注解将其标注为节点的图ID，而product、price以及quantity属性均会作为图数据库中节点的属性。</p>
+<p>Order和Item之间的关联关系很简单，关系本身并不包含任何的数据。因此，@RelatedTo注解就足以定义关联关系。但是，并不是所有的关联关系都这么简单。</p>
+<p>让我们重新考虑该如何为数据建模，从而学习如何使用更为复杂的关联关系。在当前的数据模型中，我们将条目和产品的信息组合到了Item类中。但是，当我们重新考虑的时候，会发现订单会与一个或多个产品相关联。订单与产品之间的关系构成了订单的一个条目。下图描述了另外一种建模数据的方式。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853758_20200322122814396_20516.png" alt></p>
+<p>在这个新的模型中，订单中产品的数量是条目中的一个属性，而产品本身是另外一个概念。与前面一样， <strong>订单和产品都是节点，而条目是关联关系</strong> 。因为现在的条目必须要包含一个数量值，关联关系不像前面那么简单。我们需要定义一个类来代表条目，比如如下程序清单所示的LineItem。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853758_20200322122814085_19634.jpg" alt></p>
+<p>Order类通过@NodeEntity注解将其标示为一个节点，而LineItem类则使用了 <strong>@RelationshipEntity注解</strong> 。LineItem同样也有一个id属性标注了@GraphId注解， <strong>不管是节点实体还是关联关系实体，都必须要有一个图ID，而且其类型必须为Long</strong> 。</p>
+<p>关联关系实体的特殊之处在于它们连接了两个节点。 <strong>@StartNode和@EndNode注解用在定义关联关系两端的属性上</strong> 。在本例中，Order是开始节点，Product是结束节点。</p>
+<p>最后，LineItem类有一个quantity属性，当关联关系创建的时候，它会持久化到数据库中。</p>
+<p>领域对象已经添加了注解，现在就可以保存与读取节点和关联关系了。我们首先看一下如何使用Spring Data Neo4j中的Neo4jTemplate实现面向模板的数据访问。</p>
+<h1>使用Neo4jTemplate</h1>
+<p>Spring Data MongoDB提供了MongoTemplate实现基于模板的MongoDB持久化，与之类似，Spring Data Neo4j提供了Neo4jTemplate来操作Neo4j图数据库中的节点和关联关系。 <strong>如果你已经按照前面的方式配置了Spring Data Neo4j，在Spring应用上下文中就已经具备了一个Neo4jTemplatebean</strong> 。接下来需要做的就是将其注入到任意想使用它的地方。</p>
+<p>例如，我们可以直接将其自动装配到某个bean的属性上：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853758_20200322122813768_13678.png" alt></p>
+<p>Neo4jTemplate定义了很多的方法，包括保存节点、删除节点以及创建节点间的关联关系。我们没有足够的篇幅介绍所有的方法，但是我们会看一下Neo4jTemplate所提供的最为常用的方法。</p>
+<p>我们想借助Neo4jTemplate完成的最基本的一件事情可能就是将某个对象保存为节点。假设这个对象已经使用了@NodeEntity注解，那么我们可以按照如下的方式来使用 <strong>save()方法</strong> ：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853757_20200322122813557_16367.png" alt></p>
+<p>如果你能知道对象的图ID，那么可以通过 <strong>findOne()方法</strong> 来获取它：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853757_20200322122813348_19881.png" alt></p>
+<p>如果按照给定的ID找不到节点的话，那么findOne()方法将会抛出NotFound(Exception)。</p>
+<p>如果你想获取给定类型的所有对象，那么可以使用 <strong>findAll()方法</strong> ：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853757_20200322122813138_20319.png" alt></p>
+<p>这里返回的EndResult是一个Iterable，它能够用在for-each循环以及任何可以使用Iterable的地方。如果不存在这样的节点的话，findAll()方法将会返回空的Iterable。</p>
+<p>如果你只是想知道Neo4j数据库中指定类型的对象数量，那么就可以调用 <strong>count()方法</strong> ：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853757_20200322122812929_23237.png" alt></p>
+<p><strong>delete()方法</strong> 可以用来删除对象：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853757_20200322122812720_16537.png" alt></p>
+<p><strong>createRelationshipBetween()</strong> 是Neo4jTemplate所提供的最有意思的方法之一。我们可以猜到，它会为两个节点创建关联关系。例如，我们可以在Order节点和Product节点之间建立LineItem关联关系：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853757_20200322122812510_3281.png" alt></p>
+<p>createRelationshipBetween()方法的前两个参数是关联关系两端的节点对象。接下来的参数指定了使用@RelationshipEntity注解的类型，它会代表这种关系。接下来的String值描述了关联关系的特征。最后的参数是一个boolean值，它表明这两个节点实体之间是否允许存在重复的关联关系。</p>
+<p>createRelationshipBetween()会返回关联关系类的一个实例。通过它，我们可以设置任意的属性。上面的示例中设置了quantity属性。当这一切完成后，我们调用save()方法将关联关系保存到数据库中。</p>
+<p>Neo4jTemplate提供了很便利的方式来使用Neo4j图数据库中的节点和关联关系。但是，这种方式需要借助Neo4jTemplate编写自己的Repository实现。接下来，我们看一下Spring Data Neo4j怎样为我们自动化生成Repository实现。</p>
+<h1>创建自动化的Neo4j Repository</h1>
+<p>大多数Spring Data项目都具备的最棒的一项功能就是为Repository接口自动生成实现。我们已经在Spring Data JPA和Spring Data MongoDB中看到了这项功能。Spring Data Neo4j也不例外，它同样支持Repository自动化生成功能。</p>
+<p>我们已经将@EnableNeo4jRepositories添加到了配置中，所以Spring Data Neo4j已经配置为支持自动化生成Repository的功能。我们所需要做的就是编写接口，如下的OrderRepository就是很好的起点：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853756_20200322122812297_11290.png" alt></p>
+<p>与其他的Spring Data项目一样，Spring Data Neo4j会为扩展Repository接口的其他接口生成Repository方法实现。在本例中，OrderRepository扩展了GraphRepository，而后者又间接扩展了Repository接口。因此，Spring Data Neo4j将会在运行时创建OrderRepository的实现。</p>
+<p>注意，GraphRepository使用Order进行了参数化，也就是这个Repository所要使用的实体类型。因为Neo4j要求图ID的类型为Long，因此在扩展GraphRepository的时候，没有必要再去指定ID类型。</p>
+<p>现在，我们就能够使用很多通用的CRUD操作，这与JpaRepository和MongoRepository所提供的功能类似。下表描述了扩展GraphRepository所能够得到的方法，它们会由Spring Data Neo4j自动实现。</p>
+<table>
+<thead>
+<tr>
+<th>方　　法</th>
+<th>描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>long count();</code></td>
+<td>返回在数据库中，目标类型有多少实体</td>
+</tr>
+<tr>
+<td><code>void delete(Iterable&lt;?extendsT&gt;);</code></td>
+<td>删除多个实体</td>
+</tr>
+<tr>
+<td><code>void delete(Long id);</code></td>
+<td>根据ID，删除一个实体</td>
+</tr>
+<tr>
+<td><code>void delete(T);</code></td>
+<td>删除一个实体</td>
+</tr>
+<tr>
+<td><code>void deleteAll();</code></td>
+<td>删除目标类型的所有实体</td>
+</tr>
+<tr>
+<td><code>boolean exists(Long id);</code></td>
+<td>根据指定的ID，检查实体是否存在</td>
+</tr>
+<tr>
+<td><code>EndResult&lt;T&gt; findAll();</code></td>
+<td>获取目标类型的所有实体</td>
+</tr>
+<tr>
+<td><code>Iterable&lt;T&gt; findAll(Iterable&lt;Long&gt;);</code></td>
+<td>根据给定的ID，获取目标类型的实体</td>
+</tr>
+<tr>
+<td><code>Page&lt;T&gt; findAll(Pageable);</code></td>
+<td>返回目标类型分页和排序后的实体列表</td>
+</tr>
+<tr>
+<td><code>EndResult&lt;T&gt; findAll(Sort);</code></td>
+<td>返回目标类型排序后的实体列表</td>
+</tr>
+<tr>
+<td><code>EndResult&lt;T&gt; findAllBySchemaPropertyValue(String,Object);</code></td>
+<td>返回指定属性匹配给定值的所有实体</td>
+</tr>
+<tr>
+<td><code>Iterable&lt;T&gt; findAllByTraversal(N, TraversalDescription);</code></td>
+<td>返回从某个节点开始，图遍历到达的节点</td>
+</tr>
+<tr>
+<td><code>T findBySchemaPropertyValue (String,Object);</code></td>
+<td>返回指定属性匹配给定值的一个实体</td>
+</tr>
+<tr>
+<td><code>T findOne(Long);</code></td>
+<td>根据ID，获得某一个实体</td>
+</tr>
+<tr>
+<td><code>EndResult&lt;T&gt; query(String, Map&lt;String,Object&gt;);</code></td>
+<td>返回匹配给定Cypher查询的所有实体</td>
+</tr>
+<tr>
+<td><code>Iterable&lt;T&gt; save(Iterable&lt;T&gt;);</code></td>
+<td>保存多个实体</td>
+</tr>
+<tr>
+<td><code>S save(S);</code></td>
+<td>保存一个实体</td>
+</tr>
+</tbody>
+</table>
+<p>我们没有足够的篇幅介绍所有的方法，但是有些方法你可能会经常用到。例如，如下的代码能够保存一个Order实体：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853756_20200322122812085_20216.png" alt></p>
+<p>当实体保存之后，save()方法将会返回被保存的实体， <strong>如果之前它使用@GraphId注解的属性值为null的话，此时这个属性将会填充上值。</strong></p>
+<p>我们还可以使用findOne()方法查询某一个实体。例如，下面的这行代码将会查询图ID为4的Order：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853756_20200322122811875_2439.png" alt></p>
+<p>我们还可以查询所有的Order：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853756_20200322122811665_24880.png" alt></p>
+<p>当然，你可能还希望删除某一个实体。这种情况下，可以使用delete()方法：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853756_20200322122811455_7442.png" alt></p>
+<p>这将会从数据库中删除给定的Order节点。如果你只有图ID的话，那可以将其传递到delete()方法中，而不是再使用节点类型本身：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853756_20200322122811247_26071.png" alt></p>
+<p>如果你希望进行自定义的查询，那么 <strong>可以使用query()方法对数据库执行任意的Cypher查询</strong> 。但是这与使用Neo4jTemplate的query()方法并没有太大的差别。其实，我们还可以为OrderRepository添加自定义的查询方法。</p>
+<h2 id="添加自定义查询方法">添加自定义查询方法</h2>
+<p>我们已经看过如何按照命名约定使用Spring Data JPA和Spring Data MongoDB来添加自定义的查询方法。如果Spring Data Neo4j没有提供相同功能的话，那我们就该失望了。</p>
+<p>如下面的程序清单所示，其实我们完全没有必要失望：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853755_20200322122811039_11186.jpg" alt></p>
+<p>这里，我们添加了两个方法。其中一个会查询customer属性等于给定String值的Order节点。另外一个方法与之类似，但是除了匹配customer属性以外，Order节点的type属性必须还要等于给定的类型值。</p>
+<p>我们之前已经讨论过查询方法的命名约定，所以这里没有必要再进行深入地讨论。可以翻看之前学习Spring Data JPA的章节，重新温习如何编写这些方法。</p>
+<h2 id="指定自定义查询语句">指定自定义查询语句</h2>
+<p>当命名约定无法满足需求时，我们还可以为方法添加@Query注解，为其指定自定义的查询。我们之前已经见过@Query注解。在Spring Data JPA中，我们使用它来为Repository方法指定JPA查询。在Spring Data MongoDB中，我们使用它来指定匹配JSON的查询。但是，在使用Spring Data Neo4j的时候，我们必须指定Cypher查询：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853755_20200322122810827_26587.png" alt></p>
+<p>在这里，findSiAOrders()方法上使用了@Query注解，并设置了一个Cypher查询，它会查找与Item关联并且product属性等于“Spring in Action”的所有Order节点。</p>
+<h2 id="混合自定义的Repository行为">混合自定义的Repository行为</h2>
+<p>当命名约定和@Query注解均无法满足满足需求的时候，我们还可以混合自定义的Repository逻辑。</p>
+<p>例如，假设我们想自己编写findSiAOrders()方法的实现，而不是依赖于@Query注解。那么可以首先定义一个中间接口，该接口包含findSiAOrders()方法的定义：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853755_20200322122810617_28691.png" alt></p>
+<p>然后，我们修改OrderRepository，让它扩展OrderOperations和GraphRepository：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853755_20200322122810207_23831.png" alt></p>
+<p>最后，我们需要自己编写实现。与Spring Data JPA和Spring Data MongoDB类似，Spring Data Neo4j将会查找名字与Repository接口相同且添加“Impl”后缀的实现类。因此，我们需要创建OrderRepositoryImpl类。如下的程序清单展示了OrderRepositoryImpl类，它实现了findSiAOrders()方法。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584853754_20200322122809989_22634.jpg" alt></p>
+<p>OrderRepositoryImpl中注入了一个Neo4jOperations（具体来讲，就是Neo4jTemplate的实例），它会用来查询数据库。因为query()方法返回的是 <code>Result&lt;Map&lt;String, Object&gt;&gt;</code> ，我们需要将其转换为 <code>List&lt;Order&gt;</code> 。 <strong>第一步是调用Result的to()方法，产生一个 <code>EndResult&lt;Order&gt;</code> 。然后，使用Neo4j的IteratorUtil.asList()方法将 <code>EndResult&lt;Order&gt;</code> 转换为 <code>List&lt;Order&gt;</code> ，然后将其返回。</strong></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>46-使用NEO4J操作图数据</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">配置Spring Data Neo4j</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用注解标注图实体</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用Neo4jTemplate</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">创建自动化的Neo4j Repository</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#添加自定义查询方法"><span class="nav-text">添加自定义查询方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定自定义查询语句"><span class="nav-text">指定自定义查询语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#混合自定义的Repository行为"><span class="nav-text">混合自定义的Repository行为</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

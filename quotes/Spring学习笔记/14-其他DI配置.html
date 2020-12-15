@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="循环依赖循环依赖即循环引用，两个或多个Bean相互之间持有对方，而循环调用是方法之间的环调用。Spring容器将每一个正在创建的Bean 标识符放在一个“当前创建Bean池”中，Bean标识符在创建过程中将一直保持在这个池中，因此如果在创建Bean过程中发现自己已经在“当前创建Bean池”里时将抛出BeanCurrentlyInCreationException异常表示循环依赖，">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;14-%E5%85%B6%E4%BB%96DI%E9%85%8D%E7%BD%AE.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="循环依赖循环依赖即循环引用，两个或多个Bean相互之间持有对方，而循环调用是方法之间的环调用。Spring容器将每一个正在创建的Bean 标识符放在一个“当前创建Bean池”中，Bean标识符在创建过程中将一直保持在这个池中，因此如果在创建Bean过程中发现自己已经在“当前创建Bean池”里时将抛出BeanCurrentlyInCreationException异常表示循环依赖，">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.036Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/14-%E5%85%B6%E4%BB%96DI%E9%85%8D%E7%BD%AE">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>14-其他DI配置</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>循环依赖</h1><p>循环依赖即循环引用，两个或多个Bean相互之间持有对方，而循环调用是方法之间的环调用。</p><p>Spring容器将每一个正在创建的Bean 标识符放在一个“当前创建Bean池”中，Bean标识符在创建过程中将一直保持在这个池中，</p><p>因此如果在创建Bean过程中发现自己已经在“当前创建Bean池”里时将抛出BeanCurrentlyInCreationException异常表示循环依赖，</p><a id="more"></a>
+
+
+
+<p>而对于创建完毕的Bean将从“当前创建Bean池”中清除掉。</p>
+<p>只有单例作用域中setter注入构成的循环依赖才能被解决（因为注入时不用创建新的对象）；</p>
+<p>解决方式是：Spring容器提前暴露并注入刚完成构造器注入但未完成其他步骤（如setter注入）的Bean。</p>
+<p>其他形式的循环依赖/调用都会报错,如：构造器循环依赖、“prototype”作用域Bean的循环依赖。</p>
+<p>对于“singleton”作用域Bean，可以通过Spring容器的“setAllowCircularReferences(false);”来禁用循环引用：</p>
+<p>应该尽量避免循环依赖。</p>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CircleInjectTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">circleInjectTest</span><span class="params">()</span> <span class="keyword">throws</span> Throwable</span>&#123;</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//循环依赖</span></span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           ClassPathXmlApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext();</span><br><span class="line">           <span class="comment">//对于“singleton”作用域Bean，可以通过“setAllowCircularReferences(false);”来禁用循环引用</span></span><br><span class="line">           <span class="comment">//注意：必须在加载资源路径之前进行设置</span></span><br><span class="line">           <span class="comment">//ctx.setAllowCircularReferences(false);</span></span><br><span class="line">           ctx.setConfigLocation(<span class="string">"circularDependency.xml"</span>);</span><br><span class="line">           <span class="comment">//产生对象前先refresh容器</span></span><br><span class="line">           ctx.refresh();</span><br><span class="line">           System.out.println(ctx.getBean(<span class="string">"circleA"</span>));</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">           System.out.println(e.getMessage());</span><br><span class="line">           <span class="keyword">throw</span> e;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Spring容器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">&lt;!-- 构造器循环依赖：表示通过构造器注入构成的循环依赖，此依赖是无法解决的，只能抛出BeanCurrentlyInCreationException异常表示循环依赖--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 如在创建CircleA类时，构造器需要CircleB类，那将去创建CircleB，在创建CircleB类时又发现需要CircleC类，则又去创建CircleC，</span></span><br><span class="line"><span class="comment">      最终在创建CircleC时发现又需要CircleA；从而形成一个环，没办法创建。--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 下面示例中：</span></span><br><span class="line"><span class="comment">      1、Spring容器创建“circleA” Bean，首先去“当前创建Bean池”查找是否当前Bean正在创建，如果没发现，则继续准备其需要的构造器参数“circleB”，并将“circleA” 标识符放到“当前创建Bean池”；</span></span><br><span class="line"><span class="comment">      2、Spring容器创建“circleB” Bean，首先去“当前创建Bean池”查找是否当前Bean正在创建，如果没发现，则继续准备其需要的构造器参数“circleC”，并将“circleB” 标识符放到“当前创建Bean池”；</span></span><br><span class="line"><span class="comment">      3、Spring容器创建“circleC” Bean，首先去“当前创建Bean池”查找是否当前Bean正在创建，如果没发现，则继续准备其需要的构造器参数“circleA”，并将“circleC” 标识符放到“当前创建Bean池”；</span></span><br><span class="line"><span class="comment">      4、到此为止Spring容器要去创建“circleA”Bean，发现该Bean 标识符在“当前创建Bean池”中，因为表示循环依赖，抛出BeanCurrentlyInCreationException。--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--&lt;bean id="circleA" class="model.CircleA"&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;constructor-arg index="0" ref="circleB"/&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;/bean&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;bean id="circleB" class="model.CircleB"&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;constructor-arg index="0" ref="circleC"/&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;/bean&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;bean id="circleC" class="model.CircleC"&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;constructor-arg index="0" ref="circleA"/&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;/bean&gt;--&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">&lt;!-- setter循环依赖：表示通过setter注入方式构成的循环依赖。--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 对于setter注入造成的依赖是通过Spring容器提前暴露刚完成构造器注入但未完成其他步骤（如setter注入）的Bean来完成的，</span></span><br><span class="line"><span class="comment">      但只能解决单例作用域的Bean循环依赖--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 下面示例中：</span></span><br><span class="line"><span class="comment">      1、Spring容器创建单例“circleA” Bean，首先根据无参构造器创建Bean，并暴露一个“ObjectFactory”用于返回一个提前暴露一个创建中的Bean，并将“circleA” 标识符放到“当前创建Bean池”；然后进行setter注入“circleB”；</span></span><br><span class="line"><span class="comment">      2、Spring容器创建单例“circleB” Bean，首先根据无参构造器创建Bean，并暴露一个“ObjectFactory”用于返回一个提前暴露一个创建中的Bean，并将“circleB” 标识符放到“当前创建Bean池”，然后进行setter注入“circleC”；</span></span><br><span class="line"><span class="comment">      3、Spring容器创建单例“circleC” Bean，首先根据无参构造器创建Bean，并暴露一个“ObjectFactory”用于返回一个提前暴露一个创建中的Bean，并将“circleC” 标识符放到“当前创建Bean池”，然后进行setter注入“circleA”；进行注入“circleA”时由于提前暴露了“ObjectFactory”工厂从而使用它返回提前暴露一个创建中的Bean；</span></span><br><span class="line"><span class="comment">      4、最后在依赖注入“circleB”（circleC注入circleB）和“circleA”（circleB注入circleA），完成setter注入。--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"circleA"</span> <span class="attr">class</span>=<span class="string">"model.CircleA"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"circleB"</span> <span class="attr">ref</span>=<span class="string">"circleB"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"circleB"</span> <span class="attr">class</span>=<span class="string">"model.CircleB"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"circleC"</span> <span class="attr">ref</span>=<span class="string">"circleC"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"circleC"</span> <span class="attr">class</span>=<span class="string">"model.CircleC"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"circleA"</span> <span class="attr">ref</span>=<span class="string">"circleA"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">&lt;!-- 对于“prototype”作用域Bean，Spring容器无法完成依赖注入，因为“prototype”作用域的Bean，Spring容器每次返回的是一个全新的对象，因此无法提前暴露一个创建中的Bean。--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 以下代码会抛出异常--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;bean id="circleA" class="model.CircleA" scope="prototype"&gt;--&gt;</span></span><br><span class="line">             <span class="comment">&lt;!--&lt;property name="circleB" ref="circleB"/&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;/bean&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;bean id="circleB" class="model.CircleB" scope="prototype"&gt;--&gt;</span></span><br><span class="line">             <span class="comment">&lt;!--&lt;property name="circleC" ref="circleC"/&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;/bean&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;bean id="circleC" class="model.CircleC" scope="prototype"&gt;--&gt;</span></span><br><span class="line">             <span class="comment">&lt;!--&lt;property name="circleA" ref="circleA"/&gt;--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--&lt;/bean&gt;--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>延迟初始化</h1>
+<p>延迟初始化Bean：</p>
+<p>ApplicationContext容器会在创建容器时提前初始化singleton作用域的Bean。</p>
+<p>在 <code>&lt;bean&gt;</code> 标签上指定lazy-init属性值为true即可延迟初始化Bean。</p>
+<p>延迟初始化的Bean通常会在第一次使用时被初始化；或者在被非延迟初始化Bean作为依赖对象注入时随着初始化该Bean时被初始化。</p>
+<p>示例代码：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloApiLazy"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl"</span> <span class="attr">lazy-init</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>指定依赖Bean</h1>
+<p>指定依赖Bean：使用 <code>&lt;bean&gt;</code> 标签的depends-on属性指定。</p>
+<ul>
+<li>依赖Bean会在当前Bean初始化之前初始化完毕；</li>
+<li>对于singleton作用域的Bean，依赖Bean会在当前Bean销毁之后销毁（因为只有“singleton” Bean能被Spring管理销毁）;</li>
+</ul>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> model.DependentBean;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DependencyInjectTest</span> </span>&#123;</span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testDependOn</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       ClassPathXmlApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"beanDependsOn.xml"</span>);</span><br><span class="line">       <span class="comment">//一定要注册销毁回调，否则我们定义的销毁方法不执行</span></span><br><span class="line">       context.registerShutdownHook();</span><br><span class="line">       DependentBean dependentBean = context.getBean(<span class="string">"dependentBean"</span>, DependentBean.class);</span><br><span class="line">       dependentBean.write(<span class="string">"bbb"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Spring容器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- “depends-on”属性可以指定多个Bean，若指定多个Bean可以用“;”、“,”、空格分割。--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 示例：在平常开发中我们可能需要访问文件系统，而文件打开、关闭是必须配对的，不能打开后不关闭，从而造成其他程序不能访问该文件。具体配置如下：--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- ResourceBean从配置文件中配置文件位置，然后定义初始化方法init中打开指定的文件，然后获取文件流；最后定义销毁方法destroy用于在应用程序关闭时调用该方法关闭掉文件流。--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"resourceBean"</span> <span class="attr">class</span>=<span class="string">"model.ResourceBean"</span> <span class="attr">init-method</span>=<span class="string">"init"</span> <span class="attr">destroy-method</span>=<span class="string">"destroy"</span>&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- init-method="init" ：指定初始化方法，在构造器注入和setter注入完毕后执行。</span></span><br><span class="line"><span class="comment">             destroy-method="destroy"：指定销毁方法，只有“singleton”作用域能销毁，“prototype”作用域的一定不能，其他作用域不一定能。--&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"file"</span> <span class="attr">value</span>=<span class="string">"resources/test.txt"</span>/&gt;</span> <span class="comment">&lt;!-- Spring容器能自动把字符串转换为java.io.File--&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- DependentBean中会注入ResourceBean，并从ResourceBean中获取文件流写入内容；定义初始化方法init用来定义一些初始化操作并向文件中输出文件头信息；最后定义销毁方法用于在关闭应用程序时想文件中输出文件尾信息。--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"dependentBean"</span> <span class="attr">class</span>=<span class="string">"model.DependentBean"</span> <span class="attr">init-method</span>=<span class="string">"init"</span> <span class="attr">destroy-method</span>=<span class="string">"destroy"</span> <span class="attr">depends-on</span>=<span class="string">"resourceBean"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"resourceBean"</span> <span class="attr">ref</span>=<span class="string">"resourceBean"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>依赖检查</h1>
+<p>依赖检查：用检查Bean定义的属性是否都注入了数据；</p>
+<p>使用 <code>&lt;bean&gt;</code> 标签的dependency-check配置；</p>
+<p>有none、simple、object、all四种检查方式；</p>
+<p>只检查具有setter方法的属性；</p>
+<p>已不推荐使用，建议用@Required注解方式代替。</p>
+<p>示例代码：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">      http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 依赖检查：用于检查Bean定义的属性都了注入数据，不管是自动装配的还是配置方式注入的都能检查，如果没有注入数据将报错，</span></span><br><span class="line"><span class="comment">      注意只能检查具有setter方法的属性.--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- Spring3+也不推荐配置方式依赖检查，建议采用Java5+ @Required注解方式,</span></span><br><span class="line"><span class="comment">      测试时请将XML schema降低为2.5版本的，和自动装配中“autodetect”配置方式的xsd一样--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 依赖检查有none、simple、object、all四种方式 --&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 一、none：默认方式，表示不检查；--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 二、objects：检查除基本类型外的依赖对象。</span></span><br><span class="line"><span class="comment">      以下配置中没有注入helloApi属性，所以会抛出异常：--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"model.HelloApiDecorator"</span> <span class="attr">dependency-check</span>=<span class="string">"objects"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--三、simple：对基本类型进行依赖检查，包括数组类型，其他依赖不报错。</span></span><br><span class="line"><span class="comment">      以下配置中没有注入message属性，所以会抛出异常：--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl4"</span> <span class="attr">dependency-check</span>=<span class="string">"simple"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"index"</span> <span class="attr">value</span>=<span class="string">"2"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--四、all：对所有类型进行依赖检查--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--依赖检查也可以通过“&lt;beans&gt;”标签中default-dependency-check属性来指定全局依赖检查配置。--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>方法注入</h1>
+<p>通过CGLIB动态代理方式实现。</p>
+<p><strong>查找方法注入</strong>：通过配置方式替换方法返回结果；</p>
+<ul>
+<li>
+<p>配置方式： <code>&lt;bean&gt;</code> 中配置子标签  <code>&lt;lookup-method name=&quot;替换方法名&quot; bean=&quot;指定返回的bean名称&quot;/&gt;</code> ；</p>
+</li>
+<li>
+<p>查找方法的格式：非private，有返回值，无参，可以是抽象方法，类和方法均非final；</p>
+</li>
+</ul>
+<p>主要用于：处理singleton作用域的Bean需要其他作用域的Bean对象</p>
+<p><strong>替换方法注入</strong>：用于替换方法体；</p>
+<ul>
+<li>
+<p>首先定义顶替者：为<strong>MethodReplacer接口</strong>实现类，其中reimplement方法定义了新方法功能；</p>
+</li>
+<li>
+<p>然后在 <code>&lt;bean&gt;</code> 中配置子标签 <code>&lt;replaced-method&gt;</code> 来指定要进行替换方法，</p>
+</li>
+</ul>
+<p>属性name指定替换的方法名字，replacer指定该方法的重新实现者，子标签 <code>&lt;arg-type&gt;</code> 用来指定原方法参数的类型。</p>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<p>（1） 查找方法注入：LookupMethodTest.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> model.HelloApi;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 用于单例作用域获取原型域对象</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LookupMethodTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testLookup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       ClassPathXmlApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"bean-methodInject.xml"</span>);</span><br><span class="line"> </span><br><span class="line">       System.out.println(<span class="string">"=======singleton sayHello======"</span>);</span><br><span class="line">       <span class="comment">//每次获取的prototype printer对象不一样</span></span><br><span class="line">       HelloApi helloApi1 = context.getBean(<span class="string">"helloApi-singleton"</span>, HelloApi.class);</span><br><span class="line">       helloApi1.sayHello();</span><br><span class="line">       helloApi1 = context.getBean(<span class="string">"helloApi-singleton"</span>, HelloApi.class);</span><br><span class="line">       helloApi1.sayHello();</span><br><span class="line"> </span><br><span class="line">       System.out.println(<span class="string">"=======prototype sayHello======"</span>);</span><br><span class="line">       HelloApi helloApi2 = context.getBean(<span class="string">"helloApi-prototype"</span>, HelloApi.class);</span><br><span class="line">       helloApi2.sayHello();</span><br><span class="line">       helloApi2 = context.getBean(<span class="string">"helloApi-prototype"</span>, HelloApi.class);</span><br><span class="line">       helloApi2.sayHello();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（2） 替换方法注入</p>
+<p>顶替者：MethodReplacerImpl.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.support.MethodReplacer;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 替换方法注入</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MethodReplacerImpl</span> <span class="keyword">implements</span> <span class="title">MethodReplacer</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//reimplement方法重定义方法功能，参数obj为被替换方法的对象，method为被替换方法，args为方法参数</span></span><br><span class="line">   <span class="comment">//注意不能再通过“method.invoke(obj, new String[]&#123;"hehe"&#125;);” 反射形式再去调用原来方法，这样会产生循环调用</span></span><br><span class="line">   <span class="comment">//如果返回值类型为Void，请在实现中返回null</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Object <span class="title">reimplement</span><span class="params">(Object obj, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"Print Replacer"</span>);</span><br><span class="line">       <span class="comment">//注意此处不能再通过反射调用了,否则会产生循环调用，知道内存溢出</span></span><br><span class="line">       <span class="comment">//method.invoke(obj, new String[]&#123;"hehe"&#125;);</span></span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试类：MethodReplacerTest.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> model.Printer;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Created by jiateng.jiang on 2017/1/25.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MethodReplacerTest</span> </span>&#123;</span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMethodReplacer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       ClassPathXmlApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"bean-methodInject.xml"</span>);</span><br><span class="line">       Printer printer = context.getBean(<span class="string">"replacedPrinter"</span>, Printer.class);</span><br><span class="line">       printer.print(<span class="string">"我将被替换"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Spring容器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 方法注入是指通过配置方式覆盖或拦截指定的方法，通常通过代理模式实现。Spring提供两种方法注入：查找方法注入和方法替换注入。--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- Spring是通过CGLIB动态代理方式实现方法注入，也就是通过动态修改类的字节码来实现的，本质是通过生成需方法注入的类的子类方式实现。--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 一、查找方法注入：又称为Lookup方法注入，用于注入方法返回结果，也就是说能通过配置方式替换方法返回结果。--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 方法注入主要用于处理“singleton”作用域的Bean需要其他作用域的Bean时，采用Spring查找方法注入方式无需修改任何代码即能获取需要的其他作用域的Bean。--&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"prototypePrinter"</span> <span class="attr">class</span>=<span class="string">"model.Printer"</span> <span class="attr">scope</span>=<span class="string">"prototype"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"singletonPrinter"</span> <span class="attr">class</span>=<span class="string">"model.Printer"</span> <span class="attr">scope</span>=<span class="string">"singleton"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloApi-singleton"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl5"</span> <span class="attr">scope</span>=<span class="string">"singleton"</span>&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- 单例作用域bean中,注入的“prototype”Bean和它所在的“singleton”Bean具有同样的生命周期--&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"printer"</span> <span class="attr">ref</span>=<span class="string">"prototypePrinter"</span>/&gt;</span></span><br><span class="line">             <span class="comment">&lt;!--抽象方法createPrototypePrinter被替代，返回了bean"prototypePrinter"--&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">lookup-method</span> <span class="attr">name</span>=<span class="string">"createPrototypePrinter"</span> <span class="attr">bean</span>=<span class="string">"prototypePrinter"</span>/&gt;</span></span><br><span class="line">             <span class="comment">&lt;!--createSingletonPrinter方法内部代码不会执行，而直接返回了bean"singletonPrinter"--&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">lookup-method</span> <span class="attr">name</span>=<span class="string">"createSingletonPrinter"</span> <span class="attr">bean</span>=<span class="string">"singletonPrinter"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloApi-prototype"</span> <span class="attr">class</span>=<span class="string">"model.HelloImpl5"</span> <span class="attr">scope</span>=<span class="string">"prototype"</span>&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- 注入的属性及自身均为prototype，因此具有原型作用域周期特性--&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"printer"</span> <span class="attr">ref</span>=<span class="string">"prototypePrinter"</span>/&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">lookup-method</span> <span class="attr">name</span>=<span class="string">"createPrototypePrinter"</span> <span class="attr">bean</span>=<span class="string">"prototypePrinter"</span>/&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">lookup-method</span> <span class="attr">name</span>=<span class="string">"createSingletonPrinter"</span> <span class="attr">bean</span>=<span class="string">"singletonPrinter"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--二、替换方法注入：也叫“MethodReplacer”注入，和查找注入方法不一样的是，他主要用来替换方法体--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--首先定义MethodReplacer实现--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"replacer"</span> <span class="attr">class</span>=<span class="string">"02_MethodReplacer.MethodReplacer_Interface.MethodReplacerImpl"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"replacedPrinter"</span> <span class="attr">class</span>=<span class="string">"model.Printer"</span>&gt;</span></span><br><span class="line">             <span class="comment">&lt;!--使用&lt;replaced-method&gt;标签来指定要进行替换方法，属性name指定替换的方法名字，replacer指定该方法的重新实现者，</span></span><br><span class="line"><span class="comment">             子标签&lt;arg-type&gt;用来指定原来方法参数的类型，必须指定否则找不到原方法--&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">replaced-method</span> <span class="attr">name</span>=<span class="string">"print"</span> <span class="attr">replacer</span>=<span class="string">"replacer"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">arg-type</span>&gt;</span>java.lang.String<span class="tag">&lt;/<span class="name">arg-type</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;/<span class="name">replaced-method</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>对象图导航注入支持</h1>
+<p>对象图导航注入：在 <code>&lt;property&gt;</code> 标签的name属性中，通过类似a.b.c点运算符注入属性对象的字段；</p>
+<ul>
+<li>通过[索引]注入数组/列表类型属性中对应元素，其中索引必须为数字，注意不支持Set类型；</li>
+<li>通过[key]注入Map类型属性中对应的value值,其中key值必须为基本类型；</li>
+</ul>
+<p>注意所有导航符的父对象都不能为null。</p>
+<p>不建议使用。</p>
+<p>示例代码：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> model.NavigationA;</span><br><span class="line"><span class="keyword">import</span> model.NavigationC;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Created by jiateng.jiang on 2016/7/4.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ObjectNavigationTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">injectionTypeTest</span><span class="params">()</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">       ApplicationContext beanContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"objectNavigation.xml"</span>);</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//对象图导航方式依赖注入</span></span><br><span class="line">       NavigationA navigationA = beanContext.getBean(<span class="string">"a"</span>, NavigationA.class);</span><br><span class="line">       navigationA.getNavigationB().getNavigationC().sayNavigation();</span><br><span class="line">       navigationA.getNavigationB().getList().get(<span class="number">0</span>).sayNavigation();</span><br><span class="line">       navigationA.getNavigationB().getMap().get(<span class="string">"key"</span>).sayNavigation();</span><br><span class="line">       navigationA.getNavigationB().getArray()[<span class="number">0</span>].sayNavigation();</span><br><span class="line">       ((NavigationC)navigationA.getNavigationB().getProperties().get(<span class="string">"1"</span>)).sayNavigation();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Spring容器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"c"</span> <span class="attr">class</span>=<span class="string">"model.NavigationC"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 注意，要确保NavigationB中属性字段不为空，这就需要或者在代码中赋值如“NavigationC[] array = new NavigationC[1];”，</span></span><br><span class="line"><span class="comment">      或者通过配置文件注入如“&lt;list&gt;&lt;/list&gt;”注入一个不包含条目的列表--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"b"</span> <span class="attr">class</span>=<span class="string">"model.NavigationB"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"list"</span>&gt;</span><span class="tag">&lt;<span class="name">list</span>&gt;</span><span class="tag">&lt;/<span class="name">list</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"map"</span>&gt;</span><span class="tag">&lt;<span class="name">map</span>&gt;</span><span class="tag">&lt;/<span class="name">map</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"properties"</span>&gt;</span><span class="tag">&lt;<span class="name">props</span>&gt;</span><span class="tag">&lt;/<span class="name">props</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"a"</span> <span class="attr">class</span>=<span class="string">"model.NavigationA"</span>&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- 首先注入navigatiionB 确保它非空 --&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"navigationB"</span> <span class="attr">ref</span>=<span class="string">"b"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">             <span class="comment">&lt;!-- 对象图导航注入 --&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"navigationB.navigationC"</span> <span class="attr">ref</span>=<span class="string">"c"</span>/&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- 注入列表数据类型数据 --&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"navigationB.list[0]"</span> <span class="attr">ref</span>=<span class="string">"c"</span>/&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- 注入map类型数据 --&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"navigationB.map[key]"</span> <span class="attr">ref</span>=<span class="string">"c"</span>/&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- 注入properties类型数据 --&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"navigationB.properties[0]"</span> <span class="attr">ref</span>=<span class="string">"c"</span>/&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- 注入properties类型数据 --&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"navigationB.properties[1]"</span> <span class="attr">ref</span>=<span class="string">"c"</span>/&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- 注入数组类型数据 ，注意不要越界--&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"navigationB.array[0]"</span> <span class="attr">ref</span>=<span class="string">"c"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>14-其他DI配置</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">循环依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">延迟初始化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">指定依赖Bean</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">依赖检查</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">方法注入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">对象图导航注入支持</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="sed工具在man手册里面的全名为&amp;quot;sed - stream editor for filtering and transforming text&amp;quot;，意即用于过滤和转换文本的流编辑器。在Linux&#x2F;UNIX的世界里敢称为编辑器的工具，大都非等闲之辈，比如前面的&amp;quot;vi&#x2F;vim(编辑器之神)&amp;quot;,“emacs(神的编辑器)”，&amp;quot;gedit&amp;quot;这些">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;13-sed%E6%B5%81%E7%BC%96%E8%BE%91%E5%99%A8.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="sed工具在man手册里面的全名为&amp;quot;sed - stream editor for filtering and transforming text&amp;quot;，意即用于过滤和转换文本的流编辑器。在Linux&#x2F;UNIX的世界里敢称为编辑器的工具，大都非等闲之辈，比如前面的&amp;quot;vi&#x2F;vim(编辑器之神)&amp;quot;,“emacs(神的编辑器)”，&amp;quot;gedit&amp;quot;这些">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584873612_20200322183953232_16328.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584873612_20200322183952483_16383.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.032Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584873612_20200322183953232_16328.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/13-sed%E6%B5%81%E7%BC%96%E8%BE%91%E5%99%A8">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">LINUX学习笔记</a></li>
+            <li>13-SED流编辑器</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>sed工具在man手册里面的全名为&quot;sed - stream editor for filtering and transforming text&quot;，意即用于过滤和转换文本的流编辑器。</p><p>在Linux/UNIX的世界里敢称为编辑器的工具，大都非等闲之辈，比如前面的&quot;vi/vim(编辑器之神)&quot;,“emacs(神的编辑器)”，&quot;gedit&quot;这些个编辑器。sed与上述的最大不同之处在于它是一个非交互式的编辑器，下面我们就开始介绍sed这个编辑器。</p><a id="more"></a>
+
+<h1>基本格式</h1>
+<p>sed命令基本格式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed [参数]... [执行命令] [输入文件]...</span><br></pre></td></tr></table></figure>
+<p>形如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sed -i <span class="string">'1s/sad/happy/'</span> <span class="built_in">test</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 表示将<span class="built_in">test</span>文件中第一行的<span class="string">"sad"</span>替换为<span class="string">"happy"</span></span></span><br></pre></td></tr></table></figure>
+<h2 id="参数">[参数]</h2>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-n</td>
+<td>安静模式，只打印受影响的行，默认打印输入数据的全部内容</td>
+</tr>
+<tr>
+<td>-e</td>
+<td>用于在脚本中添加多个执行命令一次执行，在命令行中执行多个命令通常不需要加该参数</td>
+</tr>
+<tr>
+<td>-f filename</td>
+<td>指定执行filename文件中的命令</td>
+</tr>
+<tr>
+<td>-r</td>
+<td>使用扩展正则表达式，默认为标准正则表达式</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>将直接修改输入文件内容，而不是打印到标准输出设备</td>
+</tr>
+</tbody>
+</table>
+<h2 id="执行命令">[执行命令]</h2>
+<p>sed执行命令格式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[n1][,n2]command</span><br><span class="line">[n1][~step]command</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 其中一些命令可以在后面加上作用范围，形如：</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sed -i <span class="string">'s/sad/happy/g'</span> <span class="built_in">test</span> <span class="comment"># g表示全局范围</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sed -i <span class="string">'s/sad/happy/4'</span> <span class="built_in">test</span> <span class="comment"># 4表示指定行中的第四个匹配字符串</span></span></span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<p>n1,n2表示输入内容的行号：全部忽略表示所有文本内容；忽略n2表明仅n1行；n1、n2之间为&quot;,&quot;逗号则表示从n1到n2行；为&quot;～&quot;波浪号则表示从n1开始以step为步进的所有行。</p>
+<p>command为执行动作，下面为一些常用动作指令：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>s</td>
+<td>行内替换</td>
+</tr>
+<tr>
+<td>c\</td>
+<td>整行替换</td>
+</tr>
+<tr>
+<td>a\</td>
+<td>插入到指定行的后面</td>
+</tr>
+<tr>
+<td>i\</td>
+<td>插入到指定行的前面</td>
+</tr>
+<tr>
+<td>p</td>
+<td>打印指定行，通常与-n参数配合使用</td>
+</tr>
+<tr>
+<td>d</td>
+<td>删除指定行</td>
+</tr>
+</tbody>
+</table>
+<h1>HelloWorld</h1>
+<p>我们先找一个用于练习的文本文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cp /etc/passwd ~</span></span><br></pre></td></tr></table></figure>
+<h2 id="打印指定行">打印指定行</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 打印2-5行</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> nl passwd | sed -n <span class="string">'2,5p'</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 打印奇数行</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> nl passwd | sed -n <span class="string">'1~2p'</span></span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584873612_20200322183953232_16328.png" alt></p>
+<h2 id="行内替换">行内替换</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 将输入文本中<span class="string">"shiyanlou"</span> 全局替换为<span class="string">"hehe"</span>(s/g)，并只打印替换的那一行(p)，注意这里不能省略最后的<span class="string">"p"</span>命令</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sed -n <span class="string">'s/shiyanlou/hehe/gp'</span> passwd</span></span><br></pre></td></tr></table></figure>
+<p>注意：行内替换可以结合正则表达式使用。</p>
+<h2 id="行间替换">行间替换</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nl passwd | grep <span class="string">"shiyanlou"</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 替换第21行为www.shiyanlou.com</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sed -n <span class="string">'21c\www.shiyanlou.com'</span> passwd</span></span><br></pre></td></tr></table></figure>
+<p>（这里我们只把要替换的行打印出来了，并没有真正的替换，如果要替换的话，请使用-i参数）</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584873612_20200322183952483_16383.png" alt></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">LINUX学习笔记</a></li>
+            <li>13-SED流编辑器</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">基本格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#参数"><span class="nav-text">[参数]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行命令"><span class="nav-text">[执行命令]</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HelloWorld</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#打印指定行"><span class="nav-text">打印指定行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行内替换"><span class="nav-text">行内替换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行间替换"><span class="nav-text">行间替换</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

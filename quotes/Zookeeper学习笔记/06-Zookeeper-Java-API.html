@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="ZooKeeper有一个绑定Java和C的官方API。Zookeeper社区为大多数语言（.NET，python等）提供非官方API。使用ZooKeeper API，应用程序可以连接，交互，操作数据，协调，最后断开与ZooKeeper集合的连接。ZooKeeper API具有丰富的功能，以简单和安全的方式获得ZooKeeper集合的所有功能。ZooKeeper API提供同步和异步方法。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;06-Zookeeper-Java-API.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="ZooKeeper有一个绑定Java和C的官方API。Zookeeper社区为大多数语言（.NET，python等）提供非官方API。使用ZooKeeper API，应用程序可以连接，交互，操作数据，协调，最后断开与ZooKeeper集合的连接。ZooKeeper API具有丰富的功能，以简单和安全的方式获得ZooKeeper集合的所有功能。ZooKeeper API提供同步和异步方法。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584898470_20200323012442735_8138.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.044Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584898470_20200323012442735_8138.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/06-Zookeeper-Java-API">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ZOOKEEPER学习笔记</a></li>
+            <li>06-ZOOKEEPER-JAVA-API</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>ZooKeeper有一个绑定Java和C的官方API。Zookeeper社区为大多数语言（.NET，python等）提供非官方API。使用ZooKeeper API，应用程序可以连接，交互，操作数据，协调，最后断开与ZooKeeper集合的连接。</p><p>ZooKeeper API具有丰富的功能，以简单和安全的方式获得ZooKeeper集合的所有功能。ZooKeeper API提供同步和异步方法。</p><a id="more"></a>
+
+<p>ZooKeeper集合和ZooKeeper API在各个方面都完全相辅相成，对开发人员有很大的帮助。让我们在本章讨论Java绑定。</p>
+<p>与ZooKeeper集合进行交互的应用程序称为ZooKeeper客户端或简称客户端。Znode是ZooKeeper集合的核心组件，ZooKeeper API提供了一小组方法使用ZooKeeper集合来操纵znode的所有细节。</p>
+<p>客户端应该遵循以步骤，与ZooKeeper集合进行清晰和干净的交互。</p>
+<ul>
+<li>连接到ZooKeeper集合。ZooKeeper集合为客户端分配会话ID。</li>
+<li>定期向服务器发送心跳。否则，ZooKeeper集合将过期会话ID，客户端需要重新连接。</li>
+<li>只要会话ID处于活动状态，就可以获取/设置znode。</li>
+</ul>
+<p>所有任务完成后，断开与ZooKeeper集合的连接。如果客户端长时间不活动，则ZooKeeper集合将自动断开客户端。</p>
+<h1>ZooKeeper类</h1>
+<p>ZooKeeper API的核心部分是ZooKeeper类。它提供了在其构造函数中连接ZooKeeper集合的选项，并具有以下方法：</p>
+<ul>
+<li>connect - 连接到ZooKeeper集合</li>
+<li>create- 创建znode</li>
+<li>exists- 检查znode是否存在及其信息</li>
+<li>getData - 从指定的znode获取数据</li>
+<li>setData - 在指定的znode中设置数据</li>
+<li>getChildren - 获取指定znode中的所有子节点</li>
+<li>delete - 删除指定的znode及其所有子项</li>
+<li>close - 关闭连接</li>
+</ul>
+<h2 id="connect：连接到ZooKeeper集合">connect：连接到ZooKeeper集合</h2>
+<p>ZooKeeper类通过其构造函数提供connect功能。构造函数的签名如下 :</p>
+<p>ZooKeeper(String connectionString, int sessionTimeout, Watcher watcher)</p>
+<ul>
+<li>connectionString：ZooKeeper集合主机。</li>
+<li>sessionTimeout：会话超时（以毫秒为单位）。</li>
+<li>watcher：实现“监视器”对象。ZooKeeper集合通过监视器对象返回连接状态。</li>
+</ul>
+<p>让我们创建一个新的帮助类 ZooKeeperConnection ，并添加一个方法 connect 。 connect 方法创建一个ZooKeeper对象，连接到ZooKeeper集合，然后返回对象。这里<strong>CountDownLatch 用于停止（等待）主进程，直到客户端与ZooKeeper集合连接（类似 Thread.join()）</strong> 。</p>
+<p>ZooKeeper集合通过监视器回调来检测连接状态。一旦客户端与ZooKeeper集合连接，监视器回调就会被调用，并且 <strong>监视器回调函数调用CountDownLatch的countDown方法来释放锁，停止主进程中的await。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// import java classes</span></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.CountDownLatch;</span><br><span class="line"><span class="comment">// import zookeeper classes</span></span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.KeeperException;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.WatchedEvent;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher.Event.KeeperState;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.ZooKeeper;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.AsyncCallback.StatCallback;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.KeeperException.Code;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.data.Stat;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZooKeeperConnection</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// declare zookeeper instance to access ZooKeeper ensemble</span></span><br><span class="line">   <span class="keyword">private</span> ZooKeeper zoo;</span><br><span class="line">   <span class="keyword">final</span> CountDownLatch connectedSignal = <span class="keyword">new</span> CountDownLatch(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Method to connect zookeeper ensemble.</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> ZooKeeper <span class="title">connect</span><span class="params">(String host)</span> <span class="keyword">throws</span> IOException,InterruptedException </span>&#123;</span><br><span class="line">   </span><br><span class="line">      zoo = <span class="keyword">new</span> ZooKeeper(host,<span class="number">5000</span>,<span class="keyword">new</span> Watcher() &#123;</span><br><span class="line">         <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent we)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (we.getState() == KeeperState.SyncConnected) &#123;</span><br><span class="line">               connectedSignal.countDown();</span><br><span class="line">            &#125;</span><br><span class="line">         &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">        </span><br><span class="line">      connectedSignal.await();</span><br><span class="line">      <span class="keyword">return</span> zoo;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// Method to disconnect from zookeeper server</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">      zoo.close();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>import org.apache.zookeeper.Watcher.Event.KeeperState;</p>
+<p>保存上面的代码，它将在下一节中用于连接ZooKeeper集合。</p>
+<h2 id="create：创建Znode">create：创建Znode</h2>
+<p>ZooKeeper类提供了在ZooKeeper集合中创建一个新的znode的create方法。 create 方法的签名如下：</p>
+<p><a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a>  <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/ZooKeeper.html#create%28java.lang.String,%20byte%5B%5D,%20java.util.List,%20org.apache.zookeeper.CreateMode%29" target="_blank" rel="noopener">create</a>(<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a> path, byte[] data, <a href="http://java.sun.com/javase/6/docs/api/java/util/List.html?is-external=true" target="_blank" rel="noopener">List</a>&lt;<a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/data/ACL.html" target="_blank" rel="noopener">ACL</a>&gt; acl, <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/CreateMode.html" target="_blank" rel="noopener">CreateMode</a> createMode)</p>
+<ul>
+<li>path：Znode路径。例如，/myapp1，/myapp2，/myapp1/mydata1，myapp2/mydata1/myanothersubdata</li>
+<li>data：要存储在指定znode路径中的数据</li>
+<li>acl：要创建的节点的访问控制列表。ZooKeeper API提供了一个静态接口 ZooDefs.Ids 来获取一些基本的acl列表。例如，ZooDefs.Ids.OPEN_ACL_UNSAFE返回打开znode的acl列表。</li>
+<li>createMode：节点的类型，即临时，顺序或两者。这是一个枚举。</li>
+</ul>
+<p>让我们创建一个新的Java应用程序来检查ZooKeeper API的 create 功能。创建文件 ZKCreate.java 。在main方法中，创建一个类型为ZooKeeperConnection 的对象，并调用 connect 方法连接到ZooKeeper集合。connect方法将返回ZooKeeper对象 zk 。然后使用自定义path和data调用 zk 对象的 create 方法。</p>
+<p>创建znode的完整程序代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.WatchedEvent;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher.Event.KeeperState;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.ZooKeeper;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.KeeperException;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.CreateMode;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.ZooDefs;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZKCreate</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// create static instance for zookeeper class.</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> ZooKeeper zk;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// create static instance for ZooKeeperConnection class.</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> ZooKeeperConnection conn;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Method to create znode in zookeeper ensemble</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">create</span><span class="params">(String path, <span class="keyword">byte</span>[] data)</span> <span class="keyword">throws</span> </span></span><br><span class="line"><span class="function">      KeeperException,InterruptedException </span>&#123;</span><br><span class="line">      zk.create(path, data, ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.PERSISTENT);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">      <span class="comment">// znode path</span></span><br><span class="line">      String path = <span class="string">"/MyFirstZnode"</span>; <span class="comment">// Assign path to znode</span></span><br><span class="line">      <span class="comment">// data in byte array</span></span><br><span class="line">      <span class="keyword">byte</span>[] data = <span class="string">"My first zookeeper app"</span>.getBytes(); <span class="comment">// Declare data</span></span><br><span class="line">        </span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">         conn = <span class="keyword">new</span> ZooKeeperConnection();</span><br><span class="line">         zk = conn.connect(<span class="string">"localhost"</span>);</span><br><span class="line">         create(path, data); <span class="comment">// Create the data to the specified path</span></span><br><span class="line">         conn.close();</span><br><span class="line">      &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">         System.out.println(e.getMessage()); <span class="comment">//Catch error message</span></span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一旦编译和执行应用程序，将在ZooKeeper集合中创建具有指定数据的znode。你可以使用ZooKeeper CLI <a href="http://zkCli.sh" target="_blank" rel="noopener">zkCli.sh</a> 进行检查。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /path/to/zookeeper</span><br><span class="line">bin/zkCli.sh</span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; get /MyFirstZnode</span></span><br></pre></td></tr></table></figure>
+<h2 id="exists：检查Znode的存在">exists：检查Znode的存在</h2>
+<p>ZooKeeper类提供了 exists 方法来检查znode的存在。如果指定的znode存在，则返回一个znode的元数据。exists方法的签名如下：</p>
+<p><a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/data/Stat.html" target="_blank" rel="noopener">Stat</a>  <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/ZooKeeper.html#exists%28java.lang.String,%20boolean%29" target="_blank" rel="noopener">exists</a>(<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a> path, boolean watch)</p>
+<p>判断某个 path 是否存在，并设置是否监控这个目录节点，这里的 watcher 是在创建 ZooKeeper 实例时指定的 watcher</p>
+<p><a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/data/Stat.html" target="_blank" rel="noopener">Stat</a>  <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/ZooKeeper.html#exists%28java.lang.String,%20org.apache.zookeeper.Watcher%29" target="_blank" rel="noopener">exists</a>(<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a> path, <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/Watcher.html" target="_blank" rel="noopener">Watcher</a> watcher)</p>
+<p>重载方法，这里给某个目录节点设置特定的 watcher。</p>
+<p>让我们创建一个新的Java应用程序来检查ZooKeeper API的“exists”功能。创建文件“ZKExists.java”。在main方法中，使用“ZooKeeperConnection”对象创建ZooKeeper对象“zk”。然后，使用自定义“path”调用“zk”对象的“exists”方法。完整的列表如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.ZooKeeper;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.KeeperException;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.WatchedEvent;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher.Event.KeeperState;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.data.Stat;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZKExists</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> ZooKeeper zk;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> ZooKeeperConnection conn;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Method to check existence of znode and its status, if znode is available.</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Stat <span class="title">znode_exists</span><span class="params">(String path)</span> <span class="keyword">throws</span></span></span><br><span class="line"><span class="function">      KeeperException,InterruptedException </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> zk.exists(path, <span class="keyword">true</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException,KeeperException </span>&#123;</span><br><span class="line">      String path = <span class="string">"/MyFirstZnode"</span>; <span class="comment">// Assign znode to the specified path</span></span><br><span class="line">            </span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">         conn = <span class="keyword">new</span> ZooKeeperConnection();</span><br><span class="line">         zk = conn.connect(<span class="string">"localhost"</span>);</span><br><span class="line">         Stat stat = znode_exists(path); <span class="comment">// Stat checks the path of the znode</span></span><br><span class="line">                </span><br><span class="line">         <span class="keyword">if</span>(stat != <span class="keyword">null</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Node exists and the node version is "</span> +</span><br><span class="line">            stat.getVersion());</span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">"Node does not exists"</span>);</span><br><span class="line">         &#125;</span><br><span class="line">                </span><br><span class="line">      &#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">         System.out.println(e.getMessage()); <span class="comment">// Catches error messages</span></span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一旦编译和执行应用程序，你将获得以下输出。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Node exists and the node version is 1.</span><br></pre></td></tr></table></figure>
+<h2 id="getData：从指定的znode获取数据">getData：从指定的znode获取数据</h2>
+<p>ZooKeeper类提供 getData 方法来获取附加在指定znode中的数据及其状态。 getData 方法的签名如下：</p>
+<p>byte[] <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/ZooKeeper.html#getData%28java.lang.String,%20boolean,%20org.apache.zookeeper.data.Stat%29" target="_blank" rel="noopener">getData</a>(<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a> path, boolean watch, <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/data/Stat.html" target="_blank" rel="noopener">Stat</a> stat)</p>
+<p>byte[] <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/ZooKeeper.html#getData%28java.lang.String,%20boolean,%20org.apache.zookeeper.data.Stat%29" target="_blank" rel="noopener">getData</a>(<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a> path, Watcher watcher, <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/data/Stat.html" target="_blank" rel="noopener">Stat</a> stat)</p>
+<ul>
+<li>path：Znode路径。</li>
+<li>watcher：监视器类型的回调函数。当指定的znode的数据改变时，ZooKeeper集合将通过监视器回调进行通知。 <strong>这是一次性通知。</strong></li>
+<li>stat：返回znode的元数据。</li>
+</ul>
+<p>让我们创建一个新的Java应用程序来了解ZooKeeper API的 getData 功能。创建文件 ZKGetData.java 。在main方法中，使用 ZooKeeperConnection 对象创建一个ZooKeeper对象 zk 。然后，使用自定义路径调用zk对象的 getData 方法。</p>
+<p>下面是从指定节点获取数据的完整程序代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.CountDownLatch;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.ZooKeeper;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.KeeperException;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.WatchedEvent;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher.Event.KeeperState;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.data.Stat;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZKGetData</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> ZooKeeper zk;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> ZooKeeperConnection conn;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Stat <span class="title">znode_exists</span><span class="params">(String path)</span> <span class="keyword">throws</span> </span></span><br><span class="line"><span class="function">      KeeperException,InterruptedException </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> zk.exists(path,<span class="keyword">true</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException, KeeperException </span>&#123;</span><br><span class="line">      String path = <span class="string">"/MyFirstZnode"</span>;</span><br><span class="line">      <span class="keyword">final</span> CountDownLatch connectedSignal = <span class="keyword">new</span> CountDownLatch(<span class="number">1</span>);</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">         conn = <span class="keyword">new</span> ZooKeeperConnection();</span><br><span class="line">         zk = conn.connect(<span class="string">"localhost"</span>);</span><br><span class="line">         Stat stat = znode_exists(path);</span><br><span class="line">            </span><br><span class="line">         <span class="keyword">if</span>(stat != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] b = zk.getData(path, <span class="keyword">new</span> Watcher() &#123;   </span><br><span class="line">               <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent we)</span> </span>&#123;</span><br><span class="line">                  <span class="keyword">if</span> (we.getType() == Event.EventType.None) &#123;</span><br><span class="line">                     <span class="keyword">switch</span>(we.getState()) &#123;</span><br><span class="line">                        <span class="keyword">case</span> Expired:</span><br><span class="line">                        connectedSignal.countDown();</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                     &#125;</span><br><span class="line">                  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                     String path = <span class="string">"/MyFirstZnode"</span>;           </span><br><span class="line">                     <span class="keyword">try</span> &#123;</span><br><span class="line">                        <span class="keyword">byte</span>[] bn = zk.getData(path,<span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line">                        String data = <span class="keyword">new</span> String(bn,<span class="string">"UTF-8"</span>);</span><br><span class="line">                        System.out.println(data);</span><br><span class="line">                        connectedSignal.countDown();</span><br><span class="line">                     &#125; <span class="keyword">catch</span>(Exception ex) &#123;</span><br><span class="line">                        System.out.println(ex.getMessage());</span><br><span class="line">                     &#125;</span><br><span class="line">                  &#125;</span><br><span class="line">               &#125;</span><br><span class="line">            &#125;, <span class="keyword">null</span>);</span><br><span class="line">                </span><br><span class="line">            String data = <span class="keyword">new</span> String(b, <span class="string">"UTF-8"</span>);</span><br><span class="line">            System.out.println(data);</span><br><span class="line">            connectedSignal.await();</span><br><span class="line">                </span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">"Node does not exists"</span>);</span><br><span class="line">         &#125;</span><br><span class="line">      &#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">        System.out.println(e.getMessage());</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一旦编译和执行应用程序，你将获得以下输出</p>
+<p>My first zookeeper app</p>
+<p>应用程序将等待ZooKeeper集合的进一步通知。使用ZooKeeper CLI <a href="http://zkCli.sh" target="_blank" rel="noopener">zkCli.sh</a> 更改指定znode的数据。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /path/to/zookeeper</span><br><span class="line">bin/zkCli.sh</span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; <span class="built_in">set</span> /MyFirstZnode Hello</span></span><br></pre></td></tr></table></figure>
+<p>现在，应用程序将打印以下输出并退出。</p>
+<p>Hello</p>
+<h2 id="setData：在指定znode中设置数据">setData：在指定znode中设置数据</h2>
+<p>ZooKeeper类提供 setData 方法来修改指定znode中附加的数据。 setData 方法的签名如下：</p>
+<p><a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/data/Stat.html" target="_blank" rel="noopener">Stat</a>  <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/ZooKeeper.html#setData%28java.lang.String,%20byte%5B%5D,%20int%29" target="_blank" rel="noopener">setData</a>(<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a> path, byte[] data, int version)</p>
+<ul>
+<li>path- Znode路径</li>
+<li>data - 要存储在指定znode路径中的数据。</li>
+<li>version- znode的当前版本。每当数据更改时，ZooKeeper会更新znode的版本号。如果 version 为 -1 则可以匹配任何版本。</li>
+</ul>
+<p>现在让我们创建一个新的Java应用程序来了解ZooKeeper API的 setData 功能。创建文件 ZKSetData.java 。在main方法中，使用ZooKeeperConnection 对象创建一个ZooKeeper对象 zk 。然后，使用指定的路径，新数据和节点版本调用 zk 对象的 setData 方法。</p>
+<p>以下是修改附加在指定znode中的数据的完整程序代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.zookeeper.ZooKeeper;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.KeeperException;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.WatchedEvent;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher.Event.KeeperState;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZKSetData</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> ZooKeeper zk;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> ZooKeeperConnection conn;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Method to update the data in a znode. Similar to getData but without watcher.</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(String path, <span class="keyword">byte</span>[] data)</span> <span class="keyword">throws</span></span></span><br><span class="line"><span class="function">      KeeperException,InterruptedException </span>&#123;</span><br><span class="line">      zk.setData(path, data, zk.exists(path,<span class="keyword">true</span>).getVersion());</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException,KeeperException </span>&#123;</span><br><span class="line">      String path= <span class="string">"/MyFirstZnode"</span>;</span><br><span class="line">      <span class="keyword">byte</span>[] data = <span class="string">"Success"</span>.getBytes(); <span class="comment">//Assign data which is to be updated.</span></span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">         conn = <span class="keyword">new</span> ZooKeeperConnection();</span><br><span class="line">         zk = conn.connect(<span class="string">"localhost"</span>);</span><br><span class="line">         update(path, data); <span class="comment">// Update znode data to the specified path</span></span><br><span class="line">      &#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">         System.out.println(e.getMessage());</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译并执行应用程序后，指定的znode的数据将被改变，并且可以使用ZooKeeper CLI <code>zkCli.sh</code> 进行检查。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /path/to/zookeeper</span><br><span class="line">bin/zkCli.sh</span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; get /MyFirstZnode</span></span><br></pre></td></tr></table></figure>
+<h2 id="getChildren：获取指定znode的所有子节点">getChildren：获取指定znode的所有子节点</h2>
+<p>ZooKeeper类提供 getChildren 方法来获取特定znode的所有子节点。 getChildren 方法的签名如下：</p>
+<p><a href="http://java.sun.com/javase/6/docs/api/java/util/List.html?is-external=true" target="_blank" rel="noopener">List</a>&lt;<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a>&gt; <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/ZooKeeper.html#getChildren%28java.lang.String,%20boolean%29" target="_blank" rel="noopener">getChildren</a>(<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a> path, boolean watch)</p>
+<p><a href="http://java.sun.com/javase/6/docs/api/java/util/List.html?is-external=true" target="_blank" rel="noopener">List</a>&lt;<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a>&gt; <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/ZooKeeper.html#getChildren%28java.lang.String,%20boolean%29" target="_blank" rel="noopener">getChildren</a>(<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a> path, Watcher watcher)</p>
+<p>获取指定 path 下的所有子目录节点，同样 getChildren方法也有一个重载方法可以设置特定的 watcher 监控子节点的状态。当指定的znode被删除或znode下的子节点被创建/删除时，ZooKeeper集合将进行通知。这是一次性通知。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.ZooKeeper;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.KeeperException;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.WatchedEvent;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher.Event.KeeperState;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.data.Stat;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZKGetChildren</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> ZooKeeper zk;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> ZooKeeperConnection conn;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Method to check existence of znode and its status, if znode is available.</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Stat <span class="title">znode_exists</span><span class="params">(String path)</span> <span class="keyword">throws</span> </span></span><br><span class="line"><span class="function">      KeeperException,InterruptedException </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> zk.exists(path,<span class="keyword">true</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException,KeeperException </span>&#123;</span><br><span class="line">      String path = <span class="string">"/MyFirstZnode"</span>; <span class="comment">// Assign path to the znode</span></span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">         conn = <span class="keyword">new</span> ZooKeeperConnection();</span><br><span class="line">         zk = conn.connect(<span class="string">"localhost"</span>);</span><br><span class="line">         Stat stat = znode_exists(path); <span class="comment">// Stat checks the path</span></span><br><span class="line">         <span class="keyword">if</span>(stat!= <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//“getChildren" method- get all the children of znode.It has two args, path and watch</span></span><br><span class="line">            List &lt;String&gt; children = zk.getChildren(path, <span class="keyword">false</span>);</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; children.size(); i++)</span><br><span class="line">                System.out.println(children.get(i)); <span class="comment">//Print children's</span></span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">"Node does not exists"</span>);</span><br><span class="line">         &#125;</span><br><span class="line">      &#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">         System.out.println(e.getMessage());</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在运行程序之前，让我们使用ZooKeeper CLI <code>zkCli.sh</code> 为 /MyFirstZnode 创建两个子节点。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd /path/to/zookeeper</span><br><span class="line">bin/zkCli.sh</span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; create /MyFirstZnode/myfirstsubnode Hi</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; create /MyFirstZnode/mysecondsubmode Hi</span></span><br></pre></td></tr></table></figure>
+<p>现在，编译和运行程序将输出上面创建的znode。</p>
+<p>myfirstsubnode</p>
+<p>mysecondsubnode</p>
+<h2 id="delete：删除指定Znode">delete：删除指定Znode</h2>
+<p>ZooKeeper类提供了 delete 方法来删除指定的znode。 delete 方法的签名如下：</p>
+<p>void <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/ZooKeeper.html#delete%28java.lang.String,%20int%29" target="_blank" rel="noopener">delete</a>(<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a> path, int version)</p>
+<ul>
+<li>path：Znode路径。</li>
+<li>version：znode的当前版本。version 为 -1 可以匹配任何版本，也就删除了这个目录节点所有数据。</li>
+</ul>
+<p>让我们创建一个新的Java应用程序来了解ZooKeeper API的 delete 功能。创建文件 ZKDelete.java 。在main方法中，使用 ZooKeeperConnection 对象创建一个ZooKeeper对象 zk 。然后，使用指定的路径和版本号调用 zk 对象的 delete 方法。</p>
+<p>删除znode的完整程序代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.zookeeper.ZooKeeper;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.KeeperException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZKDelete</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> ZooKeeper zk;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> ZooKeeperConnection conn;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Method to check existence of znode and its status, if znode is available.</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(String path)</span> <span class="keyword">throws</span> KeeperException,InterruptedException </span>&#123;</span><br><span class="line">      zk.delete(path,zk.exists(path,<span class="keyword">true</span>).getVersion());</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException,KeeperException </span>&#123;</span><br><span class="line">      String path = <span class="string">"/MyFirstZnode"</span>; <span class="comment">//Assign path to the znode</span></span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">         conn = <span class="keyword">new</span> ZooKeeperConnection();</span><br><span class="line">         zk = conn.connect(<span class="string">"localhost"</span>);</span><br><span class="line">         delete(path); <span class="comment">//delete the node with the specified path</span></span><br><span class="line">      &#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">         System.out.println(e.getMessage()); <span class="comment">// catches error messages</span></span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ACL相关方法">ACL相关方法</h2>
+<p>void <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/ZooKeeper.html#addAuthInfo%28java.lang.String,%20byte%5B%5D%29" target="_blank" rel="noopener">addAuthInfo</a>(<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a> scheme, byte[] auth)</p>
+<p>客户端将自己的授权信息提交给服务器，服务器将根据这个授权信息验证客户端的访问权限。</p>
+<p><a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/data/Stat.html" target="_blank" rel="noopener">Stat</a> <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/ZooKeeper.html#setACL%28java.lang.String,%20java.util.List,%20int%29" target="_blank" rel="noopener">setACL</a>(<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a> path, <a href="http://java.sun.com/javase/6/docs/api/java/util/List.html?is-external=true" target="_blank" rel="noopener">List</a>&lt;<a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/data/ACL.html" target="_blank" rel="noopener">ACL</a>&gt; acl, int version)</p>
+<p>给某个目录节点重新设置访问权限，需要注意的是 Zookeeper 中的目录节点权限不具有传递性，父目录节点的权限不能传递给子目录节点。</p>
+<p>目录节点 ACL 由两部分组成：perms 和 id。</p>
+<ul>
+<li>perms 有 ALL、READ、WRITE、CREATE、DELETE、ADMIN 几种；</li>
+<li>id 标识了访问目录节点的身份列表，默认情况下有以下两种：ANYONE_ID_UNSAFE = new Id(“world”, “anyone”) 和 AUTH_IDS = new Id(“auth”, “”) 分别表示任何人都可以访问和创建者拥有访问权限。</li>
+</ul>
+<p><a href="http://java.sun.com/javase/6/docs/api/java/util/List.html?is-external=true" target="_blank" rel="noopener">List</a>&lt;<a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/data/ACL.html" target="_blank" rel="noopener">ACL</a>&gt; <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/ZooKeeper.html#getACL%28java.lang.String,%20org.apache.zookeeper.data.Stat%29" target="_blank" rel="noopener">getACL</a>(<a href="http://java.sun.com/javase/6/docs/api/java/lang/String.html?is-external=true" target="_blank" rel="noopener">String</a> path, <a href="http://hadoop.apache.org/zookeeper/docs/r3.2.2/api/org/apache/zookeeper/data/Stat.html" target="_blank" rel="noopener">Stat</a> stat)</p>
+<p>获取某个目录节点的访问权限列表。</p>
+<h1>Watcher触发器类</h1>
+<p>ZooKeeper可以为所有的读操作设置watcher，这些读操作包括：exists()、getChildren()及getData()。watch事件是一次性的触发器，当watch的对象状态发生改变时，将会触发此对象上watcher所对应的事件。watch事件将被异步地发送给客户端，并且ZooKeeper为watch机制提供了有序的一致性保证。理论上，客户端接收watch事件的时间要快于其看到watch对象状态变化的时间。</p>
+<p>Zookeeper的watcher实际上要处理两类事件：</p>
+<p>① 连接状态事件(type=None, path=null)</p>
+<p>这类事件不需要注册，也不需要我们连续触发，我们只要处理就行了。</p>
+<p>② 节点事件</p>
+<p>节点的建立，删除，数据的修改。它是one time trigger，我们需要不停的注册触发，还可能发生事件丢失的情况。</p>
+<p>上面2类事件都在Watcher中处理，也就是重载的process(Event event)。</p>
+<h2 id="watcher类型">watcher类型</h2>
+<p>ZooKeeper所管理的watcher可以分为两类：</p>
+<p>① 数据watcher(data watchers)：getData和exists负责设置数据watcher</p>
+<p>② 孩子watcher(child watchers)：getChildren负责设置孩子watcher</p>
+<p>我们可以通过对应方法来设置不同的watcher。</p>
+<p>因此：</p>
+<p>① 一个成功的setData操作将触发Znode的数据watcher</p>
+<p>② 一个成功的create操作将触发Znode的数据watcher以及孩子watcher</p>
+<p>③ 一个成功的delete操作将触发Znode的数据watcher以及孩子watcher</p>
+<h2 id="watcher注册与触发时机">watcher注册与触发时机</h2>
+<p>watcher设置操作及相应的触发器如下图所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584898470_20200323012442735_8138.png" alt></p>
+<p>① exists操作上的watcher，在被监视的Znode <strong>创建</strong> 、 <strong>删除</strong> 或 <strong>数据更新</strong> 时被触发。</p>
+<p>② getData操作上的watcher，在被监视的Znode <strong>删除</strong> 或 <strong>数据更新</strong> 时被触发。在被创建时不能被触发，因为只有Znode一定存在，getData操作才会成功。</p>
+<p>③ getChildren操作上的watcher，在被监视的Znode的子节点 <strong>创建</strong> 或 <strong>删除</strong> ，或是这个Znode自身被 <strong>删除</strong> 时被触发。</p>
+<p>可以通过查看watcher事件类型来区分是Znode，还是他的子节点被删除：NodeDelete表示Znode被删除，NodeDeletedChanged表示子节点被删除。</p>
+<p>Watcher由客户端所连接的ZooKeeper服务器在本地维护，因此watcher可以非常容易地设置、管理和分派。</p>
+<p>当客户端连接到一个新的服务器时，任何的会话事件都将可能触发watcher。另外，当从服务器断开连接的时候，watcher将不会被接收。但是，当一个客户端重新建立连接的时候，任何先前注册过的watcher都会被重新注册。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ZOOKEEPER学习笔记</a></li>
+            <li>06-ZOOKEEPER-JAVA-API</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">ZooKeeper类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#connect：连接到ZooKeeper集合"><span class="nav-text">connect：连接到ZooKeeper集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#create：创建Znode"><span class="nav-text">create：创建Znode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exists：检查Znode的存在"><span class="nav-text">exists：检查Znode的存在</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getData：从指定的znode获取数据"><span class="nav-text">getData：从指定的znode获取数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#setData：在指定znode中设置数据"><span class="nav-text">setData：在指定znode中设置数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getChildren：获取指定znode的所有子节点"><span class="nav-text">getChildren：获取指定znode的所有子节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#delete：删除指定Znode"><span class="nav-text">delete：删除指定Znode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ACL相关方法"><span class="nav-text">ACL相关方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Watcher触发器类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#watcher类型"><span class="nav-text">watcher类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#watcher注册与触发时机"><span class="nav-text">watcher注册与触发时机</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

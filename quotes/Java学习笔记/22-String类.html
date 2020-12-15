@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="String并不是基本数据类型，而是一个对象，并且是不可变的对象。查看源码就会发现String类为final型的（当然也不可被继承），而且通过查看JDK文档会发现几乎每一个修改String对象的操作，实际上都是创建了一个全新的String对象。字符串为对象，那么在初始化之前，它的值为null，到这里就有必要提下””、null、new String()三者的区别。null 表示string还没有ne">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;22-String%E7%B1%BB.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="String并不是基本数据类型，而是一个对象，并且是不可变的对象。查看源码就会发现String类为final型的（当然也不可被继承），而且通过查看JDK文档会发现几乎每一个修改String对象的操作，实际上都是创建了一个全新的String对象。字符串为对象，那么在初始化之前，它的值为null，到这里就有必要提下””、null、new String()三者的区别。null 表示string还没有ne">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.024Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/22-String%E7%B1%BB">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVA学习笔记</a></li>
+            <li>22-STRING类</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>String并不是基本数据类型，而是一个对象，并且是不可变的对象。查看源码就会发现String类为final型的（当然也不可被继承），而且通过查看JDK文档会发现几乎每一个修改String对象的操作，实际上都是创建了一个全新的String对象。</p><p>字符串为对象，那么在初始化之前，它的值为null，到这里就有必要提下””、null、new String()三者的区别。null 表示string还没有new ，也就是说对象的引用还没有创建，也没有分配内存空间给他，而””、new String()则说明了已经new了，只不过内部为空，但是它创建了对象的引用，是需要分配内存空间的。打个比方：一个空玻璃杯，你不能说它里面什么都没有，因为里面有空气，当然也可以把它弄成真空，null与&quot; &quot;、new String()的区别就象真空与空气一样。</p><a id="more"></a>
+
+<p>在字符串中存在一个非常特殊的地方，那就是字符串池。每当我们创建一个字符串对象时，首先就会检查字符串池中是否存在面值相等的字符串，如果有，则不再创建，直接放回字符串池中对该对象的引用，若没有则创建然后放入到字符串池中并且返回新建对象的引用。这个机制是非常有用的，因为可以提高效率，减少了内存空间的占用。所以在使用字符串的过程中，推荐使用直接赋值（即<code>String s=”aa”</code>），除非有必要才会新建一个String对象（即<code>String s = new String(”aa”)</code>）。</p>
+<p>具体示例如下：</p>
+<ul>
+<li>String类在栈中维护了一个String Pool（字符串池），其中共享了所有字符串对象，可重复利用性高。</li>
+<li><code>String s = “aaa”;</code>（采用字面值方式赋值）</li>
+<li>查找String Pool中是否存在“aaa”这个对象，如果不存在，则在String Pool中创建一个“aaa”对象，然后将String Pool中的这个“aaa”对象的地址返回来，赋给引用变量s，这样s会指向String Pool中的这个“aaa”字符串对象。</li>
+<li>如果存在，则不创建任何对象，直接将String Pool中的这个“aaa”对象地址返回来，赋给s引用。</li>
+<li>采用“=”操作仅在字符串池中查询或创建对象，对象引用指向字符串池中对象地址，存取速度快。推荐使用。</li>
+<li><code>String s = new String(“aaa”);</code>（采用new关键字创建字符串对象）</li>
+<li>首先在String Pool中查找有没有“aaa”这个字符串对象，如果有，则不在String Pool中再去创建“aaa”这个对象，直接在堆中（heap）中创建一个“aaa”字符串对象，然后将堆中的“aaa”对象的地址返回来，赋给s引用，导致s指向了堆中创建的这个“aaa”字符串对象。</li>
+<li>如果没有，则首先在String Pool中创建一个“aaa“对象，然后再在堆中（heap）创建一个”aaa“对象，然后将堆中的这个”aaa“对象的地址返回来，赋给s引用，导致s 指向了堆中所创建的这个”aaa“对象。</li>
+<li>采用new关键字创建字符串对象除了要在字符串池中查询或创建对象副本外，还需要在堆中创建对象（无论是否有相同值，也不会与栈中的数据共享），而对象引用指向堆中对象地址。这种方法加重了程序的负担。</li>
+</ul>
+<h1>1.字符串比较</h1>
+<p>相关方法：</p>
+<ul>
+<li>equals() ------判断内容是否相同。</li>
+<li>compareTo() ------判断字符串的大小关系。</li>
+<li>compareToIgnoreCase(String int) ------在比较时忽略字母大小写。</li>
+<li>== ------判断内容与地址是否相同。</li>
+<li>equalsIgnoreCase() ------忽略大小写的情况下判断内容是否相同。</li>
+<li>reagionMatches() ------对字符串中的部分内容是否相同进行比较（详情请参考API）。</li>
+</ul>
+<p>对于String类的equals()方法来说，它是判断当前字符串与传进来的字符串的内容是否一致。</p>
+<p>对于String对象的相等性判断来说，请使用equals()方法，而不要使用==。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringTest</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       Object object = <span class="keyword">new</span> Object();</span><br><span class="line">       Object object2 = <span class="keyword">new</span> Object();</span><br><span class="line"> </span><br><span class="line">       System.out.println(object == object2);</span><br><span class="line"> </span><br><span class="line">       System.out.println(<span class="string">"----------------"</span>);</span><br><span class="line"> </span><br><span class="line">       String str = <span class="keyword">new</span> String(<span class="string">"aaa"</span>);</span><br><span class="line">       String str2 = <span class="keyword">new</span> String(<span class="string">"aaa"</span>);</span><br><span class="line"> </span><br><span class="line">       System.out.println(str == str2);</span><br><span class="line"> </span><br><span class="line">       System.out.println(<span class="string">"----------------"</span>);</span><br><span class="line"> </span><br><span class="line">       String str3 = <span class="string">"bbb"</span>;</span><br><span class="line">       String str4 = <span class="string">"bbb"</span>;</span><br><span class="line"> </span><br><span class="line">       System.out.println(str3 == str4);</span><br><span class="line">       </span><br><span class="line">       System.out.println(<span class="string">"----------------"</span>);</span><br><span class="line"> </span><br><span class="line">       String str5 = <span class="keyword">new</span> String(<span class="string">"ccc"</span>);</span><br><span class="line">       String str6 = <span class="string">"ccc"</span>;</span><br><span class="line"> </span><br><span class="line">       System.out.println(str5 == str6);</span><br><span class="line"> </span><br><span class="line">       System.out.println(<span class="string">"----------------"</span>);</span><br><span class="line"> </span><br><span class="line">       String s = <span class="string">"hello"</span>;</span><br><span class="line">       String s1 = <span class="string">"hel"</span>;</span><br><span class="line">       String s2 = <span class="string">"lo"</span>;</span><br><span class="line"> </span><br><span class="line">       System.out.println(s == s1 + s2);</span><br><span class="line"> </span><br><span class="line">       System.out.println(s == <span class="string">"hel"</span> + <span class="string">"lo"</span>);</span><br><span class="line"> </span><br><span class="line">       System.out.println(<span class="string">"----------------"</span>);</span><br><span class="line"> </span><br><span class="line">       String str = <span class="keyword">new</span> String(<span class="string">"aa"</span>);</span><br><span class="line">       String str2 = <span class="keyword">new</span> String(<span class="string">"aa"</span>);</span><br><span class="line"> </span><br><span class="line">       System.out.println(str.equals(str2));</span><br><span class="line"> </span><br><span class="line">       String str3 = <span class="string">"aa"</span>;</span><br><span class="line">       String str4 = <span class="string">"aa"</span>;</span><br><span class="line"> </span><br><span class="line">       System.out.println(str3.equals(str4));</span><br><span class="line"> </span><br><span class="line">       System.out.println(<span class="string">"-----------------"</span>);</span><br><span class="line"> </span><br><span class="line">       Object object = <span class="keyword">new</span> Object();</span><br><span class="line">       Object object2 = <span class="keyword">new</span> Object();</span><br><span class="line"> </span><br><span class="line">       System.out.println(object.equals(object2));</span><br><span class="line">       System.out.println(object.equals(object));</span><br><span class="line"> </span><br><span class="line">       System.out.println(<span class="string">"-----------------"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>2.字符串查找</h1>
+<p>charAt(int index) ------返回指定索引index位置上的字符，索引范围从0开始。</p>
+<p>indexOf(String str)------从字符串开始检索str，并返回第一次出现的位置，未出现返回-1。</p>
+<p>indexOf(String str，int fromIndex);------从字符串的第fromIndex个字符开始检索str。</p>
+<p>lastIndexOf(String str)------查找最后一次出现的位置。</p>
+<p>lastIndexOf(String str，int fromIndex)----从字符串的第fromIndex个字符查找最后一次出现的位置。</p>
+<p>starWith(String prefix，int toffset)-----测试此字符串从指定索引开始的子字符串是否以指定前缀开始。</p>
+<p>starWith(String prefix)------测试此字符串是否以指定的前缀开始。</p>
+<p>endsWith(String suffix)------测试此字符串是否以指定的后缀结束。</p>
+<h1>3.字符串截取</h1>
+<p>public String subString(int beginIndex)------返回一个新的字符串，它是此字符串的一个子字符串。</p>
+<p>public String subString(int beginIndex，int endIndex)------返回的字符串是从beginIndex开始到endIndex-1的串。</p>
+<h1>4.字符串替换</h1>
+<p>replace和replaceAll是JAVA中常用的替换字符的方法：</p>
+<ul>
+<li><strong>public String replace(char oldChar, char newChar)</strong>：在字符串中用newChar字符替代oldChar字符，返回一个新的字符串</li>
+<li><strong>public String replaceAll(String regex,String replacement)</strong>：使用给定的replacement字符串替换此字符串匹配给定的正则表达式的每个子字符串。</li>
+</ul>
+<p>区别：</p>
+<ol>
+<li>
+<p>replace的参数是char和CharSequence，即可以支持字符的替换，也支持字符串的替换(CharSequence即字符串序列的意思,说白了也就是字符串)；</p>
+</li>
+<li>
+<p>replaceAll的参数是regex，即基于正则表达式的替换，比如，可以通过replaceAll(“\\d”, “*”)把一个字符串所有的数字字符都换成星号;</p>
+</li>
+</ol>
+<p>相同点：</p>
+<p>都是全部替换，即把源字符串中的某一字符或字符串全部换成指定的字符或字符串，如果只想替换第一次出现的，可以使用replaceFirst()，这个方法也是基于规则表达式的替换，但与replaceAll()不同的是，只替换第一次出现的字符串；</p>
+<p>另外，如果replaceAll()和replaceFirst()所用的参数据不是基于规则表达式的，则与replace()替换字符串的效果是一样的，即这两者也支持字符串的操作；</p>
+<p>还有一点注意:：执行了替换操作后,源字符串的内容是没有发生改变的。</p>
+<h1>5.字符串拼接</h1>
+<p>可以使用“+”拼接字符串常量，当使用“+”拼接字符串时，会生成新的String对象，而不是向原有的String对象追加内容。</p>
+<p>&quot;+&quot;拼接字符串和其他类型数据时，会自动先把其它类型数据转换为字符串表示，然后再进行拼接。（“+”的重载）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringTest2</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       String s1 = <span class="string">"hello"</span>;</span><br><span class="line">       String s2 = <span class="string">" world"</span>;</span><br><span class="line">       String s3 = s1 + s2 + <span class="number">100</span> + <span class="number">2.3</span> + <span class="keyword">false</span>;</span><br><span class="line"> </span><br><span class="line">       System.out.println(s3);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVA学习笔记</a></li>
+            <li>22-STRING类</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">1.字符串比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">2.字符串查找</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">3.字符串截取</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">4.字符串替换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">5.字符串拼接</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

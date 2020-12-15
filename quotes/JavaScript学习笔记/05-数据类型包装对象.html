@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="熟悉Java的小伙伴肯定很清楚int和Integer这种暧昧关系。number、boolean和string都有包装对象。没错，在JavaScript中，字符串也区分string类型和它的包装类型。包装对象用new创建：123var n = new Number(123); &#x2F;&#x2F; 123,生成了新的包装类型var b = new Boolean(true); &#x2F;&#x2F; true,生成了新的包装类型va">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;05-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8C%85%E8%A3%85%E5%AF%B9%E8%B1%A1.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="熟悉Java的小伙伴肯定很清楚int和Integer这种暧昧关系。number、boolean和string都有包装对象。没错，在JavaScript中，字符串也区分string类型和它的包装类型。包装对象用new创建：123var n = new Number(123); &#x2F;&#x2F; 123,生成了新的包装类型var b = new Boolean(true); &#x2F;&#x2F; true,生成了新的包装类型va">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584595040_20200319131408253_15648.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584595038_20200319131408042_32637.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584595038_20200319131407011_5899.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584595038_20200319131406803_18053.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584595038_20200319131406495_692.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584595037_20200319131406387_12479.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584595037_20200319131405679_6914.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584595037_20200319131405471_30143.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584595037_20200319131405364_6413.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584595036_20200319131405054_24121.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584595036_20200319131404434_10794.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.016Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584595040_20200319131408253_15648.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/05-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8C%85%E8%A3%85%E5%AF%B9%E8%B1%A1">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVASCRIPT学习笔记</a></li>
+            <li>05-数据类型包装对象</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>熟悉Java的小伙伴肯定很清楚int和Integer这种暧昧关系。</p><p>number、boolean和string都有包装对象。没错，在JavaScript中，字符串也区分string类型和它的包装类型。包装对象用new创建：</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> n = <span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">123</span>); <span class="comment">// 123,生成了新的包装类型</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">true</span>); <span class="comment">// true,生成了新的包装类型</span></span><br><span class="line"><span class="keyword">var</span> s = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">'str'</span>); <span class="comment">// 'str',生成了新的包装类型</span></span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+<p>虽然包装对象看上去和原来的值一模一样，显示出来也是一模一样，但他们的类型已经变为object了！所以，包装对象和原始值用===比较会返回false：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typeof</span> <span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">123</span>); <span class="comment">// 'object'</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">123</span>) === <span class="number">123</span>; <span class="comment">// false</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">true</span>); <span class="comment">// 'object'</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">true</span>) === <span class="literal">true</span>; <span class="comment">// false</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">'str'</span>); <span class="comment">// 'object'</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">'str'</span>) === <span class="string">'str'</span>; <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<p>所以<em>闲的蛋疼也不要使用包装对象</em>！尤其是针对string类型！！！</p>
+<p>如果我们在使用Number、Boolean和String时，没有写new会发生什么情况？</p>
+<p>此时，Number()、Boolean和String()被当做普通函数，把任何类型的数据转换为number、boolean和string类型（注意不是其包装类型）：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> n = <span class="built_in">Number</span>(<span class="string">'123'</span>); <span class="comment">// 123，相当于parseInt()或parseFloat()</span></span><br><span class="line"><span class="keyword">typeof</span> n; <span class="comment">// 'number'</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="built_in">Boolean</span>(<span class="string">'true'</span>); <span class="comment">// true</span></span><br><span class="line"><span class="keyword">typeof</span> b; <span class="comment">// 'boolean'</span></span><br><span class="line"><span class="keyword">var</span> b2 = <span class="built_in">Boolean</span>(<span class="string">'false'</span>); <span class="comment">// true! 'false'字符串转换结果为true！因为它是非空字符串！</span></span><br><span class="line"><span class="keyword">var</span> b3 = <span class="built_in">Boolean</span>(<span class="string">''</span>); <span class="comment">// false</span></span><br><span class="line"><span class="keyword">var</span> s = <span class="built_in">String</span>(<span class="number">123.45</span>); <span class="comment">// '123.45'</span></span><br><span class="line"><span class="keyword">typeof</span> s; <span class="comment">// 'string'</span></span><br></pre></td></tr></table></figure>
+<p>是不是感觉头大了？这就是JavaScript特有的催眠魅力！</p>
+<p>总结一下，有这么几条规则需要遵守：</p>
+<ul>
+<li>不要使用new Number()、new Boolean()、new String()创建包装对象；</li>
+<li>用parseInt()或parseFloat()来转换任意类型到number；</li>
+<li>用String()来转换任意类型到string，或者直接调用某个对象的toString()方法；</li>
+<li>通常不必把任意类型转换为boolean再判断，因为可以直接写if (myVar) {…}；</li>
+<li>typeof操作符可以判断出number、boolean、string、function和undefined；</li>
+<li>判断Array要使用Array.isArray(arr)；</li>
+<li>判断null请使用myVar === null；</li>
+<li>判断某个全局变量是否存在用typeof window.myVar === ‘undefined’；</li>
+<li>函数内部判断某个变量是否存在用typeof myVar === ‘undefined’。</li>
+</ul>
+<p>最后有细心的同学指出，任何对象都有toString()方法吗？null和undefined就没有！确实如此，这两个特殊值要除外，虽然null还伪装成了object类型。</p>
+<p>更细心的同学指出，number对象调用toString()报SyntaxError：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">123.</span>toString(); <span class="comment">// SyntaxError</span></span><br></pre></td></tr></table></figure>
+<p>遇到这种情况，要特殊处理一下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">123.</span>.toString(); <span class="comment">// '123', 注意是两个点！</span></span><br><span class="line">(<span class="number">123</span>).toString(); <span class="comment">// '123'</span></span><br></pre></td></tr></table></figure>
+<p>不要问为什么，这就是JavaScript代码的乐趣！</p>
+<h1>String类</h1>
+<p>JavaScript中字符串型和String类的关系，大致相当于Java中数值型和包装类型（Number类和Integer类）的关系。其中的隐式类型转换类似Java中的装箱和拆箱转换。</p>
+<p>String对象和字符串值一样，是不可变的。也就是说，不能改写字符串的内容。所有要改变字符串内容的方法，都会生成一个新的字符串对象然后将其返回（非破坏性的方法）。</p>
+<p>可以使用new运算符，来显式地生成一个字符串对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sobj = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">'abc'</span>);     <span class="comment">// 生成字符串对象</span></span><br></pre></td></tr></table></figure>
+<p>应该避免显式地生成字符串对象，相反积极地使用隐式数据类型变换，将字符串值转换为字符串对象，从而对字符串进行各种各样的操作。</p>
+<p>字符串对象的typeof运算结果为&quot;object&quot;。</p>
+<h2 id="字符串对象与值的相等性判断">字符串对象与值的相等性判断</h2>
+<ul>
+<li>
+<p>两个字符串对象的相对性判断与一般对象的相等运算一致，即判断的是两者是否引用了同一个对象（而非两者的内容是否相同）。</p>
+</li>
+<li>
+<p>字符串值和字符串对象的等值判断：</p>
+</li>
+<li>
+<p>如果使用的是会进行隐式数据类型转换的==运算，则只会判定其内容是否相同，内容相同则结果为真。</p>
+</li>
+<li>
+<p>如果使用的是全等(===)运算，结果必定为假。</p>
+</li>
+<li>
+<p>另外，对于字符串运算表达式的等值判断，注意运算过程中的隐式数据类型转换。</p>
+</li>
+</ul>
+<h2 id="String类的属性">String类的属性</h2>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584595040_20200319131408253_15648.png" alt></p>
+<p>可以通过类似于String.fromCharCode(0x41) 这样的形式使用。</p>
+<h2 id="String-prototype对象的属性">String.prototype对象的属性</h2>
+<p>字符串对象的公共属性和方法：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584595038_20200319131408042_32637.png" alt></p>
+<h2 id="String类的实例属性">String类的实例属性</h2>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584595038_20200319131407011_5899.png" alt></p>
+<p>可以通过类似于str.length的形式来使用String对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> mystr=<span class="string">"Hello World!"</span>;</span><br><span class="line"><span class="keyword">var</span> myl=mystr.length;</span><br></pre></td></tr></table></figure>
+<p>以上代码执行后，myl的值将是：12</p>
+<p>另外还可以通过[数字属性]获取指定下标的字符（不过这是JavaScript自定义的增强功能）。其返回值是一个String对象。</p>
+<h2 id="charAt-：返回指定位置的字符">charAt()：返回指定位置的字符</h2>
+<p>charAt()方法可返回指定位置的字符。返回的字符是长度为1的字符串。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stringObject.charAt(index)</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明：</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584595038_20200319131406803_18053.png" alt></p>
+<p>注意：1.字符串中第一个字符的下标是 0。最后一个字符的下标为字符串长度减一（string.length-1）。</p>
+<p>2.如果参数 index 不在 0 与 string.length-1 之间，该方法将返回一个空字符串。</p>
+<p>如:在字符串 “I love JavaScript!” 中，返回位置2的字符：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">  <span class="keyword">var</span> mystr=<span class="string">"I love JavaScript!"</span></span><br><span class="line">  <span class="built_in">document</span>.write(mystr.charAt(<span class="number">2</span>));</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意：一个空格也算一个字符。</p>
+<p>以上代码的运行结果：</p>
+<p>l</p>
+<h2 id="indexOf-：返回指定的字符串首次出现的位置">indexOf()：返回指定的字符串首次出现的位置</h2>
+<p>indexOf()方法可返回某个指定的字符串值在字符串中首次出现的位置。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stringObject.indexOf(substring, startpos)</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明：</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584595038_20200319131406495_692.png" alt></p>
+<p>说明：</p>
+<p>1.该方法将从头到尾地检索字符串 stringObject，看它是否含有子串 substring。</p>
+<p>2.可选参数，从stringObject的startpos位置开始查找substring，如果没有此参数将从stringObject的开始位置查找。</p>
+<p>3.如果找到一个 substring，则返回 substring 的第一次出现的位置。stringObject 中的字符位置是从 0 开始的。</p>
+<p>注意：1.indexOf() 方法区分大小写。</p>
+<p>2.如果要检索的字符串值没有出现，则该方法返回 -1。</p>
+<p>例如: 对 “I love JavaScript!” 字符串内进行不同的检索：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">  <span class="keyword">var</span> str=<span class="string">"I love JavaScript!"</span></span><br><span class="line">  <span class="built_in">document</span>.write(str.indexOf(<span class="string">"I"</span>) + <span class="string">"&lt;br /&gt;"</span>);</span><br><span class="line">  <span class="built_in">document</span>.write(str.indexOf(<span class="string">"v"</span>) + <span class="string">"&lt;br /&gt;"</span>);</span><br><span class="line">  <span class="built_in">document</span>.write(str.indexOf(<span class="string">"v"</span>,<span class="number">8</span>));</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>以上代码的输出：</p>
+<p>0</p>
+<p>4</p>
+<p>9</p>
+<h2 id="split-：字符串分割">split()：字符串分割</h2>
+<p>split()方法将字符串分割为字符串数组，并返回此数组。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stringObject.split(separator,limit)</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明：</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584595037_20200319131406387_12479.png" alt></p>
+<p>注意：如果把空字符串 (“”) 用作separator，那么stringObject中的每个字符之间都会被分割。</p>
+<p>我们将按照不同的方式来分割字符串：</p>
+<p>使用指定符号分割字符串，代码如下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> mystr = <span class="string">"www.imooc.com"</span>;</span><br><span class="line"><span class="built_in">document</span>.write(mystr.split(<span class="string">"."</span>)+<span class="string">"&lt;br&gt;"</span>);</span><br><span class="line"><span class="built_in">document</span>.write(mystr.split(<span class="string">"."</span>, <span class="number">2</span>)+<span class="string">"&lt;br&gt;"</span>);</span><br></pre></td></tr></table></figure>
+<p>运行结果:</p>
+<p>www,imooc,com</p>
+<p>www,imooc</p>
+<p>将字符串分割为字符，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.write(mystr.split(<span class="string">""</span>)+<span class="string">"&lt;br&gt;"</span>);</span><br><span class="line"><span class="built_in">document</span>.write(mystr.split(<span class="string">""</span>, <span class="number">5</span>));</span><br></pre></td></tr></table></figure>
+<p>运行结果:</p>
+<p>w,w,w,.,i,m,o,o,c,.,c,o,m</p>
+<p>w,w,w,.,i</p>
+<h2 id="substr-：提取指定数目的字符串">substr()：提取指定数目的字符串</h2>
+<p>substr()方法从字符串中提取从startPos位置开始的指定数目的字符串。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stringObject.substr(startPos,length)</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明:</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584595037_20200319131405679_6914.png" alt></p>
+<p>注意：如果参数startPos是负数，从字符串的尾部开始算起的位置。也就是说，-1 指字符串中最后一个字符，-2 指倒数第二个字符，以此类推。</p>
+<p>如果startPos为负数且绝对值大于字符串长度，startPos为0。</p>
+<p>使用substr()从字符串中提取一些字符，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">  <span class="keyword">var</span> mystr=<span class="string">"I love JavaScript!"</span>;</span><br><span class="line">  <span class="built_in">document</span>.write(mystr.substr(<span class="number">7</span>));</span><br><span class="line">  <span class="built_in">document</span>.write(mystr.substr(<span class="number">2</span>,<span class="number">4</span>));</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p>JavaScript!</p>
+<p>love</p>
+<h2 id="substring-：提取字符串">substring()：提取字符串</h2>
+<p>substring()方法用于提取字符串中介于两个指定下标之间的字符。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stringObject.substring(starPos,stopPos)</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明:</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584595037_20200319131405471_30143.png" alt></p>
+<p>注意：</p>
+<ol>
+<li>
+<p>返回的内容是从start开始(包含start位置的字符)到stop-1处的所有字符，其长度为stop减start。</p>
+</li>
+<li>
+<p>如果参数start与stop相等，那么该方法返回的就是一个空串（即长度为0的字符串）。</p>
+</li>
+<li>
+<p>如果start比stop大，那么该方法在提取子串之前会先交换这两个参数。</p>
+</li>
+</ol>
+<p>使用substring()从字符串中提取字符串，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">  <span class="keyword">var</span> mystr=<span class="string">"I love JavaScript"</span>;</span><br><span class="line">  <span class="built_in">document</span>.write(mystr.substring(<span class="number">7</span>));</span><br><span class="line">  <span class="built_in">document</span>.write(mystr.substring(<span class="number">2</span>,<span class="number">6</span>));</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>运行结果:</p>
+<p>JavaScript</p>
+<p>love</p>
+<h2 id="toUpperCase-：字符串小写字母转换为大写">toUpperCase()：字符串小写字母转换为大写</h2>
+<p>使用String对象的toUpperCase()方法来将字符串小写字母转换为大写：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> mystr=<span class="string">"Hello world!"</span>;</span><br><span class="line"><span class="keyword">var</span> mynum=mystr.toUpperCase();</span><br></pre></td></tr></table></figure>
+<p>以上代码执行后，mynum 的值是：HELLO WORLD!</p>
+<h1>Number类</h1>
+<p>与字符串类似，数字类型也有对应的Number对象。两者通过隐式类型转换，也能被视为等价的。</p>
+<p>可以通过new运算符来显式地生成数值对象。和字符串对象类似，这将引起等值运算的混乱，不建议使用。</p>
+<p>同样，对数值对象执行typeof运算的结果为&quot;object&quot;。</p>
+<h2 id="Number类的属性">Number类的属性</h2>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584595037_20200319131405364_6413.png" alt></p>
+<p>MAX_VALUE或者MIN_VALUE：64位浮点数所支持的最大正值和最小正值。如果在其之前添加负号（运算符），就能够获得相应的最大负值和最小负值。</p>
+<p>POSITIVE_INFINITY：正无穷大，溢出时返回该值。</p>
+<p>NEGATIVE_INFINITY：负无穷大，溢出时返回该值。</p>
+<h2 id="Number-prototype对象的属性">Number.prototype对象的属性</h2>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584595036_20200319131405054_24121.png" alt></p>
+<h2 id="Number类的实例属性">Number类的实例属性</h2>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584595036_20200319131404434_10794.png" alt></p>
+<p>只有数字值一种。</p>
+<h1>Boolean类</h1>
+<p>Boolean类是布尔型的包装函数，用于生成布尔对象，其地位以及使用方法和String类以及Number类相同。</p>
+<p>与String和Number的情况类似，一般来说没有必要显式地生成布尔对象。</p>
+<p>通过调用Boolean(value)函数可以将任意值显式地转换为布尔值。不过根据具体的代码语境，必要时，JavaScript会自动将值隐式转换为布尔值类型，所以一般来说，并不需要显式地进行数据类型转换。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVASCRIPT学习笔记</a></li>
+            <li>05-数据类型包装对象</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">String类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串对象与值的相等性判断"><span class="nav-text">字符串对象与值的相等性判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String类的属性"><span class="nav-text">String类的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String-prototype对象的属性"><span class="nav-text">String.prototype对象的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String类的实例属性"><span class="nav-text">String类的实例属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#charAt-：返回指定位置的字符"><span class="nav-text">charAt()：返回指定位置的字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#indexOf-：返回指定的字符串首次出现的位置"><span class="nav-text">indexOf()：返回指定的字符串首次出现的位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#split-：字符串分割"><span class="nav-text">split()：字符串分割</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#substr-：提取指定数目的字符串"><span class="nav-text">substr()：提取指定数目的字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#substring-：提取字符串"><span class="nav-text">substring()：提取字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#toUpperCase-：字符串小写字母转换为大写"><span class="nav-text">toUpperCase()：字符串小写字母转换为大写</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Number类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Number类的属性"><span class="nav-text">Number类的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Number-prototype对象的属性"><span class="nav-text">Number.prototype对象的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Number类的实例属性"><span class="nav-text">Number类的实例属性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Boolean类</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

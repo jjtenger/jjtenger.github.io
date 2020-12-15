@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="EL 全名为Expression Language。主要作用： 获取数据： EL表达式主要用于替换JSP页面中的脚本表达式，以从各种类型的web域中检索java对象、获取数据。(某个web域中的对象，访问javabean的属性、访问list集合、访问map集合、访问数组)。 请求数据回显： 通过EL表达式可以很方便的获取表单提交后的回显数据，并且根据数据进行不同的显示输出处理。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;15-EL%E8%A1%A8%E8%BE%BE%E5%BC%8F.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="EL 全名为Expression Language。主要作用： 获取数据： EL表达式主要用于替换JSP页面中的脚本表达式，以从各种类型的web域中检索java对象、获取数据。(某个web域中的对象，访问javabean的属性、访问list集合、访问map集合、访问数组)。 请求数据回显： 通过EL表达式可以很方便的获取表单提交后的回显数据，并且根据数据进行不同的显示输出处理。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584777073_20200321154744600_20070.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584777073_20200321154744390_14012.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584777072_20200321154744078_1923.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584777072_20200321154743667_29930.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584777071_20200321154743246_6442.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.020Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584777073_20200321154744600_20070.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/15-EL%E8%A1%A8%E8%BE%BE%E5%BC%8F">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>15-EL表达式</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>EL 全名为Expression Language。主要作用：</p><ul>
+<li><strong>获取数据：</strong></li>
+</ul><p>EL表达式主要用于替换JSP页面中的脚本表达式，以从各种类型的web域中检索java对象、获取数据。(某个web域中的对象，访问javabean的属性、访问list集合、访问map集合、访问数组)。</p><ul>
+<li><strong>请求数据回显：</strong></li>
+</ul><p>通过EL表达式可以很方便的获取表单提交后的回显数据，并且根据数据进行不同的显示输出处理。</p><a id="more"></a>
+
+
+
+
+<ul>
+<li><strong>执行运算：</strong></li>
+</ul>
+<p>利用EL表达式可以在JSP页面中执行一些基本的关系运算、逻辑运算和算术运算，以在JSP页面中完成一些简单的逻辑运算。例如：${user==null}。</p>
+<ul>
+<li><strong>获取web开发常用对象：</strong></li>
+</ul>
+<p>EL 表达式定义了一些隐式对象，利用这些隐式对象，web开发人员可以很轻松获得对web常用对象的引用，从而获得这些对象中的数据。</p>
+<ul>
+<li><strong>调用Java方法：</strong></li>
+</ul>
+<p>EL表达式允许用户开发自定义EL函数，以在JSP页面中通过EL表达式调用Java类的方法。</p>
+<h1>使用EL表达式语法</h1>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;变量标识符或者EL表达式&#125;</span><br></pre></td></tr></table></figure>
+<h1>使用要求</h1>
+<p>EL表达式是JSP 2.0规范中的一门技术 。因此，若想正确解析EL表达式，需使用支持Servlet2.4/JSP2.0技术的WEB服务器。</p>
+<p>注意：有些Tomcat服务器如不能使用EL表达式</p>
+<p>（1）升级成tomcat6</p>
+<p>（2）在JSP中加入 <code>&lt;%@ page isELIgnored=&quot;false&quot; %&gt;</code></p>
+<h1>EL表达式保留关键字</h1>
+<p>见下图。所谓保留字的意思是指变量在命名时，应该避开上述的名字，以免程序编译时发生错误。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584777073_20200321154744600_20070.png" alt></p>
+<h1>基本使用</h1>
+<h2 id="获取域对象及其属性">获取域对象及其属性</h2>
+<h3 id="EL表达式获取域对象">EL表达式获取域对象</h3>
+<p>EL表达式语句在执行时，会调用pageContext.findAttribute方法，用标识符为关键字，分别从page、request、session、application四个域中查找相应的对象，找到则返回相应对象，找不到则返回”” （注意，不是null，而是空字符串）。</p>
+<h3 id="EL表达式中的对象导航运算符">EL表达式中的对象导航运算符</h3>
+<p>[ ] 和 . 号运算符：其中使用&quot;.“进行对象属性导航，使用”[索引值/key]&quot;获取List或者Map中的元素值。</p>
+<p>通过对象导航运算符，EL表达式可以很轻松获取JavaBean的属性，或获取数组、Collection、Map类型集合的数据。</p>
+<p>代码示例如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%<span class="meta">@taglib</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/core"</span> prefix=<span class="string">"c"</span> %&gt;</span><br><span class="line">&lt;%<span class="meta">@page</span> <span class="keyword">import</span>=<span class="string">"_4_JSP.el.demo.*"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;el表达式获取数据&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;%</span><br><span class="line">   request.setAttribute(<span class="string">"name"</span>,<span class="string">"孤傲苍狼"</span>);</span><br><span class="line">%&gt;</span><br><span class="line">&lt;%--$&#123;name&#125;等同于pageContext.findAttribute(<span class="string">"name"</span>) --%&gt;</span><br><span class="line">使用EL表达式获取数据：$&#123;name&#125;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line"> </span><br><span class="line">&lt;!-- 在jsp页面中，使用el表达式可以获取bean的属性 --&gt;</span><br><span class="line">&lt;%</span><br><span class="line">   Person p = <span class="keyword">new</span> Person();</span><br><span class="line">   p.setAge(<span class="number">12</span>);</span><br><span class="line">   request.setAttribute(<span class="string">"person"</span>,p);</span><br><span class="line">%&gt;</span><br><span class="line">使用el表达式可以获取bean的属性：$&#123;person.age&#125;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line"> </span><br><span class="line">&lt;!-- 在jsp页面中，使用el表达式可以获取bean中的对象的属性，可以用对象属性导航 --&gt;</span><br><span class="line">&lt;%</span><br><span class="line">   Person person = <span class="keyword">new</span> Person();</span><br><span class="line">   Address address = <span class="keyword">new</span> Address(<span class="string">"中国"</span>,<span class="string">"湖北"</span>,<span class="string">"武汉"</span>,<span class="string">"汉口"</span>);</span><br><span class="line">   person.setAddress(address);</span><br><span class="line"> </span><br><span class="line">   request.setAttribute(<span class="string">"person"</span>,person);</span><br><span class="line">%&gt;</span><br><span class="line">$&#123;person.address.city&#125;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line"> </span><br><span class="line">&lt;!-- 在jsp页面中，使用el表达式获取list集合中指定位置的数据 --&gt;</span><br><span class="line">&lt;%</span><br><span class="line">   Person p1 = <span class="keyword">new</span> Person();</span><br><span class="line">   p1.setName(<span class="string">"孤傲苍狼"</span>);</span><br><span class="line"> </span><br><span class="line">   Person p2 = <span class="keyword">new</span> Person();</span><br><span class="line">   p2.setName(<span class="string">"白虎神皇"</span>);</span><br><span class="line"> </span><br><span class="line">   List&lt;Person&gt; list = <span class="keyword">new</span> ArrayList&lt;Person&gt;();</span><br><span class="line">   list.add(p1);</span><br><span class="line">   list.add(p2);</span><br><span class="line"> </span><br><span class="line">   request.setAttribute(<span class="string">"list"</span>,list);</span><br><span class="line">%&gt;</span><br><span class="line"> </span><br><span class="line">&lt;!-- 取list指定位置的数据 --&gt;</span><br><span class="line">$&#123;list[<span class="number">1</span>].name&#125;</span><br><span class="line"> </span><br><span class="line">&lt;!-- 迭代List集合 --&gt;</span><br><span class="line">&lt;c:forEach <span class="keyword">var</span>=<span class="string">"person"</span> items=<span class="string">"$&#123;list&#125;"</span>&gt;</span><br><span class="line">   $&#123;person.name&#125;</span><br><span class="line">&lt;/c:forEach&gt;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line"> </span><br><span class="line">&lt;!-- 在jsp页面中，使用el表达式获取map集合的数据 --&gt;</span><br><span class="line">&lt;%</span><br><span class="line">   Map&lt;String,String&gt; map = <span class="keyword">new</span> LinkedHashMap&lt;String,String&gt;();</span><br><span class="line">   map.put(<span class="string">"a"</span>,<span class="string">"aaaaxxx"</span>);</span><br><span class="line">   map.put(<span class="string">"b"</span>,<span class="string">"bbbb"</span>);</span><br><span class="line">   map.put(<span class="string">"c"</span>,<span class="string">"cccc"</span>);</span><br><span class="line">   map.put(<span class="string">"1"</span>,<span class="string">"aaaa1111"</span>);</span><br><span class="line">   request.setAttribute(<span class="string">"map"</span>,map);</span><br><span class="line">%&gt;</span><br><span class="line"> </span><br><span class="line">&lt;!-- 根据关键字取map集合的数据 --&gt;</span><br><span class="line">$&#123;map.c&#125;</span><br><span class="line">$&#123;map[<span class="string">"1"</span>]&#125;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line"> </span><br><span class="line">&lt;!-- 迭代Map集合 --&gt;</span><br><span class="line">&lt;c:forEach <span class="keyword">var</span>=<span class="string">"me"</span> items=<span class="string">"$&#123;map&#125;"</span>&gt;</span><br><span class="line">   $&#123;me.key&#125;=$&#123;me.value&#125;&lt;br/&gt;</span><br><span class="line">&lt;/c:forEach&gt;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line"> </span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>上面代码中的Person.java、Address.java如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Address</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String country;</span><br><span class="line">    <span class="keyword">private</span> String province;</span><br><span class="line">    <span class="keyword">private</span> String city;</span><br><span class="line">    <span class="keyword">private</span> String district;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//getter/setter省略</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Address address;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String sex;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//getter/setter省略</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="执行运算">执行运算</h2>
+<h3 id="关系运算符">关系运算符</h3>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584777073_20200321154744390_14012.png" alt></p>
+<h3 id="逻辑运算符">逻辑运算符</h3>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584777072_20200321154744078_1923.png" alt></p>
+<h3 id="empty运算符">empty运算符</h3>
+<p>empty运算符：检查对象是否为null(空)，示例如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;c:if test="$&#123;! empty key&#125;"&gt;$&#123;key&#125;&lt;/c:if&gt;</span><br><span class="line">&lt;c:if test="$&#123;empty key&#125;"&gt;所有&lt;/c:if&gt;</span><br></pre></td></tr></table></figure>
+<p>其中，当key不为空时输出key的值；当key为空时，输出“所有” 。</p>
+<p>判断如下：</p>
+<ol>
+<li>
+<p>若key为null时，返回true</p>
+</li>
+<li>
+<p>若key为空String时，返回true</p>
+</li>
+<li>
+<p>若key为空Array时，返回true</p>
+</li>
+<li>
+<p>若key为空Map时，返回true</p>
+</li>
+<li>
+<p>若key为空Collection时，返回true</p>
+</li>
+<li>
+<p>否则，返回false</p>
+</li>
+</ol>
+<h3 id="二元表达式">二元表达式</h3>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;user!=<span class="keyword">null</span>?user.name :<span class="string">""</span>&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="获取隐含对象">获取隐含对象</h2>
+<p>EL表达式语言中定义了11个隐含对象，使用这些隐含对象可以很方便地获取web开发中的一些常见对象，并读取这些对象的数据。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;隐式对象名称&#125;  <span class="comment">//获得对象的引用</span></span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>隐含对象名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>pageContext</td>
+<td>对应于JSP页面中的pageContext对象（注意：取的是pageContext对象。）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>pageScope</td>
+<td>代表page域中用于保存属性的Map对象</td>
+</tr>
+<tr>
+<td>3</td>
+<td>requestScope</td>
+<td>代表request域中用于保存属性的Map对象</td>
+</tr>
+<tr>
+<td>4</td>
+<td>sessionScope</td>
+<td>代表session域中用于保存属性的Map对象</td>
+</tr>
+<tr>
+<td>5</td>
+<td>applicationScope</td>
+<td>代表application域中用于保存属性的Map对象</td>
+</tr>
+<tr>
+<td>6</td>
+<td>param</td>
+<td>表示一个保存了所有请求参数的Map对象</td>
+</tr>
+<tr>
+<td>7</td>
+<td>paramValues</td>
+<td>表示一个保存了所有请求参数的Map对象，它对于某个请求参数，返回的是一个string[]</td>
+</tr>
+<tr>
+<td>8</td>
+<td>header</td>
+<td>表示一个保存了所有http请求头字段的Map对象，注意：如果头里面有“-” ，例Accept-Encoding，则要header[“Accept-Encoding”]</td>
+</tr>
+<tr>
+<td>9</td>
+<td>headerValues</td>
+<td>表示一个保存了所有http请求头字段的Map对象，它对于某个请求参数，返回的是一个string[]数组。注意：如果头里面有“-” ， 例Accept-Encoding，则要headerValues[“Accept-Encoding”]</td>
+</tr>
+<tr>
+<td>10</td>
+<td>cookie</td>
+<td>表示一个保存了所有cookie的Map对象</td>
+</tr>
+<tr>
+<td>11</td>
+<td>initParam</td>
+<td>表示一个保存了所有web应用初始化参数的map对象</td>
+</tr>
+</tbody>
+</table>
+<p>示例代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@WebServlet</span>(urlPatterns = &#123;<span class="string">"/servlet/RegisterServlet"</span>&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RegisterServlet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 处理用户注册的方法</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        <span class="comment">//1、接收参数</span></span><br><span class="line">        String userName = request.getParameter(<span class="string">"username"</span>);</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 2、直接跳转发给/ELDemo03.jsp页面，没有使用request.setAttribute("userName", userName)将userName存储到request对象中</span></span><br><span class="line"><span class="comment">         * 但是在ELDemo03.jsp页面中可以使用$&#123;param.username&#125;获取到request对象中的username参数的值</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        request.getRequestDispatcher(<span class="string">"/ELDemo03.jsp"</span>).forward(request, response);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        doGet(request, response);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;el隐式对象&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;br/&gt;---------------<span class="number">1</span>、pageContext对象：获取JSP页面中的pageContext对象------------------------&lt;br/&gt;</span><br><span class="line"> </span><br><span class="line">$&#123;pageContext&#125;</span><br><span class="line"> </span><br><span class="line">&lt;br/&gt;---------------<span class="number">2</span>、pageScope对象：从page域(pageScope)中查找数据------------------------&lt;br/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;%</span><br><span class="line">   pageContext.setAttribute(<span class="string">"name"</span>,<span class="string">"孤傲苍狼"</span>);  <span class="comment">//map</span></span><br><span class="line">%&gt;</span><br><span class="line">$&#123;pageScope.name&#125;</span><br><span class="line"> </span><br><span class="line">&lt;br/&gt;---------------<span class="number">3</span>、requestScope对象：从request域(requestScope)中获取数据------------------------&lt;br/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;%</span><br><span class="line">   request.setAttribute(<span class="string">"name"</span>,<span class="string">"白虎神皇"</span>);  <span class="comment">//map</span></span><br><span class="line">%&gt;</span><br><span class="line">$&#123;requestScope.name&#125;</span><br><span class="line"> </span><br><span class="line">&lt;br/&gt;---------------<span class="number">4</span>、sessionScope对象：从session域(sessionScope)中获取数据------------------------&lt;br/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;%</span><br><span class="line">   session.setAttribute(<span class="string">"user"</span>,<span class="string">"xdp"</span>);  <span class="comment">//map</span></span><br><span class="line">%&gt;</span><br><span class="line">$&#123;sessionScope.user&#125;</span><br><span class="line"> </span><br><span class="line">&lt;br/&gt;---------------<span class="number">5</span>、applicationScope对象：从application域(applicationScope)中获取数据------------------------&lt;br/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;%</span><br><span class="line">   application.setAttribute(<span class="string">"user"</span>,<span class="string">"gacl"</span>);  <span class="comment">//map</span></span><br><span class="line">%&gt;</span><br><span class="line">$&#123;applicationScope.user&#125;</span><br><span class="line"> </span><br><span class="line">&lt;br/&gt;--------------<span class="number">6</span>、param对象：获得用于保存请求参数map，并从map中获取数据------------------------&lt;br/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;!-- http:<span class="comment">//localhost:8080/JavaWeb_EL_Study_20140826/ELDemo03.jsp?name=aaa  --&gt;</span></span><br><span class="line">$&#123;param.name&#125;</span><br><span class="line">&lt;!-- 此表达式会经常用在数据回显上 --&gt;</span><br><span class="line">&lt;form action=<span class="string">"el_getInnerObject_demo01.jsp"</span> method=<span class="string">"post"</span>&gt;</span><br><span class="line">   用户名：</span><br><span class="line">   &lt;input type=<span class="string">"text"</span> name=<span class="string">"username"</span> value=<span class="string">"$&#123;param.username&#125;"</span>&gt; &lt;br/&gt;</span><br><span class="line">   我喜欢自行车：</span><br><span class="line">   &lt;input type=<span class="string">"checkbox"</span> name=<span class="string">"like"</span> value=<span class="string">"Bike"</span>&gt; &lt;br/&gt;</span><br><span class="line">   我喜欢汽车：</span><br><span class="line">   &lt;input type=<span class="string">"checkbox"</span> name=<span class="string">"like"</span> value=<span class="string">"car"</span>&gt; &lt;br/&gt;</span><br><span class="line">   &lt;input type=<span class="string">"submit"</span> value=<span class="string">"注册"</span>&gt; &lt;br/&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line"> </span><br><span class="line">&lt;form action=<span class="string">"$&#123;pageContext.request.contextPath&#125;/servlet/RegisterServlet"</span> method=<span class="string">"post"</span>&gt;</span><br><span class="line">    &lt;input type=<span class="string">"text"</span> name=<span class="string">"username"</span> value=<span class="string">"$&#123;param.username&#125;"</span>&gt;</span><br><span class="line">    &lt;input type=<span class="string">"submit"</span> value=<span class="string">"注册"</span>&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line"> </span><br><span class="line">&lt;br/&gt;--------------<span class="number">7</span>、paramValues对象：paramValues获得请求参数 <span class="comment">//map&#123;"",String[]&#125;------------------------&lt;br/&gt;</span></span><br><span class="line"> </span><br><span class="line">$&#123;paramValues.like[<span class="number">0</span>]&#125;&lt;br/&gt;</span><br><span class="line">$&#123;paramValues[<span class="string">"like"</span>][<span class="number">1</span>]&#125;</span><br><span class="line"> </span><br><span class="line">&lt;br/&gt;--------------<span class="number">8</span>、header对象：header获得请求头------------------------&lt;br/&gt;</span><br><span class="line"> </span><br><span class="line">$&#123;header.Accept&#125;&lt;br/&gt;</span><br><span class="line">&lt;%--$&#123;header.Accept-Encoding&#125; 这样写会报错</span><br><span class="line">    测试headerValues时，如果头里面有“-” ，例Accept-Encoding，则要headerValues[“Accept-Encoding”]</span><br><span class="line">--%&gt;</span><br><span class="line">$&#123;header[<span class="string">"Accept-Encoding"</span>]&#125;</span><br><span class="line"> </span><br><span class="line">&lt;br/&gt;--------------<span class="number">9</span>、headerValues对象：headerValues获得请求头的值------------------------&lt;br/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;%--headerValues表示一个保存了所有http请求头字段的Map对象，它对于某个请求参数，返回的是一个string[]数组</span><br><span class="line">例如：headerValues.Accept返回的是一个string[]数组 ，headerValues.Accept[<span class="number">0</span>]取出数组中的第一个值</span><br><span class="line">--%&gt;</span><br><span class="line">$&#123;headerValues.Accept[<span class="number">0</span>]&#125;&lt;br/&gt;</span><br><span class="line">&lt;%--$&#123;headerValues.Accept-Encoding&#125; 这样写会报错</span><br><span class="line">    测试headerValues时，如果头里面有“-” ，例Accept-Encoding，则要headerValues[“Accept-Encoding”]</span><br><span class="line">    headerValues[<span class="string">"Accept-Encoding"</span>]返回的是一个string[]数组，headerValues[<span class="string">"Accept-Encoding"</span>][<span class="number">0</span>]取出数组中的第一个值</span><br><span class="line">--%&gt;</span><br><span class="line">$&#123;headerValues[<span class="string">"Accept-Encoding"</span>][<span class="number">0</span>]&#125;</span><br><span class="line"> </span><br><span class="line">&lt;br/&gt;--------------<span class="number">10</span>、cookie对象：cookie对象获取客户机提交的cookie------------------------&lt;br/&gt;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//测试cookie时，$&#123;cookie&#125;为保存所有cookie的map，例$&#123;cookie.key&#125;取的是cookie对象，</span></span><br><span class="line"><span class="comment">//如访问cookie的名称和值，须$&#123;cookie.key.name&#125;或$&#123;cookie.key.value&#125;</span></span><br><span class="line">&lt;!-- 从cookie隐式对象中根据名称获取到的是cookie对象,要想获取值，还需要.value --&gt;</span><br><span class="line">$&#123;cookie.JSESSIONID.value&#125;  </span><br><span class="line"> </span><br><span class="line">&lt;br/&gt;--------------<span class="number">11</span>、initParam对象：initParam对象获取在web.xml文件中配置的初始化参数------------------------&lt;br/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;%--</span><br><span class="line">&lt;!-- web.xml文件中配置初始化参数 --&gt;</span><br><span class="line">&lt;context-param&gt;</span><br><span class="line">   &lt;param-name&gt;url&lt;/param-name&gt;</span><br><span class="line">   &lt;param-value&gt;jdbc:mysql:<span class="comment">//localhost:3306/test&lt;/param-value&gt;</span></span><br><span class="line">&lt;/context-param&gt;</span><br><span class="line">--%&gt;</span><br><span class="line">&lt;%--获取servletContext中用于保存初始化参数的map --%&gt;</span><br><span class="line">$&#123;initParam.url&#125;&lt;br/&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h1>自定义EL函数</h1>
+<p>EL表达式语法允许开发人员开发自定义函数，以调用Java类的方法。</p>
+<p>语法：</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;prefix：method(params)&#125;</span><br></pre></td></tr></table></figure>
+<p>在EL表达式中调用的只能是Java类的静态方法，这个Java类的静态方法需要在TLD文件中描述，才可以被EL表达式调用。</p>
+<p>EL自定义函数用于扩展EL表达式的功能，可以让EL表达式完成普通Java程序代码所能完成的功能。</p>
+<h2 id="EL-Function开发步骤">EL Function开发步骤</h2>
+<p>一般来说， EL自定义函数开发与应用包括以下三个步骤：</p>
+<p>1、编写一个Java类的静态方法</p>
+<p>2、编写标签库描述符（tld）文件，在tld文件中描述自定义函数。</p>
+<p>3、在JSP页面中导入和使用自定义函数</p>
+<h2 id="TLD文件中EL-Function配置">TLD文件中EL Function配置</h2>
+<p>TLD标签库描述文件中：</p>
+<p><code>&lt;function&gt;</code> 元素用于描述一个EL自定义函数，其中：</p>
+<ul>
+<li><code>&lt;name&gt;</code> 子元素用于指定EL自定义函数的名称。</li>
+<li><code>&lt;function-class&gt;</code> 子元素用于指定完整的Java类名，</li>
+<li><code>&lt;function-signature&gt;</code> 子元素用于指定Java类中的静态方法的签名，方法签名必须指明方法的返回值类型及各个参数的类型，各个参数之间用逗号分隔。</li>
+</ul>
+<p>其他配置与JSP标签开发一致。</p>
+<p>示例如下：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@ClassName</span>: HtmlFilter</span></span><br><span class="line"><span class="comment">* <span class="doctag">@Description</span>: html转义处理工具类</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HtmlFilter</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Method</span>: filter</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@Description</span>: 静态方法，html标签转义处理</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> message 要转义的内容</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span> 转义后的内容</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">filter</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">       <span class="keyword">if</span> (message == <span class="keyword">null</span>)</span><br><span class="line">           <span class="keyword">return</span> (<span class="keyword">null</span>);</span><br><span class="line"> </span><br><span class="line">       <span class="keyword">char</span> content[] = <span class="keyword">new</span> <span class="keyword">char</span>[message.length()];</span><br><span class="line">       message.getChars(<span class="number">0</span>, message.length(), content, <span class="number">0</span>);</span><br><span class="line">       StringBuffer result = <span class="keyword">new</span> StringBuffer(content.length + <span class="number">50</span>);</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; content.length; i++) &#123;</span><br><span class="line">           <span class="keyword">switch</span> (content[i]) &#123;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">'&lt;'</span>:</span><br><span class="line">                   result.append(<span class="string">"&lt;"</span>);</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">'&gt;'</span>:</span><br><span class="line">                   result.append(<span class="string">"&gt;"</span>);</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">'&amp;'</span>:</span><br><span class="line">                   result.append(<span class="string">"&amp;"</span>);</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">'"'</span>:</span><br><span class="line">                   result.append(<span class="string">""</span><span class="string">");</span></span><br><span class="line"><span class="string">                   break;</span></span><br><span class="line"><span class="string">               default:</span></span><br><span class="line"><span class="string">                   result.append(content[i]);</span></span><br><span class="line"><span class="string">           &#125;</span></span><br><span class="line"><span class="string">       &#125;</span></span><br><span class="line"><span class="string">       return (result.toString());</span></span><br><span class="line"><span class="string">   &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>JSP测试页面</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%--引入EL自定义函数库 --%&gt;</span><br><span class="line">&lt;%<span class="meta">@taglib</span> uri=<span class="string">"/ELFunction"</span> prefix=<span class="string">"fn"</span> %&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;使用EL调用Java方法&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;%--使用EL调用filter方法--%&gt;</span><br><span class="line">$&#123;fn:filter(<span class="string">"&lt;a href=''&gt;点点&lt;/a&gt;"</span>)&#125;</span><br><span class="line"> </span><br><span class="line">&lt;%--也可以使用JSTL标签的方式调用filter方法--%&gt;</span><br><span class="line">&lt;fn:filter/&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>tld配置文件部分</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">taglib</span> <span class="attr">xmlns</span>=<span class="string">"http://java.sun.com/xml/ns/j2ee"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">version</span>=<span class="string">"2.0"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">   <span class="tag">&lt;<span class="name">tlib-version</span>&gt;</span>1.0<span class="tag">&lt;/<span class="name">tlib-version</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">short-name</span>&gt;</span>EL_Function<span class="tag">&lt;/<span class="name">short-name</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">       自定义EL函数库的引用URI，</span></span><br><span class="line"><span class="comment">       在JSP页面中可以这样引用：&lt;%@taglib uri="/ELFunction" prefix="fn" %&gt;</span></span><br><span class="line"><span class="comment">   --&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">uri</span>&gt;</span>/ELFunction<span class="tag">&lt;/<span class="name">uri</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">&lt;!--&lt;function&gt;元素用于描述一个EL自定义函数 --&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">function</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">description</span>&gt;</span>html标签转义处理方法<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">       <span class="comment">&lt;!--&lt;name&gt;子元素用于指定EL自定义函数的名称--&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">name</span>&gt;</span>filter<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">       <span class="comment">&lt;!--&lt;function-class&gt;子元素用于指定完整的Java类名--&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">function-class</span>&gt;</span>_4_JSP.el.demo.el_function.HtmlFilter<span class="tag">&lt;/<span class="name">function-class</span>&gt;</span></span><br><span class="line">       <span class="comment">&lt;!--&lt;function-signature&gt;子元素用于指定Java类中的静态方法的签名，</span></span><br><span class="line"><span class="comment">           方法签名必须指明方法的返回值类型及各个参数的类型，各个参数之间用逗号分隔。--&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">function-signature</span>&gt;</span>java.lang.String filter(java.lang.String)<span class="tag">&lt;/<span class="name">function-signature</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">function</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">taglib</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>EL函数库</h1>
+<p>由于在JSP页面中显示数据时，经常需要对显示的字符串进行处理，SUN公司针对于一些常见处理定义了一套EL函数库供开发者使用。</p>
+<p>这些EL函数在JSTL开发包中进行描述，因此在JSP页面中使用SUN公司的EL函数库，需要导入JSTL开发包，并在页面中导入EL函数库。</p>
+<p>JSTL开发包如下图所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584777072_20200321154743667_29930.png" alt></p>
+<p>对应的tld描述文件如下图所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584777071_20200321154743246_6442.png" alt></p>
+<p>fn.tld就是EL函数库的对应的tld描述文件。在页面中使用JSTL定义的EL函数：</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%<span class="meta">@taglib</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/functions"</span> prefix=<span class="string">"fn"</span>%&gt;</span><br></pre></td></tr></table></figure>
+<p>代码示例如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> <span class="keyword">import</span>=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%<span class="meta">@page</span> <span class="keyword">import</span>=<span class="string">"_4_JSP.el.demo.User"</span>%&gt;</span><br><span class="line">&lt;%--引入EL函数库 --%&gt;</span><br><span class="line">&lt;%<span class="meta">@taglib</span> uri=<span class="string">"http://java.sun.com/jsp/jstl/functions"</span> prefix=<span class="string">"fn"</span> %&gt;</span><br><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">   &lt;title&gt;EL函数库中的方法使用范例&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h3&gt;fn:toLowerCase函数使用范例：&lt;/h3&gt;</span><br><span class="line">&lt;%--fn:toLowerCase函数将一个字符串中包含的所有字符转换为小写形式，并返回转换后的字符串，</span><br><span class="line">它接收一个字符串类型的参数。fn:toLowerCase(<span class="string">""</span>)的返回值为空字符串--%&gt;</span><br><span class="line">&lt;%--fn:toLowerCase(<span class="string">"Www.CNBLOGS.COM"</span>) 的返回值为字符串“www.cnblogs.com” --%&gt;</span><br><span class="line">fn:toLowerCase(<span class="string">"Www.CNBLOGS.COM"</span>)的结果是：$&#123;fn:toLowerCase(<span class="string">"Www.CNBLOGS.COM"</span>)&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;fn:toUpperCase函数使用范例：&lt;/h3&gt;</span><br><span class="line">&lt;%--fn:toUpperCase函数将一个字符串中包含的所有字符转换为大写形式，并返回转换后的字符串，</span><br><span class="line">它接收一个字符串类型的参数。fn:toUpperCase(<span class="string">""</span>)的返回值为空字符串--%&gt;</span><br><span class="line">fn:toUpperCase(<span class="string">"cnblogs.com"</span>)的结果是：$&#123;fn:toUpperCase(<span class="string">"cnblogs.com"</span>)&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;fn:trim函数使用范例：&lt;/h3&gt;</span><br><span class="line">&lt;%--fn:trim函数删除一个字符串的首尾的空格，并返回删除空格后的结果字符串，</span><br><span class="line">它接收一个字符串类型的参数。需要注意的是，fn:trim函数不能删除字符串中间位置的空格。--%&gt;</span><br><span class="line">fn:trim(<span class="string">"  cnblogs.com  "</span>)的结果是：$&#123;fn:trim(<span class="string">"  cnblogs.com  "</span>)&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;fn:length函数使用范例：&lt;/h3&gt;</span><br><span class="line">&lt;%--fn:length函数返回一个集合或数组大小，或返回一个字符串中包含的字符的个数，返回值为<span class="keyword">int</span>类型。</span><br><span class="line">fn:length函数接收一个参数，这个参数可以是&lt;c:forEach&gt;标签的items属性支持的任何类型，</span><br><span class="line">包括任意类型的数组、java.util.Collection、java.util.Iterator、java.util.Enumeration、</span><br><span class="line">java.util.Map等类的实例对象和字符串。</span><br><span class="line">如果fn:length函数的参数为<span class="keyword">null</span>或者是元素个数为<span class="number">0</span>的集合或数组对象，则函数返回<span class="number">0</span>；如果参数是空字符串，则函数返回<span class="number">0</span></span><br><span class="line">--%&gt;</span><br><span class="line">&lt;%</span><br><span class="line">   List&lt;String&gt; list = Arrays.asList(<span class="string">"1"</span>,<span class="string">"2"</span>,<span class="string">"3"</span>);</span><br><span class="line">   request.setAttribute(<span class="string">"list"</span>,list);</span><br><span class="line">%&gt;</span><br><span class="line">fn:length(list)计算集合list的size的值是：$&#123;fn:length(list)&#125;</span><br><span class="line">&lt;br/&gt;</span><br><span class="line">fn:length(<span class="string">"cnblogs.com"</span>)计算字符串的长度是：$&#123;fn:length(<span class="string">"cnblogs.com"</span>)&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;fn:split函数使用范例：&lt;/h3&gt;</span><br><span class="line">&lt;%--</span><br><span class="line">fn:split函数以指定字符串作为分隔符，将一个字符串分割成字符串数组并返回这个字符串数组。</span><br><span class="line">fn:split函数接收两个字符串类型的参数，第一个参数表示要分割的字符串，第二个参数表示作为分隔符的字符串</span><br><span class="line">--%&gt;</span><br><span class="line">fn:split(<span class="string">"cnblogs.com"</span>,<span class="string">"."</span>)[<span class="number">0</span>]的结果是：$&#123;fn:split(<span class="string">"cnblogs.com"</span>,<span class="string">"."</span>)[<span class="number">0</span>]&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;fn:join函数使用范例：&lt;/h3&gt;</span><br><span class="line">&lt;%--</span><br><span class="line">fn:join函数以一个字符串作为分隔符，将一个字符串数组中的所有元素合并为一个字符串并返回合并后的结果字符串。</span><br><span class="line">fn:join函数接收两个参数，第一个参数是要操作的字符串数组，第二个参数是作为分隔符的字符串。</span><br><span class="line">如果fn:join函数的第二个参数是空字符串，则fn:join函数的返回值直接将元素连接起来。</span><br><span class="line">--%&gt;</span><br><span class="line">&lt;%</span><br><span class="line">   String[] StringArray = &#123;<span class="string">"www"</span>,<span class="string">"iteye"</span>,<span class="string">"com"</span>&#125;;</span><br><span class="line">   pageContext.setAttribute(<span class="string">"StringArray"</span>, StringArray);</span><br><span class="line">%&gt;</span><br><span class="line">&lt;%--fn:join(StringArray,<span class="string">"."</span>)返回字符串“www.iteye.com”--%&gt;</span><br><span class="line">fn:join(StringArray,<span class="string">"."</span>)的结果是：$&#123;fn:join(StringArray,<span class="string">"."</span>)&#125;</span><br><span class="line">&lt;br/&gt;</span><br><span class="line">&lt;%--fn:join(fn:split(<span class="string">"www,iteye,com"</span>,<span class="string">","</span>),<span class="string">"."</span>)的返回值为字符串“www.iteye.com”--%&gt;</span><br><span class="line">fn:join(fn:split(<span class="string">"www,iteye,com"</span>,<span class="string">","</span>),<span class="string">"."</span>)的结果是：$&#123;fn:join(fn:split(<span class="string">"www,iteye,com"</span>,<span class="string">","</span>),<span class="string">"."</span>)&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;fn:indexOf函数使用范例：&lt;/h3&gt;</span><br><span class="line">&lt;%--</span><br><span class="line">fn:indexOf函数返回指定字符串在一个字符串中第一次出现的索引值，返回值为<span class="keyword">int</span>类型。</span><br><span class="line">fn:indexOf函数接收两个字符串类型的参数，如果第一个参数字符串中包含第二个参数字符串，</span><br><span class="line">那么，不管第二个参数字符串在第一个参数字符串中出现几次，fn:indexOf函数总是返回第一次出现的索引值；</span><br><span class="line">如果第一个参数中不包含第二个参数，则fn:indexOf函数返回-<span class="number">1</span>。如果第二个参数为空字符串，则fn:indexOf函数总是返回<span class="number">0</span>。</span><br><span class="line">--%&gt;</span><br><span class="line">fn:indexOf(<span class="string">"www.iteye.com"</span>,<span class="string">"eye"</span>)的返回值为：$&#123;fn:indexOf(<span class="string">"www.iteye.com"</span>,<span class="string">"eye"</span>)&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;fn:contains函数使用范例：&lt;/h3&gt;</span><br><span class="line">&lt;%--</span><br><span class="line">fn:contains函数检测一个字符串中是否包含指定的字符串，返回值为布尔类型。</span><br><span class="line">fn:contains函数在比较两个字符串是否相等时是大小写敏感的。</span><br><span class="line">fn:contains函数接收两个字符串类型的参数，如果第一个参数字符串中包含第二个参数字符串，则fn:contains函数返回<span class="keyword">true</span>，否则返回<span class="keyword">false</span>。</span><br><span class="line">如果第二个参数的值为空字符串，则fn:contains函数总是返回<span class="keyword">true</span>。</span><br><span class="line">实际上，fn:contains(string, substring)等价于fn:indexOf(string, substring) != -<span class="number">1</span></span><br><span class="line">忽略大小的EL函数：fn:containsIgnoreCase</span><br><span class="line">--%&gt;</span><br><span class="line">&lt;%</span><br><span class="line">   User user = <span class="keyword">new</span> User(<span class="string">"jjtenger"</span>);</span><br><span class="line">   String likes[] = &#123;<span class="string">"sing"</span>,<span class="string">"dance"</span>&#125;;</span><br><span class="line">   user.setLikes(likes);</span><br><span class="line">   <span class="comment">//数据回显</span></span><br><span class="line">   request.setAttribute(<span class="string">"user"</span>,user);</span><br><span class="line">%&gt;</span><br><span class="line">&lt;%--使用el函数回显数据 --%&gt;</span><br><span class="line">&lt;input type=<span class="string">"checkbox"</span> name=<span class="string">"like"</span></span><br><span class="line">      value=<span class="string">"sing"</span> $&#123;fn:contains(fn:join(user.likes,<span class="string">","</span>),<span class="string">"sing"</span>)?<span class="string">'checked'</span>:<span class="string">''</span>&#125;/&gt;唱歌</span><br><span class="line">&lt;input type=<span class="string">"checkbox"</span> name=<span class="string">"like"</span></span><br><span class="line">      value=<span class="string">"dance"</span>  $&#123;fn:contains(fn:join(user.likes,<span class="string">","</span>),<span class="string">"dance"</span>)?<span class="string">'checked'</span>:<span class="string">''</span>&#125;/&gt;跳舞</span><br><span class="line">&lt;input type=<span class="string">"checkbox"</span> name=<span class="string">"like"</span></span><br><span class="line">      value=<span class="string">"basketball"</span> $&#123;fn:contains(fn:join(user.likes,<span class="string">","</span>),<span class="string">"basketball"</span>)?<span class="string">'checked'</span>:<span class="string">''</span>&#125;/&gt;蓝球</span><br><span class="line">&lt;input type=<span class="string">"checkbox"</span> name=<span class="string">"like"</span></span><br><span class="line">      value=<span class="string">"football"</span>  $&#123;fn:contains(fn:join(user.likes,<span class="string">","</span>),<span class="string">"football"</span>)?<span class="string">'checked'</span>:<span class="string">''</span>&#125;/&gt;足球</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;fn:startsWith函数和fn:endsWith函数使用范例：&lt;/h3&gt;</span><br><span class="line">&lt;%--</span><br><span class="line">fn:startsWith函数用于检测一个字符串是否是以指定字符串开始的，返回值为布尔类型。</span><br><span class="line">fn:startsWith函数接收两个字符串类型的参数，如果第一个参数字符串以第二个参数字符串开始，则函数返回<span class="keyword">true</span>，否则函数返回<span class="keyword">false</span>。</span><br><span class="line">如果第二个参数为空字符串，则fn:startsWith函数总是返回<span class="keyword">true</span>。</span><br><span class="line">与fn:startsWith函数对应的另一个EL函数为：fn:endsWith，用于检测一个字符串是否是以指定字符串结束的，返回值为布尔类型。</span><br><span class="line">--%&gt;</span><br><span class="line">fn:startsWith(<span class="string">"www.iteye.com"</span>,<span class="string">"iteye"</span>)的返回值为：$&#123;fn:startsWith(<span class="string">"www.iteye.com"</span>,<span class="string">"iteye"</span>)&#125;</span><br><span class="line">&lt;br/&gt;</span><br><span class="line">fn:endsWith(<span class="string">"www.iteye.com"</span>,<span class="string">"com"</span>)的返回值为：$&#123;fn:endsWith(<span class="string">"www.iteye.com"</span>,<span class="string">"com"</span>)&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;fn:replace使用范例：&lt;/h3&gt;</span><br><span class="line">&lt;%--</span><br><span class="line">fn:replace函数将一个字符串中包含的指定子字符串替换为其它的指定字符串，并返回替换后的结果字符串。</span><br><span class="line">fn:replace方法接收三个字符串类型的参数，第一个参数表示要操作的源字符串，第二个参数表示源字符串中要被替换的子字符串，</span><br><span class="line">第三个参数表示要被替换成的字符串。</span><br><span class="line">--%&gt;</span><br><span class="line">fn:replace(<span class="string">"www   iteye   com   "</span>, <span class="string">" "</span>, <span class="string">"."</span>)的返回值为字符串：$&#123;fn:replace(<span class="string">"www iteye com"</span>, <span class="string">" "</span>, <span class="string">"."</span>)&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;fn:substring使用范例：&lt;/h3&gt;</span><br><span class="line">&lt;%--</span><br><span class="line">fn:substring函数用于截取一个字符串的子字符串并返回截取到的子字符串。</span><br><span class="line">fn:substring函数接收三个参数，第一个参数是用于指定要操作的源字符串，第二个参数是用于指定截取子字符串开始的索引值，</span><br><span class="line">第三个参数是用于指定截取子字符串结束的索引值，第二个参数和第三个参数都是<span class="keyword">int</span>类型，其值都从<span class="number">0</span>开始。</span><br><span class="line">--%&gt;</span><br><span class="line">fn:substring(<span class="string">"www.it315.org"</span>, <span class="number">4</span>, <span class="number">9</span>) 的返回值为字符串：$&#123;fn:substring(<span class="string">"www.it315.org"</span>, <span class="number">4</span>, <span class="number">9</span>)&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line"> </span><br><span class="line">&lt;h3&gt;fn:substringAfter函数和fn:substringBefore函数使用范例：&lt;/h3&gt;</span><br><span class="line">&lt;%--</span><br><span class="line">fn:substringAfter函数用于截取并返回一个字符串中的指定子字符串第一次出现之后的子字符串。</span><br><span class="line">fn:substringAfter函数接收两个字符串类型的参数，第一个参数表示要操作的源字符串，第二个参数表示指定的子字符串</span><br><span class="line">与之对应的EL函数为：fn:substringBefore</span><br><span class="line">--%&gt;</span><br><span class="line">fn:substringAfter(<span class="string">"www.it315.org"</span>,<span class="string">"."</span>)的返回值为字符串：$&#123;fn:substringAfter(<span class="string">"www.it315.org"</span>,<span class="string">"."</span>)&#125;</span><br><span class="line">&lt;br/&gt;</span><br><span class="line">fn:substringBefore(<span class="string">"www.it315.org"</span>,<span class="string">"."</span>)的返回值为字符串：$&#123;fn:substringBefore(<span class="string">"www.it315.org"</span>,<span class="string">"."</span>)&#125;</span><br><span class="line">&lt;hr/&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>上面代码中User.java：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line">    <span class="keyword">private</span> String gender;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 兴趣爱好</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String likes[];</span><br><span class="line">    <span class="comment">//gettter/setter省略</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>15-EL表达式</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用EL表达式语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用要求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">EL表达式保留关键字</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取域对象及其属性"><span class="nav-text">获取域对象及其属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EL表达式获取域对象"><span class="nav-text">EL表达式获取域对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EL表达式中的对象导航运算符"><span class="nav-text">EL表达式中的对象导航运算符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行运算"><span class="nav-text">执行运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关系运算符"><span class="nav-text">关系运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑运算符"><span class="nav-text">逻辑运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#empty运算符"><span class="nav-text">empty运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二元表达式"><span class="nav-text">二元表达式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取隐含对象"><span class="nav-text">获取隐含对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">自定义EL函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#EL-Function开发步骤"><span class="nav-text">EL Function开发步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TLD文件中EL-Function配置"><span class="nav-text">TLD文件中EL Function配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">EL函数库</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

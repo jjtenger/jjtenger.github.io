@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Spring数据处理架构概述Spring3之前的数据处理架构：PropertyEditor（1）Spring通用流程说明：①类型转换：首先调用PropertyEditor的setAsText（String），内部根据需要调用setValue(Object)方法进行设置转换后的值；②数据验证：需要显示调用Spring的Validator接口实现进行数据验证；">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;28-Spring%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E5%8F%8A%E6%A0%BC%E5%BC%8F%E5%8C%96.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Spring数据处理架构概述Spring3之前的数据处理架构：PropertyEditor（1）Spring通用流程说明：①类型转换：首先调用PropertyEditor的setAsText（String），内部根据需要调用setValue(Object)方法进行设置转换后的值；②数据验证：需要显示调用Spring的Validator接口实现进行数据验证；">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584801719_20200321224016583_8811.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584801718_20200321224016174_15192.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584801718_20200321224015863_8024.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584801718_20200321224015451_29093.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584802047_20200321224446159_15896.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584803604_20200321230517967_32250.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584803604_20200321230517655_15899.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584803603_20200321230517437_30496.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584803603_20200321230517218_20881.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584803603_20200321230516905_12063.jpg">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.040Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584801719_20200321224016583_8811.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/28-Spring%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E5%8F%8A%E6%A0%BC%E5%BC%8F%E5%8C%96">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>28-SPRING类型转换及格式化</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>Spring数据处理架构概述</h1><h2 id="Spring3之前的数据处理架构：PropertyEditor">Spring3之前的数据处理架构：PropertyEditor</h2><p>（1）Spring通用</p><p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584801719_20200321224016583_8811.png" alt></p><p>流程说明：</p><p>①类型转换：首先调用PropertyEditor的setAsText（String），内部根据需要调用setValue(Object)方法进行设置转换后的值；</p><p>②数据验证：需要显示调用Spring的Validator接口实现进行数据验证；</p><a id="more"></a>
+
+
+
+
+
+
+<p>③格式化显示：需要调用PropertyEditor的getText进行格式化显示。</p>
+<p>（2）Spring Web MVC环境中：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584801718_20200321224016174_15192.jpg" alt></p>
+<p>流程说明：</p>
+<p>①类型转换：首先表单数据（全部是字符串）通过WebDataBinder进行绑定到命令对象，内部通过PropertyEditor实现；</p>
+<p>②数据验证：在控制器中的功能处理方法中，需要显示的调用Spring的Validator实现并将错误信息添加到BindingResult对象中；</p>
+<p>③格式化显示：在表单页面可以通过spring标签库的方式展示通过PropertyEditor格式化的数据和错误信息。</p>
+<p>其中，Spring标签库使用方式示例如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//首先需要通过如下taglib指令引入spring的两个标签库。</span></span><br><span class="line">&lt;%<span class="meta">@taglib</span> prefix=<span class="string">"spring"</span> uri=<span class="string">"http://www.springframework.org/tags"</span> %&gt;  </span><br><span class="line">&lt;%<span class="meta">@taglib</span> prefix=<span class="string">"form"</span> uri=<span class="string">"http://www.springframework.org/tags/form"</span> %&gt;  </span><br><span class="line"> </span><br><span class="line"><span class="comment">//1、格式化单个命令/表单对象的值（好像比较麻烦，真心没有好办法）  </span></span><br><span class="line">&lt;spring:bind path="dataBinderTest.phoneNumber"&gt;$&#123;status.value&#125;&lt;/spring:bind&gt;   </span><br><span class="line"> </span><br><span class="line"><span class="comment">//2、通过form标签，内部的表单标签会自动调用命令/表单对象属性对应的PropertyEditor进行格式化显示  </span></span><br><span class="line">&lt;form:form commandName=<span class="string">"dataBinderTest"</span>&gt;  </span><br><span class="line">   &lt;form:input path=<span class="string">"phoneNumber"</span>/&gt;&lt;!-- 如果出错会显示错误之前的数据而不是空 --&gt;  </span><br><span class="line">&lt;/form:form&gt;   </span><br><span class="line"> </span><br><span class="line"><span class="comment">//3、显示验证失败后的错误信息  </span></span><br><span class="line">&lt;form:errors&gt;&lt;/form:errors&gt;</span><br></pre></td></tr></table></figure>
+<p>使用如上架构的缺点是：</p>
+<p>1、PropertyEditor被设计为只能String &lt;——&gt; Object之间转换，不能任意对象类型 &lt;——&gt; 任意类型，如我们常见的Long时间戳到Date类型的转换是办不到的；</p>
+<p>2、PropertyEditor是线程不安全的，也就是有状态的，因此每次使用时都需要创建一个，不可重用；</p>
+<p>3、PropertyEditor不是强类型的，setValue(Object)可以接受任意类型，因此需要我们自己判断类型是否兼容；</p>
+<p>4、PropertyEditor和验证API使用起来比较麻烦，并且需要自己编程实现验证，Spring3支持更棒的注解验证支持；</p>
+<p>5、在使用SpEL表达式语言或DataBinder时，只能进行String &lt;—&gt; Object之间的类型转换；</p>
+<p>6、不支持细粒度的类型转换/格式化，如UserModel的registerDate需要转换/格式化类似“2012-05-01”的数据，而OrderModel的orderDate需要转换/格式化类似“2012-05-01 15：11：13”的数据，因为大家都为java.util.Date类型，因此不太容易进行细粒度转换/格式化。</p>
+<h2 id="Spring3之后的数据处理架构：Converter-SPI-Formatter-SPI">Spring3之后的数据处理架构：Converter SPI/Formatter SPI</h2>
+<p>（1）从Spring3开始，我们可以使用如下架构进行类型转换、验证及格式化：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584801718_20200321224015863_8024.jpg" alt></p>
+<p>流程：</p>
+<p>①类型转换：内部的ConversionService会根据S源类型/T目标类型自动选择相应的Converter SPI进行类型转换，而且是强类型的，能在任意类型数据之间进行转换；</p>
+<p>②数据验证：支持JSR-303验证框架，如将@Valid放在需要验证的目标类型上即可；</p>
+<p>③格式化显示：其实就是任意目标类型----&gt;String的转换，完全可以使用Converter SPI完成。</p>
+<p>Spring为了更好的诠释格式化/解析功能提供了Formatter SPI，支持根据Locale信息进行格式化/解析，而且该套SPI可以支持字段/参数级别的细粒度格式化/解析，流程如下：</p>
+<p>①类型解析（转换）：String----&gt;T类型目标对象的解析，和PropertyEditor类似；</p>
+<p>②格式化显示：任意目标类型----&gt;String的转换，和PropertyEditor类似。</p>
+<p>Formatter SPI内部实现实际委托给Converter SPI进行转换，其最大特点是能进行字段/参数级别的细粒度解析/格式化控制，即使是Converter SPI也是粗粒度的（到某个具体类型，而不是其中的某个字段单独控制），目前Formatter SPI还不是很完善，如果您有好的想法可以到Spring官网提建议。</p>
+<p>（2）在Spring Web MVC环境中，数据类型转换、验证及格式化通常是这样使用的：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584801718_20200321224015451_29093.jpg" alt></p>
+<p>①类型转换：首先表单数据（全部是字符串）通过WebDataBinder进行绑定到命令对象，内部通过Converter SPI实现；</p>
+<p>②数据验证：使用JSR-303验证框架进行验证；</p>
+<p>③格式化显示：在表单页面可以通过spring标签库的方式展示内部通过Converter SPI格式化的数据和错误信息。</p>
+<p>其中，Spring标签库使用方式示例如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//首先需要通过如下taglib指令引入spring的两个标签库。</span></span><br><span class="line">&lt;%<span class="meta">@taglib</span> prefix=<span class="string">"spring"</span> uri=<span class="string">"http://www.springframework.org/tags"</span> %&gt;  </span><br><span class="line">&lt;%<span class="meta">@taglib</span> prefix=<span class="string">"form"</span> uri=<span class="string">"http://www.springframework.org/tags/form"</span> %&gt;  </span><br><span class="line"> </span><br><span class="line"><span class="comment">//1、格式化单个命令/表单对象的值（好像比较麻烦，真心没有好办法）  </span></span><br><span class="line">&lt;spring:bind path="dataBinderTest.phoneNumber"&gt;$&#123;status.value&#125;&lt;/spring:bind&gt;   </span><br><span class="line"> </span><br><span class="line"><span class="comment">//2、&lt;spring:eval&gt;标签，自动调用ConversionService并选择相应的Converter SPI进行格式化展示  </span></span><br><span class="line">&lt;spring:eval expression="dataBinderTest.phoneNumber"&gt;&lt;/spring:eval&gt;   </span><br><span class="line"><span class="comment">//如上代码能工作的前提是在RequestMappingHandlerMapping配置了ConversionServiceExposingInterceptor，它的作用是暴露conversionService到请求中以便如&lt;spring:eval&gt;标签使用。</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">//3、通过form标签，内部的表单标签会自动调用命令/表单对象属性对应的PropertyEditor进行格式化显示  </span></span><br><span class="line">&lt;form:form commandName=<span class="string">"dataBinderTest"</span>&gt;  </span><br><span class="line">   &lt;form:input path=<span class="string">"phoneNumber"</span>/&gt;&lt;!-- 如果出错会显示错误之前的数据而不是空 --&gt;  </span><br><span class="line">&lt;/form:form&gt;   </span><br><span class="line"> </span><br><span class="line"><span class="comment">//4、显示验证失败后的错误信息  </span></span><br><span class="line">&lt;form:errors&gt;&lt;/form:errors&gt;</span><br></pre></td></tr></table></figure>
+<h1>PropertyEditor接口及实现</h1>
+<p><strong>数据绑定时的类型转换</strong>是指：请求参数（String）——&gt; 命令对象属性（可能是任意类型）的类型转换，使用PropertyEditor实现绑定时的类型转换。</p>
+<p>PropertyEditor被限制为只能String &lt;——&gt; Object之间转换，不能Object &lt;——&gt; Object，Spring3提供了更强大的类型转换（TypeConversion）支持，它可以在任意对象之间进行类型转换，不仅仅是String &lt;——&gt; Object。</p>
+<h2 id="Spring内建的PropertyEditor">Spring内建的PropertyEditor</h2>
+<p>如下所示:</p>
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>说明</th>
+<th>默认是否注册</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ByteArrayPropertyEditor</td>
+<td>String  &lt;——&gt;  byte[]</td>
+<td>√</td>
+</tr>
+<tr>
+<td>ClassEditor</td>
+<td>String  &lt;——&gt;  Class 当类没有发现抛出IllegalArgumentException</td>
+<td>√</td>
+</tr>
+<tr>
+<td>CustomBooleanEditor</td>
+<td>String  &lt;——&gt;  Boolean true/yes/on/1转换为true， false/no/off/0转换为false。</td>
+<td>√</td>
+</tr>
+<tr>
+<td>CustomCollectionEditor</td>
+<td>数组/Collection ——&gt; Collection（单方向转换） 普通值 ——&gt; Collection（只包含一个对象） 如String——&gt;Collection， 不允许Collection——&gt;String。</td>
+<td>√</td>
+</tr>
+<tr>
+<td>CustomNumberEditor</td>
+<td>String  &lt;——&gt;  Number(Integer、Long、Double)</td>
+<td>√</td>
+</tr>
+<tr>
+<td>FileEditor</td>
+<td>String  &lt;——&gt;  File</td>
+<td>√</td>
+</tr>
+<tr>
+<td>InputStreamEditor</td>
+<td>String ——&gt; InputStream 单向的，不能InputStream ——&gt; String</td>
+<td>√</td>
+</tr>
+<tr>
+<td>LocaleEditor</td>
+<td>String  &lt;——&gt;  Locale， （String的形式为[语言]<em>[国家]</em>[变量]，与Local对象的toString()方法得到的结果相同）</td>
+<td>√</td>
+</tr>
+<tr>
+<td>PatternEditor</td>
+<td>String  &lt;——&gt;  Pattern</td>
+<td>√</td>
+</tr>
+<tr>
+<td>PropertiesEditor</td>
+<td>String  &lt;——&gt;  java.lang.Properties</td>
+<td>√</td>
+</tr>
+<tr>
+<td>URLEditor</td>
+<td>String  &lt;——&gt;  URL</td>
+<td>√</td>
+</tr>
+<tr>
+<td>StringTrimmerEditor</td>
+<td>一个用于trim的String类型的属性编辑器，默认删除两边的空格。 charsToDelete属性：可以设置为其他字符。 emptyAsNull属性：将一个空字符串转化为null值的选项。</td>
+<td>×</td>
+</tr>
+<tr>
+<td>CustomDateEditor</td>
+<td>String  &lt;——&gt;  java.util.Date</td>
+<td>×</td>
+</tr>
+</tbody>
+</table>
+<p>Spring内建的PropertyEditor支持的命令对象属性（符合JavaBean规范）操作（这些操作中会自动进行类型转换）：</p>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>设值/取值说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>username</td>
+<td>属性username： 设值方法setUsername() 取值方法getUsername() 或 isUsername()</td>
+</tr>
+<tr>
+<td>schooInfo.schoolType</td>
+<td>属性schooInfo的嵌套属性schoolType： 设值方法getSchooInfo().setSchoolType() 取值方法getSchooInfo().getSchoolType()</td>
+</tr>
+<tr>
+<td>hobbyList[0]</td>
+<td>属性hobbyList的第一个元素： 索引属性可能是一个数组、列表、其它天然有序的容器。</td>
+</tr>
+<tr>
+<td>map[key]</td>
+<td>属性map（java.util.Map类型）： map中key对应的值。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="自定义PropertyEditor实现">自定义PropertyEditor实现</h2>
+<p>前台输入如010-12345678自动转换为PhoneNumberModel。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//省略import  </span></span><br><span class="line"><span class="comment">//PropertyEditorSupport：一个PropertyEditor的支持类。</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PhoneNumberEditor</span> <span class="keyword">extends</span> <span class="title">PropertyEditorSupport</span> </span>&#123;  </span><br><span class="line"> </span><br><span class="line">   Pattern pattern = Pattern.compile(<span class="string">"^(\\d&#123;3,4&#125;)-(\\d&#123;7,8&#125;)$"</span>);  </span><br><span class="line">   <span class="comment">//setAsText：表示将String——&gt;PhoneNumberModel，根据正则表达式进行转换，如果转换失败抛出异常，则接下来的验证器会进行验证处理。</span></span><br><span class="line">   <span class="meta">@Override</span>  </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAsText</span><span class="params">(String text)</span> <span class="keyword">throws</span> IllegalArgumentException </span>&#123;  </span><br><span class="line">       <span class="keyword">if</span>(text == <span class="keyword">null</span> || !StringUtils.hasLength(text)) &#123;  </span><br><span class="line">           setValue(<span class="keyword">null</span>); <span class="comment">//如果没值，设值为null  </span></span><br><span class="line">       &#125;  </span><br><span class="line">       Matcher matcher = pattern.matcher(text);  </span><br><span class="line">       <span class="keyword">if</span>(matcher.matches()) &#123;  </span><br><span class="line">           PhoneNumberModel phoneNumber = <span class="keyword">new</span> PhoneNumberModel();  </span><br><span class="line">           phoneNumber.setAreaCode(matcher.group(<span class="number">1</span>));  </span><br><span class="line">           phoneNumber.setPhoneNumber(matcher.group(<span class="number">2</span>));  </span><br><span class="line">           setValue(phoneNumber);  </span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;  </span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(String.format(<span class="string">"类型转换失败，需要格式[010-12345678]，但格式是[%s]"</span>, text));  </span><br><span class="line">       &#125;  </span><br><span class="line">   &#125;  </span><br><span class="line">   <span class="comment">//getAsText：表示将PhoneNumberModel——&gt;String。</span></span><br><span class="line">   <span class="meta">@Override</span>  </span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">getAsText</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">       PhoneNumberModel phoneNumber = ((PhoneNumberModel)getValue());  </span><br><span class="line">       <span class="keyword">return</span> phoneNumber == <span class="keyword">null</span> ? <span class="string">""</span> : phoneNumber.getAreaCode() + <span class="string">"-"</span> + phoneNumber.getPhoneNumber();  </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="注册PropertyEditor">注册PropertyEditor</h2>
+<h3 id="方法一：控制器中注册自定义的属性编辑器-InitBinder">方法一：控制器中注册自定义的属性编辑器@InitBinder</h3>
+<p>通过@InitBinder来注册自定义的PropertyEditor：使用WebDataBinder注册控制器级别的PropertyEditor，这种方式注册的PropertyEditor只对当前控制器独享，即其他的控制器不会自动注册这个PropertyEditor，如果需要还需要再注册一下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataBinderTestController</span> </span>&#123;</span><br><span class="line">   <span class="meta">@RequestMapping</span>(value = <span class="string">"/dataBind"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">test</span><span class="params">(DataBinderTestModel command, Model model)</span> </span>&#123;</span><br><span class="line">       <span class="comment">//输出command对象看看是否绑定正确</span></span><br><span class="line">       System.out.println(command);</span><br><span class="line">       model.addAttribute(<span class="string">"dataBinderTest"</span>, command);</span><br><span class="line">       <span class="keyword">return</span> <span class="string">"bind/success"</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="meta">@InitBinder</span></span><br><span class="line">  <span class="comment">//此处的参数也可以是ServletRequestDataBinder类型</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initBinder</span><span class="params">(WebDataBinder binder)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       <span class="comment">//注册自定义的属性编辑器</span></span><br><span class="line">       <span class="comment">//1、日期</span></span><br><span class="line">       DateFormat df = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line">       CustomDateEditor dateEditor = <span class="keyword">new</span> CustomDateEditor(df, <span class="keyword">true</span>);</span><br><span class="line">       <span class="comment">//表示如果命令对象有Date类型的属性，将使用该属性编辑器进行类型转换</span></span><br><span class="line">       binder.registerCustomEditor(Date.class, dateEditor);</span><br><span class="line">       <span class="comment">//自定义的电话号码编辑器(和【4.16.1、数据类型转换】一样)</span></span><br><span class="line">       binder.registerCustomEditor(PhoneNumberModel.class, <span class="keyword">new</span> PhoneNumberEditor());</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="方法二：使用WebBindingInitializer批量注册PropertyEditor">方法二：使用WebBindingInitializer批量注册PropertyEditor</h3>
+<p>如果想在多个控制器同时注册多个相同的PropertyEditor时，可以考虑使用<strong>WebBindingInitializer</strong>。通过实现WebBindingInitializer接口，并在控制器中注入WebBindingInitializer即可注入多个PropertyEditor。</p>
+<h4 id="实现WebBindingInitializer接口">实现WebBindingInitializer接口</h4>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter4.web.controller.support.initializer;  </span><br><span class="line"> </span><br><span class="line"><span class="comment">//省略import  </span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyWebBindingInitializer</span> <span class="keyword">implements</span> <span class="title">WebBindingInitializer</span> </span>&#123;  </span><br><span class="line">   <span class="meta">@Override</span>  </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initBinder</span><span class="params">(WebDataBinder binder, WebRequest request)</span> </span>&#123;  </span><br><span class="line">       <span class="comment">//注册自定义的属性编辑器  </span></span><br><span class="line">       <span class="comment">//1、日期  </span></span><br><span class="line">       DateFormat df = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);  </span><br><span class="line">       CustomDateEditor dateEditor = <span class="keyword">new</span> CustomDateEditor(df, <span class="keyword">true</span>);  </span><br><span class="line">       <span class="comment">//表示如果命令对象有Date类型的属性，将使用该属性编辑器进行类型转换  </span></span><br><span class="line">       binder.registerCustomEditor(Date.class, dateEditor);  </span><br><span class="line">       <span class="comment">//自定义的电话号码编辑器  </span></span><br><span class="line">       binder.registerCustomEditor(PhoneNumberModel.class, <span class="keyword">new</span> PhoneNumberEditor());  </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="WebBindingInitializer注册到HandlerAdapter">WebBindingInitializer注册到HandlerAdapter</h4>
+<p>我们需要把WebBindingInitializer注入到我们的RequestMappingHandlerAdapter或AnnotationMethodHandlerAdapter，这样对于所有的注解式控制器都是共享的。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"</span>&gt;</span>  </span><br><span class="line"> <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"webBindingInitializer"</span>&gt;</span>  </span><br><span class="line">   <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"cn.javass.chapter7.web.controller.support.initializer.MyWebBindingInitializer"</span>/&gt;</span>  </span><br><span class="line"> <span class="tag">&lt;/<span class="name">property</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="方法三：全局级别注册PropertyEditor（全局共享）">方法三：全局级别注册PropertyEditor（全局共享）</h3>
+<p>只需要将我们自定义的PropertyEditor放在和你的模型类同包下即可，且你的Editor命名规则必须是“模型类名Editor”，这样Spring会自动使用标准JavaBean架构进行自动识别，如图所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584802047_20200321224446159_15896.jpg" alt></p>
+<p>此时我们把“DataBinderTestController”的“binder.registerCustomEditor(PhoneNumberModel.class, new PhoneNumberEditor());”注释掉即可成功。</p>
+<p>这种方式不仅仅在使用Spring时可用，在标准的JavaBean等环境都是可用的，可以认为是全局共享的（不仅仅是Spring环境）。</p>
+<h1>Spring类型转换：Converter SPI</h1>
+<p>Spring3引入了更加通用的类型转换系统，其定义了SPI接口（Converter等）和相应的运行时执行类型转换的API（ConversionService等），在Spring中它和PropertyEditor功能类似，可以替代PropertyEditor来转换外部Bean属性的值到Bean属性需要的类型。</p>
+<p>该类型转换系统是Spring通用的，其定义在org.springframework.core.convert包中，不仅仅在Spring Web MVC场景下。其目标是完全替换PropertyEditor，提供无状态、强类型且可以在任意类型之间转换的类型转换系统，可以用于任何需要的地方，如SpEL、数据绑定。</p>
+<p>Converter SPI完成通用的类型转换逻辑，如java.util.Date &lt;----&gt; java.lang.Long或java.lang.String----&gt;PhoneNumberModel等。</p>
+<p><strong>如果同时使用PropertyEditor和ConversionService，执行顺序是什么呢？内部首先查找PropertyEditor进行类型转换，如果没有找到相应的PropertyEditor再通过ConversionService进行转换。</strong></p>
+<p><strong>通常不直接使用ConversionService，使用的是它的实现类DefaultFormattingConversionService，该类同时提供类型转换服务和数据格式化支持。</strong></p>
+<h2 id="类型转换器">类型转换器</h2>
+<p>提供类型转换的实现支持。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584803604_20200321230517967_32250.jpg" alt></p>
+<h3 id="Converter接口">Converter接口</h3>
+<p>Converter类型转换器，用于转换S类型到T类型，此接口的实现必须是线程安全的且可以被共享。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.core.convert.converter;  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Converter</span>&lt;<span class="title">S</span>, <span class="title">T</span>&gt; </span>&#123; <span class="comment">//① S是源类型 T是目标类型  </span></span><br><span class="line">   <span class="function">T <span class="title">convert</span><span class="params">(S source)</span></span>; <span class="comment">//② 转换S类型的source到T目标类型的转换方法  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此处我们可以看到Converter接口实现只能转换一种类型到另一种类型，不能进行多类型转换，如将一个数组转换成集合（<code>String[] ----&gt; List &lt;String&gt;</code> 、<code>String[]-----&gt;List &lt;PhoneNumberModel&gt;</code> 等）。</p>
+<h3 id="GenericConverter接口">GenericConverter接口</h3>
+<p>GenericConverter接口实现能在多种类型之间进行转换。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.core.convert.converter;  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">GenericConverter</span> </span>&#123;</span><br><span class="line">   <span class="comment">//指定了可以转换的目标类型对</span></span><br><span class="line">   <span class="function">Set&lt;ConvertiblePair&gt; <span class="title">getConvertibleTypes</span><span class="params">()</span></span>;  、</span><br><span class="line">   <span class="comment">//在sourceType和targetType类型之间进行转换</span></span><br><span class="line">   <span class="function">Object <span class="title">convert</span><span class="params">(Object source, TypeDescriptor sourceType, TypeDescriptor targetType)</span></span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ConditionalGenericConverter接口">ConditionalGenericConverter接口</h3>
+<p>ConditionalGenericConverter是有条件的在多种类型之间进行转换。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.core.convert.converter;  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ConditionalGenericConverter</span> <span class="keyword">extends</span> <span class="title">GenericConverter</span> </span>&#123;</span><br><span class="line">   <span class="comment">//用于判断sourceType和targetType类型之间能否进行类型转换</span></span><br><span class="line">   <span class="function"><span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(TypeDescriptor sourceType, TypeDescriptor targetType)</span></span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.Array;</span><br><span class="line"><span class="keyword">import</span> java.util.Collection;</span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> org.springframework.core.CollectionFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.convert.ConversionService;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.convert.TypeDescriptor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.convert.converter.ConditionalGenericConverter;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Converts an Array to a Collection.</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* &lt;p&gt;First, creates a new Collection of the requested targetType.</span></span><br><span class="line"><span class="comment">* Then adds each array element to the target collection.</span></span><br><span class="line"><span class="comment">* Will perform an element conversion from the source component type to the collection's parameterized type if necessary.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayToCollectionConverter</span> <span class="keyword">implements</span> <span class="title">ConditionalGenericConverter</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> ConversionService conversionService;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">ArrayToCollectionConverter</span><span class="params">(ConversionService conversionService)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.conversionService = conversionService;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Set&lt;ConvertiblePair&gt; <span class="title">getConvertibleTypes</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> Collections.singleton(<span class="keyword">new</span> ConvertiblePair(Object[].class, Collection.class));</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(TypeDescriptor sourceType, TypeDescriptor targetType)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> ConversionUtils.canConvertElements(</span><br><span class="line">               sourceType.getElementTypeDescriptor(), targetType.getElementTypeDescriptor(), <span class="keyword">this</span>.conversionService);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Object <span class="title">convert</span><span class="params">(Object source, TypeDescriptor sourceType, TypeDescriptor targetType)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (source == <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">int</span> length = Array.getLength(source);</span><br><span class="line">       Collection&lt;Object&gt; target = CollectionFactory.createCollection(targetType.getType(), length);</span><br><span class="line">       <span class="keyword">if</span> (targetType.getElementTypeDescriptor() == <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</span><br><span class="line">               Object sourceElement = Array.get(source, i);</span><br><span class="line">               target.add(sourceElement);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</span><br><span class="line">               Object sourceElement = Array.get(source, i);</span><br><span class="line">               Object targetElement = <span class="keyword">this</span>.conversionService.convert(sourceElement,</span><br><span class="line">                       sourceType.elementTypeDescriptor(sourceElement), targetType.getElementTypeDescriptor());</span><br><span class="line">               target.add(targetElement);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> target;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于我们大部分用户来说一般不需要自定义GenericConverter, 如果需要可以参考内置的GenericConverter来实现自己的。</p>
+<h3 id="ConverterFactory接口">ConverterFactory接口</h3>
+<p>工厂模式的实现，用于选择将一种S源类型转换为R类型的子类型T的转换器的工厂接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.core.convert.converter;  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ConverterFactory</span>&lt;<span class="title">S</span>, <span class="title">R</span>&gt; </span>&#123;</span><br><span class="line">   <span class="comment">//getConverter：得到目标类型的对应的转换器</span></span><br><span class="line">   <span class="comment">//S：源类型；R：目标类型的父类型；T：目标类型，且是R类型的子类型；</span></span><br><span class="line">   &lt;T extends R&gt; <span class="function">Converter&lt;S, T&gt; <span class="title">getConverter</span><span class="params">(Class&lt;T&gt; targetType)</span></span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.core.convert.support;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> org.springframework.core.convert.TypeDescriptor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.convert.converter.ConditionalConverter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.convert.converter.Converter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.convert.converter.ConverterFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.util.NumberUtils;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Converts from any JDK-standard Number implementation to any other JDK-standard Number implementation.</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* &lt;p&gt;Support Number classes including Byte, Short, Integer, Float, Double, Long, BigInteger, BigDecimal. This class</span></span><br><span class="line"><span class="comment">* delegates to &#123;<span class="doctag">@link</span> NumberUtils#convertNumberToTargetClass(Number, Class)&#125; to perform the conversion.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">NumberToNumberConverterFactory</span> <span class="keyword">implements</span> <span class="title">ConverterFactory</span>&lt;<span class="title">Number</span>, <span class="title">Number</span>&gt;,</span></span><br><span class="line"><span class="class">       <span class="title">ConditionalConverter</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="keyword">public</span> &lt;T extends Number&gt; <span class="function">Converter&lt;Number, T&gt; <span class="title">getConverter</span><span class="params">(Class&lt;T&gt; targetType)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> NumberToNumber&lt;T&gt;(targetType);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(TypeDescriptor sourceType, TypeDescriptor targetType)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> !sourceType.equals(targetType);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">NumberToNumber</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">Number</span>&gt; <span class="keyword">implements</span> <span class="title">Converter</span>&lt;<span class="title">Number</span>, <span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"> </span><br><span class="line">       <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;T&gt; targetType;</span><br><span class="line"> </span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="title">NumberToNumber</span><span class="params">(Class&lt;T&gt; targetType)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">this</span>.targetType = targetType;</span><br><span class="line">       &#125;</span><br><span class="line"> </span><br><span class="line">       <span class="meta">@Override</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> T <span class="title">convert</span><span class="params">(Number source)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">return</span> NumberUtils.convertNumberToTargetClass(source, <span class="keyword">this</span>.targetType);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于我们大部分用户来说一般不需要自定义ConverterFactory，如果需要可以参考内置的ConverterFactory来实现自己的。</p>
+<h2 id="类型转换器注册器和类型转换服务">类型转换器注册器和类型转换服务</h2>
+<p>提供类型转换器注册支持，运行时类型转换API支持。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584803604_20200321230517655_15899.jpg" alt></p>
+<h3 id="ConverterRegistry接口">ConverterRegistry接口</h3>
+<p>类型转换器注册支持，可以注册/删除相应的类型转换器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.core.convert.converter;  </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ConverterRegistry</span> </span>&#123;  </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addConverter</span><span class="params">(Converter&lt;?, ?&gt; converter)</span></span>;  </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addConverter</span><span class="params">(Class&lt;?&gt; sourceType, Class&lt;?&gt; targetType, Converter&lt;?, ?&gt; converter)</span></span>;  </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addConverter</span><span class="params">(GenericConverter converter)</span></span>;  </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addConverterFactory</span><span class="params">(ConverterFactory&lt;?, ?&gt; converterFactory)</span></span>;  </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">removeConvertible</span><span class="params">(Class&lt;?&gt; sourceType, Class&lt;?&gt; targetType)</span></span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以注册：Converter实现，GenericConverter实现，ConverterFactory实现。</p>
+<h3 id="ConversionService接口">ConversionService接口</h3>
+<p>运行时类型转换服务接口，提供运行期类型转换的支持。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.core.convert;  </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ConversionService</span> </span>&#123;  </span><br><span class="line">   <span class="function"><span class="keyword">boolean</span> <span class="title">canConvert</span><span class="params">(Class&lt;?&gt; sourceType, Class&lt;?&gt; targetType)</span></span>;  </span><br><span class="line">   <span class="function"><span class="keyword">boolean</span> <span class="title">canConvert</span><span class="params">(TypeDescriptor sourceType, TypeDescriptor targetType)</span></span>;</span><br><span class="line">   <span class="comment">//convert：将源对象转换为目标类型的目标对象。</span></span><br><span class="line">   &lt;T&gt; <span class="function">T <span class="title">convert</span><span class="params">(Object source, Class&lt;T&gt; targetType)</span></span>;  </span><br><span class="line">   <span class="function">Object <span class="title">convert</span><span class="params">(Object source, TypeDescriptor sourceType, TypeDescriptor targetType)</span></span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Spring提供了两个默认实现（其都实现了ConverterRegistry、ConversionService接口）：</p>
+<ul>
+<li><strong>DefaultConversionService</strong>：默认的类型转换服务实现；</li>
+<li><strong>DefaultFormattingConversionService</strong>：带数据格式化支持的类型转换服务实现，一般使用该服务实现即可。</li>
+</ul>
+<h2 id="Converter-SPI使用">Converter SPI使用</h2>
+<h3 id="Spring内建的类型转换器">Spring内建的类型转换器</h3>
+<p>如下所示（S：代表源类型，T：代表目标类型）：</p>
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一组：标量转换器</td>
+<td></td>
+</tr>
+<tr>
+<td>StringToBooleanConverter</td>
+<td>String-----&gt;Boolean true:true/on/yes/1； false:false/off/no/0</td>
+</tr>
+<tr>
+<td>ObjectToStringConverter</td>
+<td>Object-----&gt;String 调用toString方法转换</td>
+</tr>
+<tr>
+<td>StringToNumberConverterFactory</td>
+<td>String-----&gt;Number（如Integer、Long等）</td>
+</tr>
+<tr>
+<td>NumberToNumberConverterFactory</td>
+<td>Number子类型(Integer、Long、Double等) <code>&lt;——&gt;</code>  Number子类型(Integer、Long、Double等)</td>
+</tr>
+<tr>
+<td>StringToCharacterConverter</td>
+<td>String-----&gt;java.lang.Character 取字符串第一个字符</td>
+</tr>
+<tr>
+<td>NumberToCharacterConverter</td>
+<td>Number子类型(Integer、Long、Double等)——&gt; java.lang.Character</td>
+</tr>
+<tr>
+<td>CharacterToNumberFactory</td>
+<td>java.lang.Character ——&gt;Number子类型(Integer、Long、Double等)</td>
+</tr>
+<tr>
+<td>StringToEnumConverterFactory</td>
+<td>String-----&gt;enum类型 通过Enum.valueOf将字符串转换为需要的enum类型</td>
+</tr>
+<tr>
+<td>EnumToStringConverter</td>
+<td>enum类型-----&gt;String 返回enum对象的name()值</td>
+</tr>
+<tr>
+<td>StringToLocaleConverter</td>
+<td>String-----&gt;java.util.Local</td>
+</tr>
+<tr>
+<td>PropertiesToStringConverter</td>
+<td>java.util.Properties-----&gt;String 默认通过ISO-8859-1解码</td>
+</tr>
+<tr>
+<td>StringToPropertiesConverter</td>
+<td>String-----&gt;java.util.Properties 默认使用ISO-8859-1编码</td>
+</tr>
+<tr>
+<td>第二组：集合、数组相关转换器</td>
+<td></td>
+</tr>
+<tr>
+<td>ArrayToCollectionConverter</td>
+<td>任意S数组----&gt;任意T集合（List、Set）</td>
+</tr>
+<tr>
+<td>CollectionToArrayConverter</td>
+<td>任意T集合（List、Set）----&gt;任意S数组</td>
+</tr>
+<tr>
+<td>ArrayToArrayConverter</td>
+<td>任意S数组 &lt;——&gt; 任意T数组</td>
+</tr>
+<tr>
+<td>CollectionToCollectionConverter</td>
+<td>任意T集合（List、Set） &lt;——&gt; 任意T集合（List、Set） 即集合之间的类型转换</td>
+</tr>
+<tr>
+<td>MapToMapConverter</td>
+<td>Map &lt;——&gt; Map之间的转换</td>
+</tr>
+<tr>
+<td>ArrayToStringConverter</td>
+<td>任意S数组----&gt;String类型</td>
+</tr>
+<tr>
+<td>StringToArrayConverter</td>
+<td>String-----&gt;数组 默认通过“,”分割，且去除字符串的两边空格(trim)</td>
+</tr>
+<tr>
+<td>ArrayToObjectConverter</td>
+<td>任意S数组----&gt;任意Object的转换 (如果目标类型和源类型兼容，直接返回源对象；否则返回S数组的第一个元素并进行类型转换)</td>
+</tr>
+<tr>
+<td>ObjectToArrayConverter</td>
+<td>Object-----&gt;单元素数组</td>
+</tr>
+<tr>
+<td>CollectionToStringConverter</td>
+<td>任意T集合（List、Set）----&gt;String类型</td>
+</tr>
+<tr>
+<td>StringToCollectionConverter</td>
+<td>String-----&gt;集合（List、Set） 默认通过“,”分割，且去除字符串的两边空格(trim)</td>
+</tr>
+<tr>
+<td>CollectionToObjectConverter</td>
+<td>任意T集合----&gt;任意Object的转换 (如果目标类型和源类型兼容，直接返回源对象；否则返回S数组的第一个元素并进行类型转换)</td>
+</tr>
+<tr>
+<td>ObjectToCollectionConverter</td>
+<td>Object-----&gt;单元素集合</td>
+</tr>
+<tr>
+<td>第三组：默认（fallback）转换器：之前的转换器不能转换时调用</td>
+<td></td>
+</tr>
+<tr>
+<td>ObjectToObjectConverter</td>
+<td>Object（S）-----&gt;Object（T） 首先尝试valueOf进行转换、没有则尝试new 构造器(S)</td>
+</tr>
+<tr>
+<td>IdToEntityConverter</td>
+<td>Id(S)-----&gt;Entity(T) 查找并调用public static T find<a href="S">EntityName</a>获取目标对象，EntityName是T类型的简单类型</td>
+</tr>
+<tr>
+<td>FallbackObjectToStringConverter</td>
+<td>Object-----&gt;String ConversionService作为恢复使用，即其他转换器不能转换时调用（执行对象的toString()方法）</td>
+</tr>
+</tbody>
+</table>
+<p>如上的转换器在使用转换服务实现类<strong>DefaultConversionService</strong>和<strong>DefaultFormattingConversionService</strong>时会自动注册。</p>
+<h3 id="自定义Converter">自定义Converter</h3>
+<p>实现Converter接口，示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.regex.Matcher;</span><br><span class="line"><span class="keyword">import</span> java.util.regex.Pattern;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> org.springframework.core.convert.converter.Converter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.util.StringUtils;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> cn.javass.chapter7.model.PhoneNumberModel;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//String-----&gt;PhoneNumberModel</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringToPhoneNumberConverter</span> <span class="keyword">implements</span> <span class="title">Converter</span>&lt;<span class="title">String</span>, <span class="title">PhoneNumberModel</span>&gt; </span>&#123;</span><br><span class="line"> </span><br><span class="line">   Pattern pattern = Pattern.compile(<span class="string">"^(\\d&#123;3,4&#125;)-(\\d&#123;7,8&#125;)$"</span>);</span><br><span class="line">   </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> PhoneNumberModel <span class="title">convert</span><span class="params">(String source)</span> </span>&#123;</span><br><span class="line">       </span><br><span class="line">       <span class="keyword">if</span>(!StringUtils.hasLength(source)) &#123;</span><br><span class="line">           <span class="comment">//①如果source为空 返回null</span></span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       Matcher matcher = pattern.matcher(source);</span><br><span class="line">       <span class="keyword">if</span>(matcher.matches()) &#123;</span><br><span class="line">           <span class="comment">//②如果匹配 进行转换</span></span><br><span class="line">           PhoneNumberModel phoneNumber = <span class="keyword">new</span> PhoneNumberModel();</span><br><span class="line">           phoneNumber.setAreaCode(matcher.group(<span class="number">1</span>));</span><br><span class="line">           phoneNumber.setPhoneNumber(matcher.group(<span class="number">2</span>));</span><br><span class="line">           <span class="keyword">return</span> phoneNumber;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="comment">//③如果不匹配 转换失败</span></span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(String.format(<span class="string">"类型转换失败，需要格式[010-12345678]，但格式是[%s]"</span>, source));</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="手动调用ConversionService实现">手动调用ConversionService实现</h3>
+<ol>
+<li>类似于PhoneNumberEditor将字符串“010-12345678”转换为PhoneNumberModel。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span>  </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testStringToPhoneNumberConvert</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">   DefaultConversionService conversionService = <span class="keyword">new</span> DefaultConversionService();  </span><br><span class="line">   conversionService.addConverter(<span class="keyword">new</span> StringToPhoneNumberConverter());  </span><br><span class="line">     </span><br><span class="line">   String phoneNumberStr = <span class="string">"010-12345678"</span>;  </span><br><span class="line">   PhoneNumberModel phoneNumber = conversionService.convert(phoneNumberStr, PhoneNumberModel.class);  </span><br><span class="line">         </span><br><span class="line">   Assert.assertEquals(<span class="string">"010"</span>, phoneNumber.getAreaCode());  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>其他类型转换器使用也是类似。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span>  </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testOtherConvert</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">   DefaultConversionService conversionService = <span class="keyword">new</span> DefaultConversionService();  </span><br><span class="line">     </span><br><span class="line">   <span class="comment">//"1"---&gt;true（字符串“1”可以转换为布尔值true）  </span></span><br><span class="line">   Assert.assertEquals(Boolean.valueOf(<span class="keyword">true</span>), conversionService.convert(<span class="string">"1"</span>, Boolean.class));  </span><br><span class="line">     </span><br><span class="line">   <span class="comment">//"1,2,3,4"---&gt;List（转换完毕的集合大小为4）  </span></span><br><span class="line">   Assert.assertEquals(<span class="number">4</span>, conversionService.convert(<span class="string">"1,2,3,4"</span>, List.class).size());  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>Spring数据格式化：Formatter SPI</h1>
+<p>在如Web /客户端项目中，通常需要将数据转换为具有某种格式的字符串进行展示，我们学习的数据类型转换系统核心作用不是完成这个需求，因此Spring3引入了格式化转换器（Formatter SPI） 和格式化服务API（FormattingConversionService）从而支持这种需求。在Spring中它和PropertyEditor功能类似，可以替代PropertyEditor来进行对象的解析和格式化，而且支持细粒度的字段级别的格式化/解析。</p>
+<p>Formatter SPI核心是完成解析和格式化转换逻辑，在如Web应用/客户端项目中，需要解析、打印/展示本地化的对象值时使用，如根据Locale信息将java.util.Date----&gt;java.lang.String打印/展示、java.lang.String----&gt;java.util.Date等。</p>
+<p>该格式化转换系统是Spring通用的，其定义在org.springframework.format包中，不仅仅在Spring Web MVC场景下。</p>
+<h2 id="格式化转换器">格式化转换器</h2>
+<p>提供格式化转换的实现支持。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584803603_20200321230517437_30496.jpg" alt></p>
+<h3 id="Printer接口">Printer接口</h3>
+<p>格式化显示接口，将T类型的对象根据Locale信息以某种格式进行打印显示（即返回字符串形式）；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.format;  </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Printer</span>&lt;<span class="title">T</span>&gt; </span>&#123;  </span><br><span class="line">   <span class="function">String <span class="title">print</span><span class="params">(T object, Locale locale)</span></span>;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Parser接口">Parser接口</h3>
+<p>解析接口，根据Locale信息解析字符串到T类型的对象；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.format;  </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Parser</span>&lt;<span class="title">T</span>&gt; </span>&#123;  </span><br><span class="line">   <span class="function">T <span class="title">parse</span><span class="params">(String text, Locale locale)</span> <span class="keyword">throws</span> ParseException</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解析失败可以抛出java.text.ParseException或IllegalArgumentException异常即可。</p>
+<h3 id="Formatter接口">Formatter接口</h3>
+<p>格式化SPI接口，继承Printer和Parser接口，完成T类型对象的格式化和解析功能；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.format;  </span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Formatter</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">Printer</span>&lt;<span class="title">T</span>&gt;, <span class="title">Parser</span>&lt;<span class="title">T</span>&gt; </span>&#123;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AnnotationFormatterFactory接口">AnnotationFormatterFactory接口</h3>
+<p>注解驱动的字段格式化工厂，用于创建带注解的对象字段的Printer和Parser，用于格式化和解析带注解的对象字段。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.format;  </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AnnotationFormatterFactory</span>&lt;<span class="title">A</span> <span class="keyword">extends</span> <span class="title">Annotation</span>&gt; </span>&#123;<span class="comment">//①可以识别的注解类型  </span></span><br><span class="line">   Set&lt;Class&lt;?&gt;&gt; getFieldTypes();<span class="comment">//②可以被A注解类型注解的字段类型集合  </span></span><br><span class="line">   Printer&lt;?&gt; getPrinter(A annotation, Class&lt;?&gt; fieldType);<span class="comment">//③根据A注解类型和fieldType类型获取Printer  </span></span><br><span class="line">   Parser&lt;?&gt; getParser(A annotation, Class&lt;?&gt; fieldType);<span class="comment">//④根据A注解类型和fieldType类型获取Parser</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>返回用于格式化和解析被A注解类型注解的字段值的Printer和Parser。</strong></p>
+<p>如JodaDateTimeFormatAnnotationFormatterFactory可以为带有@DateTimeFormat注解的java.util.Date字段类型创建相应的Printer和Parser进行格式化和解析。</p>
+<h2 id="格式化转换器注册器和格式化服务">格式化转换器注册器和格式化服务</h2>
+<p>提供类型转换器注册支持，运行时类型转换API支持。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584803603_20200321230517218_20881.jpg" alt></p>
+<h3 id="FormatterRegistry接口">FormatterRegistry接口</h3>
+<p>格式化转换器注册器，用于注册格式化转换器（Formatter、Printer和Parser、AnnotationFormatterFactory）。</p>
+<p>注意该接口继承了ConverterRegistry接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.format;  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">FormatterRegistry</span> <span class="keyword">extends</span> <span class="title">ConverterRegistry</span> </span>&#123;  </span><br><span class="line">   <span class="comment">//①添加格式化转换器（Spring3.1 新增API）  </span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addFormatter</span><span class="params">(Formatter&lt;?&gt; formatter)</span></span>;  </span><br><span class="line">   <span class="comment">//②为指定的字段类型添加格式化转换器  </span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addFormatterForFieldType</span><span class="params">(Class&lt;?&gt; fieldType, Formatter&lt;?&gt; formatter)</span></span>;  </span><br><span class="line">   <span class="comment">//③为指定的字段类型添加Printer和Parser  </span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addFormatterForFieldType</span><span class="params">(Class&lt;?&gt; fieldType, Printer&lt;?&gt; printer, Parser&lt;?&gt; parser)</span></span>;  </span><br><span class="line">   <span class="comment">//④添加注解驱动的字段格式化工厂AnnotationFormatterFactory  </span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addFormatterForFieldAnnotation</span><span class="params">(AnnotationFormatterFactory&lt;? extends Annotation&gt; annotationFormatterFactory)</span></span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="FormattingConversionService类">FormattingConversionService类</h3>
+<p>继承自ConversionService，运行时类型转换和格式化服务接口，提供运行期类型转换和格式化的支持。</p>
+<p>FormattingConversionService内部实现如下图所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584803603_20200321230516905_12063.jpg" alt></p>
+<p>我们可以看到FormattingConversionService内部实现如上所示，当你调用convert方法时：</p>
+<p>（1）若是S类型-----&gt;String：调用私有的静态内部类PrinterConverter，其又调用相应的Printer的实现进行格式化；</p>
+<p>（2）若是String-----&gt;T类型：调用私有的静态内部类ParserConverter，其又调用相应的Parser的实现进行解析；</p>
+<p>（3）若是A注解类型注解的S类型-----&gt;String：调用私有的静态内部类AnnotationPrinterConverter，其又调用相应的AnnotationFormatterFactory的getPrinter获取Printer的实现进行格式化；</p>
+<p>（4）若是String-----&gt;A注解类型注解的T类型：调用私有的静态内部类AnnotationParserConverter，其又调用相应的AnnotationFormatterFactory的getParser获取Parser的实现进行解析。</p>
+<p>注：S类型表示源类型，T类型表示目标类型，A表示注解类型。</p>
+<p>此处可以可以看出之前的Converter SPI完成任意Object与Object之间的类型转换，而Formatter SPI完成任意Object与String之间的类型转换（即格式化和解析，与PropertyEditor类似）。</p>
+<h3 id="DefaultFormattingConversionService类">DefaultFormattingConversionService类</h3>
+<p>DefaultFormattingConversionService：带数据格式化支持的类型转换服务实现，一般使用该服务实现即可。</p>
+<h2 id="Formatter-SPI使用">Formatter SPI使用</h2>
+<h3 id="Spring内建的格式化转换器">Spring内建的格式化转换器</h3>
+<p>如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DateFormatter</td>
+<td>java.util.Date &lt;——&gt; String 实现日期的格式化/解析</td>
+</tr>
+<tr>
+<td>NumberFormatter</td>
+<td>java.lang.Number &lt;——&gt; String 实现通用样式的格式化/解析</td>
+</tr>
+<tr>
+<td>CurrencyFormatter</td>
+<td>java.lang.BigDecimal &lt;——&gt; String 实现货币样式的格式化/解析</td>
+</tr>
+<tr>
+<td>PercentFormatter</td>
+<td>java.lang.Number &lt;——&gt; String 实现百分数样式的格式化/解析</td>
+</tr>
+<tr>
+<td>NumberFormatAnnotationFormatterFactory</td>
+<td>@NumberFormat注解类型的数字字段类型 &lt;——&gt; String ①通过@NumberFormat指定格式化/解析格式 ②可以格式化/解析的数字类型：Short、Integer、Long、Float、Double、BigDecimal、BigInteger</td>
+</tr>
+<tr>
+<td>JodaDateTimeFormatAnnotationFormatterFactory</td>
+<td>@DateTimeFormat注解类型的日期字段类型 &lt;——&gt; String ①通过@DateTimeFormat指定格式化/解析格式 ②可以格式化/解析的日期类型： joda中的日期类型（org.joda.time包中的）：LocalDate、LocalDateTime、LocalTime、ReadableInstant java内置的日期类型：Date、Calendar、Long classpath中必须有Joda-Time类库，否则无法格式化日期类型</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NumberFormatAnnotationFormatterFactory和JodaDateTimeFormatAnnotationFormatterFactory（如果classpath提供了Joda-Time类库）在使用格式化服务实现DefaultFormattingConversionService时会自动注册。</strong></p>
+<p>不同于Convert SPI，Formatter SPI可以直接使用，根据本地化（Locale）信息进行解析/格式化。示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testNumber</span><span class="params">()</span> <span class="keyword">throws</span> ParseException </span>&#123;</span><br><span class="line">   <span class="comment">//一、NumberFormatter：实现通用样式的格式化/解析</span></span><br><span class="line">   NumberFormatter numberFormatter = <span class="keyword">new</span> NumberFormatter(<span class="string">"#,##0.##"</span>);<span class="comment">//指定格式化字符串</span></span><br><span class="line">   <span class="comment">//1、将字符串“12,345.12”字符串解析为 BigDecimal("12345.12")</span></span><br><span class="line">   Assert.assertEquals(<span class="keyword">new</span> BigDecimal(<span class="string">"12345.12"</span>), numberFormatter.parse(<span class="string">"12,345.12"</span>, Locale.CHINA));</span><br><span class="line">   <span class="comment">//2、将BigDecimal("12345.126")格式化为字符串“12,345.13”展示(会进行四舍五入)</span></span><br><span class="line">   Assert.assertEquals(<span class="string">"12,345.13"</span>, numberFormatter.print(<span class="keyword">new</span> BigDecimal(<span class="string">"12345.126"</span>), Locale.CHINA));</span><br><span class="line">   </span><br><span class="line">   <span class="comment">//二、CurrencyFormatter：实现货币样式的格式化/解析</span></span><br><span class="line">   CurrencyFormatter currencyFormatter = <span class="keyword">new</span> CurrencyFormatter();</span><br><span class="line">   currencyFormatter.setFractionDigits(<span class="number">2</span>);<span class="comment">//保留小数点后几位</span></span><br><span class="line">   currencyFormatter.setRoundingMode(RoundingMode.CEILING);<span class="comment">//舍入模式（ceilling表示四舍五入）</span></span><br><span class="line">   <span class="comment">//1、将带货币符号的字符串“$123.125”转换为BigDecimal("123.00")</span></span><br><span class="line">   Assert.assertEquals(<span class="keyword">new</span> BigDecimal(<span class="string">"123.13"</span>), currencyFormatter.parse(<span class="string">"$123.125"</span>, Locale.US));</span><br><span class="line">   <span class="comment">//2、将BigDecimal("123")格式化为字符串“$123.00”展示</span></span><br><span class="line">   Assert.assertEquals(<span class="string">"$123.00"</span>, currencyFormatter.print(<span class="keyword">new</span> BigDecimal(<span class="string">"123"</span>), Locale.US));</span><br><span class="line">   Assert.assertEquals(<span class="string">"￥123.00"</span>, currencyFormatter.print(<span class="keyword">new</span> BigDecimal(<span class="string">"123"</span>), Locale.CHINA));</span><br><span class="line">   Assert.assertEquals(<span class="string">"￥123.00"</span>, currencyFormatter.print(<span class="keyword">new</span> BigDecimal(<span class="string">"123"</span>), Locale.JAPAN));</span><br><span class="line">   </span><br><span class="line">   <span class="comment">//三、PercentFormatter：实现百分数样式的格式化/解析</span></span><br><span class="line">   PercentFormatter percentFormatter = <span class="keyword">new</span> PercentFormatter();</span><br><span class="line">   <span class="comment">//1、将字符串“12,345.12”字符串解析为 BigDecimal("12345.12")</span></span><br><span class="line">   Assert.assertEquals(<span class="keyword">new</span> BigDecimal(<span class="string">".5"</span>), percentFormatter.parse(<span class="string">"50%"</span>, Locale.US));</span><br><span class="line">   <span class="comment">//2、将BigDecimal("12345.126")格式化为字符串“12,345.13”展示(会进行四舍五入)</span></span><br><span class="line">   Assert.assertEquals(<span class="string">"51%"</span>, percentFormatter.print(<span class="keyword">new</span> BigDecimal(<span class="string">"0.51"</span>), Locale.US));</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testDate</span><span class="params">()</span> <span class="keyword">throws</span> ParseException </span>&#123;</span><br><span class="line">   <span class="comment">//DateFormatter：实现日期的格式化/解析</span></span><br><span class="line">   DateFormatter dateFormatter = <span class="keyword">new</span> DateFormatter(<span class="string">"yyyy-MM-dd"</span>);</span><br><span class="line">   <span class="comment">//1、将字符串“2012-05-01”字符串解析为java.util.Date类型</span></span><br><span class="line">   Assert.assertEquals(<span class="keyword">new</span> Date(<span class="number">2012</span>-<span class="number">1900</span>, <span class="number">4</span>, <span class="number">1</span>), dateFormatter.parse(<span class="string">"2012-05-01"</span>, Locale.CHINA));</span><br><span class="line">   <span class="comment">//2、将java.util.Date类型数据格式化为字符串“2012-05-01”</span></span><br><span class="line">   Assert.assertEquals(<span class="string">"2012-05-01"</span>, dateFormatter.print(<span class="keyword">new</span> Date(<span class="number">2012</span>-<span class="number">1900</span>, <span class="number">4</span>, <span class="number">1</span>), Locale.CHINA));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="自定义Formatter">自定义Formatter</h3>
+<p>此处以解析/格式化PhoneNumberModel为例。</p>
+<p>（1）定义Formatter SPI实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter7.web.controller.support.formatter;  </span><br><span class="line"><span class="comment">//省略import  </span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PhoneNumberFormatter</span> <span class="keyword">implements</span> <span class="title">Formatter</span>&lt;<span class="title">PhoneNumberModel</span>&gt; </span>&#123;  </span><br><span class="line"> </span><br><span class="line">   Pattern pattern = Pattern.compile(<span class="string">"^(\\d&#123;3,4&#125;)-(\\d&#123;7,8&#125;)$"</span>);  </span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span>  </span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">print</span><span class="params">(PhoneNumberModel phoneNumber, Locale locale)</span> </span>&#123;<span class="comment">//①格式化  </span></span><br><span class="line">       <span class="keyword">if</span>(phoneNumber == <span class="keyword">null</span>) &#123;  </span><br><span class="line">           <span class="keyword">return</span> <span class="string">""</span>;  </span><br><span class="line">       &#125;  </span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> StringBuilder().append(phoneNumber.getAreaCode()).append(<span class="string">"-"</span>).append(phoneNumber.getPhoneNumber()).toString();  </span><br><span class="line">   &#125;  </span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span>  </span><br><span class="line">   <span class="function"><span class="keyword">public</span> PhoneNumberModel <span class="title">parse</span><span class="params">(String text, Locale locale)</span> <span class="keyword">throws</span> ParseException </span>&#123;<span class="comment">//②解析  </span></span><br><span class="line">       <span class="keyword">if</span>(!StringUtils.hasLength(text)) &#123;  </span><br><span class="line">           <span class="comment">//①如果source为空，返回null  </span></span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;  </span><br><span class="line">       &#125;  </span><br><span class="line">       Matcher matcher = pattern.matcher(text);  </span><br><span class="line">       <span class="keyword">if</span>(matcher.matches()) &#123;  </span><br><span class="line">           <span class="comment">//②如果匹配，进行转换  </span></span><br><span class="line">           PhoneNumberModel phoneNumber = <span class="keyword">new</span> PhoneNumberModel();  </span><br><span class="line">           phoneNumber.setAreaCode(matcher.group(<span class="number">1</span>));  </span><br><span class="line">           phoneNumber.setPhoneNumber(matcher.group(<span class="number">2</span>));  </span><br><span class="line">           <span class="keyword">return</span> phoneNumber;  </span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;  </span><br><span class="line">           <span class="comment">//③如果不匹配 转换失败  </span></span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(String.format(<span class="string">"类型转换失败，需要格式[010-12345678]，但格式是[%s]"</span>, text));  </span><br><span class="line">       &#125;  </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>类似于Convert SPI实现，只是此处的相应方法会传入Locale本地化信息，这样可以为不同地区进行解析/格式化数据。</p>
+<p>（2）测试用例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter7.web.controller.support.formatter;  </span><br><span class="line"><span class="comment">//省略import  </span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomerFormatterTest</span> </span>&#123;  </span><br><span class="line">   <span class="meta">@Test</span>  </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">       DefaultFormattingConversionService conversionService = <span class="keyword">new</span> DefaultFormattingConversionService();  </span><br><span class="line">       conversionService.addFormatter(<span class="keyword">new</span> PhoneNumberFormatter());  </span><br><span class="line"> </span><br><span class="line">       PhoneNumberModel phoneNumber = <span class="keyword">new</span> PhoneNumberModel(<span class="string">"010"</span>, <span class="string">"12345678"</span>);  </span><br><span class="line">       Assert.assertEquals(<span class="string">"010-12345678"</span>, conversionService.convert(phoneNumber, String.class));  </span><br><span class="line">         </span><br><span class="line">       Assert.assertEquals(<span class="string">"010"</span>, conversionService.convert(<span class="string">"010-12345678"</span>, PhoneNumberModel.class).getAreaCode());  </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过PhoneNumberFormatter可以解析String—&gt;PhoneNumberModel和格式化PhoneNumberModel—&gt;String。</p>
+<h3 id="使用FormattingConversionService">使用FormattingConversionService</h3>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span>  </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testWithDefaultFormattingConversionService</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="comment">//DefaultFormattingConversionService：带数据格式化功能的类型转换服务实现</span></span><br><span class="line">   DefaultFormattingConversionService conversionService = <span class="keyword">new</span> DefaultFormattingConversionService();  </span><br><span class="line">   <span class="comment">//默认不自动注册任何Formatter  </span></span><br><span class="line">   CurrencyFormatter currencyFormatter = <span class="keyword">new</span> CurrencyFormatter();  </span><br><span class="line">   currencyFormatter.setFractionDigits(<span class="number">2</span>);<span class="comment">//保留小数点后几位  </span></span><br><span class="line">   currencyFormatter.setRoundingMode(RoundingMode.CEILING);<span class="comment">//舍入模式（ceilling表示四舍五入）  </span></span><br><span class="line">   <span class="comment">//注册Formatter SPI实现  </span></span><br><span class="line">   conversionService.addFormatter(currencyFormatter);  </span><br><span class="line">         </span><br><span class="line">   <span class="comment">//LocaleContextHolder.setLocale(locale)：设置本地化信息到ThreadLocal，以便Formatter SPI根据本地化信息进行解析/格式化</span></span><br><span class="line">   <span class="comment">//FormattingConversionService内部自动获取作为Locale信息，如果不设值默认是 Locale.getDefault()  </span></span><br><span class="line">   LocaleContextHolder.setLocale(Locale.US);</span><br><span class="line">   <span class="comment">//用于将BigDecimal类型数据格式化为字符串类型，此处根据“LocaleContextHolder.setLocale(locale)”设置的本地化信息进行格式化</span></span><br><span class="line">   Assert.assertEquals(<span class="string">"$1,234.13"</span>, conversionService.convert(<span class="keyword">new</span> BigDecimal(<span class="string">"1234.128"</span>), String.class));  </span><br><span class="line">   LocaleContextHolder.setLocale(<span class="keyword">null</span>);  </span><br><span class="line">     </span><br><span class="line">   LocaleContextHolder.setLocale(Locale.CHINA);  </span><br><span class="line">   Assert.assertEquals(<span class="string">"￥1,234.13"</span>, conversionService.convert(<span class="keyword">new</span> BigDecimal(<span class="string">"1234.128"</span>), String.class));  </span><br><span class="line">   Assert.assertEquals(<span class="keyword">new</span> BigDecimal(<span class="string">"1234.13"</span>), conversionService.convert(<span class="string">"￥1,234.13"</span>, BigDecimal.class));  </span><br><span class="line">   LocaleContextHolder.setLocale(<span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="字段级别的解析和格式化">字段级别的解析和格式化</h2>
+<h3 id="Number">@Number</h3>
+<p>定义数字相关的解析/格式化元数据（通用样式、货币样式、百分数样式），参数如下：</p>
+<ul>
+<li>style：用于指定样式类型，包括三种：Style.NUMBER（通用样式）、Style.CURRENCY（货币样式）、Style.PERCENT（百分数样式），默认Style.NUMBER；</li>
+<li>pattern：自定义样式，如patter=“#,###”；</li>
+</ul>
+<h3 id="DateTimeFormat">@DateTimeFormat</h3>
+<p>定义日期相关的解析/格式化元数据，参数如下：</p>
+<ul>
+<li>pattern：指定解析/格式化字段数据的模式，如”yyyy-MM-dd HH:mm:ss”</li>
+<li>iso：指定解析/格式化字段数据的ISO模式，包括四种：ISO.NONE（不使用）、ISO.DATE(yyyy-MM-dd)、ISO.TIME(hh:mm:ss.SSSZ)、ISO.DATE_TIME(yyyy-MM-dd hh:mm:ss.SSSZ)，默认ISO.NONE；</li>
+<li>style：指定用于格式化的样式模式，默认“SS”，具体使用请参考Joda-Time类库的org.joda.time.format.DateTimeFormat的forStyle的javadoc；</li>
+</ul>
+<p>优先级：pattern &gt; iso &gt; style。</p>
+<h3 id="使用示例">使用示例</h3>
+<p><strong>（1）测试模型类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter7.model;  </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FormatterModel</span> </span>&#123;  </span><br><span class="line"> </span><br><span class="line">   <span class="meta">@NumberFormat</span>(style=Style.NUMBER, pattern=<span class="string">"#,###"</span>)  </span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">int</span> totalCount;  </span><br><span class="line"> </span><br><span class="line">   <span class="meta">@NumberFormat</span>(style=Style.PERCENT)  </span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">double</span> discount;  </span><br><span class="line"> </span><br><span class="line">   <span class="meta">@NumberFormat</span>(style=Style.CURRENCY)  </span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">double</span> sumMoney;  </span><br><span class="line">     </span><br><span class="line">   <span class="meta">@DateTimeFormat</span>(iso=ISO.DATE)   </span><br><span class="line">   <span class="keyword">private</span> Date registerDate;  </span><br><span class="line">     </span><br><span class="line">   <span class="meta">@DateTimeFormat</span>(pattern=<span class="string">"yyyy-MM-dd HH:mm:ss"</span>)   </span><br><span class="line">   <span class="keyword">private</span> Date orderDate;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//省略getter/setter  </span></span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>（2）FormattingConversionService调用内置注解的格式化转换器</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> <span class="keyword">throws</span> SecurityException, NoSuchFieldException </span>&#123;</span><br><span class="line">   <span class="comment">//默认自动注册对@NumberFormat和@DateTimeFormat的支持</span></span><br><span class="line">   DefaultFormattingConversionService conversionService = <span class="keyword">new</span> DefaultFormattingConversionService();</span><br><span class="line">   </span><br><span class="line">   <span class="comment">//准备测试模型对象</span></span><br><span class="line">   FormatterModel model = <span class="keyword">new</span> FormatterModel();</span><br><span class="line">   model.setTotalCount(<span class="number">10000</span>);</span><br><span class="line">   model.setDiscount(<span class="number">0.51</span>);</span><br><span class="line">   model.setSumMoney(<span class="number">10000.13</span>);</span><br><span class="line">   model.setRegisterDate(<span class="keyword">new</span> Date(<span class="number">2012</span>-<span class="number">1900</span>, <span class="number">4</span>, <span class="number">1</span>));</span><br><span class="line">   model.setOrderDate(<span class="keyword">new</span> Date(<span class="number">2012</span>-<span class="number">1900</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">20</span>, <span class="number">18</span>, <span class="number">18</span>));</span><br><span class="line">   </span><br><span class="line">   <span class="comment">//TypeDescriptor：拥有类型信息的上下文，用于Spring3类型转换系统获取类型信息的（可以包含类、字段、方法参数、属性信息）</span></span><br><span class="line">   <span class="comment">//通过TypeDescriptor，我们就可以获取（类、字段、方法参数、属性）的各种信息，如注解类型信息；</span></span><br><span class="line">   TypeDescriptor descriptor = <span class="keyword">new</span> TypeDescriptor(FormatterModel.class.getDeclaredField(<span class="string">"totalCount"</span>));</span><br><span class="line">   </span><br><span class="line">   TypeDescriptor stringDescriptor = TypeDescriptor.valueOf(String.class);</span><br><span class="line">  <span class="comment">//将totalCount格式化为字符串类型，此处会根据totalCount字段的注解信息（通过descriptor对象获取）来进行格式化</span></span><br><span class="line">   Assert.assertEquals(<span class="string">"10,000"</span>, conversionService.convert(model.getTotalCount(), descriptor, stringDescriptor));</span><br><span class="line">  <span class="comment">//将字符串“10,000”解析为totalCount字段类型，此处会根据totalCount字段的注解信息（通过descriptor对象获取）来进行解析</span></span><br><span class="line">   Assert.assertEquals(model.getTotalCount(), conversionService.convert(<span class="string">"10,000"</span>, stringDescriptor, descriptor));</span><br><span class="line">   </span><br><span class="line">   descriptor = <span class="keyword">new</span> TypeDescriptor(FormatterModel.class.getDeclaredField(<span class="string">"discount"</span>));</span><br><span class="line">   Assert.assertEquals(<span class="string">"51%"</span>, conversionService.convert(model.getDiscount(), descriptor, stringDescriptor));</span><br><span class="line">   Assert.assertEquals(model.getDiscount(), conversionService.convert(<span class="string">"51%"</span>, stringDescriptor, descriptor));</span><br><span class="line">   </span><br><span class="line">   LocaleContextHolder.setLocale(Locale.CHINA);</span><br><span class="line">   descriptor = <span class="keyword">new</span> TypeDescriptor(FormatterModel.class.getDeclaredField(<span class="string">"sumMoney"</span>));</span><br><span class="line">   Assert.assertEquals(<span class="string">"￥10,000.13"</span>, conversionService.convert(model.getSumMoney(), descriptor, stringDescriptor));</span><br><span class="line">   Assert.assertEquals(model.getSumMoney(), conversionService.convert(<span class="string">"￥10,000.13"</span>, stringDescriptor, descriptor));</span><br><span class="line">   LocaleContextHolder.setLocale(<span class="keyword">null</span>);</span><br><span class="line">   </span><br><span class="line">   descriptor = <span class="keyword">new</span> TypeDescriptor(FormatterModel.class.getDeclaredField(<span class="string">"registerDate"</span>));</span><br><span class="line">   Assert.assertEquals(<span class="string">"2012-05-01"</span>, conversionService.convert(model.getRegisterDate(), descriptor, stringDescriptor));</span><br><span class="line">   Assert.assertEquals(model.getRegisterDate(), conversionService.convert(<span class="string">"2012-05-01"</span>, stringDescriptor, descriptor));</span><br><span class="line">   </span><br><span class="line">   descriptor = <span class="keyword">new</span> TypeDescriptor(FormatterModel.class.getDeclaredField(<span class="string">"orderDate"</span>));</span><br><span class="line">   Assert.assertEquals(<span class="string">"2012-05-01 20:18:18"</span>, conversionService.convert(model.getOrderDate(), descriptor, stringDescriptor));</span><br><span class="line">   Assert.assertEquals(model.getOrderDate(), conversionService.convert(<span class="string">"2012-05-01 20:18:18"</span>, stringDescriptor, descriptor));     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="自定义注解格式化转换器">自定义注解格式化转换器</h3>
+<p><strong>（1）定义解析/格式化字段的注解类型</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter7.web.controller.support.formatter;  </span><br><span class="line"><span class="comment">//省略import  </span></span><br><span class="line"> </span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER&#125;)  </span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)  </span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> PhoneNumber &#123;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>（2）实现AnnotationFormatterFactory注解格式化工厂</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter7.web.controller.support.formatter;  </span><br><span class="line"><span class="comment">//省略import  </span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PhoneNumberFormatAnnotationFormatterFactory</span> <span class="keyword">implements</span> <span class="title">AnnotationFormatterFactory</span>&lt;<span class="title">PhoneNumber</span>&gt; </span>&#123;<span class="comment">//①指定可以解析/格式化的字段注解类型  </span></span><br><span class="line"> </span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> Set&lt;Class&lt;?&gt;&gt; fieldTypes;  </span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> PhoneNumberFormatter formatter;  </span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">PhoneNumberFormatAnnotationFormatterFactory</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">       Set&lt;Class&lt;?&gt;&gt; set = <span class="keyword">new</span> HashSet&lt;Class&lt;?&gt;&gt;();  </span><br><span class="line">       set.add(PhoneNumberModel.class);  </span><br><span class="line">       <span class="keyword">this</span>.fieldTypes = set;  </span><br><span class="line">       <span class="keyword">this</span>.formatter = <span class="keyword">new</span> PhoneNumberFormatter();<span class="comment">//此处使用之前定义的Formatter实现  </span></span><br><span class="line">   &#125;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//②指定可以被解析/格式化的字段类型集合  </span></span><br><span class="line">   <span class="meta">@Override</span>  </span><br><span class="line">   <span class="keyword">public</span> Set&lt;Class&lt;?&gt;&gt; getFieldTypes() &#123;  </span><br><span class="line">       <span class="keyword">return</span> fieldTypes;  </span><br><span class="line">   &#125;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//③根据注解信息和字段类型获取解析器  </span></span><br><span class="line">   <span class="meta">@Override</span>  </span><br><span class="line">   <span class="keyword">public</span> Parser&lt;?&gt; getParser(PhoneNumber annotation, Class&lt;?&gt; fieldType) &#123;  </span><br><span class="line">       <span class="keyword">return</span> formatter;  </span><br><span class="line">   &#125;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//④根据注解信息和字段类型获取格式化器  </span></span><br><span class="line">   <span class="meta">@Override</span>     </span><br><span class="line">   <span class="keyword">public</span> Printer&lt;?&gt; getPrinter(PhoneNumber annotation, Class&lt;?&gt; fieldType) &#123;  </span><br><span class="line">       <span class="keyword">return</span> formatter;  </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AnnotationFormatterFactory实现会根据注解信息和字段类型获取相应的解析器/格式化器。</p>
+<p><strong>（3）FormattingConversionService调用自定义注解的格式化转换器</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span>  </span><br><span class="line"><span class="function">ublic <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> <span class="keyword">throws</span> SecurityException, NoSuchFieldException </span>&#123;  </span><br><span class="line">   DefaultFormattingConversionService conversionService = <span class="keyword">new</span> DefaultFormattingConversionService();<span class="comment">//创建格式化服务  </span></span><br><span class="line">   conversionService.addFormatterForFieldAnnotation( <span class="keyword">new</span> PhoneNumberFormatAnnotationFormatterFactory());<span class="comment">//添加自定义的注解格式化工厂  </span></span><br><span class="line">   FormatterModel model = <span class="keyword">new</span> FormatterModel();  </span><br><span class="line">   TypeDescriptor descriptor = <span class="keyword">new</span> TypeDescriptor(FormatterModel.class.getDeclaredField(<span class="string">"phoneNumber"</span>));  </span><br><span class="line">   TypeDescriptor stringDescriptor = TypeDescriptor.valueOf(String.class);  </span><br><span class="line">   PhoneNumberModel value = (PhoneNumberModel) conversionService.convert(<span class="string">"010-12345678"</span>, stringDescriptor, descriptor); </span><br><span class="line">   <span class="comment">//解析字符串"010-12345678"--&gt; PhoneNumberModel  </span></span><br><span class="line">   model.setPhoneNumber(value);     </span><br><span class="line">   Assert.assertEquals(<span class="string">"010-12345678"</span>, conversionService.convert(model.getPhoneNumber(), descriptor, stringDescriptor));</span><br><span class="line">   <span class="comment">//格式化PhoneNumberModel--&gt;"010-12345678"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此处使用DefaultFormattingConversionService的addFormatterForFieldAnnotation注册自定义的注解格式化工厂PhoneNumberFormatAnnotationFormatterFactory。</p>
+<h1>SpringMVC中配置类型转换及格式化服务</h1>
+<h2 id="定义类型转换器-格式化转换器">定义类型转换器/格式化转换器</h2>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- FormattingConversionServiceFactoryBean是FactoryBean实现，默认使用DefaultFormattingConversionService转换器服务实现 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"conversionService"</span> <span class="attr">class</span>=<span class="string">"org.springframework.format.support.FormattingConversionServiceFactoryBean"</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!-- converters：注册我们自定义的类型转换器&gt;</span></span><br><span class="line"><span class="comment">   &lt;property name="converters"&gt;</span></span><br><span class="line"><span class="comment">      &lt;list&gt;</span></span><br><span class="line"><span class="comment">       &lt;bean class="cn.javass.chapter7.web.controller.support.converter.PhoneNumberToStringConverter"/&gt;</span></span><br><span class="line"><span class="comment">       &lt;bean class="cn.javass.chapter7.web.controller.support.converter.StringToPhoneNumberConverter"/&gt;</span></span><br><span class="line"><span class="comment">       &lt;bean class="cn.javass.chapter7.web.controller.support.converter.StringToDateConverter"&gt;</span></span><br><span class="line"><span class="comment">           &lt;constructor-arg value="yyyy-MM-dd"/&gt;</span></span><br><span class="line"><span class="comment">       &lt;/bean&gt;</span></span><br><span class="line"><span class="comment">       &lt;/list&gt;</span></span><br><span class="line"><span class="comment">   &lt;/property&gt;</span></span><br><span class="line"><span class="comment">  &lt;!-- formatters：注册我们自定义的格式化转换器&gt;</span></span><br><span class="line"><span class="comment">   &lt;property name="formatters"&gt;</span></span><br><span class="line"><span class="comment">       &lt;list&gt;</span></span><br><span class="line"><span class="comment">           &lt;bean class="cn.javass.chapter7.web.controller.support.formatter.PhoneNumberFormatAnnotationFormatterFactory"/&gt;</span></span><br><span class="line"><span class="comment">       &lt;/list&gt;</span></span><br><span class="line"><span class="comment">   &lt;/property&gt;</span></span><br><span class="line"><span class="comment">&lt;/bean&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="注册conversionService">注册conversionService</h2>
+<p>通过ConfigurableWebBindingInitializer注册conversionService：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 使用ConfigurableWebBindingInitializer注册conversionService --&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"webBindingInitializer"</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.bind.support.ConfigurableWebBindingInitializer"</span>&gt;</span>  </span><br><span class="line">   <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"conversionService"</span> <span class="attr">ref</span>=<span class="string">"conversionService"</span>/&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>此处我们通过ConfigurableWebBindingInitializer绑定初始化器进行ConversionService的注册。</p>
+<p>然后注册ConfigurableWebBindingInitializer到RequestMappingHandlerAdapter</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"</span>&gt;</span>  </span><br><span class="line">   <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"webBindingInitializer"</span> <span class="attr">ref</span>=<span class="string">"webBindingInitializer"</span>/&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如上集成过程看起来比较麻烦，后边我们会介绍 <code>&lt;mvc:annotation-driven&gt;</code> 和@EnableWebMvc，自动注册ConversionService。</p>
+<h2 id="配置ConversionServiceExposingInterceptor（可选）">配置ConversionServiceExposingInterceptor（可选）</h2>
+<p>在RequestMappingHandlerMapping配置ConversionServiceExposingInterceptor，它的作用是暴露conversionService到请求中以便Spring的JSP标签使用如 <code>&lt;spring:eval&gt;</code> 标签使用。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--Spring3.1开始的注解 HandlerMapping --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"interceptors"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.servlet.handler.ConversionServiceExposingInterceptor"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">ref</span>=<span class="string">"conversionService"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>JSP页面中：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 如果没有配置org.springframework.web.servlet.handler.ConversionServiceExposingInterceptor将会报错 --&gt;</span><br><span class="line">phoneNumber:&lt;spring:eval expression="dataBinderTest.phoneNumber"&gt;&lt;/spring:eval&gt;&lt;br/&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="使用示例-2">使用示例</h2>
+<p>测试模型类FormatterModel</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter7.model;  </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FormatterModel</span> </span>&#123;  </span><br><span class="line"> </span><br><span class="line">  <span class="meta">@PhoneNumber</span>  </span><br><span class="line">  <span class="keyword">private</span> PhoneNumberModel phoneNumber;</span><br><span class="line">   <span class="comment">//省略getter/setter  </span></span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>（1）模型对象字段的数据解析/格式化</strong></p>
+<p>暴露模型数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/format1"</span>)  </span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">test1</span><span class="params">(@ModelAttribute(<span class="string">"model"</span>)</span> FormatterModel formatModel) </span>&#123;  </span><br><span class="line">   <span class="keyword">return</span> <span class="string">"format/success"</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>JSP页面展示</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">totalCount:&lt;spring:bind path="model.totalCount"&gt;$&#123;status.value&#125;&lt;/spring:bind&gt;&lt;br/&gt;  </span><br><span class="line">discount:&lt;spring:bind path="model.discount"&gt;$&#123;status.value&#125;&lt;/spring:bind&gt;&lt;br/&gt;  </span><br><span class="line">sumMoney:&lt;spring:bind path="model.sumMoney"&gt;$&#123;status.value&#125;&lt;/spring:bind&gt;&lt;br/&gt;  </span><br><span class="line">phoneNumber:&lt;spring:bind path="model.phoneNumber"&gt;$&#123;status.value&#125;&lt;/spring:bind&gt;&lt;br/&gt;  </span><br><span class="line">&lt;!-- 如果没有配置org.springframework.web.servlet.handler.ConversionServiceExposingInterceptor将会报错 --&gt;  </span><br><span class="line">phoneNumber:&lt;spring:eval expression="model.phoneNumber"&gt;&lt;/spring:eval&gt;&lt;br/&gt;  </span><br><span class="line">&lt;br/&gt;&lt;br/&gt;  </span><br><span class="line">&lt;form:form commandName=<span class="string">"model"</span>&gt;  </span><br><span class="line">   &lt;form:input path=<span class="string">"phoneNumber"</span>/&gt;&lt;br/&gt;  </span><br><span class="line">   &lt;form:input path=<span class="string">"sumMoney"</span>/&gt;  </span><br><span class="line">&lt;/form:form&gt;</span><br></pre></td></tr></table></figure>
+<p>在浏览器输入测试URL：</p>
+<p><a href="http://localhost:9080/springmvc-chapter7/format1?totalCount=100000&amp;discount=0.51&amp;sumMoney=100000.128&amp;phoneNumber=010-12345678" target="_blank" rel="noopener">http://localhost:9080/springmvc-chapter7/format1?totalCount=100000&amp;discount=0.51&amp;sumMoney=100000.128&amp;phoneNumber=010-12345678</a></p>
+<p>数据会正确绑定到我们的formatModel，即请求参数能被正确的解析并绑定到我们的命令对象上，而且在JSP页面也能正确的显示格式化后的数据（即正确的被格式化显示）。</p>
+<p><strong>（2）功能处理方法参数级别的数据解析</strong></p>
+<p>Controller功能处理方法</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(value = "/format2")  </span><br><span class="line">public String test2(@PhoneNumber @RequestParam("phoneNumber") PhoneNumberModel phoneNumber, </span><br><span class="line">   @DateTimeFormat(pattern="yyyy-MM-dd") @RequestParam("date") Date date) &#123;  </span><br><span class="line">   System.out.println(phoneNumber);  </span><br><span class="line">   System.out.println(date);  </span><br><span class="line">   return "format/success2";  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此处我们可以直接在功能处理方法的参数上使用格式化注解类型进行注解，Spring Web MVC能根据此注解信息对请求参数进行解析并正确的绑定。</p>
+<p>在浏览器输入测试URL：</p>
+<p><a href="http://localhost:9080/springmvc-chapter7/format2?phoneNumber=010-12345678&amp;date=2012-05-01" target="_blank" rel="noopener">http://localhost:9080/springmvc-chapter7/format2?phoneNumber=010-12345678&amp;date=2012-05-01</a></p>
+<p>数据会正确的绑定到我们的phoneNumber和date上，即请求的参数能被正确的解析并绑定到我们的参数上。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>28-SPRING类型转换及格式化</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Spring数据处理架构概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring3之前的数据处理架构：PropertyEditor"><span class="nav-text">Spring3之前的数据处理架构：PropertyEditor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring3之后的数据处理架构：Converter-SPI-Formatter-SPI"><span class="nav-text">Spring3之后的数据处理架构：Converter SPI/Formatter SPI</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">PropertyEditor接口及实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring内建的PropertyEditor"><span class="nav-text">Spring内建的PropertyEditor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义PropertyEditor实现"><span class="nav-text">自定义PropertyEditor实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注册PropertyEditor"><span class="nav-text">注册PropertyEditor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方法一：控制器中注册自定义的属性编辑器-InitBinder"><span class="nav-text">方法一：控制器中注册自定义的属性编辑器@InitBinder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法二：使用WebBindingInitializer批量注册PropertyEditor"><span class="nav-text">方法二：使用WebBindingInitializer批量注册PropertyEditor</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实现WebBindingInitializer接口"><span class="nav-text">实现WebBindingInitializer接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WebBindingInitializer注册到HandlerAdapter"><span class="nav-text">WebBindingInitializer注册到HandlerAdapter</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法三：全局级别注册PropertyEditor（全局共享）"><span class="nav-text">方法三：全局级别注册PropertyEditor（全局共享）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Spring类型转换：Converter SPI</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#类型转换器"><span class="nav-text">类型转换器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Converter接口"><span class="nav-text">Converter接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GenericConverter接口"><span class="nav-text">GenericConverter接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConditionalGenericConverter接口"><span class="nav-text">ConditionalGenericConverter接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConverterFactory接口"><span class="nav-text">ConverterFactory接口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类型转换器注册器和类型转换服务"><span class="nav-text">类型转换器注册器和类型转换服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ConverterRegistry接口"><span class="nav-text">ConverterRegistry接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConversionService接口"><span class="nav-text">ConversionService接口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Converter-SPI使用"><span class="nav-text">Converter SPI使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring内建的类型转换器"><span class="nav-text">Spring内建的类型转换器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义Converter"><span class="nav-text">自定义Converter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手动调用ConversionService实现"><span class="nav-text">手动调用ConversionService实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Spring数据格式化：Formatter SPI</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#格式化转换器"><span class="nav-text">格式化转换器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Printer接口"><span class="nav-text">Printer接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Parser接口"><span class="nav-text">Parser接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Formatter接口"><span class="nav-text">Formatter接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AnnotationFormatterFactory接口"><span class="nav-text">AnnotationFormatterFactory接口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#格式化转换器注册器和格式化服务"><span class="nav-text">格式化转换器注册器和格式化服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FormatterRegistry接口"><span class="nav-text">FormatterRegistry接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FormattingConversionService类"><span class="nav-text">FormattingConversionService类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DefaultFormattingConversionService类"><span class="nav-text">DefaultFormattingConversionService类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Formatter-SPI使用"><span class="nav-text">Formatter SPI使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring内建的格式化转换器"><span class="nav-text">Spring内建的格式化转换器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义Formatter"><span class="nav-text">自定义Formatter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用FormattingConversionService"><span class="nav-text">使用FormattingConversionService</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段级别的解析和格式化"><span class="nav-text">字段级别的解析和格式化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Number"><span class="nav-text">@Number</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DateTimeFormat"><span class="nav-text">@DateTimeFormat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用示例"><span class="nav-text">使用示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义注解格式化转换器"><span class="nav-text">自定义注解格式化转换器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">SpringMVC中配置类型转换及格式化服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义类型转换器-格式化转换器"><span class="nav-text">定义类型转换器/格式化转换器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注册conversionService"><span class="nav-text">注册conversionService</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置ConversionServiceExposingInterceptor（可选）"><span class="nav-text">配置ConversionServiceExposingInterceptor（可选）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用示例-2"><span class="nav-text">使用示例</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="从Hadoop0.20开始Hadoop提供了两套MapReduce API，新的API在旧API基础上进行封装，在扩展性和易用性等方面有显著提高。旧API已经被废弃，不再介绍，新API在org.apache.hadoop.mapreduce包中，下面将对该包下的重要类和接口进行介绍。Mapper类在前面MapReduce程序中已经介绍了创建Mapper类和Reduce类，这里再对这两个重要的类补充">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;21-MapReduce-API.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="从Hadoop0.20开始Hadoop提供了两套MapReduce API，新的API在旧API基础上进行封装，在扩展性和易用性等方面有显著提高。旧API已经被废弃，不再介绍，新API在org.apache.hadoop.mapreduce包中，下面将对该包下的重要类和接口进行介绍。Mapper类在前面MapReduce程序中已经介绍了创建Mapper类和Reduce类，这里再对这两个重要的类补充">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584886546_20200322221417267_4489.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584886546_20200322221417267_4489.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/21-MapReduce-API">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>21-MAPREDUCE-API</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>从Hadoop0.20开始Hadoop提供了两套MapReduce API，新的API在旧API基础上进行封装，在扩展性和易用性等方面有显著提高。旧API已经被废弃，不再介绍，新API在org.apache.hadoop.mapreduce包中，下面将对该包下的重要类和接口进行介绍。</p><h1>Mapper类</h1><p>在前面MapReduce程序中已经介绍了创建Mapper类和Reduce类，这里再对这两个重要的类补充说明一下。</p><a id="more"></a>
+
+
+<p>Mapper类位于org.apache.hadoop.mapreduce包下，一般情况下我们只需继承该Mapper类重写map方法即可实现map操作。</p>
+<p>除了map方法，Mapper类还有setup、cleanup和run方法。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>setup</td>
+<td>进行map前的准备工作</td>
+</tr>
+<tr>
+<td>map</td>
+<td>承担主要的键值对处理工作</td>
+</tr>
+<tr>
+<td>cleanup</td>
+<td>收尾工作，如关闭文件或键值对分发</td>
+</tr>
+<tr>
+<td>run</td>
+<td>提供了setup–&gt;map–&gt;cleanup的执行模版</td>
+</tr>
+</tbody>
+</table>
+<p>Hadoop自带了一些Mapper类的实现，比如InverseMapper类和TokenCounterMapper类。InverseMapper类用于调换键值对的顺序再原样输出，TokenCounterMapper类的作用和WordCount中的Mapper类作用相同，同于单词计数。</p>
+<h1>Reducer类</h1>
+<p>与Mapper类类似，Reducer类位于位于org.apache.hadoop.mapreduce包下，一般情况下用户只需继承该类根据需求重写reduce方法即可。</p>
+<p>同样，Reducer类也有setup、reduce、cleanup和run四个方法。setup方法用于reduce前的准备工作，reduce方法承担对键值对的处理工作，cleanup负责收尾工作，run方法提供了setup–&gt;map–&gt;cleanup的执行模版。</p>
+<h1>Partitioner类</h1>
+<p>Partitioner是个抽象类，该类只有一个方法getPartition用于返回分区号。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Partitioner</span>&lt;<span class="title">KEY</span>, <span class="title">VALUE</span>&gt; </span>&#123;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Get the partition number for a given key (hence record) given the total</span></span><br><span class="line"><span class="comment">  * number of partitions i.e. number of reduce-tasks for the job.</span></span><br><span class="line"><span class="comment">  *   </span></span><br><span class="line"><span class="comment">  * &lt;p&gt;Typically a hash function on a all or a subset of the key.&lt;/p&gt;</span></span><br><span class="line"><span class="comment">  *</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> key the key to be partioned.</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> value the entry value.</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> numPartitions the total number of partitions.</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@return</span> the partition number for the &lt;code&gt;key&lt;/code&gt;.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getPartition</span><span class="params">(KEY key, VALUE value, <span class="keyword">int</span> numPartitions)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="HashPartitioner">HashPartitioner</h2>
+<p>默认的分区方式，计算公式 hash(key)%reducernum。</p>
+<p>源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.apache.hadoop.mapreduce.lib.partition;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.classification.InterfaceAudience;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.classification.InterfaceStability;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.mapreduce.Partitioner;</span><br><span class="line"><span class="comment">/** Partition keys by their &#123;<span class="doctag">@link</span> Object#hashCode()&#125;. */</span></span><br><span class="line"><span class="meta">@InterfaceAudience</span>.Public</span><br><span class="line"><span class="meta">@InterfaceStability</span>.Stable</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HashPartitioner</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">Partitioner</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; </span>&#123;</span><br><span class="line"><span class="comment">/** Use &#123;<span class="doctag">@link</span> Object#hashCode()&#125; to partition. */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPartition</span><span class="params">(K key, V value,</span></span></span><br><span class="line"><span class="function"><span class="params">                         <span class="keyword">int</span> numReduceTasks)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> (key.hashCode() &amp; Integer.MAX_VALUE) % numReduceTasks;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="TotalOrderPartitioner">TotalOrderPartitioner</h2>
+<p>TotalOrderPartitioner：为排序作业创建分区，分区中数据的范围需要通过分区文件来指定。</p>
+<p>分区文件可以人为创建，如采用等距区间，如果数据分布不均匀将导致作业完成时间受限于个别reduce任务完成时间的影响，该方法需要人工干预，缺少自动化。也可以通过抽样器，先对数据进行抽样，根据数据分布生成分区文件，避免数据倾斜。</p>
+<p><strong>常见采样器：</strong></p>
+<ul>
+<li>IntervalSampler：以一定的间隔定期从划分中选择key，对有排序的数据来说更好</li>
+<li>RandomSameler：以指定的采样率均匀的从数据集中选择样本</li>
+<li>SplitSampler：只采样一个分片的前n条记录，所以不适合有排序的数据</li>
+</ul>
+<h1>InputFormat抽象类及其子类</h1>
+<p>InputFormat抽象类用于设置文件输入格式。</p>
+<p>仅有两个抽象方法：</p>
+<ul>
+<li><code> List&lt;InputSplit&gt; getSplits()</code> ， 获取由输入文件计算出输入分片(InputSplit)，解决数据或文件分割成片问题。</li>
+<li><code> RecordReader&lt;K,V&gt; createRecordReader()</code> ，创建RecordReader，从InputSplit中读取数据，解决读取分片中数据问题。</li>
+</ul>
+<p>InputFormat的常用子类 ：</p>
+<p>1） <code>FileInputFormat&lt;K,V&gt;</code> 这个是基本的父类，自定义就直接使用它作为父类。</p>
+<p>2） <code>TextInputFormat&lt;LongWritable,Text&gt;</code> 这个是默认的数据格式类。key代表当前行数据距离文件开始的距离，value代码当前行字符串。</p>
+<p>3） <code>SequenceFileInputFormat&lt;K,V&gt;</code> 这个是序列文件输入格式，使用序列文件可以提高效率，但是不利于查看结果，建议在过程中使用序列文件，最后展示可以使用可视化输出。</p>
+<p>4） <code>KeyValueTextInputFormat&lt;Text,Text&gt;</code> 这个是读取以Tab（也即是\t）分隔的数据，每行数据如果以\t分隔，那么使用这个读入，就可以自动把\t前面的当做key，后面的当做value。</p>
+<p>5） <code>CombineFileInputFormat&lt;K,V&gt;</code> 合并大量小数据时使用。</p>
+<p>6）<code>MultipleInputs</code>，多种输入，可以为每个输入指定逻辑处理的Mapper。</p>
+<h1>Writable接口及其实现类</h1>
+<h2 id="Writable接口">Writable接口</h2>
+<p>Hadoop的Writable接口提供了序列化标准。Writable接口有如下两个方法：</p>
+<ul>
+<li>void readFields(DataInput in)： 从DataInput二进制流中进行反序列化</li>
+<li>void write(DataOutput out) ：将对象的字段序列化写入二进制流DataInput</li>
+</ul>
+<h2 id="Writable接口实现类">Writable接口实现类</h2>
+<p>Hadoop提供了多钟Writable实现类，存放于org.apache.hadoop.io包中，这些类的层次结构如下图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584886546_20200322221417267_4489.png" alt></p>
+<p>其中，WritableComparable接口继承了Writable接口和Comparable接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">WritableComparable</span>&lt;<span class="title">T</span>&gt;<span class="keyword">extends</span> <span class="title">Writable</span>, <span class="title">Comparable</span>&lt;<span class="title">T</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Java基本类型与Writable类对应关系">Java基本类型与Writable类对应关系</h2>
+<table>
+<thead>
+<tr>
+<th>Java基本类型</th>
+<th>Writable</th>
+<th>序列化后字节数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean</td>
+<td>BooleanWritable</td>
+<td>1</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>ByteWritable</td>
+<td>1</td>
+</tr>
+<tr>
+<td>short</td>
+<td>ShortWritable</td>
+<td>2</td>
+</tr>
+<tr>
+<td>int</td>
+<td>IntWritable</td>
+<td>4</td>
+</tr>
+<tr>
+<td>int</td>
+<td>VIntWritable</td>
+<td>1–5</td>
+</tr>
+<tr>
+<td>float</td>
+<td>FloatWritable</td>
+<td>4</td>
+</tr>
+<tr>
+<td>long</td>
+<td>LongWritable</td>
+<td>8</td>
+</tr>
+<tr>
+<td>long</td>
+<td>VLongWritable</td>
+<td>1–9</td>
+</tr>
+<tr>
+<td>double</td>
+<td>DoubleWritable</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p>对于这些Writable类型，可以通过get方法获取被封装的原来Java基本类型的值，或者通过set方法将Java基本数据类型数据转换成Writable类型，除Text外。Text支持通过set方法将字符串转换为Text类型，通过toString方法获取原字符串内容。</p>
+<h2 id="注意事项">注意事项</h2>
+<p>不同的Writable类序列化后占用的字数长度是不一样的，需要综合考虑应用中数据特征选择合适的类型。</p>
+<p>对于整数类型有两种Writable类型可以选择，一种是定长Writable类型IntWritable和LongWritable；另一种是变长Writable类型VIntWritable和VLongWritable。定长类型顾名思义使用固定长度的字节数表示，比如一个IntWritable类型使用4个长度的字节表示一个int；变长类型则根据数值的大小使用相应的字节长度表示，当数值在-112～127之间时使用1个字节表示，在-112～127范围之外的数值使用头一个字节表示该数值的正负符号以及字节长度（zero-compressed encoded integer）。</p>
+<p>定长的Writable类型适合数值均匀分布的情形，而变长的Writable类型适合数值分布不均匀的情形，一般情况下变长的Writable类型更节省空间，因为大多数情况下数值是不均匀的，对于整数类型的Writable选择，除非对数据的均匀分布很有把握，否则使用变长Writable类型，除非数据的取值区间确定在int范围之内，否则为了程序的可扩展性，请选择VLongWritable类型。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>21-MAPREDUCE-API</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Mapper类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Reducer类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Partitioner类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HashPartitioner"><span class="nav-text">HashPartitioner</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TotalOrderPartitioner"><span class="nav-text">TotalOrderPartitioner</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">InputFormat抽象类及其子类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Writable接口及其实现类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Writable接口"><span class="nav-text">Writable接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Writable接口实现类"><span class="nav-text">Writable接口实现类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java基本类型与Writable类对应关系"><span class="nav-text">Java基本类型与Writable类对应关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-text">注意事项</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

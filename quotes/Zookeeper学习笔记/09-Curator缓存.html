@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Curator食谱（高级特性）提醒：首先你必须添加curator-recipes依赖，下文仅仅对recipes一些特性的使用进行解释和举例，不打算进行源码级别的探讨。12345&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.apache.curator&amp;lt;&#x2F;groupId&amp;gt;    &amp;lt;artifactId&amp;gt;curator-recipes&amp;lt;">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;09-Curator%E7%BC%93%E5%AD%98.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Curator食谱（高级特性）提醒：首先你必须添加curator-recipes依赖，下文仅仅对recipes一些特性的使用进行解释和举例，不打算进行源码级别的探讨。12345&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.apache.curator&amp;lt;&#x2F;groupId&amp;gt;    &amp;lt;artifactId&amp;gt;curator-recipes&amp;lt;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.044Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/09-Curator%E7%BC%93%E5%AD%98">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ZOOKEEPER学习笔记</a></li>
+            <li>09-CURATOR缓存</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>Curator食谱（高级特性）</h1><p><strong>提醒：首先你必须添加curator-recipes依赖，下文仅仅对recipes一些特性的使用进行解释和举例，不打算进行源码级别的探讨。</strong></p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-recipes<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+<p><strong>重要提醒：强烈推荐使用ConnectionStateListener监控连接的状态，当连接状态为LOST，curator-recipes下的所有Api将会失效或者过期，尽管后面所有的例子都没有使用到ConnectionStateListener。</strong></p>
+<p>可以添加test module的依赖方便进行测试，不需要启动真实的zookeeper服务端：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>缓存</h1>
+<p>Zookeeper原生支持通过注册Watcher来进行事件监听，但是开发者需要反复注册（Watcher只能单次注册单次使用）。Cache是Curator中对事件监听的包装，可以看作是对事件监听的本地缓存视图，能够自动为开发者处理反复注册监听。Curator提供了三种Watcher（Cache）来监听结点的变化。</p>
+<h2 id="PathChildrenCache">PathChildrenCache</h2>
+<p>PathChildrenCache用来监控一个ZNode的子节点。当一个子节点增加，更新，删除时，PathChildrenCache会改变它的状态，会包含最新的子节点，子节点的数据和状态，而状态的更变将通过PathChildrenCacheListener通知。</p>
+<p>实际使用时会涉及到四个类：</p>
+<ul>
+<li>PathChildrenCache</li>
+<li>PathChildrenCacheEvent</li>
+<li>PathChildrenCacheListener</li>
+<li>ChildData</li>
+</ul>
+<p>通过下面的构造函数创建PathChildrenCache：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PathChildrenCache</span><span class="params">(CuratorFramework client, String path, <span class="keyword">boolean</span> cacheData)</span></span></span><br></pre></td></tr></table></figure>
+<p>想使用cache，必须调用它的start方法，使用完后调用close方法。 可以设置StartMode来实现启动的模式，StartMode有下面几种：</p>
+<ul>
+<li>NORMAL：正常初始化。</li>
+<li>BUILD_INITIAL_CACHE：在调用start()之前会调用rebuild()。</li>
+<li>POST_INITIALIZED_EVENT： 当Cache初始化数据后发送一个PathChildrenCacheEvent.Type#INITIALIZED事件。</li>
+</ul>
+<p>此外，PathChildrenCache其它方法有：</p>
+<ul>
+<li><code>public void addListener(PathChildrenCacheListener listener)</code>：增加一个listener监听缓存的变化。</li>
+<li><code>getCurrentData()</code>：返回一个 <code>List&lt;ChildData&gt;</code> 对象，可以遍历所有的子节点。</li>
+</ul>
+<p>注意：设置/更新、移除其实是使用client (CuratorFramework)来操作, 不通过PathChildrenCache操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PathChildrenCacheDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PATH = <span class="string">"/example/pathCache"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">        TestingServer server = <span class="keyword">new</span> TestingServer();</span><br><span class="line">        CuratorFramework client = CuratorFrameworkFactory.newClient(server.getConnectString(), <span class="keyword">new</span> ExponentialBackoffRetry(<span class="number">1000</span>, <span class="number">3</span>));</span><br><span class="line">        client.start();</span><br><span class="line">        PathChildrenCache cache = <span class="keyword">new</span> PathChildrenCache(client, PATH, <span class="keyword">true</span>);</span><br><span class="line">        cache.start();</span><br><span class="line"></span><br><span class="line">        PathChildrenCacheListener cacheListener = (client1, event) -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">"事件类型："</span> + event.getType());</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">null</span> != event.getData()) &#123;</span><br><span class="line">                System.out.println(<span class="string">"节点数据："</span> + event.getData().getPath() + <span class="string">" = "</span> + <span class="keyword">new</span> String(event.getData().getData()));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        cache.getListenable().addListener(cacheListener);</span><br><span class="line"> </span><br><span class="line">       client.create().creatingParentsIfNeeded().forPath(<span class="string">"/example/pathCache/test01"</span>, <span class="string">"01"</span>.getBytes());</span><br><span class="line">        Thread.sleep(<span class="number">10</span>);</span><br><span class="line">        client.create().creatingParentsIfNeeded().forPath(<span class="string">"/example/pathCache/test02"</span>, <span class="string">"02"</span>.getBytes());</span><br><span class="line">        Thread.sleep(<span class="number">10</span>);</span><br><span class="line">        client.setData().forPath(<span class="string">"/example/pathCache/test01"</span>, <span class="string">"01_V2"</span>.getBytes());</span><br><span class="line">        Thread.sleep(<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (ChildData data : cache.getCurrentData()) &#123;</span><br><span class="line">            System.out.println(<span class="string">"getCurrentData:"</span> + data.getPath() + <span class="string">" = "</span> + <span class="keyword">new</span> String(data.getData()));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        client.delete().forPath(<span class="string">"/example/pathCache/test01"</span>);</span><br><span class="line">        Thread.sleep(<span class="number">10</span>);</span><br><span class="line">        client.delete().forPath(<span class="string">"/example/pathCache/test02"</span>);</span><br><span class="line">        Thread.sleep(<span class="number">1000</span> * <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">        cache.close();</span><br><span class="line">        client.close();</span><br><span class="line">        System.out.println(<span class="string">"OK!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong> ：如果new PathChildrenCache(client, PATH, true)中的参数cacheData值设置为false，则示例中的event.getData().getData()、data.getData()将返回null，cache将不会缓存节点数据。</p>
+<p><strong>注意</strong> ：示例中的Thread.sleep(10)可以注释掉，但是注释后事件监听的触发次数会不全，这可能与PathChildrenCache的实现原理有关，不能太过频繁的触发事件！</p>
+<h2 id="NodeCache">NodeCache</h2>
+<p>NodeCache与PathChildrenCache类似，NodeCache只是监听某一个特定的节点。它涉及到下面的三个类：</p>
+<ul>
+<li>NodeCache：Node Cache实现类</li>
+<li>NodeCacheListener：节点监听器</li>
+<li>ChildData：节点数据</li>
+</ul>
+<p><strong>注意</strong> ：使用cache，依然要调用它的start()方法，使用完后调用close()方法。</p>
+<p>NodeCache的其它方法：getCurrentData()将得到节点当前的状态，通过它的状态可以得到当前的值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NodeCacheDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PATH = <span class="string">"/example/cache"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">        TestingServer server = <span class="keyword">new</span> TestingServer();</span><br><span class="line">        CuratorFramework client = CuratorFrameworkFactory.newClient(server.getConnectString(), <span class="keyword">new</span> ExponentialBackoffRetry(<span class="number">1000</span>, <span class="number">3</span>));</span><br><span class="line">        client.start();</span><br><span class="line">        client.create().creatingParentsIfNeeded().forPath(PATH);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> NodeCache cache = <span class="keyword">new</span> NodeCache(client, PATH);</span><br><span class="line">        NodeCacheListener listener = () -&gt; &#123;</span><br><span class="line">            ChildData data = cache.getCurrentData();</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">null</span> != data) &#123;</span><br><span class="line">                System.out.println(<span class="string">"节点数据："</span> + <span class="keyword">new</span> String(cache.getCurrentData().getData()));</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">"节点被删除!"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        cache.getListenable().addListener(listener);</span><br><span class="line">        cache.start();</span><br><span class="line"></span><br><span class="line">        client.setData().forPath(PATH, <span class="string">"01"</span>.getBytes());</span><br><span class="line">        Thread.sleep(<span class="number">100</span>);</span><br><span class="line">        client.setData().forPath(PATH, <span class="string">"02"</span>.getBytes());</span><br><span class="line">        Thread.sleep(<span class="number">100</span>);</span><br><span class="line">        client.delete().deletingChildrenIfNeeded().forPath(PATH);</span><br><span class="line">        Thread.sleep(<span class="number">1000</span> * <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        cache.close();</span><br><span class="line">        client.close();</span><br><span class="line">        System.out.println(<span class="string">"OK!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong> ：示例中的Thread.sleep(10)可以注释，但是注释后事件监听的触发次数会不全，这可能与NodeCache的实现原理有关，不能太过频繁的触发事件！</p>
+<p><strong>注意</strong> ：NodeCache只能监听一个节点的状态变化。</p>
+<h2 id="TreeCache">TreeCache</h2>
+<p>TreeCache可以监控整个树上的所有节点，类似于PathChildrenCache和NodeCache的组合，主要涉及到下面四个类：</p>
+<ul>
+<li>TreeCache：Tree Cache实现类</li>
+<li>TreeCacheListener：监听器类</li>
+<li>TreeCacheEvent：触发的事件类</li>
+<li>ChildData：节点数据</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TreeCacheDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PATH = <span class="string">"/example/cache"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">        TestingServer server = <span class="keyword">new</span> TestingServer();</span><br><span class="line">        CuratorFramework client = CuratorFrameworkFactory.newClient(server.getConnectString(), <span class="keyword">new</span> ExponentialBackoffRetry(<span class="number">1000</span>, <span class="number">3</span>));</span><br><span class="line">        client.start();</span><br><span class="line">        client.create().creatingParentsIfNeeded().forPath(PATH);</span><br><span class="line"></span><br><span class="line">        TreeCache cache = <span class="keyword">new</span> TreeCache(client, PATH);</span><br><span class="line">        TreeCacheListener listener = (client1, event) -&gt;</span><br><span class="line">                System.out.println(<span class="string">"事件类型："</span> + event.getType() +</span><br><span class="line">                        <span class="string">" | 路径："</span> + (<span class="keyword">null</span> != event.getData() ? event.getData().getPath() : <span class="keyword">null</span>));</span><br><span class="line">        cache.getListenable().addListener(listener);</span><br><span class="line">        cache.start();</span><br><span class="line"></span><br><span class="line">        client.setData().forPath(PATH, <span class="string">"01"</span>.getBytes());</span><br><span class="line">        Thread.sleep(<span class="number">100</span>);</span><br><span class="line">        client.setData().forPath(PATH, <span class="string">"02"</span>.getBytes());</span><br><span class="line">        Thread.sleep(<span class="number">100</span>);</span><br><span class="line">        client.delete().deletingChildrenIfNeeded().forPath(PATH);</span><br><span class="line">        Thread.sleep(<span class="number">1000</span> * <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        cache.close();</span><br><span class="line">        client.close();</span><br><span class="line">        System.out.println(<span class="string">"OK!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong> ：在此示例中不使用Thread.sleep(10)，事件触发次数也是正常的。</p>
+<p><strong>注意</strong> ：TreeCache在初始化（调用start()方法）的时候会回调TreeCacheListener实例，而回调的TreeCacheEvent对象的Type为INITIALIZED，ChildData为null，此时event.getData().getPath()很有可能导致空指针异常，这里应该主动处理并避免这种情况。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ZOOKEEPER学习笔记</a></li>
+            <li>09-CURATOR缓存</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Curator食谱（高级特性）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PathChildrenCache"><span class="nav-text">PathChildrenCache</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NodeCache"><span class="nav-text">NodeCache</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TreeCache"><span class="nav-text">TreeCache</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="float和double类型的主要设计目标是为了科学计算和工程计算。他们执行二进制浮点运算，这是为了在广域数值范围上提供较为精确的快速近似计算而精心设计的。然而，它们没有提供完全精确的结果，所以不应该被用于要求精确结果的场合。但是，商业计算往往要求结果精确，这时候BigDecimal就派上大用场啦。先看下面代码：">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;26-BigDecimal%E7%B1%BB.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="float和double类型的主要设计目标是为了科学计算和工程计算。他们执行二进制浮点运算，这是为了在广域数值范围上提供较为精确的快速近似计算而精心设计的。然而，它们没有提供完全精确的结果，所以不应该被用于要求精确结果的场合。但是，商业计算往往要求结果精确，这时候BigDecimal就派上大用场啦。先看下面代码：">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584718341_20200320232706740_4895.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584718340_20200320232706324_4475.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584718340_20200320232706015_11798.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584718340_20200320232705806_26559.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.024Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584718341_20200320232706740_4895.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/26-BigDecimal%E7%B1%BB">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVA学习笔记</a></li>
+            <li>26-BIGDECIMAL类</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>float和double类型的主要设计目标是为了科学计算和工程计算。他们执行二进制浮点运算，这是为了在广域数值范围上提供较为精确的快速近似计算而精心设计的。然而，它们没有提供完全精确的结果，所以不应该被用于要求精确结果的场合。但是，商业计算往往要求结果精确，这时候BigDecimal就派上大用场啦。</p><p>先看下面代码：</p><a id="more"></a>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="number">0.2</span> + <span class="number">0.1</span>);</span><br><span class="line">    System.out.println(<span class="number">0.3</span> - <span class="number">0.1</span>);</span><br><span class="line">    System.out.println(<span class="number">0.2</span> * <span class="number">0.1</span>);</span><br><span class="line">    System.out.println(<span class="number">0.3</span> / <span class="number">0.1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果如下</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584718341_20200320232706740_4895.png" alt></p>
+<p>你认为你看错了，但结果却是是这样的。问题在哪里呢？原因在于我们的计算机是二进制的。浮点数没有办法是用二进制进行精确表示。我们的CPU表示浮点数由两个部分组成：指数和尾数，这样的表示方法一般都会失去一定的精确度，有些浮点数运算也会产生一定的误差。如：2.4的二进制表示并非就是精确的2.4。反而最为接近的二进制表示是 2.3999999999999999。浮点数的值实际上是由一个特定的数学公式计算得到的。</p>
+<p>其实java的float只能用来进行科学计算或工程计算，在大多数的商业计算中，一般采用java.math.BigDecimal类来进行精确计算。</p>
+<p>使用总结如下：</p>
+<ol>
+<li>
+<p>商业计算使用BigDecimal。</p>
+</li>
+<li>
+<p>尽量使用参数类型为String的构造函数。</p>
+</li>
+<li>
+<p>BigDecimal都是不可变的（immutable）的，在进行每一步运算时，都会产生一个新的对象，所以在做加减乘除运算时千万要保存操作后的值。</p>
+</li>
+<li>
+<p>我们往往容易忽略JDK底层的一些实现细节，导致出现错误，需要多加注意。</p>
+</li>
+</ol>
+<h1>1.BigDecimal构造方法</h1>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">BigDecimal</span><span class="params">(<span class="keyword">double</span> val)</span>  <span class="comment">// 将double表示形式转换为BigDecimal ,不建议使用</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">BigDecimal</span><span class="params">(<span class="keyword">int</span> val)</span> <span class="comment">//将int表示形式转换成BigDecimal</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">BigDecimal</span><span class="params">(String val)</span> <span class="comment">//将String表示形式转换成BigDecimal</span></span></span><br></pre></td></tr></table></figure>
+<p>为什么不建议采用第一种构造方法呢？来看例子</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    BigDecimal bigDecimal = <span class="keyword">new</span> BigDecimal(<span class="number">2</span>);</span><br><span class="line">    BigDecimal bDouble = <span class="keyword">new</span> BigDecimal(<span class="number">2.3</span>);</span><br><span class="line">    BigDecimal bString = <span class="keyword">new</span> BigDecimal(<span class="string">"2.3"</span>);</span><br><span class="line">    System.out.println(<span class="string">"bigDecimal="</span> + bigDecimal);</span><br><span class="line">    System.out.println(<span class="string">"bDouble="</span> + bDouble);</span><br><span class="line">    System.out.println(<span class="string">"bString="</span> + bString);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果如下</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584718340_20200320232706324_4475.png" alt></p>
+<p>为什么会出现这种情况呢？</p>
+<p>JDK的描述：</p>
+<ol>
+<li>
+<p>参数类型为double的构造方法的结果有一定的不可预知性。有人可能认为在Java中写入newBigDecimal(0.1)所创建的BigDecimal正好等于 0.1（非标度值 1，其标度为 1），但是它实际上等于0.1000000000000000055511151231257827021181583404541015625。这是因为0.1无法准确地表示为 double（或者说对于该情况，不能表示为任何有限长度的二进制小数）。这样，传入到构造方法的值不会正好等于 0.1（虽然表面上等于该值）。</p>
+</li>
+<li>
+<p>另一方面，String 构造方法是完全可预知的：写入 newBigDecimal(“0.1”) 将创建一个 BigDecimal，它正好等于预期的 0.1。因此，比较而言，<strong>通常建议优先使用String构造方法</strong>。</p>
+</li>
+</ol>
+<p><strong>当double必须用作BigDecimal的源时，</strong> 请使用Double.toString(double)转成String，然后使用String构造方法，或使用BigDecimal的静态方法valueOf，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">     BigDecimal bDouble1 = BigDecimal.valueOf(<span class="number">2.3</span>);</span><br><span class="line">     BigDecimal bDouble2 = <span class="keyword">new</span> BigDecimal(Double.toString(<span class="number">2.3</span>));</span><br><span class="line">     System.out.println(<span class="string">"bDouble1="</span> + bDouble1);</span><br><span class="line">     System.out.println(<span class="string">"bDouble2="</span> + bDouble2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果如下</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584718340_20200320232706015_11798.png" alt></p>
+<h1>2.BigDecimal加减乘除运算</h1>
+<p>对于常用的加，减，乘，除，BigDecimal类提供了相应的成员方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> BigDecimal <span class="title">add</span><span class="params">(BigDecimal value)</span></span>;                        <span class="comment">//加法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> BigDecimal <span class="title">subtract</span><span class="params">(BigDecimal value)</span></span>;                   <span class="comment">//减法 </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> BigDecimal <span class="title">multiply</span><span class="params">(BigDecimal value)</span></span>;                   <span class="comment">//乘法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> BigDecimal <span class="title">divide</span><span class="params">(BigDecimal value)</span></span>;                     <span class="comment">//除法</span></span><br></pre></td></tr></table></figure>
+<p>大概的用法如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    BigDecimal a = <span class="keyword">new</span> BigDecimal(<span class="string">"4.5"</span>);</span><br><span class="line">    BigDecimal b = <span class="keyword">new</span> BigDecimal(<span class="string">"1.5"</span>);</span><br><span class="line">    System.out.println(<span class="string">"a + b ="</span> + a.add(b));</span><br><span class="line">    System.out.println(<span class="string">"a - b ="</span> + a.subtract(b));</span><br><span class="line">    System.out.println(<span class="string">"a * b ="</span> + a.multiply(b));</span><br><span class="line">    System.out.println(<span class="string">"a / b ="</span> + a.divide(b));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584718340_20200320232705806_26559.png" alt></p>
+<p>这里有一点需要注意的是除法运算divide。</p>
+<p>BigDecimal除法可能出现不能整除的情况，比如 4.5/1.3，这时会报错java.lang.ArithmeticException: Non-terminating decimal expansion; no exact representable decimal result.</p>
+<p>其实divide方法有可以传三个参数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> BigDecimal <span class="title">divide</span><span class="params">(BigDecimal divisor, <span class="keyword">int</span> scale, <span class="keyword">int</span> roundingMode)</span></span></span><br></pre></td></tr></table></figure>
+<p>第一参数表示除数， 第二个参数表示小数点后保留位数，第三个参数表示舍入模式，只有在作除法运算或四舍五入时才用到舍入模式，有下面这几种：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ROUND_CEILING <span class="comment">//向正无穷方向舍入</span></span><br><span class="line">ROUND_DOWN <span class="comment">//向零方向舍入</span></span><br><span class="line">ROUND_FLOOR <span class="comment">//向负无穷方向舍入</span></span><br><span class="line">ROUND_HALF_DOWN <span class="comment">//向（距离）最近的一边舍入，除非两边（的距离）是相等,如果是这样，向下舍入, 例如1.55 保留一位小数结果为1.5</span></span><br><span class="line">ROUND_HALF_EVEN <span class="comment">//向（距离）最近的一边舍入，除非两边（的距离）是相等,如果是这样，如果保留位数是奇数，使用ROUND_HALF_UP，如果是偶数，使用ROUND_HALF_DOWN</span></span><br><span class="line">ROUND_HALF_UP <span class="comment">//向（距离）最近的一边舍入，除非两边（的距离）是相等,如果是这样，向上舍入, 1.55保留一位小数结果为1.6</span></span><br><span class="line">ROUND_UNNECESSARY <span class="comment">//计算结果是精确的，不需要舍入模式</span></span><br><span class="line">ROUND_UP <span class="comment">//向远离0的方向舍入</span></span><br></pre></td></tr></table></figure>
+<p>按照各自的需要，可传入合适的第三个参数。四舍五入采用 ROUND_HALF_UP</p>
+<p>需要对BigDecimal进行截断和四舍五入可用setScale方法，例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">    BigDecimal a = <span class="keyword">new</span> BigDecimal(<span class="string">"4.5635"</span>);</span><br><span class="line">    a = a.setScale(<span class="number">3</span>, RoundingMode.HALF_UP);    <span class="comment">//保留3位小数，且四舍五入</span></span><br><span class="line">    System.out.println(a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>加减乘除其实最终都返回的是一个新的BigDecimal对象，因为BigInteger与BigDecimal都是不可变的（immutable）的，在进行每一步运算时，都会产生一个新的对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">    BigDecimal a = <span class="keyword">new</span> BigDecimal(<span class="string">"4.5"</span>);</span><br><span class="line">    BigDecimal b = <span class="keyword">new</span> BigDecimal(<span class="string">"1.5"</span>);</span><br><span class="line">    a.add(b);</span><br><span class="line">    System.out.println(a);  <span class="comment">//输出4.5. 加减乘除方法会返回一个新的BigDecimal对象，原来的a不变</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>3.银行家舍入法</h1>
+<p>四舍五入是我们小学的数学问题，这个问题对于我们程序猿来说就类似于1到10的加减乘除那么简单了。在讲解之间我们先看如下一个经典的案例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"12.5的四舍五入值："</span> + Math.round(<span class="number">12.5</span>));</span><br><span class="line">    System.out.println(<span class="string">"-12.5的四舍五入值："</span> + Math.round(-<span class="number">12.5</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<p>12.5的四舍五入值：13</p>
+<p>-12.5的四舍五入值：-12</p>
+<p>这是四舍五入的经典案例，也是我们参加校招时候经常会遇到的(貌似我参加笔试的时候遇到过好多次)。从这儿结果中我们发现这两个绝对值相同的数字，为何近似值会不同呢？其实这与Math.round采用的四舍五入规则来决定。</p>
+<p>四舍五入其实在金融方面运用的非常多，尤其是银行的利息。我们都知道银行的盈利渠道主要是利息差，它从储户手里收集资金，然后放贷出去，期间产生的利息差就是银行所获得的利润。如果我们采用平常四舍五入的规则话，这里采用每10笔存款利息计算作为模型，如下：</p>
+<p>四舍：0.000、0.001、0.002、0.003、0.004。这些舍的都是银行赚的钱。</p>
+<p>五入：0.005、0.006、0.007、0.008、0.009。这些入的都是银行亏的钱，分别为：0.005、0.004、.003、0.002、0.001。</p>
+<p>所以对于银行来说它的盈利应该是0.000 + 0.001 + 0.002 + 0.003 + 0.004 - 0.005 - 0.004 - 0.003 - 0.002 - 0.001 = -0.005。从结果中可以看出每10笔的利息银行可能就会损失0.005元，千万别小看这个数字，这对于银行来说就是一笔非常大的损失。</p>
+<p>面对这个问题就产生了如下的银行家涉入法了。该算法是由美国银行家提出了，主要用于修正采用上面四舍五入规则而产生的误差。如下：</p>
+<ul>
+<li>舍去位的数值小于5时，直接舍去。</li>
+<li>舍去位的数值大于5时，进位后舍去。</li>
+<li>当舍去位的数值等于5时，若5后面还有其他非0数值，则进位后舍去，若5后面是0时，则根据5前一位数的奇偶性来判断，奇数进位，偶数舍去。</li>
+</ul>
+<p>对于上面的规则我们举例说明</p>
+<p>11.556 = 11.56 ------六入</p>
+<p>11.554 = 11.55 -----四舍</p>
+<p>11.5551 = 11.56 -----五后有数进位</p>
+<p>11.545 = 11.54 -----五后无数，若前位为偶数应舍去</p>
+<p>11.555 = 11.56 -----五后无数，若前位为奇数应进位</p>
+<p>下面实例是使用银行家舍入法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    BigDecimal d = <span class="keyword">new</span> BigDecimal(<span class="number">100000</span>);      <span class="comment">//存款</span></span><br><span class="line">    BigDecimal r = <span class="keyword">new</span> BigDecimal(<span class="number">0.001875</span>*<span class="number">3</span>);   <span class="comment">//利息</span></span><br><span class="line">    BigDecimal i = d.multiply(r).setScale(<span class="number">2</span>,RoundingMode.HALF_EVEN);     <span class="comment">//使用银行家算法       </span></span><br><span class="line">    System.out.println(<span class="string">"季利息是："</span>+i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<p>季利息是：562.50</p>
+<p>在上面简单地介绍了银行家舍入法，目前java7中支持舍入法：</p>
+<ul>
+<li>ROUND_UP：远离零方向舍入。向绝对值最大的方向舍入，只要舍弃位非0即进位。</li>
+<li>ROUND_DOWN：趋向零方向舍入。向绝对值最小的方向输入，所有的位都要舍弃，不存在进位情况。</li>
+<li>ROUND_CEILING：向正无穷方向舍入。向正最大方向靠拢。若是正数，舍入行为类似于ROUND_UP，若为负数，舍入行为类似于ROUND_DOWN。Math.round()方法就是使用的此模式。</li>
+<li>ROUND_FLOOR：向负无穷方向舍入。向负无穷方向靠拢。若是正数，舍入行为类似于ROUND_DOWN；若为负数，舍入行为类似于ROUND_UP。</li>
+<li>HALF_UP：最近数字舍入(5进)。这是我们最经典的四舍五入。</li>
+<li>HALF_DOWN：最近数字舍入(5舍)。在这里5是要舍弃的。</li>
+<li>HAIL_EVEN：银行家舍入法。</li>
+</ul>
+<h1>实现保留位的几种方法</h1>
+<p>在java运算中我们可以使用多种方式来实现保留位。</p>
+<p><strong>方法一：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> f = <span class="number">111231.5585</span>;</span><br><span class="line">BigDecimal b = <span class="keyword">new</span> BigDecimal(f);</span><br><span class="line"><span class="keyword">double</span> f1 = b.setScale(<span class="number">2</span>, RoundingMode.HALF_UP).doubleValue();</span><br></pre></td></tr></table></figure>
+<p>在这里使用BigDecimal ，并且采用setScale方法来设置精确度，同时使用RoundingMode.HALF_UP表示使用最近数字舍入法则来近似计算。在这里我们可以看出BigDecimal和四舍五入是绝妙的搭配。</p>
+<p><strong>方式二：</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">java.text.DecimalFormat df = new java.text.DecimalFormat(”#.00″);</span><br><span class="line">new java.text.DecimalFormat(”#.00″).format(3.1415926)</span><br><span class="line">#.00 表示两位小数 #.0000四位小数 以此类推…</span><br></pre></td></tr></table></figure>
+<p><strong>方式三：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> d = <span class="number">3.1415926</span>;</span><br><span class="line">String result = String .format(”%.<span class="number">2f</span>”);</span><br><span class="line"><span class="comment">//%.2f 中：%. 表示 小数点前任意位数，2 表示两位小数 格式后的结果为f 表示浮点型。</span></span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVA学习笔记</a></li>
+            <li>26-BIGDECIMAL类</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">1.BigDecimal构造方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">2.BigDecimal加减乘除运算</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">3.银行家舍入法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">实现保留位的几种方法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

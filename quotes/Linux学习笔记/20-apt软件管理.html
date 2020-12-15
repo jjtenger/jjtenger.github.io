@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="APT是Advance Packaging Tool（高级包装工具）的缩写，是Debian及其派生发行版的软件包管理器，APT可以自动下载，配置，安装二进制或者源代码格式的软件包，因此简化了Unix系统上管理软件的过程。APT最早被设计成dpkg的前端，用来处理deb格式的软件包。现在经过APT-RPM组织修改，APT已经可以安装在支持RPM的系统管理RPM包。这个包管理器包含以apt-开头的的多">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;20-apt%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="APT是Advance Packaging Tool（高级包装工具）的缩写，是Debian及其派生发行版的软件包管理器，APT可以自动下载，配置，安装二进制或者源代码格式的软件包，因此简化了Unix系统上管理软件的过程。APT最早被设计成dpkg的前端，用来处理deb格式的软件包。现在经过APT-RPM组织修改，APT已经可以安装在支持RPM的系统管理RPM包。这个包管理器包含以apt-开头的的多">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584875905_20200322191105912_28521.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584875905_20200322191105282_1365.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584875904_20200322191104864_8852.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.032Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584875905_20200322191105912_28521.jpg">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/20-apt%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">LINUX学习笔记</a></li>
+            <li>20-APT软件管理</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>APT是Advance Packaging Tool（高级包装工具）的缩写，是Debian及其派生发行版的软件包管理器，APT可以自动下载，配置，安装二进制或者源代码格式的软件包，因此简化了Unix系统上管理软件的过程。APT最早被设计成dpkg的前端，用来处理deb格式的软件包。现在经过APT-RPM组织修改，APT已经可以安装在支持RPM的系统管理RPM包。这个包管理器包含以apt-开头的的多个工具，如apt-get、apt-cache、apt-cdrom等，在Debian系列的发行版中使用。</p><a id="more"></a>
+<h1>apt-get</h1>
+<p>apt-get是用于处理apt包的公用程序集，我们可以用它来在线安装、卸载和升级软件包等，下面列出一些apt-get包含的常用的一些工具：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>install</td>
+<td>其后加上软件包名，用于安装一个软件包</td>
+</tr>
+<tr>
+<td>update</td>
+<td>从软件源镜像服务器上下载/更新用于更新本地软件源的软件包列表</td>
+</tr>
+<tr>
+<td>upgrade</td>
+<td>升级本地可更新的全部软件包，但存在依赖问题时将不会升级，通常会在更新之前执行一次update</td>
+</tr>
+<tr>
+<td>dist-upgrade</td>
+<td>解决依赖关系并升级(存在一定危险性)</td>
+</tr>
+<tr>
+<td>remove</td>
+<td>移除已安装的软件包，包括与被移除软件包有依赖关系的软件包，但不包含软件包的配置文件</td>
+</tr>
+<tr>
+<td>autoremove</td>
+<td>移除之前被其他软件包依赖，但现在不再被使用的软件包</td>
+</tr>
+<tr>
+<td>purge</td>
+<td>与remove相同，但会完全移除软件包，包含其配置文件</td>
+</tr>
+<tr>
+<td>clean</td>
+<td>移除下载到本地的已经安装的软件包，默认保存在/var/cache/apt/archives/</td>
+</tr>
+<tr>
+<td>autoclean</td>
+<td>移除已安装的软件的旧版本软件包</td>
+</tr>
+</tbody>
+</table>
+<p>下面是一些apt-get常用的参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-y</td>
+<td>自动回应是否安装软件包的选项，在一些自动化安装脚本中使用这个参数将十分有用</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>模拟安装</td>
+</tr>
+<tr>
+<td>-q</td>
+<td>静默安装方式，指定多个q或者-q=#,#表示数字，用于设定静默级别，这在你不想要在安装软件包时屏幕输出过多时很有用</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>修复损坏的依赖关系</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>只下载不安装</td>
+</tr>
+<tr>
+<td>–reinstall</td>
+<td>重新安装已经安装但可能存在问题的软件包</td>
+</tr>
+<tr>
+<td>–install-suggests</td>
+<td>同时安装APT给出的建议安装的软件包</td>
+</tr>
+</tbody>
+</table>
+<h2 id="安装软件">安装软件</h2>
+<p>关于安装，你只需要执行apt-get install &lt;软件包名&gt;即可。比如我们想安装一个软件，名字叫做 w3m(w3m是一个命令行的简易网页浏览器)，那么输入如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install w3m</span></span><br></pre></td></tr></table></figure>
+<p>这样的操作你应该在前面的章节中看到过很多次了，它就表示将会安装一个软件包名为w3m的软件。</p>
+<p>我们来看看命令执行后的效果：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584875905_20200322191105912_28521.jpg" alt></p>
+<p>注意：如果你在安装一个软件之后，无法立即使用Tab键补全这个命令，你可以尝试先执行source ~/.zshrc，然后你就可以使用补全操作。</p>
+<p>你还应该掌握的是如何重新安装软件包。很多时候我们需要重新安装一个软件包，比如你的系统被破坏，或者一些错误的配置导致软件无法正常工作。你可以使用如下方式重新安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get --reinstall install w3m</span></span><br></pre></td></tr></table></figure>
+<p>另一个你需要掌握的是，如何在不知道软件包完整名的时候进行安装。通常我们是使用Tab键补全软件包名，后面会介绍更好的方法来搜索软件包。有时候你需要同时安装多个软件包，你还可以使用正则表达式匹配软件包名进行批量安装。</p>
+<h2 id="更新软件源">更新软件源</h2>
+<p>当你在执行安装操作时，首先apt-get工具会在本地的一个数据库中搜索关于w3m软件的相关信息，并根据这些信息在相关的服务器上下载软件安装，这里大家可能会一个疑问：既然是在线安装软件，为啥会在本地的数据库中搜索？要解释这个问题就得提到几个名词了：软件源镜像服务器、软件源。</p>
+<p>我们需要定期从服务器上下载一个软件包列表，使用sudo apt-get update命令来保持本地的软件包列表是最新的（有时你也需要手动执行这个操作，比如更换了软件源），而这个表里会有软件依赖信息的记录，对于软件依赖，我举个例子：我们安装w3m软件的时候，而这个软件需要libgc1c2这个软件包才能正常工作，这个时候apt-get在安装软件的时候会一并替我们安装了，以保证w3m能正常的工作。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 更新软件源</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get update</span></span><br></pre></td></tr></table></figure>
+<h2 id="软件升级">软件升级</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 更新软件源</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get update</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 升级没有依赖问题的软件包</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get upgrade</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 升级并解决依赖关系</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get dist-upgrade</span></span><br></pre></td></tr></table></figure>
+<h2 id="卸载软件">卸载软件</h2>
+<p>如果你现在觉得w3m这个软件不合自己的胃口，或者是找到了更好的，你需要卸载它，那么简单！同样是一个命令加回车sudo apt-get remove w3m，系统会有一个确认的操作，之后这个软件便“滚蛋了”。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584875905_20200322191105282_1365.png" alt></p>
+<p>或者，你可以执行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 不保留配置文件的移除</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get purge w3m</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 或者sudo apt-get --purge remove</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 移除不再需要的被依赖的软件包</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get autoremove</span></span><br></pre></td></tr></table></figure>
+<h1>软件搜索</h1>
+<p>当自己刚知道了一个软件，想下载使用，需要确认软件仓库里面有没有，就需要用到搜索功能了，命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-cache search softname1 softname2 softname3……</span><br></pre></td></tr></table></figure>
+<p>apt-cache命令则是针对本地数据进行相关操作的工具，search顾名思义在本地的数据库中寻找有关softname1 softname2 ……相关软件的信息。现在我们试试搜索一下之前我们安装的软件w3m，如图：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584875904_20200322191104864_8852.png" alt></p>
+<p>结果显示了4个w3m相关的软件，并且有相关软件的简介。</p>
+<h1>aptitude</h1>
+<p>aptitude 与 apt-get 一样，是 Debian 及其衍生系统中功能极其强大的包管理工具基于大名鼎鼎的APT机制, 整合了 dselect 和 apt-get 的所有功能, 并提供的更多特性,特别是在依赖关系处理上。与 apt-get 不同的是，aptitude在处理依赖问题上更佳一些。举例来说，aptitude在删除一个包时，会同时删除本身所依赖的包。这样，系统中不会残留无用的包，整个系统更为干净。</p>
+<p>推荐使用aptitude命令来代替apt-get，下载或者删除依赖包的时候aptitude要比apt-get更好。不过aptitude和apt-get不能混用，要不然互相都不知道对方做了什么。</p>
+<p><strong>语法</strong></p>
+<p>aptitude 选项 参数</p>
+<p><strong>选项</strong></p>
+<p>-h：显示帮助信息</p>
+<p>-d：仅下载软件包，不执行安装操作</p>
+<p>-P：每一步操作都要求确认</p>
+<p>-y：所有问题都回答“yes”</p>
+<p>-v：显示附加信息；</p>
+<p>-u：启动时下载新的软件包列表</p>
+<p><strong>常用参数</strong></p>
+<table>
+<thead>
+<tr>
+<th>常用参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>aptitude update</td>
+<td>更新可用的包列表</td>
+</tr>
+<tr>
+<td>aptitude safe-upgrade</td>
+<td>执行一次安全的升级</td>
+</tr>
+<tr>
+<td>aptitude full-upgrade</td>
+<td>将系统升级到新的发行版</td>
+</tr>
+<tr>
+<td>aptitude install pkgname</td>
+<td>安装包</td>
+</tr>
+<tr>
+<td>aptitude remove pkgname</td>
+<td>删除包</td>
+</tr>
+<tr>
+<td>aptitude purge pkgname</td>
+<td>删除包及其配置文件</td>
+</tr>
+<tr>
+<td>aptitude search string</td>
+<td>搜索包</td>
+</tr>
+<tr>
+<td>aptitude show pkgname</td>
+<td>显示包的详细信息</td>
+</tr>
+<tr>
+<td>aptitude clean</td>
+<td>删除下载的包文件</td>
+</tr>
+<tr>
+<td>aptitude autoclean</td>
+<td>仅删除过期的包文件</td>
+</tr>
+</tbody>
+</table>
+<p>示例：查看软件版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aptitude show ftp</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">LINUX学习笔记</a></li>
+            <li>20-APT软件管理</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">apt-get</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装软件"><span class="nav-text">安装软件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新软件源"><span class="nav-text">更新软件源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件升级"><span class="nav-text">软件升级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卸载软件"><span class="nav-text">卸载软件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">软件搜索</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">aptitude</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

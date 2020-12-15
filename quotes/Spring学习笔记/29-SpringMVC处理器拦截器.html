@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Spring Web MVC的处理器拦截器（如无特殊说明，下文所说的拦截器即处理器拦截器）类似于Servlet开发中的过滤器Filter，用于对处理器进行预处理和后处理。常见应用场景：1、日志记录：记录请求信息的日志，以便进行信息监控、信息统计、计算PV（Page View）等。2、权限检查：如登录检测，进入处理器检测检测是否登录，如果没有直接返回到登录页面；">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;29-SpringMVC%E5%A4%84%E7%90%86%E5%99%A8%E6%8B%A6%E6%88%AA%E5%99%A8.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Spring Web MVC的处理器拦截器（如无特殊说明，下文所说的拦截器即处理器拦截器）类似于Servlet开发中的过滤器Filter，用于对处理器进行预处理和后处理。常见应用场景：1、日志记录：记录请求信息的日志，以便进行信息监控、信息统计、计算PV（Page View）等。2、权限检查：如登录检测，进入处理器检测检测是否登录，如果没有直接返回到登录页面；">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584804226_20200321232251723_23163.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584804226_20200321232251409_6564.jpg">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.040Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584804226_20200321232251723_23163.jpg">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/29-SpringMVC%E5%A4%84%E7%90%86%E5%99%A8%E6%8B%A6%E6%88%AA%E5%99%A8">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>29-SPRINGMVC处理器拦截器</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>Spring Web MVC的处理器拦截器（如无特殊说明，下文所说的拦截器即处理器拦截器）类似于Servlet开发中的过滤器Filter，用于对处理器进行预处理和后处理。</p><p>常见应用场景：</p><p>1、日志记录：记录请求信息的日志，以便进行信息监控、信息统计、计算PV（Page View）等。</p><p>2、权限检查：如登录检测，进入处理器检测检测是否登录，如果没有直接返回到登录页面；</p><a id="more"></a>
+
+
+
+<p>3、性能监控：有时候系统在某段时间莫名其妙的慢，可以通过拦截器在进入处理器之前记录开始时间，在处理完后记录结束时间，从而得到该请求的处理时间（如果有反向代理，如apache可以自动记录）；</p>
+<p>4、通用行为：读取cookie得到用户信息并将用户对象放入请求，从而方便后续流程使用，还有如提取Locale、Theme信息等，只要是多个处理器都需要的即可使用拦截器实现。</p>
+<p>5、OpenSessionInView：如Hibernate，在进入处理器打开Session，在完成后关闭Session。</p>
+<p>其本质也是AOP（面向切面编程），也就是说符合横切关注点的所有功能都可以放入拦截器实现。</p>
+<h1>拦截器接口HandlerInterceptor</h1>
+<h2 id="HandlerInterceptor接口">HandlerInterceptor接口</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.web.servlet;  </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">HandlerInterceptor</span> </span>&#123;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//预处理回调方法，实现处理器的预处理（如登录检查），第三个参数为响应的处理器（如我们上一章的Controller实现）</span></span><br><span class="line">   <span class="comment">//返回值：true表示继续流程（如调用下一个拦截器或处理器）；false表示流程中断（如登录检查失败），不会继续调用其他的拦截器或处理器，此时我们需要通过response来产生响应</span></span><br><span class="line">   <span class="function"><span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception</span>;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//后处理回调方法，实现处理器的后处理（但在渲染视图之前），此时我们可以通过modelAndView（模型和视图对象）对模型数据进行处理或对视图进行处理</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">postHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)</span> <span class="keyword">throws</span> Exception</span>;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//整个请求处理完毕回调方法，即在视图渲染完毕时回调，如性能监控中我们可以在此记录结束时间并输出消耗时间，还可以进行一些资源清理工作。类似于try-catch-finally中的finally，但仅调用处理器执行链中preHandle返回true的拦截器的afterCompletion</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">afterCompletion</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)</span> <span class="keyword">throws</span> Exception</span>;  </span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="拦截器适配器HandlerInterceptorAdapter">拦截器适配器HandlerInterceptorAdapter</h2>
+<p>有时候我们可能只需要实现HandlerInterceptor接口三个回调方法中的某一个，但如果直接实现HandlerInterceptor接口的话，三个方法必须实现，不管你需不需要，此时spring提供了一个HandlerInterceptorAdapter适配器（一种适配器设计模式的实现），允许我们只实现需要的回调方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">HandlerInterceptorAdapter</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span> </span>&#123;  </span><br><span class="line">    <span class="comment">//省略代码 此处所以三个回调方法都是空实现，preHandle返回true。  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>多拦截器运行流程</h1>
+<p>正常运行流程图：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584804226_20200321232251723_23163.jpg" alt></p>
+<p>中断运行流程图</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584804226_20200321232251409_6564.jpg" alt></p>
+<p>中断流程中，比如是HandlerInterceptor4中断的流程（preHandle返回false），此处仅调用它之前的拦截器（HandlerInterceptor3）的preHandle返回true的afterCompletion方法。</p>
+<h1>SpringMVC处理器拦截器内部工作原理</h1>
+<p>接下来看一下DispatcherServlet内部到底是如何工作的吧，以下是流程的简化代码，中间省略了部分代码，不完整：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//doDispatch方法  </span></span><br><span class="line"><span class="comment">//1、处理器拦截器的预处理（正序执行）  </span></span><br><span class="line">HandlerInterceptor[] interceptors = mappedHandler.getInterceptors();  </span><br><span class="line"><span class="keyword">if</span> (interceptors != <span class="keyword">null</span>) &#123;  </span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; interceptors.length; i++) &#123;  </span><br><span class="line">   HandlerInterceptor interceptor = interceptors[i];  </span><br><span class="line">       <span class="keyword">if</span> (!interceptor.preHandle(processedRequest, response, mappedHandler.getHandler())) &#123;  </span><br><span class="line">           <span class="comment">//1.1、失败时触发afterCompletion的调用  </span></span><br><span class="line">           triggerAfterCompletion(mappedHandler, interceptorIndex, processedRequest, response, <span class="keyword">null</span>);  </span><br><span class="line">           <span class="keyword">return</span>;  </span><br><span class="line">       &#125;  </span><br><span class="line">       interceptorIndex = i;<span class="comment">//1.2、记录当前预处理成功的索引  </span></span><br><span class="line">&#125;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="comment">//2、处理器适配器调用我们的处理器  </span></span><br><span class="line">mv = ha.handle(processedRequest, response, mappedHandler.getHandler());  </span><br><span class="line"><span class="comment">//当我们返回null或没有返回逻辑视图名时的默认视图名翻译（详解4.15.5 RequestToViewNameTranslator）  </span></span><br><span class="line"><span class="keyword">if</span> (mv != <span class="keyword">null</span> &amp;&amp; !mv.hasView()) &#123;  </span><br><span class="line">   mv.setViewName(getDefaultViewName(request));  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="comment">//3、处理器拦截器的后处理（逆序）  </span></span><br><span class="line"><span class="keyword">if</span> (interceptors != <span class="keyword">null</span>) &#123;  </span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = interceptors.length - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;  </span><br><span class="line">     HandlerInterceptor interceptor = interceptors[i];  </span><br><span class="line">     interceptor.postHandle(processedRequest, response, mappedHandler.getHandler(), mv);  </span><br><span class="line">&#125;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="comment">//4、视图的渲染  </span></span><br><span class="line"><span class="keyword">if</span> (mv != <span class="keyword">null</span> &amp;&amp; !mv.wasCleared()) &#123;  </span><br><span class="line">render(mv, processedRequest, response);  </span><br><span class="line">   <span class="keyword">if</span> (errorView) &#123;  </span><br><span class="line">       WebUtils.clearErrorRequestAttributes(request);  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="comment">//5、触发整个请求处理完毕回调方法afterCompletion  </span></span><br><span class="line">triggerAfterCompletion(mappedHandler, interceptorIndex, processedRequest, response, <span class="keyword">null</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// triggerAfterCompletion方法  </span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">triggerAfterCompletion</span><span class="params">(HandlerExecutionChain mappedHandler, <span class="keyword">int</span> interceptorIndex,  </span></span></span><br><span class="line"><span class="function"><span class="params">       HttpServletRequest request, HttpServletResponse response, Exception ex)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 5、触发整个请求处理完毕回调方法afterCompletion （逆序从1.2中的预处理成功的索引处的拦截器执行）  </span></span><br><span class="line">   <span class="keyword">if</span> (mappedHandler != <span class="keyword">null</span>) &#123;  </span><br><span class="line">       HandlerInterceptor[] interceptors = mappedHandler.getInterceptors();  </span><br><span class="line">       <span class="keyword">if</span> (interceptors != <span class="keyword">null</span>) &#123;  </span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = interceptorIndex; i &gt;= <span class="number">0</span>; i--) &#123;  </span><br><span class="line">               HandlerInterceptor interceptor = interceptors[i];  </span><br><span class="line">               <span class="keyword">try</span> &#123;  </span><br><span class="line">                   interceptor.afterCompletion(request, response, mappedHandler.getHandler(), ex);  </span><br><span class="line">               &#125;  </span><br><span class="line">               <span class="keyword">catch</span> (Throwable ex2) &#123;  </span><br><span class="line">                   logger.error(<span class="string">"HandlerInterceptor.afterCompletion threw exception"</span>, ex2);  </span><br><span class="line">               &#125;  </span><br><span class="line">           &#125;  </span><br><span class="line">       &#125;  </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>常见应用示例</h1>
+<h2 id="性能监控">性能监控</h2>
+<p>如记录一下请求的处理时间，得到一些慢请求（如处理时间超过500毫秒），从而进行性能改进，一般的反向代理服务器如apache都具有这个功能，但此处我们演示一下使用拦截器怎么实现的。</p>
+<p>实现分析如下：</p>
+<p>1、在进入处理器之前记录开始时间，即在拦截器的preHandle记录开始时间；</p>
+<p>2、在结束请求处理之后记录结束时间，即在拦截器的afterCompletion记录结束实现，并用结束时间-开始时间得到这次请求的处理时间。</p>
+<p>问题：我们的拦截器是单例，因此不管用户请求多少次都只有一个拦截器实现，即线程不安全，那我们应该怎么记录时间呢？</p>
+<p>解决方案是<strong>使用ThreadLocal</strong>，它是线程绑定的变量，提供线程局部变量（一个线程一个ThreadLocal，A线程的ThreadLocal只能看到A线程的ThreadLocal，不能看到B线程的ThreadLocal）。</p>
+<p>拦截器代码示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter5.web.interceptor;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StopWatchHandlerInterceptor</span> <span class="keyword">extends</span> <span class="title">HandlerInterceptorAdapter</span> </span>&#123;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//NamedThreadLocal：Spring提供的一个命名的ThreadLocal实现。</span></span><br><span class="line">   <span class="keyword">private</span> NamedThreadLocal&lt;Long&gt; startTimeThreadLocal = <span class="keyword">new</span> NamedThreadLocal&lt;Long&gt;(<span class="string">"StopWatch-StartTime"</span>);  </span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span>  </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception </span>&#123;  </span><br><span class="line">       <span class="keyword">long</span> beginTime = System.currentTimeMillis();<span class="comment">//1、开始时间  </span></span><br><span class="line">       startTimeThreadLocal.set(beginTime);<span class="comment">//线程绑定变量（该数据只有当前请求的线程可见）  </span></span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">true</span>;<span class="comment">//继续流程  </span></span><br><span class="line">   &#125;  </span><br><span class="line">     </span><br><span class="line">   <span class="meta">@Override</span>  </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterCompletion</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)</span> <span class="keyword">throws</span> Exception </span>&#123;  </span><br><span class="line">       <span class="keyword">long</span> endTime = System.currentTimeMillis();<span class="comment">//2、结束时间  </span></span><br><span class="line">       <span class="keyword">long</span> beginTime = startTimeThreadLocal.get();<span class="comment">//得到线程绑定的局部变量（开始时间）  </span></span><br><span class="line">       <span class="keyword">long</span> consumeTime = endTime - beginTime;<span class="comment">//3、消耗的时间  </span></span><br><span class="line">       <span class="keyword">if</span>(consumeTime &gt; <span class="number">500</span>) &#123;<span class="comment">//此处认为处理时间超过500毫秒的请求为慢请求  </span></span><br><span class="line">           <span class="comment">//TODO 记录到日志文件  </span></span><br><span class="line">           System.out.println(String.format(<span class="string">"%s consume %d millis"</span>, request.getRequestURI(), consumeTime));  </span><br><span class="line">       &#125;          </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在测试时需要把stopWatchHandlerInterceptor放在拦截器链的第一个，这样得到的时间才是比较准确的。</p>
+<h2 id="登录检测">登录检测</h2>
+<p>在访问某些资源时（如订单页面），需要用户登录后才能查看，因此需要进行登录检测。</p>
+<p>流程：</p>
+<p>1、访问需要登录的资源时，由拦截器重定向到登录页面；</p>
+<p>2、如果访问的是登录页面，拦截器不应该拦截；</p>
+<p>3、用户登录成功后，往cookie/session添加登录成功的标识（如用户编号）；</p>
+<p>4、下次请求时，拦截器通过判断cookie/session中是否有该标识来决定继续流程还是到登录页面；</p>
+<p>5、此拦截器还应该放行允许游客访问的资源。</p>
+<p>拦截器代码如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span>  </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception </span>&#123;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//1、请求到登录页面 放行  </span></span><br><span class="line">   <span class="keyword">if</span>(request.getServletPath().startsWith(loginUrl)) &#123;  </span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">true</span>;  </span><br><span class="line">   &#125;  </span><br><span class="line">         </span><br><span class="line">   <span class="comment">//2、TODO 比如退出、首页等页面无需登录，即此处要放行允许游客的请求  </span></span><br><span class="line">         </span><br><span class="line">   <span class="comment">//3、如果用户已经登录放行    </span></span><br><span class="line">   <span class="keyword">if</span>(request.getSession().getAttribute(<span class="string">"username"</span>) != <span class="keyword">null</span>) &#123;  </span><br><span class="line">       <span class="comment">//更好的实现方式的使用cookie  </span></span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">true</span>;  </span><br><span class="line">   &#125;  </span><br><span class="line">         </span><br><span class="line">   <span class="comment">//4、非法请求，即这些请求需要登录后才能访问  </span></span><br><span class="line">   <span class="comment">//重定向到登录页面  </span></span><br><span class="line">   response.sendRedirect(request.getContextPath() + loginUrl);  </span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">false</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>29-SPRINGMVC处理器拦截器</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">拦截器接口HandlerInterceptor</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HandlerInterceptor接口"><span class="nav-text">HandlerInterceptor接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拦截器适配器HandlerInterceptorAdapter"><span class="nav-text">拦截器适配器HandlerInterceptorAdapter</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">多拦截器运行流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">SpringMVC处理器拦截器内部工作原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">常见应用示例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#性能监控"><span class="nav-text">性能监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#登录检测"><span class="nav-text">登录检测</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

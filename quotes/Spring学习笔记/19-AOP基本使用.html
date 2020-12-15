@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="基于Xml的AOP配置aop命名空间首先在 &amp;lt;beans&amp;gt; 标签中引入aop命名空间。1234567891011&amp;lt;beans  xmlns=&quot;http:&#x2F;&#x2F;www.springframework.org&#x2F;schema&#x2F;beans&quot;       xmlns:xsi=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2001&#x2F;XMLSchema-instance&quot;       xmlns:con">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;19-AOP%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="基于Xml的AOP配置aop命名空间首先在 &amp;lt;beans&amp;gt; 标签中引入aop命名空间。1234567891011&amp;lt;beans  xmlns=&quot;http:&#x2F;&#x2F;www.springframework.org&#x2F;schema&#x2F;beans&quot;       xmlns:xsi=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2001&#x2F;XMLSchema-instance&quot;       xmlns:con">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584796355_20200321211015685_19873.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584796355_20200321211015371_21628.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584796354_20200321211014757_2493.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.036Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584796355_20200321211015685_19873.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/19-AOP%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>19-AOP基本使用</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>基于Xml的AOP配置</h1><h2 id="aop命名空间">aop命名空间</h2><p>首先在 <code>&lt;beans&gt;</code> 标签中引入aop命名空间。</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">beans</span>  <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">"http://www.springframework.org/schema/context"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:aop</span>=<span class="string">"http://www.springframework.org/schema/aop"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">"</span></span></span><br><span class="line"><span class="tag"><span class="string">          http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">          http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="tag"><span class="string">          http://www.springframework.org/schema/context/spring-context-3.0.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">          http://www.springframework.org/schema/aop</span></span></span><br><span class="line"><span class="tag"><span class="string">          http://www.springframework.org/schema/aop/spring-aop.xsd"</span>&gt;</span></span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+<h2 id="aop-config-：根标签"><code>&lt;aop:config&gt;</code> ：根标签</h2>
+<p>所有AOP相关定义必须放在 <code>&lt;aop:config&gt;</code> 标签中（除了目标Bean、切面支持Bean）。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--AOP定义--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="aop-pointcut-：定义切入点"><code>&lt;aop:pointcut&gt;</code> ：定义切入点</h2>
+<p><code>&lt;aop:pointcut&gt;</code> ：定义一个切入点，可以在 <code>&lt;aop:config&gt;</code> （推荐，可用用于所有切面）或者 <code>&lt;aop:aspect&gt;</code> 标签下定义（只能用于当前切面）；其中id属性指定切入点名称，expression属性指定切入点匹配表达式。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!--aop_pay_log包及子包中所有bean的所有方法--&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">aop:pointcut</span> <span class="attr">id</span>=<span class="string">"ponitcut"</span> <span class="attr">expression</span>=<span class="string">"execution(* aop_helloWorld..*.sayBefore(..)) and args(param)"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="aop-aspect-：定义切面"><code>&lt;aop:aspect&gt;</code> ：定义切面</h2>
+<p><code>&lt;aop:aspect&gt;</code> ：定义切面，可以包含多个切入点、增强和引入；其中ref属性指定切面支持Bean。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line"> <span class="comment">&lt;!--切面定义--&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">ref</span>=<span class="string">"aspect"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--切入点定义--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--前置增强定义--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--后置返回增强定义--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--后置异常增强定义--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--后置最终增强定义--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--环绕增强定义--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--引入定义--&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="aop-aspect-：定义增强"><code>&lt;aop:aspect&gt;</code> ：定义增强</h2>
+<p><code>&lt;aop:aspect&gt;</code> 中使用子标签定义增强：</p>
+<h3 id="aop-before-：定义前置增强"><code>&lt;aop:before&gt;</code> ：定义前置增强</h3>
+<p>使用pointcut属性指定切入点表达式，或者使用pointcut-ref引用切入点（二者选一）；</p>
+<p>使用method属性指定切面支持Bean中对应的增强方法，多态方法需要用括号加上参数类型（多个用“,”隔开）；</p>
+<p>使用arg-names属性显式指定绑定至连接点相关参数的增强方法对应参数名（按顺序匹配）。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--AOP定义开始--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--切面定义--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">ref</span>=<span class="string">"aspect"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--前置增强定义--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:before</span> <span class="attr">pointcut</span>=<span class="string">"execution(* aop_helloWorld..*.sayBefore(..)) and args(param)"</span></span></span><br><span class="line"><span class="tag">                     <span class="attr">method</span>=<span class="string">"beforeAdvice(java.lang.String)"</span></span></span><br><span class="line"><span class="tag">                     <span class="attr">arg-names</span>=<span class="string">"param"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="aop-after-returning-：定义后置返回增强"><code>&lt;aop:after-returning&gt;</code> ：定义后置返回增强</h3>
+<p>使用pointcut属性指定切入点表达式，或者使用pointcut-ref引用切入点（二者选一）；</p>
+<p>使用method属性指定切面支持Bean中对应的增强方法，多态方法需要用括号加上参数类型（多个用“,”隔开）；</p>
+<p>使用arg-names属性显式指定绑定至连接点相关参数的增强方法对应参数名（按顺序匹配）；</p>
+<p><strong>使用returning属性指定了绑定至目标方法返回值的增强方法参数名，注意对应参数类型必须匹配。</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--AOP定义开始--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--切面定义--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">ref</span>=<span class="string">"aspect"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--后置返回增强定义--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:after-returning</span> <span class="attr">pointcut</span>=<span class="string">"execution(* aop_helloWorld..*.sayAfterReturning(..))"</span></span></span><br><span class="line"><span class="tag">                              <span class="attr">method</span>=<span class="string">"afterReturningAdvice"</span></span></span><br><span class="line"><span class="tag">                              <span class="attr">arg-names</span>=<span class="string">"retVal"</span></span></span><br><span class="line"><span class="tag">                              <span class="attr">returning</span>=<span class="string">"retVal"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="aop-after-throwing-：定义后置异常增强"><code>&lt;aop:after-throwing&gt;</code> ：定义后置异常增强</h3>
+<p>使用pointcut属性指定切入点表达式，或者使用pointcut-ref引用切入点（二者选一）；</p>
+<p>使用method属性指定切面支持Bean中对应的增强方法，多态方法需要用括号加上参数类型（多个用“,”隔开）；</p>
+<p>使用arg-names属性显式指定绑定至连接点相关参数的增强方法对应参数名（按顺序匹配）；</p>
+<p><strong>使用throwing属性指定了绑定至目标方法抛出的异常的增强方法参数名，同样两者的异常类型必须匹配。</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--AOP定义开始--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">ref</span>=<span class="string">"aspect"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--后置异常增强定义--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:after-throwing</span> <span class="attr">pointcut</span>=<span class="string">"execution(* aop_helloWorld..*.sayAfterThrowing(..))"</span></span></span><br><span class="line"><span class="tag">                              <span class="attr">method</span>=<span class="string">"afterThrowingAdvice"</span></span></span><br><span class="line"><span class="tag">                              <span class="attr">arg-names</span>=<span class="string">"exception"</span></span></span><br><span class="line"><span class="tag">                              <span class="attr">throwing</span>=<span class="string">"exception"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="aop-after-：定义后置最终增强"><code>&lt;aop:after&gt;</code> ：定义后置最终增强</h3>
+<p>使用pointcut属性指定切入点表达式，或者使用pointcut-ref引用切入点（二者选一）；</p>
+<p>使用method属性指定切面支持Bean中对应的增强方法，多态方法需要用括号加上参数类型（多个用“,”隔开）；</p>
+<p>使用arg-names属性显式指定绑定至连接点相关参数的增强方法对应参数名（按顺序匹配）。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--AOP定义开始--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--切面定义--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">ref</span>=<span class="string">"aspect"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--后置最终增强定义--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:after</span> <span class="attr">pointcut</span>=<span class="string">"execution(* aop_helloWorld..*.sayAfterFinally(..))"</span></span></span><br><span class="line"><span class="tag">                   <span class="attr">method</span>=<span class="string">"afterFinallyAdvice"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="aop-around-：定义环绕增强"><code>&lt;aop:around&gt;</code> ：定义环绕增强</h3>
+<p>使用pointcut属性指定切入点表达式，或者使用pointcut-ref引用切入点（二者选一）；</p>
+<p>使用method属性指定切面支持Bean中对应的增强方法，多态方法需要用括号加上参数类型（多个用“,”隔开）；</p>
+<p>使用arg-names属性显式指定绑定至连接点相关参数的增强方法对应参数名（按顺序匹配）。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--AOP定义开始--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--切面定义--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">ref</span>=<span class="string">"aspect"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--环绕增强定义--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:around</span> <span class="attr">pointcut</span>=<span class="string">"execution(* aop_helloWorld..*.sayAround(..))"</span></span></span><br><span class="line"><span class="tag">                     <span class="attr">method</span>=<span class="string">"aroundAdvice"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意的是：环绕增强方法中接受ProceedingJoinPoint作为参数。这个对象是必须要有的，因为你要在增强中通过它来调用被增强的方法。增强方法中可以做任何的事情，当要将控制权交给被增强的方法时，它需要调用ProceedingJoinPoint的proceed()方法。</p>
+<p>千万别忘记调用proceed()方法。如果不调这个方法的话，那么你的增强实际上会阻塞对被增强方法的调用。有可能这就是你想要的效果，但更多的情况是你希望在某个点上执行被增强的方法。</p>
+<p>有意思的是，你可以不调用proceed()方法，从而阻塞对被增强方法的访问，与之类似，你也可以在增强中对它进行多次调用。要这样做的一个场景就是实现重试逻辑，也就是在被增强方法失败后，进行重复尝试。</p>
+<h2 id="aop-declare-parents-：定义引入"><code>&lt;aop:declare-parents&gt;</code> ：定义引入</h2>
+<p>引入： <code>&lt;aop:aspect&gt;</code> 内使用 <code>&lt;aop:declare-parents&gt;</code> 标签定义；</p>
+<p>其中types-matching属性指定用于匹配目标类的AspectJ语法类型表达式；</p>
+<p>implement-interface属性指定需要引入的接口；</p>
+<p>default-impl（指定全限定名）或者delegate-ref（指定引用Bean）指定引入接口的实现类，二者选一。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--AOP定义开始--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--切面定义--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">ref</span>=<span class="string">"aspect"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--引入定义--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:declare-parents</span> <span class="attr">types-matching</span>=<span class="string">"aop_helloWorld..IHelloWorldService+"</span></span></span><br><span class="line"><span class="tag">                             <span class="attr">implement-interface</span>=<span class="string">"introductionAOP.IIntroductionService"</span></span></span><br><span class="line"><span class="tag">                             <span class="attr">default-impl</span>=<span class="string">"introductionAOP.IntroductionServiceImpl"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="aop-advisor-：定义单一切面"><code>&lt;aop:advisor&gt;</code> ：定义单一切面</h2>
+<p>Advisor：只有一个增强和一个切入点的切面。</p>
+<p><code>&lt;aop:config&gt;</code> 中使用 <code>&lt;aop:advisor&gt;</code> 标签定义；</p>
+<p>其中使用pointcut或者pointcut-ref属性指定切入点；</p>
+<p>使用advice-ref属性指定增强实现类。</p>
+<p>注意该类必须实现指定增强接口，比如前置增强接口MethodBeforeAdvice，因此不建议使用。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--AOP定义开始--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--advisor定义--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:advisor</span> <span class="attr">pointcut</span>=<span class="string">"execution(* aop_helloWorld..*.sayAdvisorBefore(..))"</span></span></span><br><span class="line"><span class="tag">                 <span class="attr">advice-ref</span>=<span class="string">"beforeAdvice"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>基于@AspectJ的AOP配置</h1>
+<h2 id="启用AspectJ注解的自动代理">启用AspectJ注解的自动代理</h2>
+<p>如果你使用JavaConfig的话，可以在配置类的类级别上通过使用EnableAspectJAutoProxy注解启用自动代理功能。下面程序清单展现了如何在JavaConfig中启用自动代理。</p>
+<p><strong>程序清单：在JavaConfig中启用AspectJ注解的自动代理</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584796355_20200321211015685_19873.png" alt></p>
+<p>假如你在Spring中要使用XML来装配bean的话，那么需要使用Spring aop命名空间中的 <code>&lt;aop:aspectj-autoproxy&gt;</code> 元素。下面的XML配置展现了如何完成该功能。</p>
+<p><strong>程序清单：在XML中，通过Spring的aop命名空间启用AspectJ自动代理</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584796355_20200321211015371_21628.png" alt></p>
+<p>不管你是使用JavaConfig还是XML，AspectJ自动代理都会为使用@Aspect注解的bean创建一个代理，这个代理会围绕着所有该切面的切点所匹配的bean。</p>
+<p>我们需要记住的是，Spring的AspectJ自动代理仅仅使用@AspectJ作为创建切面的指导，切面依然是基于代理的。在本质上，它依然是Spring基于代理的切面。这一点非常重要，因为这意味着尽管使用的是@AspectJ注解，但我们仍然限于代理方法的调用。如果想利用AspectJ的所有能力，我们必须在运行时使用AspectJ并且不依赖Spring来创建基于代理的切面。</p>
+<h2 id="Aspect：声明切面类">@Aspect：声明切面类</h2>
+<p>使用@Aspect注解将POJO类声明为切面类，然后在XML配置文件中将其定义为Bean,这样Spring就能自动识别。</p>
+<p>切面类中：通过注解可以在类方法上声明切面中的切入点和增强方法，在字段上声明引入。</p>
+<ol>
+<li>切面类定义如下：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义切面类</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldAnnotationAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义切入点</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义前置增强</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义后置返回增强</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义后置异常增强</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义后置增强</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义环绕增强</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义引入</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>切面bean配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--切面类--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"aspect"</span> <span class="attr">class</span>=<span class="string">"HelloWorldAnnotationAspect"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Pointcut：声明切入点">@Pointcut：声明切入点</h2>
+<p>@Pointcut注解能够在一个@AspectJ切面内定义可重用的切点，其中该注解所应用的方法名指定了切入点的名称，方法体不重要，可以为空；</p>
+<p>注解中使用value属性指定切入点匹配表达式，argNames属性显示指定匹配目标方法参数的切入点参数（按顺序匹配）。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584796354_20200321211014757_2493.png" alt></p>
+<p><strong>程序清单：通过@Pointcut注解声明频繁使用的切点表达式</strong></p>
+<p>在Audience中，performance()方法使用了@Pointcut注解。为@Pointcut注解设置的值是一个切点表达式，就像之前在通知注解上所设置的那样。通过在performance()方法上添加@Pointcut注解，我们实际上扩展了切点表达式语言，这样就可以在任何的切点表达式中使用performance()了，如果不这样做的话，你需要在这些地方使用那个更长的切点表达式。我们现在把所有通知注解中的长表达式都替换成了performance()。</p>
+<p>performance()方法的实际内容并不重要，在这里它实际上应该是空的。其实该方法本身只是一个标识，供@Pointcut注解依附。</p>
+<h2 id="定义增强">定义增强</h2>
+<p>声明增强方法：@Before、@AfterReturning、@AfterThrowing、@After、@Around</p>
+<h3 id="Before：声明前置增强">@Before：声明前置增强</h3>
+<p>其中value或者pointcut属性指定切入点表达式或命名切入点，其它属性值与Schema方式配置相同。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.*;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//定义切面类</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldAnnotationAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义切入点</span></span><br><span class="line">   <span class="meta">@Pointcut</span>(value=<span class="string">"execution(* aop_helloWorld..*.sayBefore(java.lang.String)) &amp;&amp; args(param)"</span>, argNames = <span class="string">"param"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforePointcut</span><span class="params">(String param)</span> </span>&#123;&#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义前置增强</span></span><br><span class="line">   <span class="meta">@Before</span>(value = <span class="string">"beforePointcut(param)"</span>, argNames = <span class="string">"param"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeAdvice</span><span class="params">(String param)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========before advice param:"</span> + param);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AfterReturning：声明后置返回增强">@AfterReturning：声明后置返回增强</h3>
+<p>其中value或者pointcut属性指定指定切入点表达式或命名切入点，其它属性值与Schema方式配置相同。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.*;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//定义切面类</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldAnnotationAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义后置返回增强</span></span><br><span class="line">   <span class="meta">@AfterReturning</span>(</span><br><span class="line">           value=<span class="string">"execution(* aop_helloWorld..*.sayBefore(..))"</span>,</span><br><span class="line">           pointcut=<span class="string">"execution(* aop_helloWorld..*.sayAfterReturning(..))"</span>,</span><br><span class="line">           argNames=<span class="string">"retVal"</span>, returning=<span class="string">"retVal"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterReturningAdvice</span><span class="params">(Object retVal)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========after returning advice retVal:"</span> + retVal);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AfterThrowing：声明后置异常增强">@AfterThrowing：声明后置异常增强</h3>
+<p>其中value或者pointcut属性指定指定切入点表达式或命名切入点，其它属性值与Schema方式配置相同。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.*;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//定义切面类</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldAnnotationAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义后置异常增强</span></span><br><span class="line">   <span class="meta">@AfterThrowing</span>(</span><br><span class="line">           value=<span class="string">"execution(* aop_helloWorld..*.sayAfterThrowing(..))"</span>,</span><br><span class="line">           argNames=<span class="string">"exception"</span>, throwing=<span class="string">"exception"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterThrowingAdvice</span><span class="params">(Exception exception)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========after throwing advice exception:"</span> + exception);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="After：声明后置最终增强">@After：声明后置最终增强</h3>
+<p>其中value或者pointcut属性指定指定切入点表达式或命名切入点，其它属性值与Schema方式配置相同。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.*;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//定义切面类</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldAnnotationAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义后置增强</span></span><br><span class="line">   <span class="meta">@After</span>(value=<span class="string">"execution(* aop_helloWorld..*.sayAfterFinally(..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterFinallyAdvice</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========after finally advice"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Around：声明环绕增强">@Around：声明环绕增强</h3>
+<p>其中value或者pointcut属性指定指定切入点表达式或命名切入点，其它属性值与Schema方式配置相同。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.*;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//定义切面类</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldAnnotationAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义环绕增强</span></span><br><span class="line">   <span class="meta">@Around</span>(value=<span class="string">"execution(* aop_helloWorld..*.sayAround(..))"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> Object <span class="title">aroundAdvice</span><span class="params">(ProceedingJoinPoint pjp)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========around before advice"</span>);</span><br><span class="line">       Object retVal = pjp.proceed(<span class="keyword">new</span> Object[] &#123;<span class="string">"replace"</span>&#125;);</span><br><span class="line">       System.out.println(<span class="string">"===========around after advice"</span>);</span><br><span class="line">       <span class="keyword">return</span> retVal;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="DeclareParents：定义引入">@DeclareParents：定义引入</h2>
+<p>使用@DeclareParents定义引入：</p>
+<p>其中value属性等同于 <code>&lt;aop:declare-parents&gt;</code> 的type-matching属性，</p>
+<p>defaultImpl属性等同于 <code>&lt;aop:declare-parents&gt;</code> 的default-impl属性，</p>
+<p>该注解所应用的字段类型指定了将被引入的接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> introductionAOP.IIntroductionService;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.*;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//定义切面类</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldAnnotationAspect</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义引入</span></span><br><span class="line">   <span class="meta">@DeclareParents</span>(value=<span class="string">"aop_helloWorld..*.IHelloWorldService+"</span>, defaultImpl = introductionAOP.IntroductionServiceImpl.class)</span><br><span class="line">   <span class="keyword">private</span> IIntroductionService introductionService;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//this可以匹配引入的接口方法</span></span><br><span class="line"><span class="comment">//    @Around(value="this(introductionAOP.IIntroductionService+)")</span></span><br><span class="line"><span class="comment">//    public Object thisPointcut(ProceedingJoinPoint pjp) throws Throwable &#123;</span></span><br><span class="line"><span class="comment">//        System.out.println("===========around sssss advice");</span></span><br><span class="line"><span class="comment">//        Object retVal = pjp.proceed();</span></span><br><span class="line"><span class="comment">//        System.out.println("===========around ssss advice");</span></span><br><span class="line"><span class="comment">//        return retVal;</span></span><br><span class="line"><span class="comment">//    &#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>相关类</h1>
+<h2 id="目标接口类">目标接口类</h2>
+<ol>
+<li>目标接口</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> aop_helloWorld</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IHelloWorldService</span> </span>&#123;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayHello</span><span class="params">()</span></span>;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayBefore</span><span class="params">(String param)</span></span>;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">sayAfterReturning</span><span class="params">()</span></span>;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayAfterThrowing</span><span class="params">()</span></span>;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">sayAfterFinally</span><span class="params">()</span></span>;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayAround</span><span class="params">(String param)</span></span>;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayAdvisorBefore</span><span class="params">(String param)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>目标类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> aop_helloWorld</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldServiceImpl</span> <span class="keyword">implements</span> <span class="title">IHelloWorldService</span> </span>&#123;</span><br><span class="line">   </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayHello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"============say Hello World!"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayBefore</span><span class="params">(String param)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"============say before "</span> + param);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">sayAfterReturning</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"============say after returning"</span>);</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayAfterThrowing</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"============say after throwing"</span>);</span><br><span class="line">       <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException();</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">sayAfterFinally</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"============say after finally"</span>);</span><br><span class="line">       <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException();</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayAround</span><span class="params">(String param)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"============say around param:"</span> + param);</span><br><span class="line">   &#125;</span><br><span class="line">  </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayAdvisorBefore</span><span class="params">(String param)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"============say advisorBefore "</span> + param);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>bean配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--目标类--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloWorldService"</span> <span class="attr">class</span>=<span class="string">"aop_helloWorld.HelloWorldServiceImpl"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="切面增强类（Xml配置中）">切面增强类（Xml配置中）</h2>
+<p>切面支持Bean（增强类）：该Bean与普通Bean定义方式一样，字段和方法分别提供了切面状态和切面增强方法。</p>
+<p>示例如下</p>
+<ol>
+<li>切面增强类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldAspect</span> </span>&#123;</span><br><span class="line">       </span><br><span class="line">   <span class="comment">//前置增强</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeAdvice</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========before advice"</span>);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//后置最终增强</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterFinallyAdvice</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========after finally advice"</span>);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//前置增强带参数</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeAdvice</span><span class="params">(String param)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========before advice param:"</span> + param);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">  <span class="comment">//后置返回增强</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterReturningAdvice</span><span class="params">(Object retVal)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========after returning advice retVal:"</span> + retVal);</span><br><span class="line">   &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//后置异常增强</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterThrowingAdvice</span><span class="params">(Exception exception)</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========after throwing advice exception:"</span> + exception);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line"> <span class="comment">//环绕增强</span></span><br><span class="line"> <span class="comment">//注意：其中的环绕增强方法使用org.aspectj.lang.ProceedingJoinPoint类型参数（必须为第一个）获取目标方法的相关信息。</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Object <span class="title">aroundAdvice</span><span class="params">(ProceedingJoinPoint pjp)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========around before advice"</span>);</span><br><span class="line">      <span class="comment">//通过传入的参数对象pjp的proceed(Object[] args)方法来执行目标方法，其中，Object[]数组传入目标方法参数；</span></span><br><span class="line">       Object retVal = pjp.proceed(<span class="keyword">new</span> Object[] &#123;<span class="string">"replace"</span>&#125;);</span><br><span class="line">       System.out.println(<span class="string">"===========around after advice"</span>);</span><br><span class="line">       <span class="keyword">return</span> retVal;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>切面支持Bean配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--切面支持Bean--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"aspect"</span> <span class="attr">class</span>=<span class="string">"HelloWorldAspect"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="引入接口类">引入接口类</h2>
+<ol>
+<li>引入接口</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> introductionAOP</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IIntroductionService</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">induct</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>引入接口实现类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> introductionAOP</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IntroductionServiceImpl</span> <span class="keyword">implements</span> <span class="title">IIntroductionService</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">induct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"=========introduction"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Advisor增强类（Xml配置中）">Advisor增强类（Xml配置中）</h2>
+<ol>
+<li>Advisor增强类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> org.springframework.aop.MethodBeforeAdvice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BeforeAdviceImpl</span> <span class="keyword">implements</span> <span class="title">MethodBeforeAdvice</span> </span>&#123;</span><br><span class="line">   </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">(Method method, Object[] args, Object target)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"===========before advice"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>bean配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--advice类--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"beforeAdvice"</span> <span class="attr">class</span>=<span class="string">"advisor.BeforeAdviceImpl"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>19-AOP基本使用</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">基于Xml的AOP配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#aop命名空间"><span class="nav-text">aop命名空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aop-config-：根标签"><span class="nav-text">&lt;aop:config&gt; ：根标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aop-pointcut-：定义切入点"><span class="nav-text">&lt;aop:pointcut&gt; ：定义切入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aop-aspect-：定义切面"><span class="nav-text">&lt;aop:aspect&gt; ：定义切面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aop-aspect-：定义增强"><span class="nav-text">&lt;aop:aspect&gt; ：定义增强</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#aop-before-：定义前置增强"><span class="nav-text">&lt;aop:before&gt; ：定义前置增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aop-after-returning-：定义后置返回增强"><span class="nav-text">&lt;aop:after-returning&gt; ：定义后置返回增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aop-after-throwing-：定义后置异常增强"><span class="nav-text">&lt;aop:after-throwing&gt; ：定义后置异常增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aop-after-：定义后置最终增强"><span class="nav-text">&lt;aop:after&gt; ：定义后置最终增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aop-around-：定义环绕增强"><span class="nav-text">&lt;aop:around&gt; ：定义环绕增强</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aop-declare-parents-：定义引入"><span class="nav-text">&lt;aop:declare-parents&gt; ：定义引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aop-advisor-：定义单一切面"><span class="nav-text">&lt;aop:advisor&gt; ：定义单一切面</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">基于@AspectJ的AOP配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启用AspectJ注解的自动代理"><span class="nav-text">启用AspectJ注解的自动代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Aspect：声明切面类"><span class="nav-text">@Aspect：声明切面类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pointcut：声明切入点"><span class="nav-text">@Pointcut：声明切入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义增强"><span class="nav-text">定义增强</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Before：声明前置增强"><span class="nav-text">@Before：声明前置增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AfterReturning：声明后置返回增强"><span class="nav-text">@AfterReturning：声明后置返回增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AfterThrowing：声明后置异常增强"><span class="nav-text">@AfterThrowing：声明后置异常增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#After：声明后置最终增强"><span class="nav-text">@After：声明后置最终增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Around：声明环绕增强"><span class="nav-text">@Around：声明环绕增强</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DeclareParents：定义引入"><span class="nav-text">@DeclareParents：定义引入</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">相关类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#目标接口类"><span class="nav-text">目标接口类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#切面增强类（Xml配置中）"><span class="nav-text">切面增强类（Xml配置中）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引入接口类"><span class="nav-text">引入接口类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Advisor增强类（Xml配置中）"><span class="nav-text">Advisor增强类（Xml配置中）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

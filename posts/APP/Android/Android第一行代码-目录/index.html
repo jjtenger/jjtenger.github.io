@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="开始Android开发Android系统架构 Linux内核层 系统运行库层 应用框架层 应用和服务 搭建Android开发环境 准备所需要的工具 添加SDK包 创建第一个Android项目 创建Android项目  启动模拟器 项目运行   项目结构分析 项目基本执行过程分析 项目资源分析 build.gradle文件分析 使用Android日志工具  使用Android的日志工具Log 为什么">
+<meta name="keywords" content="WebClipper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APP&#x2F;Android&#x2F;Android第一行代码-目录">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;posts&#x2F;APP&#x2F;Android&#x2F;Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81-%E7%9B%AE%E5%BD%95&#x2F;index.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="开始Android开发Android系统架构 Linux内核层 系统运行库层 应用框架层 应用和服务 搭建Android开发环境 准备所需要的工具 添加SDK包 创建第一个Android项目 创建Android项目  启动模拟器 项目运行   项目结构分析 项目基本执行过程分析 项目资源分析 build.gradle文件分析 使用Android日志工具  使用Android的日志工具Log 为什么">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:32.996Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/posts/APP/Android/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81-%E7%9B%AE%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>APP/Android/Android第一行代码-目录 | JJT-个人Wiki</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/posts/APP/Android/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81-%E7%9B%AE%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="jiateng.jiang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JJT-个人Wiki">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          APP/Android/Android第一行代码-目录
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-21 11:02:45" itemprop="dateCreated datePublished" datetime="2020-04-21T11:02:45+00:00">2020-04-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-15 11:07:32" itemprop="dateModified" datetime="2020-12-15T11:07:32+00:00">2020-12-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/APP/" itemprop="url" rel="index">
+                    <span itemprop="name">APP</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/APP/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>开始Android开发</h1><h2 id="Android系统架构"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/01-Android%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84.html">Android系统架构</a></h2><ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/01-Android%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84.html#1-Linux%E5%86%85%E6%A0%B8%E5%B1%82">Linux内核层</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/01-Android%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84.html#2-%E7%B3%BB%E7%BB%9F%E8%BF%90%E8%A1%8C%E5%BA%93%E5%B1%82">系统运行库层</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/01-Android%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84.html#3-%E5%BA%94%E7%94%A8%E6%A1%86%E6%9E%B6%E5%B1%82">应用框架层</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/01-Android%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84.html#4-%E5%BA%94%E7%94%A8%E5%92%8C%E6%9C%8D%E5%8A%A1">应用和服务</a></li>
+</ol><h2 id="搭建Android开发环境"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/02-%E6%90%AD%E5%BB%BAAndroid%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.html">搭建Android开发环境</a></h2><ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/02-%E6%90%AD%E5%BB%BAAndroid%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.html#1-%E5%87%86%E5%A4%87%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E5%B7%A5%E5%85%B7">准备所需要的工具</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/02-%E6%90%AD%E5%BB%BAAndroid%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.html#2-%E6%B7%BB%E5%8A%A0SDK%E5%8C%85">添加SDK包</a></li>
+</ol><h2 id="创建第一个Android项目"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html">创建第一个Android项目</a></h2><ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html#1-%E5%88%9B%E5%BB%BAAndroid%E9%A1%B9%E7%9B%AE">创建Android项目</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html#%E5%90%AF%E5%8A%A8%E6%A8%A1%E6%8B%9F%E5%99%A8">启动模拟器</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html#%E9%A1%B9%E7%9B%AE%E8%BF%90%E8%A1%8C">项目运行</a></li>
+</ol>
+</li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html#2-%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E5%88%86%E6%9E%90">项目结构分析</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html#3-%E9%A1%B9%E7%9B%AE%E5%9F%BA%E6%9C%AC%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90">项目基本执行过程分析</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html#4-%E9%A1%B9%E7%9B%AE%E8%B5%84%E6%BA%90%E5%88%86%E6%9E%90">项目资源分析</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html#5-build-gradle%E6%96%87%E4%BB%B6%E5%88%86%E6%9E%90">build.gradle文件分析</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html#6-%E4%BD%BF%E7%94%A8Android%E6%97%A5%E5%BF%97%E5%B7%A5%E5%85%B7">使用Android日志工具</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html#%E4%BD%BF%E7%94%A8Android%E7%9A%84%E6%97%A5%E5%BF%97%E5%B7%A5%E5%85%B7Log">使用Android的日志工具Log</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8Log%E8%80%8C%E4%B8%8D%E4%BD%BF%E7%94%A8System-out">为什么使用Log而不使用System.out</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html#%E8%BF%9B%E9%98%B6%E6%93%8D%E4%BD%9C">进阶操作</a></li>
+</ol>
+</li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/03-%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AAAndroid%E9%A1%B9%E7%9B%AE.html#7-%E5%B0%86%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E5%88%B0%E6%89%8B%E6%9C%BA%E4%B8%8A">将程序运行到手机上</a></li>
+</ol><a id="more"></a>
+
+
+
+
+
+
+<h1>Android活动</h1>
+<h2 id="Android活动基本用法"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/04-Android%E6%B4%BB%E5%8A%A8%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html">Android活动基本用法</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/04-Android%E6%B4%BB%E5%8A%A8%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#1-%E6%89%8B%E5%8A%A8%E5%88%9B%E5%BB%BA%E6%B4%BB%E5%8A%A8">手动创建活动</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/04-Android%E6%B4%BB%E5%8A%A8%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#2-%E5%88%9B%E5%BB%BA%E5%92%8C%E5%8A%A0%E8%BD%BD%E5%B8%83%E5%B1%80">创建和加载布局</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/04-Android%E6%B4%BB%E5%8A%A8%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#3-%E5%9C%A8AndroidManifest%E6%96%87%E4%BB%B6%E4%B8%AD%E6%B3%A8%E5%86%8C">在AndroidManifest文件中注册</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/04-Android%E6%B4%BB%E5%8A%A8%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#4-%E5%9C%A8%E6%B4%BB%E5%8A%A8%E4%B8%AD%E4%BD%BF%E7%94%A8Toast">在活动中使用Toast</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/04-Android%E6%B4%BB%E5%8A%A8%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#5-%E5%9C%A8%E6%B4%BB%E5%8A%A8%E4%B8%AD%E4%BD%BF%E7%94%A8Menu">在活动中使用Menu</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/04-Android%E6%B4%BB%E5%8A%A8%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#6-%E9%94%80%E6%AF%81%E4%B8%80%E4%B8%AA%E6%B4%BB%E5%8A%A8">销毁一个活动</a></li>
+</ol>
+<h2 id="使用Intent在活动之间穿梭"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/05-%E4%BD%BF%E7%94%A8Intent%E5%9C%A8%E6%B4%BB%E5%8A%A8%E4%B9%8B%E9%97%B4%E7%A9%BF%E6%A2%AD.html">使用Intent在活动之间穿梭</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/05-%E4%BD%BF%E7%94%A8Intent%E5%9C%A8%E6%B4%BB%E5%8A%A8%E4%B9%8B%E9%97%B4%E7%A9%BF%E6%A2%AD.html#1-%E4%BD%BF%E7%94%A8%E6%98%BE%E5%BC%8FIntent">使用显式Intent</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/05-%E4%BD%BF%E7%94%A8Intent%E5%9C%A8%E6%B4%BB%E5%8A%A8%E4%B9%8B%E9%97%B4%E7%A9%BF%E6%A2%AD.html#2-%E4%BD%BF%E7%94%A8%E9%9A%90%E5%BC%8FIntent">使用隐式Intent</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/05-%E4%BD%BF%E7%94%A8Intent%E5%9C%A8%E6%B4%BB%E5%8A%A8%E4%B9%8B%E9%97%B4%E7%A9%BF%E6%A2%AD.html#3-%E6%9B%B4%E5%A4%9A%E9%9A%90%E5%BC%8FIntent%E7%9A%84%E7%94%A8%E6%B3%95">更多隐式Intent的用法</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/05-%E4%BD%BF%E7%94%A8Intent%E5%9C%A8%E6%B4%BB%E5%8A%A8%E4%B9%8B%E9%97%B4%E7%A9%BF%E6%A2%AD.html#4-%E5%90%91%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%B4%BB%E5%8A%A8%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE">向下一个活动传递数据</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/05-%E4%BD%BF%E7%94%A8Intent%E5%9C%A8%E6%B4%BB%E5%8A%A8%E4%B9%8B%E9%97%B4%E7%A9%BF%E6%A2%AD.html#5-%E8%BF%94%E5%9B%9E%E6%95%B0%E6%8D%AE%E7%BB%99%E4%B8%8A%E4%B8%80%E4%B8%AA%E6%B4%BB%E5%8A%A8">返回数据给上一个活动</a></li>
+</ol>
+<h2 id="活动的生命周期"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/06-%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html">活动的生命周期</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/06-%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html#1-%E8%BF%94%E5%9B%9E%E6%A0%88">返回栈</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/06-%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html#2-%E6%B4%BB%E5%8A%A8%E7%8A%B6%E6%80%81">活动状态</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/06-%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html#1-%E8%BF%90%E8%A1%8C%E7%8A%B6%E6%80%81">运行状态</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/06-%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html#2-%E6%9A%82%E5%81%9C%E7%8A%B6%E6%80%81">暂停状态</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/06-%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html#3-%E5%81%9C%E6%AD%A2%E7%8A%B6%E6%80%81">停止状态</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/06-%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html#4-%E9%94%80%E6%AF%81%E7%8A%B6%E6%80%81">销毁状态</a></li>
+</ol>
+</li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/06-%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html#3-%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%94%9F%E5%AD%98%E6%9C%9F">活动的生存期</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/06-%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html#4-%E6%B4%BB%E5%8A%A8%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%A4%BA%E4%BE%8B">活动生命周期示例</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/06-%E6%B4%BB%E5%8A%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html#5-%E6%B4%BB%E5%8A%A8%E8%A2%AB%E5%9B%9E%E6%94%B6%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E">活动被回收了怎么办</a></li>
+</ol>
+<h2 id="活动的启动模式"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/07-%E6%B4%BB%E5%8A%A8%E7%9A%84%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F.html">活动的启动模式</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/07-%E6%B4%BB%E5%8A%A8%E7%9A%84%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F.html#1-standard%E6%A8%A1%E5%BC%8F">standard模式</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/07-%E6%B4%BB%E5%8A%A8%E7%9A%84%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F.html#2-singleTop%E6%A8%A1%E5%BC%8F">singleTop模式</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/07-%E6%B4%BB%E5%8A%A8%E7%9A%84%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F.html#3-singleTask%E6%A8%A1%E5%BC%8F">singleTask模式</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/07-%E6%B4%BB%E5%8A%A8%E7%9A%84%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F.html#4-singleInstance">singleInstance</a></li>
+</ol>
+<h2 id="活动的最佳实践"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/08-%E6%B4%BB%E5%8A%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html">活动的最佳实践</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/08-%E6%B4%BB%E5%8A%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html#1-%E7%9F%A5%E6%99%93%E5%BD%93%E5%89%8D%E6%98%AF%E5%9C%A8%E5%93%AA%E4%B8%80%E4%B8%AA%E6%B4%BB%E5%8A%A8">知晓当前是在哪一个活动</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/08-%E6%B4%BB%E5%8A%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html#2-%E9%9A%8F%E6%97%B6%E9%9A%8F%E5%9C%B0%E9%80%80%E5%87%BA%E7%A8%8B%E5%BA%8F">随时随地退出程序</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/08-%E6%B4%BB%E5%8A%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html#3-%E5%90%AF%E5%8A%A8%E6%B4%BB%E5%8A%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E5%86%99%E6%B3%95">启动活动的最佳写法</a></li>
+</ol>
+<h1>UI开发</h1>
+<h2 id="常见控件使用"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/09-%E5%B8%B8%E8%A7%81%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8.html">常见控件使用</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/09-%E5%B8%B8%E8%A7%81%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8.html#1-TextView">TextView</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/09-%E5%B8%B8%E8%A7%81%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8.html#2-Button">Button</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/09-%E5%B8%B8%E8%A7%81%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8.html#3-EditText">EditText</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/09-%E5%B8%B8%E8%A7%81%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8.html#4-ImageView">ImageView</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/09-%E5%B8%B8%E8%A7%81%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8.html#5-ProgressBar">ProgressBar</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/09-%E5%B8%B8%E8%A7%81%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8.html#6-AlertDialog">AlertDialog</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/09-%E5%B8%B8%E8%A7%81%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8.html#7-ProgressDialog">ProgressDialog</a></li>
+</ol>
+<h2 id="基本布局"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/10-%E5%9F%BA%E6%9C%AC%E5%B8%83%E5%B1%80.html">基本布局</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/10-%E5%9F%BA%E6%9C%AC%E5%B8%83%E5%B1%80.html#1-%E7%BA%BF%E6%80%A7%E5%B8%83%E5%B1%80LinearLayout">线性布局LinearLayout</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/10-%E5%9F%BA%E6%9C%AC%E5%B8%83%E5%B1%80.html#2-%E7%9B%B8%E5%AF%B9%E5%B8%83%E5%B1%80RelativeLayout">相对布局RelativeLayout</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/10-%E5%9F%BA%E6%9C%AC%E5%B8%83%E5%B1%80.html#3-%E5%B8%A7%E5%B8%83%E5%B1%80FrameLayout">帧布局FrameLayout</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/10-%E5%9F%BA%E6%9C%AC%E5%B8%83%E5%B1%80.html#4-%E7%99%BE%E5%88%86%E6%AF%94%E5%B8%83%E5%B1%80">百分比布局</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/10-%E5%9F%BA%E6%9C%AC%E5%B8%83%E5%B1%80.html#5-%E5%85%B6%E5%AE%83%E5%B8%83%E5%B1%80">其它布局</a></li>
+</ol>
+<h2 id="ListView"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/11-ListView.html">ListView</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/11-ListView.html#1-ListView%E7%9A%84%E7%AE%80%E5%8D%95%E7%94%A8%E6%B3%95">ListView的简单用法</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/11-ListView.html#2-%E5%AE%9A%E5%88%B6ListView%E7%9A%84%E7%95%8C%E9%9D%A2">定制ListView的界面</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/11-ListView.html#3-%E6%8F%90%E5%8D%87ListView%E7%9A%84%E8%BF%90%E8%A1%8C%E6%95%88%E7%8E%87">提升ListView的运行效率</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/11-ListView.html#4-ListView%E7%9A%84%E7%82%B9%E5%87%BB%E4%BA%8B%E4%BB%B6">ListView的点击事件</a></li>
+</ol>
+<h2 id="RecyclerView"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/12-RecyclerView.html">RecyclerView</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/12-RecyclerView.html#1-RecyclerView%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95">RecyclerView的基本用法</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/12-RecyclerView.html#2-%E5%AE%9E%E7%8E%B0%E6%A8%AA%E5%90%91%E6%BB%9A%E5%8A%A8">实现横向滚动</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/12-RecyclerView.html#3-%E5%AE%9E%E7%8E%B0%E7%80%91%E5%B8%83%E6%B5%81%E5%B8%83%E5%B1%80">实现瀑布流布局</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/12-RecyclerView.html#4-RecyclerView%E7%9A%84%E7%82%B9%E5%87%BB%E4%BA%8B%E4%BB%B6">RecyclerView的点击事件</a></li>
+</ol>
+<h2 id="自定义控件"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/13-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6.html">自定义控件</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/13-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6.html#1-%E5%BC%95%E5%85%A5%E5%B8%83%E5%B1%80">引入布局</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/13-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6.html#2-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6">创建自定义控件</a></li>
+</ol>
+<h2 id="界面开发最佳实践"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/14-%E7%95%8C%E9%9D%A2%E5%BC%80%E5%8F%91%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html">界面开发最佳实践</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/14-%E7%95%8C%E9%9D%A2%E5%BC%80%E5%8F%91%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html#1-%E5%88%B6%E4%BD%9CNine-Patch%E5%9B%BE%E7%89%87">制作Nine-Patch图片</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/14-%E7%95%8C%E9%9D%A2%E5%BC%80%E5%8F%91%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html#2-%E7%BC%96%E5%86%99%E7%B2%BE%E7%BE%8E%E7%9A%84%E8%81%8A%E5%A4%A9%E7%95%8C%E9%9D%A2">编写精美的聊天界面</a></li>
+</ol>
+<h1>Android碎片</h1>
+<h2 id="Android碎片基本用法"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/15-Android%E7%A2%8E%E7%89%87%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html">Android碎片基本用法</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/15-Android%E7%A2%8E%E7%89%87%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#1-%E7%A2%8E%E7%89%87%E7%9A%84%E7%AE%80%E5%8D%95%E7%94%A8%E6%B3%95">碎片的简单用法</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/15-Android%E7%A2%8E%E7%89%87%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#2-%E5%8A%A8%E6%80%81%E6%B7%BB%E5%8A%A0%E7%A2%8E%E7%89%87">动态添加碎片</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/15-Android%E7%A2%8E%E7%89%87%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#3-%E5%9C%A8%E7%A2%8E%E7%89%87%E4%B8%AD%E6%A8%A1%E6%8B%9F%E8%BF%94%E5%9B%9E%E6%A0%88">在碎片中模拟返回栈</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/15-Android%E7%A2%8E%E7%89%87%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#4-%E7%A2%8E%E7%89%87%E5%92%8C%E6%B4%BB%E5%8A%A8%E4%B9%8B%E9%97%B4%E8%BF%9B%E8%A1%8C%E9%80%9A%E4%BF%A1">碎片和活动之间进行通信</a></li>
+</ol>
+<h2 id="碎片的生命周期"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/16-%E7%A2%8E%E7%89%87%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html">碎片的生命周期</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/16-%E7%A2%8E%E7%89%87%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html#1-%E7%A2%8E%E7%89%87%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">碎片的生命周期</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/16-%E7%A2%8E%E7%89%87%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html#2-%E7%A2%8E%E7%89%87%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%A4%BA%E4%BE%8B">碎片生命周期示例</a></li>
+</ol>
+<h2 id="动态加载布局的技巧"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/17-%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%B8%83%E5%B1%80%E7%9A%84%E6%8A%80%E5%B7%A7.html">动态加载布局的技巧</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/17-%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%B8%83%E5%B1%80%E7%9A%84%E6%8A%80%E5%B7%A7.html#1-%E4%BD%BF%E7%94%A8%E9%99%90%E5%AE%9A%E7%AC%A6">使用限定符</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/17-%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%B8%83%E5%B1%80%E7%9A%84%E6%8A%80%E5%B7%A7.html#2-%E4%BD%BF%E7%94%A8%E6%9C%80%E5%B0%8F%E5%AE%BD%E5%BA%A6%E9%99%90%E5%AE%9A%E7%AC%A6">使用最小宽度限定符</a></li>
+</ol>
+<h2 id="碎片的最佳实践"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/18-%E7%A2%8E%E7%89%87%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html">碎片的最佳实践</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/18-%E7%A2%8E%E7%89%87%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html#%E5%88%9B%E5%BB%BA%E6%96%B0%E9%97%BB%E5%86%85%E5%AE%B9%E7%A2%8E%E7%89%87">创建新闻内容碎片</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/18-%E7%A2%8E%E7%89%87%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html#%E4%BD%BF%E7%94%A8%E5%8D%95%E7%8B%AC%E6%B4%BB%E5%8A%A8%E5%8A%A0%E8%BD%BD%E6%96%B0%E9%97%BB%E5%86%85%E5%AE%B9%E7%A2%8E%E7%89%87">使用单独活动加载新闻内容碎片</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/18-%E7%A2%8E%E7%89%87%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html#%E5%88%9B%E5%BB%BA%E6%96%B0%E9%97%BB%E5%88%97%E8%A1%A8%E7%A2%8E%E7%89%87%EF%BC%88%E4%B8%BB%E6%B4%BB%E5%8A%A8%E4%B8%AD%EF%BC%89">创建新闻列表碎片（主活动中）</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/18-%E7%A2%8E%E7%89%87%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html#%E4%BD%BF%E7%94%A8%E9%99%90%E5%AE%9A%E7%AC%A6%E5%8C%BA%E5%88%86%E5%8F%8C%E9%A1%B5%E6%88%96%E8%80%85%E5%8D%95%E9%A1%B5%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%BB%E6%B4%BB%E5%8A%A8%E4%B8%AD%EF%BC%89">使用限定符区分双页或者单页模式（主活动中）</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/18-%E7%A2%8E%E7%89%87%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html#%E4%B8%A4%E7%A7%8D%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E6%96%B0%E9%97%BB%E5%B1%95%E7%A4%BA%E9%80%BB%E8%BE%91">两种模式下的新闻展示逻辑</a></li>
+</ol>
+<h1><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/19-Android%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6.html">Android广播机制</a></h1>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/19-Android%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6.html#%E6%A0%87%E5%87%86%E5%B9%BF%E6%92%AD%EF%BC%88Normal-broadcasts%EF%BC%89">标准广播（Normal broadcasts）</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/19-Android%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6.html#%E6%9C%89%E5%BA%8F%E5%B9%BF%E6%92%AD%EF%BC%88Ordered-broadcasts%EF%BC%89">有序广播（Ordered broadcasts）</a></li>
+</ol>
+<h2 id="接收系统广播"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/20-%E6%8E%A5%E6%94%B6%E7%B3%BB%E7%BB%9F%E5%B9%BF%E6%92%AD.html">接收系统广播</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/20-%E6%8E%A5%E6%94%B6%E7%B3%BB%E7%BB%9F%E5%B9%BF%E6%92%AD.html#1-%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E7%9B%91%E5%90%AC%E7%BD%91%E7%BB%9C%E5%8F%98%E5%8C%96">动态注册监听网络变化</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/20-%E6%8E%A5%E6%94%B6%E7%B3%BB%E7%BB%9F%E5%B9%BF%E6%92%AD.html#2-%E9%9D%99%E6%80%81%E6%B3%A8%E5%86%8C%E5%AE%9E%E7%8E%B0%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8">静态注册实现开机启动</a></li>
+</ol>
+<h2 id="发送自定义广播"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/21-%E5%8F%91%E9%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B9%BF%E6%92%AD.html">发送自定义广播</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/21-%E5%8F%91%E9%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B9%BF%E6%92%AD.html#1-%E5%8F%91%E9%80%81%E6%A0%87%E5%87%86%E5%B9%BF%E6%92%AD">发送标准广播</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/21-%E5%8F%91%E9%80%81%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B9%BF%E6%92%AD.html#2-%E5%8F%91%E9%80%81%E6%9C%89%E5%BA%8F%E5%B9%BF%E6%92%AD">发送有序广播</a></li>
+</ol>
+<h2 id="使用本地广播"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/22-%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0%E5%B9%BF%E6%92%AD.html">使用本地广播</a></h2>
+<h2 id="广播的最佳实践"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/23-%E5%B9%BF%E6%92%AD%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html">广播的最佳实践</a></h2>
+<h1>Android持久化技术</h1>
+<h2 id="Android文件存储"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/24-Android%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8.html">Android文件存储</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/24-Android%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8.html#1-%E5%B0%86%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E5%88%B0%E6%96%87%E4%BB%B6%E4%B8%AD">将数据存储到文件中</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/24-Android%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8.html#2-%E4%BB%8E%E6%96%87%E4%BB%B6%E4%B8%AD%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE">从文件中读取数据</a></li>
+</ol>
+<h2 id="SharedPreferences存储"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/25-SharedPreferences%E5%AD%98%E5%82%A8.html">SharedPreferences存储</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/25-SharedPreferences%E5%AD%98%E5%82%A8.html#1-%E5%B0%86%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E5%88%B0SharedPreferences%E4%B8%AD">将数据存储到SharedPreferences中</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/25-SharedPreferences%E5%AD%98%E5%82%A8.html#%E8%8E%B7%E5%8F%96%E5%88%B0SharedPreferences%E5%AF%B9%E8%B1%A1">获取到SharedPreferences对象</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/25-SharedPreferences%E5%AD%98%E5%82%A8.html#1-Context%E7%B1%BB%E4%B8%AD%E7%9A%84getSharedPreferences-%E6%96%B9%E6%B3%95">Context类中的getSharedPreferences()方法</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/25-SharedPreferences%E5%AD%98%E5%82%A8.html#2-Activity%E7%B1%BB%E4%B8%AD%E7%9A%84getPreferences-%E6%96%B9%E6%B3%95">Activity类中的getPreferences()方法</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/25-SharedPreferences%E5%AD%98%E5%82%A8.html#3-PreferenceManager%E7%B1%BB%E4%B8%AD%E7%9A%84getDefaultSharedPreferences-%E6%96%B9%E6%B3%95">PreferenceManager类中的getDefaultSharedPreferences()方法</a></li>
+</ol>
+</li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/25-SharedPreferences%E5%AD%98%E5%82%A8.html#%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%AD%A5%E9%AA%A4">数据存储步骤</a></li>
+</ol>
+</li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/25-SharedPreferences%E5%AD%98%E5%82%A8.html#2-%E4%BB%8ESharedPreferences%E4%B8%AD%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE">从SharedPreferences中读取数据</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/25-SharedPreferences%E5%AD%98%E5%82%A8.html#3-%E5%AE%9E%E7%8E%B0%E8%AE%B0%E4%BD%8F%E5%AF%86%E7%A0%81%E5%8A%9F%E8%83%BD">实现记住密码功能</a></li>
+</ol>
+<h2 id="SQLLite数据库存储"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/26-SQLLite%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8.html">SQLLite数据库存储</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/26-SQLLite%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8.html#1-%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93">创建数据库</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/26-SQLLite%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8.html#2-adb-sqlite%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E5%BA%93">adb sqlite查看数据库</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/26-SQLLite%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8.html#3-%E5%8D%87%E7%BA%A7%E6%95%B0%E6%8D%AE%E5%BA%93">升级数据库</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/26-SQLLite%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8.html#4-%E6%B7%BB%E5%8A%A0%E6%95%B0%E6%8D%AE">添加数据</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/26-SQLLite%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8.html#5-%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE">更新数据</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/26-SQLLite%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8.html#6-%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE">删除数据</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/26-SQLLite%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8.html#7-%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE">查询数据</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/26-SQLLite%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8.html#8-%E4%BD%BF%E7%94%A8SQL%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93">使用SQL操作数据库</a></li>
+</ol>
+<h2 id="使用LitePal操作数据库"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/27-%E4%BD%BF%E7%94%A8LitePal%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93.html">使用LitePal操作数据库</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/27-%E4%BD%BF%E7%94%A8LitePal%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93.html#1-%E9%85%8D%E7%BD%AELitePal">配置LitePal</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/27-%E4%BD%BF%E7%94%A8LitePal%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93.html#2-%E5%88%9B%E5%BB%BA%E5%92%8C%E5%8D%87%E7%BA%A7%E6%95%B0%E6%8D%AE%E5%BA%93">创建和升级数据库</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/27-%E4%BD%BF%E7%94%A8LitePal%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93.html#3-%E4%BD%BF%E7%94%A8LitePal%E6%B7%BB%E5%8A%A0%E6%95%B0%E6%8D%AE">使用LitePal添加数据</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/27-%E4%BD%BF%E7%94%A8LitePal%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93.html#4-%E4%BD%BF%E7%94%A8LitePal%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE">使用LitePal更新数据</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/27-%E4%BD%BF%E7%94%A8LitePal%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93.html#5-%E4%BD%BF%E7%94%A8LitePal%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE">使用LitePal删除数据</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/27-%E4%BD%BF%E7%94%A8LitePal%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93.html#6-%E4%BD%BF%E7%94%A8LitePal%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE">使用LitePal查询数据</a></li>
+</ol>
+<h1>Android内容提供器</h1>
+<h2 id="Android运行时权限"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/28-Android%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9D%83%E9%99%90.html">Android运行时权限</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/28-Android%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9D%83%E9%99%90.html#1-Android%E6%9D%83%E9%99%90%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3">Android权限机制详解</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/28-Android%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9D%83%E9%99%90.html#2-%E5%9C%A8%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E6%97%B6%E7%94%B3%E8%AF%B7%E6%9D%83%E9%99%90">在程序运行时申请权限</a></li>
+</ol>
+<h2 id="Android内容提供器基本使用"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/29-Android%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html">Android内容提供器基本使用</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/29-Android%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html#1-ContentResolver%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95">ContentResolver的基本用法</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/29-Android%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.html#2-%E8%AF%BB%E5%8F%96%E7%B3%BB%E7%BB%9F%E8%81%94%E7%B3%BB%E4%BA%BA">读取系统联系人</a></li>
+</ol>
+<h2 id="创建自己的内容提供器"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/30-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8.html">创建自己的内容提供器</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/30-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8.html#1-%E5%88%9B%E5%BB%BA%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8%E7%9A%84%E6%AD%A5%E9%AA%A4">创建内容提供器的步骤</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/30-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8.html#%E7%BB%A7%E6%89%BF%E5%B9%B6%E5%AE%9E%E7%8E%B0ContentProvider">继承并实现ContentProvider</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/30-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8.html#1-onCreate">onCreate()</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/30-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8.html#2-query"> query()</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/30-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8.html#3-insert">insert()</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/30-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8.html#4-update">update()</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/30-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8.html#5-delete">delete()</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/30-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8.html#6-getType">getType()</a></li>
+</ol>
+</li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/30-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8.html#%E5%8C%B9%E9%85%8D%E6%9C%9F%E6%9C%9B%E7%9A%84%E5%86%85%E5%AE%B9URI">匹配期望的内容URI</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/30-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8.html#%E6%8B%BC%E6%8E%A5MIME%E7%B1%BB%E5%9E%8B">拼接MIME类型</a></li>
+</ol>
+</li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/30-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%85%E5%AE%B9%E6%8F%90%E4%BE%9B%E5%99%A8.html#2-%E5%AE%9E%E7%8E%B0%E8%B7%A8%E7%A8%8B%E5%BA%8F%E6%95%B0%E6%8D%AE%E5%85%B1%E4%BA%AB">实现跨程序数据共享</a></li>
+</ol>
+<h1>Android多媒体</h1>
+<h2 id="使用通知"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/31-%E4%BD%BF%E7%94%A8%E9%80%9A%E7%9F%A5.html">使用通知</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/31-%E4%BD%BF%E7%94%A8%E9%80%9A%E7%9F%A5.html#1-%E9%80%9A%E7%9F%A5%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95">通知的基本用法</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/31-%E4%BD%BF%E7%94%A8%E9%80%9A%E7%9F%A5.html#2-%E9%80%9A%E7%9F%A5%E7%9A%84%E8%BF%9B%E9%98%B6%E6%8A%80%E5%B7%A7">通知的进阶技巧</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/31-%E4%BD%BF%E7%94%A8%E9%80%9A%E7%9F%A5.html#3-%E9%80%9A%E7%9F%A5%E7%9A%84%E9%AB%98%E7%BA%A7%E5%8A%9F%E8%83%BD">通知的高级功能</a></li>
+</ol>
+<h2 id="调用摄像头和相册"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/32-%E8%B0%83%E7%94%A8%E6%91%84%E5%83%8F%E5%A4%B4%E5%92%8C%E7%9B%B8%E5%86%8C.html">调用摄像头和相册</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/32-%E8%B0%83%E7%94%A8%E6%91%84%E5%83%8F%E5%A4%B4%E5%92%8C%E7%9B%B8%E5%86%8C.html#1-%E8%B0%83%E7%94%A8%E6%91%84%E5%83%8F%E5%A4%B4%E6%8B%8D%E7%85%A7">调用摄像头拍照</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/32-%E8%B0%83%E7%94%A8%E6%91%84%E5%83%8F%E5%A4%B4%E5%92%8C%E7%9B%B8%E5%86%8C.html#2-%E4%BB%8E%E7%9B%B8%E5%86%8C%E4%B8%AD%E9%80%89%E6%8B%A9%E7%85%A7%E7%89%87">从相册中选择照片</a></li>
+</ol>
+<h2 id="播放多媒体文件"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/33-%E6%92%AD%E6%94%BE%E5%A4%9A%E5%AA%92%E4%BD%93%E6%96%87%E4%BB%B6.html">播放多媒体文件</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/33-%E6%92%AD%E6%94%BE%E5%A4%9A%E5%AA%92%E4%BD%93%E6%96%87%E4%BB%B6.html#1-%E6%92%AD%E6%94%BE%E9%9F%B3%E9%A2%91">播放音频</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/33-%E6%92%AD%E6%94%BE%E5%A4%9A%E5%AA%92%E4%BD%93%E6%96%87%E4%BB%B6.html#2-%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91">播放视频</a></li>
+</ol>
+<h1>Android网络技术</h1>
+<h2 id="WebView的基本用法"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/34-WebView%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html">WebView的基本用法</a></h2>
+<h2 id="使用HTTP协议访问网络"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/35-%E4%BD%BF%E7%94%A8HTTP%E5%8D%8F%E8%AE%AE%E8%AE%BF%E9%97%AE%E7%BD%91%E7%BB%9C.html">使用HTTP协议访问网络</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/35-%E4%BD%BF%E7%94%A8HTTP%E5%8D%8F%E8%AE%AE%E8%AE%BF%E9%97%AE%E7%BD%91%E7%BB%9C.html#1-%E4%BD%BF%E7%94%A8HttpURLConnection">使用HttpURLConnection</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/35-%E4%BD%BF%E7%94%A8HTTP%E5%8D%8F%E8%AE%AE%E8%AE%BF%E9%97%AE%E7%BD%91%E7%BB%9C.html#2-%E4%BD%BF%E7%94%A8OkHttp">使用OkHttp</a></li>
+</ol>
+<h2 id="解析XML数据"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/36-%E8%A7%A3%E6%9E%90XML%E6%95%B0%E6%8D%AE.html">解析XML数据</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/36-%E8%A7%A3%E6%9E%90XML%E6%95%B0%E6%8D%AE.html#1-Pull%E8%A7%A3%E6%9E%90%E6%96%B9%E5%BC%8F">Pull解析方式</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/36-%E8%A7%A3%E6%9E%90XML%E6%95%B0%E6%8D%AE.html#2-SAX%E8%A7%A3%E6%9E%90%E6%96%B9%E5%BC%8F">SAX解析方式</a></li>
+</ol>
+<h2 id="解析JSON数据"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/37-%E8%A7%A3%E6%9E%90JSON%E6%95%B0%E6%8D%AE.html">解析JSON数据</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/37-%E8%A7%A3%E6%9E%90JSON%E6%95%B0%E6%8D%AE.html#1-%E4%BD%BF%E7%94%A8JSONObject">使用JSONObject</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/37-%E8%A7%A3%E6%9E%90JSON%E6%95%B0%E6%8D%AE.html#2-%E4%BD%BF%E7%94%A8GSON">使用GSON</a></li>
+</ol>
+<h2 id="网络编程的最佳实践"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/38-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html">网络编程的最佳实践</a></h2>
+<h1>Android服务</h1>
+<h2 id="Android多线程编程"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html">Android多线程编程</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html#1-%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95">线程的基本用法</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html#2-%E5%9C%A8%E5%AD%90%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%9B%B4%E6%96%B0UI">在子线程中更新UI</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html#3-%E8%A7%A3%E6%9E%90%E5%BC%82%E6%AD%A5%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6">解析异步消息处理机制</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html#1-Message">Message</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html#2-Handler">Handler</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html#3-MessageQueue">MessageQueue</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html#4-Looper">Looper</a></li>
+</ol>
+</li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html#4-%E4%BD%BF%E7%94%A8AsyncTask">使用AsyncTask</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html#1-onPreExecute">onPreExecute()</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html#2-doInBackground-Params%E2%80%A6">doInBackground(Params…)</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html#3-onProgressUpdate-Progress%E2%80%A6">onProgressUpdate(Progress…)</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/39-Android%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.html#4-onPostExecute-Result">onPostExecute(Result)</a></li>
+</ol>
+</li>
+</ol>
+<h2 id="Android服务基本用法"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/40-Android%E6%9C%8D%E5%8A%A1%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html">Android服务基本用法</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/40-Android%E6%9C%8D%E5%8A%A1%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#1-%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1">定义一个服务</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/40-Android%E6%9C%8D%E5%8A%A1%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#2-%E5%90%AF%E5%8A%A8%E5%92%8C%E5%81%9C%E6%AD%A2%E6%9C%8D%E5%8A%A1">启动和停止服务</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/40-Android%E6%9C%8D%E5%8A%A1%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95.html#3-%E6%B4%BB%E5%8A%A8%E5%92%8C%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E9%80%9A%E4%BF%A1">活动和服务进行通信</a></li>
+</ol>
+<h2 id="服务的生命周期"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/41-%E6%9C%8D%E5%8A%A1%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.html">服务的生命周期</a></h2>
+<h2 id="服务的更多技巧"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/42-%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%9B%B4%E5%A4%9A%E6%8A%80%E5%B7%A7.html">服务的更多技巧</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/42-%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%9B%B4%E5%A4%9A%E6%8A%80%E5%B7%A7.html#1-%E4%BD%BF%E7%94%A8%E5%89%8D%E5%8F%B0%E6%9C%8D%E5%8A%A1">使用前台服务</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/42-%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%9B%B4%E5%A4%9A%E6%8A%80%E5%B7%A7.html#2-%E4%BD%BF%E7%94%A8IntentService">使用IntentService</a></li>
+</ol>
+<h2 id="服务的最佳实践"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/43-%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.html">服务的最佳实践</a></h2>
+<h1><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/44-%E5%9F%BA%E4%BA%8E%E4%BD%8D%E7%BD%AE%E7%9A%84%E6%9C%8D%E5%8A%A1.html">基于位置的服务</a></h1>
+<p><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/44-%E5%9F%BA%E4%BA%8E%E4%BD%8D%E7%BD%AE%E7%9A%84%E6%9C%8D%E5%8A%A1.html#%E7%94%B3%E8%AF%B7API-Key">申请API Key</a></p>
+<h2 id="使用百度定位"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/45-%E4%BD%BF%E7%94%A8%E7%99%BE%E5%BA%A6%E5%AE%9A%E4%BD%8D.html">使用百度定位</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/45-%E4%BD%BF%E7%94%A8%E7%99%BE%E5%BA%A6%E5%AE%9A%E4%BD%8D.html#1-%E5%87%86%E5%A4%87LBS-SDK">准备LBS SDK</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/45-%E4%BD%BF%E7%94%A8%E7%99%BE%E5%BA%A6%E5%AE%9A%E4%BD%8D.html#2-%E7%A1%AE%E5%AE%9A%E8%87%AA%E5%B7%B1%E4%BD%8D%E7%BD%AE%E7%9A%84%E7%BB%8F%E7%BA%AC%E5%BA%A6">确定自己位置的经纬度</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/45-%E4%BD%BF%E7%94%A8%E7%99%BE%E5%BA%A6%E5%AE%9A%E4%BD%8D.html#3-%E9%80%89%E6%8B%A9%E5%AE%9A%E4%BD%8D%E6%A8%A1%E5%BC%8F">选择定位模式</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/45-%E4%BD%BF%E7%94%A8%E7%99%BE%E5%BA%A6%E5%AE%9A%E4%BD%8D.html#4-%E7%9C%8B%E5%BE%97%E6%87%82%E7%9A%84%E4%BD%8D%E7%BD%AE%E4%BF%A1%E6%81%AF">看得懂的位置信息</a></li>
+</ol>
+<h2 id="使用百度地图"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/46-%E4%BD%BF%E7%94%A8%E7%99%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE.html">使用百度地图</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/46-%E4%BD%BF%E7%94%A8%E7%99%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE.html#1-%E8%AE%A9%E5%9C%B0%E5%9B%BE%E6%98%BE%E7%A4%BA%E5%87%BA%E6%9D%A5">让地图显示出来</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/46-%E4%BD%BF%E7%94%A8%E7%99%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE.html#2-%E7%A7%BB%E5%8A%A8%E5%88%B0%E6%88%91%E7%9A%84%E4%BD%8D%E7%BD%AE">移动到我的位置</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/46-%E4%BD%BF%E7%94%A8%E7%99%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE.html#3-%E8%AE%A9%E2%80%9C%E6%88%91%E2%80%9D%E6%98%BE%E7%A4%BA%E5%9C%A8%E5%9C%B0%E5%9B%BE%E4%B8%8A">让“我”显示在地图上</a></li>
+</ol>
+<h1>Material Design实战</h1>
+<h2 id="基本Material控件"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/47-%E5%9F%BA%E6%9C%ACMaterial%E6%8E%A7%E4%BB%B6.html">基本Material控件</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/47-%E5%9F%BA%E6%9C%ACMaterial%E6%8E%A7%E4%BB%B6.html#1-Toolbar">Toolbar</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/47-%E5%9F%BA%E6%9C%ACMaterial%E6%8E%A7%E4%BB%B6.html#2-FloatingActionButton%EF%BC%9A%E6%82%AC%E6%B5%AE%E6%8C%89%E9%92%AE">FloatingActionButton：悬浮按钮</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/47-%E5%9F%BA%E6%9C%ACMaterial%E6%8E%A7%E4%BB%B6.html#3-Snackbar%EF%BC%9A%E5%8F%AF%E4%BA%A4%E4%BA%92%E6%8F%90%E7%A4%BA">Snackbar：可交互提示</a></li>
+</ol>
+<h2 id="滑动菜单"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/48-%E6%BB%91%E5%8A%A8%E8%8F%9C%E5%8D%95.html">滑动菜单</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/48-%E6%BB%91%E5%8A%A8%E8%8F%9C%E5%8D%95.html#1-DrawerLayout">DrawerLayout</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/48-%E6%BB%91%E5%8A%A8%E8%8F%9C%E5%8D%95.html#2-NavigationView">NavigationView</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/48-%E6%BB%91%E5%8A%A8%E8%8F%9C%E5%8D%95.html#3-ActionBarDrawerToggle">ActionBarDrawerToggle</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/48-%E6%BB%91%E5%8A%A8%E8%8F%9C%E5%8D%95.html#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95">基本用法</a></li>
+</ol>
+</li>
+</ol>
+<h2 id="Material高级布局"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/49-Material%E9%AB%98%E7%BA%A7%E5%B8%83%E5%B1%80.html">Material高级布局</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/49-Material%E9%AB%98%E7%BA%A7%E5%B8%83%E5%B1%80.html#1-CoordinatorLayout">CoordinatorLayout</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/49-Material%E9%AB%98%E7%BA%A7%E5%B8%83%E5%B1%80.html#2-%E5%8D%A1%E7%89%87%E5%BC%8F%E5%B8%83%E5%B1%80CardView">卡片式布局CardView</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/49-Material%E9%AB%98%E7%BA%A7%E5%B8%83%E5%B1%80.html#3-AppBarLayout">AppBarLayout</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/49-Material%E9%AB%98%E7%BA%A7%E5%B8%83%E5%B1%80.html#4-SwipeRefreshLayout%EF%BC%9A%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0">SwipeRefreshLayout：下拉刷新</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/49-Material%E9%AB%98%E7%BA%A7%E5%B8%83%E5%B1%80.html#5-CollapsingToolbarLayout%EF%BC%9A%E5%8F%AF%E6%8A%98%E5%8F%A0%E5%BC%8F%E6%A0%87%E9%A2%98%E6%A0%8F">CollapsingToolbarLayout：可折叠式标题栏</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/49-Material%E9%AB%98%E7%BA%A7%E5%B8%83%E5%B1%80.html#6-%E6%B5%B8%E5%85%A5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%A0%8F">浸入式状态栏</a></li>
+</ol>
+<h1><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/50-Anodroid%E8%BF%9B%E9%98%B6%E6%8A%80%E5%B7%A7.html">Anodroid进阶技巧</a></h1>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/50-Anodroid%E8%BF%9B%E9%98%B6%E6%8A%80%E5%B7%A7.html#1-%E5%85%A8%E5%B1%80%E8%8E%B7%E5%8F%96Context%E7%9A%84%E6%8A%80%E5%B7%A7">全局获取Context的技巧</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/50-Anodroid%E8%BF%9B%E9%98%B6%E6%8A%80%E5%B7%A7.html#2-%E4%BD%BF%E7%94%A8Intent%E4%BC%A0%E9%80%92%E5%AF%B9%E8%B1%A1">使用Intent传递对象</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/50-Anodroid%E8%BF%9B%E9%98%B6%E6%8A%80%E5%B7%A7.html#Serializable%E6%96%B9%E5%BC%8F">Serializable方式</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/50-Anodroid%E8%BF%9B%E9%98%B6%E6%8A%80%E5%B7%A7.html#Parcelable%E6%96%B9%E5%BC%8F">Parcelable方式</a></li>
+</ol>
+</li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/50-Anodroid%E8%BF%9B%E9%98%B6%E6%8A%80%E5%B7%A7.html#3-%E5%AE%9A%E5%88%B6%E8%87%AA%E5%B7%B1%E7%9A%84%E6%97%A5%E5%BF%97%E5%B7%A5%E5%85%B7">定制自己的日志工具</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/50-Anodroid%E8%BF%9B%E9%98%B6%E6%8A%80%E5%B7%A7.html#4-%E8%B0%83%E8%AF%95Android%E7%A8%8B%E5%BA%8F">调试Android程序</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/50-Anodroid%E8%BF%9B%E9%98%B6%E6%8A%80%E5%B7%A7.html#5-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F">Lambda表达式</a></li>
+</ol>
+<h2 id="定时任务"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/51-%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1.html">定时任务</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/51-%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1.html#1-%E5%88%9B%E5%BB%BA%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1">创建定时任务</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/51-%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1.html#2-Doze%E6%A8%A1%E5%BC%8F">Doze模式</a></li>
+</ol>
+<h2 id="多窗口模式编程"><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/52-%E5%A4%9A%E7%AA%97%E5%8F%A3%E6%A8%A1%E5%BC%8F%E7%BC%96%E7%A8%8B.html">多窗口模式编程</a></h2>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/52-%E5%A4%9A%E7%AA%97%E5%8F%A3%E6%A8%A1%E5%BC%8F%E7%BC%96%E7%A8%8B.html#1-%E8%BF%9B%E5%85%A5%E5%A4%9A%E7%AA%97%E5%8F%A3%E6%A8%A1%E5%BC%8F">进入多窗口模式</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/52-%E5%A4%9A%E7%AA%97%E5%8F%A3%E6%A8%A1%E5%BC%8F%E7%BC%96%E7%A8%8B.html#2-%E5%A4%9A%E7%AA%97%E5%8F%A3%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">多窗口模式下的生命周期</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/52-%E5%A4%9A%E7%AA%97%E5%8F%A3%E6%A8%A1%E5%BC%8F%E7%BC%96%E7%A8%8B.html#3-%E7%A6%81%E7%94%A8%E5%A4%9A%E7%AA%97%E5%8F%A3%E6%A8%A1%E5%BC%8F">禁用多窗口模式</a></li>
+</ol>
+<h1><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html">实战项目</a></h1>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#1-%E5%8A%9F%E8%83%BD%E9%9C%80%E6%B1%82%E5%8F%8A%E6%8A%80%E6%9C%AF%E5%8F%AF%E8%A1%8C%E6%80%A7%E5%88%86%E6%9E%90">功能需求及技术可行性分析</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#2-%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E8%A1%A8">创建数据库和表</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#3-%E9%81%8D%E5%8E%86%E5%85%A8%E5%9B%BD%E7%9C%81%E5%B8%82%E5%8E%BF%E6%95%B0%E6%8D%AE">遍历全国省市县数据</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#4-%E6%98%BE%E7%A4%BA%E5%A4%A9%E6%B0%94%E4%BF%A1%E6%81%AF">显示天气信息</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#4-1-%E5%AE%9A%E4%B9%89GSON%E5%AE%9E%E4%BD%93%E7%B1%BB">定义GSON实体类</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#4-2-%E7%BC%96%E5%86%99%E5%A4%A9%E6%B0%94%E7%95%8C%E9%9D%A2">编写天气界面</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#4-3-%E5%B0%86%E5%A4%A9%E6%B0%94%E6%98%BE%E7%A4%BA%E5%88%B0%E7%95%8C%E9%9D%A2%E4%B8%8A">将天气显示到界面上</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#4-4-%E8%8E%B7%E5%8F%96%E5%BF%85%E5%BA%94%E6%AF%8F%E6%97%A5%E4%B8%80%E5%9B%BE">获取必应每日一图</a></li>
+</ol>
+</li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#5-%E6%89%8B%E5%8A%A8%E6%9B%B4%E6%96%B0%E5%A4%A9%E6%B0%94%E5%92%8C%E5%88%87%E6%8D%A2%E5%9F%8E%E5%B8%82">手动更新天气和切换城市</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#5-1-%E6%89%8B%E5%8A%A8%E6%9B%B4%E6%96%B0%E5%A4%A9%E6%B0%94">手动更新天气</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#5-2-%E5%88%87%E6%8D%A2%E5%9F%8E%E5%B8%82">切换城市</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#5-3-%E5%90%8E%E5%8F%B0%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0%E5%A4%A9%E6%B0%94">后台自动更新天气</a></li>
+</ol>
+</li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#6-%E4%BF%AE%E6%94%B9%E5%9B%BE%E6%A0%87%E5%92%8C%E5%90%8D%E7%A7%B0">修改图标和名称</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/53-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html#7-%E4%BD%A0%E8%BF%98%E5%8F%AF%E4%BB%A5%E5%81%9A%E7%9A%84%E4%BA%8B%E6%83%85">你还可以做的事情</a></li>
+</ol>
+<h1><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/54-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8.html">发布应用</a></h1>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/54-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8.html#1-%E7%94%9F%E6%88%90%E6%AD%A3%E5%BC%8F%E7%AD%BE%E5%90%8D%E7%9A%84APK%E6%96%87%E4%BB%B6">生成正式签名的APK文件</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/54-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8.html#1-1-%E4%BD%BF%E7%94%A8Android-Studio%E7%94%9F%E6%88%90">使用Android Studio生成</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/54-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8.html#1-2-%E4%BD%BF%E7%94%A8Gradle%E7%94%9F%E6%88%90">使用Gradle生成</a></li>
+</ol>
+</li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/54-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8.html#2-%E7%94%9F%E6%88%90%E5%A4%9A%E6%B8%A0%E9%81%93APK%E6%96%87%E4%BB%B6">生成多渠道APK文件</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/54-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8.html#3-%E7%94%B3%E8%AF%B7360%E5%BC%80%E5%8F%91%E8%80%85%E8%B4%A6%E5%8F%B7">申请360开发者账号</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/54-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8.html#4-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F">发布应用程序</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/54-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8.html#5-%E5%B5%8C%E5%85%A5%E5%B9%BF%E5%91%8A%E8%BF%9B%E8%A1%8C%E7%9B%88%E5%88%A9">嵌入广告进行盈利</a>
+<ol>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/54-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8.html#5-1-%E6%B3%A8%E5%86%8C%E8%85%BE%E8%AE%AF%E5%B9%BF%E5%91%8A%E8%81%94%E7%9B%9F%E8%B4%A6%E5%8F%B7">注册腾讯广告联盟账号</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/54-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8.html#5-2-%E6%96%B0%E5%BB%BA%E5%AA%92%E4%BD%93%E5%92%8C%E5%B9%BF%E5%91%8A%E4%BD%8D">新建媒体和广告位</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/54-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8.html#5-3-%E6%8E%A5%E5%85%A5%E5%B9%BF%E5%91%8ASDK">接入广告SDK</a></li>
+<li><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/54-%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8.html#5-4-%E9%87%8D%E6%96%B0%E5%8F%91%E5%B8%83%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F">重新发布应用程序</a></li>
+</ol>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/WebClipper/" rel="tag"># WebClipper</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/posts/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/XPath%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E7%9B%AE%E5%BD%95/" rel="next" title="自动化测试/XPath学习笔记-目录">
+                  <i class="fa fa-chevron-left"></i> 自动化测试/XPath学习笔记-目录
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">开始Android开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android系统架构"><span class="nav-text">Android系统架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建Android开发环境"><span class="nav-text">搭建Android开发环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建第一个Android项目"><span class="nav-text">创建第一个Android项目</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Android活动</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android活动基本用法"><span class="nav-text">Android活动基本用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Intent在活动之间穿梭"><span class="nav-text">使用Intent在活动之间穿梭</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#活动的生命周期"><span class="nav-text">活动的生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#活动的启动模式"><span class="nav-text">活动的启动模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#活动的最佳实践"><span class="nav-text">活动的最佳实践</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">UI开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见控件使用"><span class="nav-text">常见控件使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本布局"><span class="nav-text">基本布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ListView"><span class="nav-text">ListView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RecyclerView"><span class="nav-text">RecyclerView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义控件"><span class="nav-text">自定义控件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#界面开发最佳实践"><span class="nav-text">界面开发最佳实践</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Android碎片</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android碎片基本用法"><span class="nav-text">Android碎片基本用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#碎片的生命周期"><span class="nav-text">碎片的生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态加载布局的技巧"><span class="nav-text">动态加载布局的技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#碎片的最佳实践"><span class="nav-text">碎片的最佳实践</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Android广播机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#接收系统广播"><span class="nav-text">接收系统广播</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送自定义广播"><span class="nav-text">发送自定义广播</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用本地广播"><span class="nav-text">使用本地广播</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#广播的最佳实践"><span class="nav-text">广播的最佳实践</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Android持久化技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android文件存储"><span class="nav-text">Android文件存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SharedPreferences存储"><span class="nav-text">SharedPreferences存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQLLite数据库存储"><span class="nav-text">SQLLite数据库存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用LitePal操作数据库"><span class="nav-text">使用LitePal操作数据库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Android内容提供器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android运行时权限"><span class="nav-text">Android运行时权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android内容提供器基本使用"><span class="nav-text">Android内容提供器基本使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建自己的内容提供器"><span class="nav-text">创建自己的内容提供器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Android多媒体</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用通知"><span class="nav-text">使用通知</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用摄像头和相册"><span class="nav-text">调用摄像头和相册</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#播放多媒体文件"><span class="nav-text">播放多媒体文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Android网络技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#WebView的基本用法"><span class="nav-text">WebView的基本用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用HTTP协议访问网络"><span class="nav-text">使用HTTP协议访问网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解析XML数据"><span class="nav-text">解析XML数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解析JSON数据"><span class="nav-text">解析JSON数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络编程的最佳实践"><span class="nav-text">网络编程的最佳实践</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Android服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android多线程编程"><span class="nav-text">Android多线程编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android服务基本用法"><span class="nav-text">Android服务基本用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务的生命周期"><span class="nav-text">服务的生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务的更多技巧"><span class="nav-text">服务的更多技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务的最佳实践"><span class="nav-text">服务的最佳实践</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">基于位置的服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用百度定位"><span class="nav-text">使用百度定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用百度地图"><span class="nav-text">使用百度地图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Material Design实战</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本Material控件"><span class="nav-text">基本Material控件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#滑动菜单"><span class="nav-text">滑动菜单</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Material高级布局"><span class="nav-text">Material高级布局</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Anodroid进阶技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定时任务"><span class="nav-text">定时任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多窗口模式编程"><span class="nav-text">多窗口模式编程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">实战项目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">发布应用</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

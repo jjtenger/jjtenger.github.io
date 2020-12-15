@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Python语言及其应用-第7章操作数据（P8） 如何使用不同的格式化方法将变量插值（interpolate） 到字符串中了，即将变量的值嵌入字符串中。你可以用这种方法来生成那些格式框架看起来一样的报告或者其他固定格式的输出。 Python 有两种格式化字符串的方式，我们习惯简单地称之为旧式（old style）和新式（new style）。这两种方式在 Python 2 和 Python 3">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8&#x2F;27-%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A0%BC%E5%BC%8F%E5%8C%96.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Python语言及其应用-第7章操作数据（P8） 如何使用不同的格式化方法将变量插值（interpolate） 到字符串中了，即将变量的值嵌入字符串中。你可以用这种方法来生成那些格式框架看起来一样的报告或者其他固定格式的输出。 Python 有两种格式化字符串的方式，我们习惯简单地称之为旧式（old style）和新式（new style）。这两种方式在 Python 2 和 Python 3">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.036Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/27-%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A0%BC%E5%BC%8F%E5%8C%96">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>27-字符串格式化</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC7%E7%AB%A0%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE.pdf" target="_blank" rel="noopener">Python语言及其应用-第7章操作数据</a>（P8）</p>
+</blockquote><p>如何使用不同的格式化方法将变量插值（interpolate） 到字符串中了，即将变量的值嵌入字符串中。你可以用这种方法来生成那些格式框架看起来一样的报告或者其他固定格式的输出。<br>
+Python 有两种格式化字符串的方式，我们习惯简单地称之为旧式（old style）和新式（new style）。这两种方式在 Python 2 和 Python 3 中都适用（新式格式化方法适用于 Python 2.6 及 以上）。</p><a id="more"></a>
+
+<h1>使用%的旧式格式化</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC7%E7%AB%A0%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE.pdf" target="_blank" rel="noopener">Python语言及其应用-第7章操作数据</a>（P8-10）</p>
+</blockquote>
+<h2 id="转换类型">转换类型</h2>
+<p>旧式格式化的形式为 string % data。其中 string 包含的是待插值的序列，由 % 以及一个用于指定转换类型的字母组成。常见转换类型如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>%s</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td>%d</td>
+<td>十进制整数</td>
+</tr>
+<tr>
+<td>%x</td>
+<td>十六进制整数</td>
+</tr>
+<tr>
+<td>%o</td>
+<td>八进制整数</td>
+</tr>
+<tr>
+<td>%f</td>
+<td>十进制浮点数</td>
+</tr>
+<tr>
+<td>%e</td>
+<td>以科学计数法表示的浮点数</td>
+</tr>
+<tr>
+<td>%g</td>
+<td>十进制或科学计数法表示的浮点数</td>
+</tr>
+<tr>
+<td>%%</td>
+<td>文本值 % 本身</td>
+</tr>
+</tbody>
+</table>
+<p>下面是一些关于字符串和整数的插值操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; actor = &apos;Richard Gere&apos;</span><br><span class="line">&gt;&gt;&gt; cat = &apos;Chester&apos;</span><br><span class="line">&gt;&gt;&gt; weight = 28</span><br><span class="line">&gt;&gt;&gt; &quot;My wife&apos;s favorite actor is %s&quot; % actor</span><br><span class="line">&quot;My wife&apos;s favorite actor is Richard Gere&quot;</span><br><span class="line">&gt;&gt;&gt; &quot;Our cat %s weighs %s pounds&quot; % (cat, weight)</span><br><span class="line">&apos;Our cat Chester weighs 28 pounds</span><br></pre></td></tr></table></figure>
+<p>字符串内的 %s 意味着需要插入一个字符串。字符串中出现 % 的次数需要与 % 之后所提供的数据项个数相同。如果只需插入一个数据，例如前面的 actor， 直接将需要插入的数据置于 % 后即可。如果需要插入多个数据，则需要将它们封装进一个元组（以圆括号为界，逗号分开），例如上例中的 (cat, weight)。</p>
+<h2 id="指定格式">指定格式</h2>
+<p>你可以在 % 和指定类型的字母之间设定最大和最小宽度、排版以及填充字符，等等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; n = 42</span><br><span class="line">&gt;&gt;&gt; f = 7.03</span><br><span class="line">&gt;&gt;&gt; s = &apos;string cheese&apos;</span><br></pre></td></tr></table></figure>
+<p>设定最小域宽为 10 个字符，但是设定最大字符宽度为 4，右对齐。这样的设置会截断超过长度限制的字符串，并且将浮点数的精度限制在小数点后 4 位：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&apos;%10.4d %10.4f %10.4s&apos; % (n, f, s)</span><br><span class="line">&apos;      0042   7.0300       stri&apos;</span><br></pre></td></tr></table></figure>
+<p>改变一下上面例子的硬编码方式，将域宽、字符宽度等设定作为参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&apos;%*.*d %*.*f %*.*s&apos; % (10, 4, n, 10, 4, f, 10, 4, s)</span><br><span class="line">&apos;      0042   7.0300       stri&apos;</span><br></pre></td></tr></table></figure>
+<h1>使用{}和format的新式格式化</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC7%E7%AB%A0%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE.pdf" target="_blank" rel="noopener">Python语言及其应用-第7章操作数据</a>（P10-11）</p>
+</blockquote>
+<p>新式格式化最简单的用法如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; n = 42</span><br><span class="line">&gt;&gt;&gt; f = 7.03</span><br><span class="line">&gt;&gt;&gt; s = &apos;string cheese&apos;</span><br><span class="line">&gt;&gt;&gt; &apos;&#123;&#125; &#123;&#125; &#123;&#125;&apos;.format(n, f, s)</span><br><span class="line">&apos;42 7.03 string cheese&apos;</span><br></pre></td></tr></table></figure>
+<h2 id="参数引用">参数引用</h2>
+<ul>
+<li>位置参数引用</li>
+</ul>
+<p>旧式格式化中传入参数的顺序需要与 % 占位符出现的顺序完全一致，但在新式格式化里，可以自己指定插入的顺序：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; &apos;&#123;2&#125; &#123;0&#125; &#123;1&#125;&apos;.format(f, s, n)</span><br><span class="line">&apos;42 7.03 string cheese&apos;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>命名参数引用</li>
+</ul>
+<p>参数可以是字典或者命名变量，格式串中的标识符可以引用这些名称：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; &apos;&#123;n&#125; &#123;f&#125; &#123;s&#125;&apos;.format(n=42, f=7.03, s=&apos;string cheese&apos;)</span><br><span class="line">&apos;42 7.03 string cheese&apos;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>综合引用</li>
+</ul>
+<p>下面的例子中，我们试着将之前作为参数的 3 个值存到一个字典中，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; d = &#123;&apos;n&apos;: 42, &apos;f&apos;: 7.03, &apos;s&apos;: &apos;string cheese&apos;&#125;</span><br><span class="line">&gt;&gt;&gt; &apos;&#123;0[n]&#125; &#123;0[f]&#125; &#123;0[s]&#125; &#123;1&#125;&apos;.format(d, &apos;other&apos;)</span><br><span class="line">&apos;42 7.03 string cheese other</span><br></pre></td></tr></table></figure>
+<p>其中，<code>{0}</code> 代表整个字典，<code>{1}</code> 则代表字典后面的字符串 ‘other’。</p>
+<h2 id="指定格式-2">指定格式</h2>
+<p>旧式格式化允许在 % 后指定参数格式，但在新式格式化里，将这些格式标识符放在 : 后。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; &apos;&#123;0:d&#125; &#123;1:f&#125; &#123;2:s&#125;&apos;.format(n, f, s)</span><br><span class="line">&apos;42 7.030000 string cheese&apos;</span><br><span class="line">&gt;&gt;&gt; &apos;&#123;n:d&#125; &#123;f:f&#125; &#123;s:s&#125;&apos;.format(n=42, f=7.03, s=&apos;string cheese&apos;)</span><br><span class="line">&apos;42 7.030000 string cheese&apos;</span><br></pre></td></tr></table></figure>
+<p>新式格式化也支持其他各类设置（最小域宽、最大字符宽、排版，等等）。<br>
+新式格式化与旧式格式化相比有一处明显的不同： 精度（precision， 小数点后面的数字）。对于浮点数而言仍然代表着小数点后的数字个数， 对于字符串而言则代表着最大字符个数，但在新式格式化中你无法对整数设定精度。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; &apos;&#123;0:&gt;10d&#125; &#123;1:&gt;10.4f&#125; &#123;2:&gt;10.4s&#125;&apos;.format(n, f, s)</span><br><span class="line">&apos; 42 7.0300 stri</span><br><span class="line">&gt;&gt;&gt; &apos;&#123;0:&gt;10.4d&#125; &#123;1:&gt;10.4f&#125; &#123;2:10.4s&#125;&apos;.format(n, f, s)</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;</span><br><span class="line">ValueError: Precision not allowed in integer format specifier</span><br></pre></td></tr></table></figure>
+<p>最后一个可设定的值是填充字符。如果想要使用空格以外的字符进行填充， 只需把它放在 : 之后，其余任何排版符（&lt;、 &gt;、 ^）和宽度标识符之前即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; &apos;&#123;0:!^20s&#125;&apos;.format(&apos;BIG SALE&apos;)</span><br><span class="line">&apos;!!!!!!BIG SALE!!!!!!&apos;</span><br></pre></td></tr></table></figure>
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>27-字符串格式化</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用%的旧式格式化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#转换类型"><span class="nav-text">转换类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定格式"><span class="nav-text">指定格式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用{}和format的新式格式化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#参数引用"><span class="nav-text">参数引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定格式-2"><span class="nav-text">指定格式</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

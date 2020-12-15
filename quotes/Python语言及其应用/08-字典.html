@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Python语言及其应用-第3章列表、元组、字典与集合（P12） 字典（dictionary） 与列表类似，但其中元素的顺序无关紧要，因为它们不是通过像 0 或 1 的偏移量访问的。 取而代之，每个元素拥有与之对应的互不相同的键（key），需要通过键来访问元素。 键通常是字符串，但它还可以是 Python 中其他任意的不可变类型：布尔型、整型、浮点型、元组、字符串，以及其他一些在后面的内容中会见">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8&#x2F;08-%E5%AD%97%E5%85%B8.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Python语言及其应用-第3章列表、元组、字典与集合（P12） 字典（dictionary） 与列表类似，但其中元素的顺序无关紧要，因为它们不是通过像 0 或 1 的偏移量访问的。 取而代之，每个元素拥有与之对应的互不相同的键（key），需要通过键来访问元素。 键通常是字符串，但它还可以是 Python 中其他任意的不可变类型：布尔型、整型、浮点型、元组、字符串，以及其他一些在后面的内容中会见">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.032Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/08-%E5%AD%97%E5%85%B8">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>08-字典</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P12）</p>
+</blockquote><p>字典（dictionary） 与列表类似，但其中元素的顺序无关紧要，因为它们不是通过像 0 或 1 的偏移量访问的。 取而代之，每个元素拥有与之对应的互不相同的键（key），需要通过键来访问元素。 键通常是字符串，但它还可以是 Python 中其他任意的不可变类型：布尔型、整型、浮点型、元组、字符串，以及其他一些在后面的内容中会见到的类型。字典是可变的，因此你可以增加、删除或修改其中的键值对。<br>
+在其他语言中，字典可能会被称作关系型数组、 哈希表或哈希图。在 Python 中，字典（dictionary）还经常会被简写成 dict。</p><a id="more"></a>
+
+<h1>使用<code>{}</code>创建字典</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P13）</p>
+</blockquote>
+<p>用大括号（{}）将一系列以逗号隔开的键值对（key:value）包裹起来即可进行字典的创建。最简单的字典是空字典，它不包含任何键值对。<br>
+Python 允许在列表、元组或字典的最后一个元素后面添加逗号，这不会产生任何问题。此外，在括号之间输入键值对来创建字典时并不强制缩进。</p>
+<h1>使用<code>dict()</code>转换为字典</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P13-14）</p>
+</blockquote>
+<p>可以用 dict() 将包含双值子序列的序列转换成字典。每个子序列的第一个元素作为键，第二个元素作为值。<br>
+可以对任何包含双值子序列的序列使用 dict()：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; lot = [ (&apos;a&apos;, &apos;b&apos;), (&apos;c&apos;, &apos;d&apos;), (&apos;e&apos;, &apos;f&apos;) ]</span><br><span class="line">&gt;&gt;&gt; dict(lot)</span><br><span class="line">&#123;&apos;c&apos;: &apos;d&apos;, &apos;a&apos;: &apos;b&apos;, &apos;e&apos;: &apos;f&apos;&#125;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; tol = ( [&apos;a&apos;, &apos;b&apos;], [&apos;c&apos;, &apos;d&apos;], [&apos;e&apos;, &apos;f&apos;] )</span><br><span class="line">&gt;&gt;&gt; dict(tol)</span><br><span class="line">&#123;&apos;c&apos;: &apos;d&apos;, &apos;a&apos;: &apos;b&apos;, &apos;e&apos;: &apos;f&apos;&#125;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; los = [ &apos;ab&apos;, &apos;cd&apos;, &apos;ef&apos; ]</span><br><span class="line">&gt;&gt;&gt; dict(los)</span><br><span class="line">&#123;&apos;c&apos;: &apos;d&apos;, &apos;a&apos;: &apos;b&apos;, &apos;e&apos;: &apos;f&apos;&#125;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; tos = ( &apos;ab&apos;, &apos;cd&apos;, &apos;ef&apos; )</span><br><span class="line">&gt;&gt;&gt; dict(tos)</span><br><span class="line">&#123;&apos;c&apos;: &apos;d&apos;, &apos;a&apos;: &apos;b&apos;, &apos;e&apos;: &apos;f&apos;&#125;</span><br></pre></td></tr></table></figure>
+<p>4.5.4 节会教你如何使用 zip() 函数，利用它能非常简单地创建上面这种双元素序列。</p>
+<h1>使用<code>[key]</code>添加或修改元素</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P14-15）</p>
+</blockquote>
+<p>向字典中添加元素非常简单，只需指定该元素的键并赋予相应的值即可。如果该元素的键已经存在于字典中， 那么该键对应的旧值会被新值取代。如果该元素的键并未在字典中出现，则会被加入字典。与列表不同，你不需要担心赋值过程中 Python 会抛出越界异常。<br>
+记住，字典的键必须保证互不相同。如果创建字典时同一个键出现了两次，那么后面出现的值会取代之前的值。</p>
+<h1>使用<code>[key]</code>或者<code>get()</code>获取元素</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P17）</p>
+</blockquote>
+<p>这是对字典最常进行的操作，只需指定字典名和键即可获得对应的值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; pythons[&apos;Cleese&apos;]</span><br><span class="line">&apos;John&apos;</span><br></pre></td></tr></table></figure>
+<p>如果字典中不包含指定的键，会产生一个异常。有两种方法可以避免这种情况的发生。第一种是在访问前通过 in 测试键是否存在。另一种方法是使用字典函数 get()。你需要指定字典名，键以及一个可选值。如果键存在，会得到与之对应的值。反之，若键不存在，如果你指定了可选值，那么 get() 函数将返回这个可选值。否则，会得到 None。（在交互式解释器中什么也不会显示）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; pythons.get(&apos;Marx&apos;, &apos;Not a Python&apos;)</span><br><span class="line">&apos;Not a Python&apos;</span><br><span class="line">&gt;&gt;&gt; pythons.get(&apos;Marx&apos;)</span><br></pre></td></tr></table></figure>
+<h1>使用<code>update()</code>合并字典</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P15-16）</p>
+</blockquote>
+<p>使用 update() 可以将一个字典的键值对复制到另一个字典中去。<br>
+如果待添加的字典与待扩充的字典包含同样的键会怎样？是的，新归入字典的值会取代原有的值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; first = &#123;&apos;a&apos;: 1, &apos;b&apos;: 2&#125;</span><br><span class="line">&gt;&gt;&gt; second = &#123;&apos;b&apos;: &apos;platypus&apos;&#125;</span><br><span class="line">&gt;&gt;&gt; first.update(second)</span><br><span class="line">&gt;&gt;&gt; first</span><br><span class="line">&#123;&apos;b&apos;: &apos;platypus&apos;, &apos;a&apos;: 1&#125;</span><br></pre></td></tr></table></figure>
+<h1>使用<code>del</code>删除具有指定键的元素</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P16）</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; del pythons[&apos;Marx&apos;]</span><br><span class="line">&gt;&gt;&gt; pythons</span><br><span class="line">&#123;&apos;Cleese&apos;: &apos;John&apos;, &apos;Howard&apos;: &apos;Moe&apos;, &apos;Gilliam&apos;: &apos;Terry&apos;,</span><br><span class="line">&apos;Palin&apos;: &apos;Michael&apos;, &apos;Chapman&apos;: &apos;Graham&apos;, &apos;Idle&apos;: &apos;Eric&apos;,</span><br><span class="line">&apos;Jones&apos;: &apos;Terry&apos;&#125;</span><br></pre></td></tr></table></figure>
+<h1>使用<code>clear()</code>删除所有元素</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P16）</p>
+</blockquote>
+<p>使用 clear()，或者给字典变量重新赋值一个空字典（{}）可以将字典中所有元素删除。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; pythons.clear()</span><br><span class="line">&gt;&gt;&gt; pythons</span><br><span class="line">&#123;&#125;</span><br><span class="line">&gt;&gt;&gt; pythons = &#123;&#125;</span><br><span class="line">&gt;&gt;&gt; pythons</span><br><span class="line">&#123;&#125;</span><br></pre></td></tr></table></figure>
+<h1>使用<code>in</code>判断是否存在</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P16）</p>
+</blockquote>
+<p>如果你希望判断某一个键是否存在于一个字典中，可以使用 in。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; pythons = &#123;&apos;Chapman&apos;: &apos;Graham&apos;, &apos;Cleese&apos;: &apos;John&apos;,&apos;Jones&apos;: &apos;Terry&apos;, &apos;Palin&apos;: &apos;Michael&apos;&#125;</span><br><span class="line">&gt;&gt;&gt; &apos;Chapman&apos; in pythons</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
+<h1>使用<code>keys()</code>获取所有键</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P17）</p>
+</blockquote>
+<p>使用 keys() 可以获得字典中的所有键。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; signals = &#123;&apos;green&apos;: &apos;go&apos;, &apos;yellow&apos;: &apos;go faster&apos;, &apos;red&apos;: &apos;smile for the camera&apos;&#125;</span><br><span class="line">&gt;&gt;&gt; signals.keys()</span><br><span class="line">dict_keys([&apos;green&apos;, &apos;red&apos;, &apos;yellow&apos;])</span><br></pre></td></tr></table></figure>
+<p>在 Python 2 里， keys() 会返回一个列表，而在 Python 3 中则会返回 dict_keys()，它是键的迭代形式。这种返回形式对于大型的字典非常有用，因为它不需要时间和空间来创建返回的列表。有时你需要的可能就是一个完整的列表，但在 Python 3 中，你只能自己调用 list() 将 dict_keys 转换为列表类型。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; list( signals.keys() )</span><br><span class="line">[&apos;green&apos;, &apos;red&apos;, &apos;yellow&apos;]</span><br></pre></td></tr></table></figure>
+<p>在 Python 3 里，你同样需要手动使用 list() 将 values() 和 items() 的返回值转换为普通的 Python 列表。之后的例子中会用到这些。</p>
+<h1>使用<code>values()</code>获取所有值</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P18）</p>
+</blockquote>
+<p>使用 values() 可以获取字典中的所有值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; list( signals.values() )</span><br><span class="line">[&apos;go&apos;, &apos;smile for the camera&apos;, &apos;go faster&apos;]</span><br></pre></td></tr></table></figure>
+<h1>使用<code>items()</code>获取所有键值对</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P18）</p>
+</blockquote>
+<p>使用 items() 函数可以获取字典中所有的键值对</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; list( signals.items() )</span><br><span class="line">[(&apos;green&apos;, &apos;go&apos;), (&apos;red&apos;, &apos;smile for the camera&apos;), (&apos;yellow&apos;, &apos;go faster&apos;)]</span><br></pre></td></tr></table></figure>
+<p>每一个键值对以元组的形式返回，例如 (‘green’,‘go’)。</p>
+<h1>使用<code>=</code>赋值， 使用<code>copy()</code>复制</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC3%E7%AB%A0%E5%88%97%E8%A1%A8%E3%80%81%E5%85%83%E7%BB%84%E3%80%81%E5%AD%97%E5%85%B8%E4%B8%8E%E9%9B%86%E5%90%88.pdf" target="_blank" rel="noopener">Python语言及其应用-第3章列表、元组、字典与集合</a>（P18）</p>
+</blockquote>
+<p>与列表一样，对字典内容进行的修改会反映到所有与之相关联的变量名上。若想避免这种情况，可以使用 copy() 将字典复制到一个新的字典中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; signals = &#123;&apos;green&apos;: &apos;go&apos;, &apos;yellow&apos;: &apos;go faster&apos;, &apos;red&apos;: &apos;smile for the camera&apos;&#125;</span><br><span class="line">&gt;&gt;&gt; original_signals = signals.copy()</span><br><span class="line">&gt;&gt;&gt; signals[&apos;blue&apos;] = &apos;confuse everyone&apos;</span><br><span class="line">&gt;&gt;&gt; signals</span><br><span class="line">&#123;&apos;blue&apos;: &apos;confuse everyone&apos;, &apos;green&apos;: &apos;go&apos;,</span><br><span class="line">&apos;red&apos;: &apos;smile for the camera&apos;, &apos;yellow&apos;: &apos;go faster&apos;&#125;</span><br><span class="line">&gt;&gt;&gt; original_signals</span><br><span class="line">&#123;&apos;green&apos;: &apos;go&apos;, &apos;red&apos;: &apos;smile for the camera&apos;, &apos;yellow&apos;: &apos;go faster&apos;&#125;</span><br></pre></td></tr></table></figure>
+<h1><code>setdefault()</code>：设置字典默认值</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC5%E7%AB%A0%E6%A8%A1%E5%9D%97%E3%80%81%E5%8C%85%E5%92%8C%E7%A8%8B%E5%BA%8F.pdf" target="_blank" rel="noopener">Python语言及其应用-第5章模块、包和程序</a>（P6）</p>
+</blockquote>
+<p>读取字典中不存在的键的值会抛出异常。使用字典函数 get() 返回一个默认值会避免异常发生。函数 setdefault() 类似于 get()， 但当键不存在时它会在字典中添加一项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; periodic_table = &#123;&apos;Hydrogen&apos;: 1, &apos;Helium&apos;: 2&#125;</span><br><span class="line">&gt;&gt;&gt; carbon = periodic_table.setdefault(&apos;Carbon&apos;, 12)</span><br><span class="line">&gt;&gt;&gt; carbon</span><br><span class="line">12</span><br><span class="line">&gt;&gt;&gt; periodic_table</span><br><span class="line">&#123;&apos;Helium&apos;: 2, &apos;Carbon&apos;: 12, &apos;Hydrogen&apos;: 1&#125;</span><br></pre></td></tr></table></figure>
+<p>如果试图把一个不同的默认值赋给已经存在的键，不会改变原来的值，仍将返回初始值。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>08-字典</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用{}创建字典</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用dict()转换为字典</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用[key]添加或修改元素</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用[key]或者get()获取元素</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用update()合并字典</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用del删除具有指定键的元素</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用clear()删除所有元素</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用in判断是否存在</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用keys()获取所有键</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用values()获取所有值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用items()获取所有键值对</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用=赋值， 使用copy()复制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">setdefault()：设置字典默认值</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

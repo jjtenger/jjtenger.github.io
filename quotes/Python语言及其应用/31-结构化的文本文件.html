@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Python语言及其应用-第8章数据存储（P8） 对于简单的文本文件，唯一的结构层次是间隔的行。然而有时候需要更加结构化的文本，用于后续使用的程序保存数据或者向另外一个程序传送数据。 结构化的文本有很多格式，区别它们的方法如下所示： 分隔符，比如 tab（‘\t’）、逗号（‘,’）或者竖线（‘|’）。逗号分隔值（CSV）就是这样的例子。 ‘&amp;lt;’ 和 ‘&amp;gt;’ 标签，例如 XML 和 H">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8&#x2F;31-%E7%BB%93%E6%9E%84%E5%8C%96%E7%9A%84%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Python语言及其应用-第8章数据存储（P8） 对于简单的文本文件，唯一的结构层次是间隔的行。然而有时候需要更加结构化的文本，用于后续使用的程序保存数据或者向另外一个程序传送数据。 结构化的文本有很多格式，区别它们的方法如下所示： 分隔符，比如 tab（‘\t’）、逗号（‘,’）或者竖线（‘|’）。逗号分隔值（CSV）就是这样的例子。 ‘&amp;lt;’ 和 ‘&amp;gt;’ 标签，例如 XML 和 H">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.036Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/31-%E7%BB%93%E6%9E%84%E5%8C%96%E7%9A%84%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>31-结构化的文本文件</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P8）</p>
+</blockquote><p>对于简单的文本文件，唯一的结构层次是间隔的行。然而有时候需要更加结构化的文本，用于后续使用的程序保存数据或者向另外一个程序传送数据。<br>
+结构化的文本有很多格式，区别它们的方法如下所示：</p><ul>
+<li>分隔符，比如 tab（‘\t’）、逗号（‘,’）或者竖线（‘|’）。逗号分隔值（CSV）就是这样的例子。</li>
+<li>‘&lt;’ 和 ‘&gt;’ 标签，例如 XML 和 HTML。</li>
+<li>标点符号，例如 JavaScript Object Notation（JSON2）。</li>
+<li>缩进，例如 YAML（即 YAML Ain’t Markup Language 的缩写），要了解更多可以去搜索。</li>
+<li>混合的，例如各种配置文件。</li>
+</ul><a id="more"></a>
+
+
+<p>每一种结构化文件格式都能够被至少一种 Python 模块读写。</p>
+<h1>CSV文件</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P8）</p>
+</blockquote>
+<p>带分隔符的文件一般用作数据交换格式或者数据库。你可以人工读入 CSV 文件，每一次读取一行，在逗号分隔符处将每行分开，并添加结果到某些数据结构中，例如列表或者字典。但是，最好使用标准的 csv 模块，因为这样切分会得到更加复杂的信息。</p>
+<ul>
+<li>除了逗号，还有其他可代替的分隔符： ‘|’ 和 ‘\t’ 很常见。</li>
+<li>有些数据会有转义字符序列， 如果分隔符出现在一块区域内，则整块都要加上引号或者在它之前加上转义字符。</li>
+<li>文件可能有不同的换行符， Unix 系统的文件使用 ‘\n’， Microsoft 使用 ‘\r\n’， Apple之前使用 ‘\r’ 而现在使用 ‘\n’。</li>
+<li>在第一行可以加上列名。</li>
+</ul>
+<h2 id="读写列表集合">读写列表集合</h2>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P9）</p>
+</blockquote>
+<p>首先读和写一个列表的行，每一行包含很多列：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import csv</span><br><span class="line">&gt;&gt;&gt; villains = [</span><br><span class="line">...         [&apos;Doctor&apos;, &apos;No&apos;],</span><br><span class="line">...         [&apos;Rosa&apos;, &apos;Klebb&apos;],</span><br><span class="line">...         [&apos;Mister&apos;, &apos;Big&apos;],</span><br><span class="line">...         [&apos;Auric&apos;, &apos;Goldfinger&apos;],</span><br><span class="line">...         [&apos;Ernst&apos;, &apos;Blofeld&apos;],</span><br><span class="line">...     ]</span><br><span class="line">&gt;&gt;&gt; with open(&apos;villains&apos;, &apos;wt&apos;) as fout: # 一个上下文管理器</span><br><span class="line">...     csvout = csv.writer(fout)</span><br><span class="line">...     csvout.writerows(villains)</span><br></pre></td></tr></table></figure>
+<p>于是创建了包含以下几行的文件 villains：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Doctor,No</span><br><span class="line">Rosa,Klebb</span><br><span class="line">Mister,Big</span><br><span class="line">Auric,Goldfinger</span><br><span class="line">Ernst,Blofeld</span><br></pre></td></tr></table></figure>
+<p>现在，我们来重新读这个文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import csv</span><br><span class="line">&gt;&gt;&gt; with open(&apos;villains&apos;, &apos;rt&apos;) as fin: # 一个上下文管理器</span><br><span class="line">...     cin = csv.reader(fin)</span><br><span class="line">...     villains = [row for row in cin] # 使用列表推导式</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; print(villains)</span><br><span class="line">[[&apos;Doctor&apos;, &apos;No&apos;], [&apos;Rosa&apos;, &apos;Klebb&apos;], [&apos;Mister&apos;, &apos;Big&apos;],</span><br><span class="line">[&apos;Auric&apos;, &apos;Goldfinger&apos;], [&apos;Ernst&apos;, &apos;Blofeld&apos;]]</span><br></pre></td></tr></table></figure>
+<p>此处使用了列表推导式。我们利用函数 reader() 创建的结构，它在通过 for 循环提取到的 cin 对象中构建每一行。<br>
+使用 reader() 和 writer() 的默认操作。每一列用逗号分开；每一行用换行符分开。</p>
+<h2 id="读写字典集合">读写字典集合</h2>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P9）</p>
+</blockquote>
+<p>数据可以是字典的集合（a list of dictionary），而不仅仅是列表的集合（a list of list）。<br>
+使用新函数 DictReader() 读取文件 villains，并且指定每一列的名字：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import csv</span><br><span class="line">&gt;&gt;&gt; with open(&apos;villains&apos;, &apos;rt&apos;) as fin:</span><br><span class="line">...     cin = csv.DictReader(fin, fieldnames=[&apos;first&apos;, &apos;last&apos;])</span><br><span class="line">...     villains = [row for row in cin]</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; print(villains)</span><br><span class="line">[&#123;&apos;last&apos;: &apos;No&apos;, &apos;first&apos;: &apos;Doctor&apos;&#125;,</span><br><span class="line">&#123;&apos;last&apos;: &apos;Klebb&apos;, &apos;first&apos;: &apos;Rosa&apos;&#125;,</span><br><span class="line">&#123;&apos;last&apos;: &apos;Big&apos;, &apos;first&apos;: &apos;Mister&apos;&#125;,</span><br><span class="line">&#123;&apos;last&apos;: &apos;Goldfinger&apos;, &apos;first&apos;: &apos;Auric&apos;&#125;,</span><br><span class="line">&#123;&apos;last&apos;: &apos;Blofeld&apos;, &apos;first&apos;: &apos;Ernst&apos;&#125;]</span><br></pre></td></tr></table></figure>
+<p>使用新函数 DictWriter() 重写 CSV 文件，同时调用 writeheader() 向 CSV 文件中第一行写入每一列的名字：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import csv</span><br><span class="line">villains = [</span><br><span class="line">        &#123;&apos;first&apos;: &apos;Doctor&apos;, &apos;last&apos;: &apos;No&apos;&#125;,</span><br><span class="line">        &#123;&apos;first&apos;: &apos;Rosa&apos;, &apos;last&apos;: &apos;Klebb&apos;&#125;,</span><br><span class="line">        &#123;&apos;first&apos;: &apos;Mister&apos;, &apos;last&apos;: &apos;Big&apos;&#125;,</span><br><span class="line">        &#123;&apos;first&apos;: &apos;Auric&apos;, &apos;last&apos;: &apos;Goldfinger&apos;&#125;,</span><br><span class="line">        &#123;&apos;first&apos;: &apos;Ernst&apos;, &apos;last&apos;: &apos;Blofeld&apos;&#125;,</span><br><span class="line">    ]</span><br><span class="line">with open(&apos;villains&apos;, &apos;wt&apos;) as fout:</span><br><span class="line">    cout = csv.DictWriter(fout, [&apos;first&apos;, &apos;last&apos;])</span><br><span class="line">    cout.writeheader()</span><br><span class="line">    cout.writerows(villains)</span><br></pre></td></tr></table></figure>
+<p>于是创建了具有标题行的新文件 villains：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">first,last</span><br><span class="line">Doctor,No</span><br><span class="line">Rosa,Klebb</span><br><span class="line">Mister,Big</span><br><span class="line">Auric,Goldfinger</span><br><span class="line">Ernst,Blofeld</span><br></pre></td></tr></table></figure>
+<p>再次读取写入的文件，忽略函数 DictReader() 调用的参数 fieldnames，把第一行的值（first,last）作为列标签，和字典的键做匹配：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import csv</span><br><span class="line">&gt;&gt;&gt; with open(&apos;villains&apos;, &apos;rt&apos;) as fin:</span><br><span class="line">...     cin = csv.DictReader(fin)</span><br><span class="line">...     villains = [row for row in cin]</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; print(villains)</span><br><span class="line">[&#123;&apos;last&apos;: &apos;No&apos;, &apos;first&apos;: &apos;Doctor&apos;&#125;,</span><br><span class="line">&#123;&apos;last&apos;: &apos;Klebb&apos;, &apos;first&apos;: &apos;Rosa&apos;&#125;,</span><br><span class="line">&#123;&apos;last&apos;: &apos;Big&apos;, &apos;first&apos;: &apos;Mister&apos;&#125;,</span><br><span class="line">&#123;&apos;last&apos;: &apos;Goldfinger&apos;, &apos;first&apos;: &apos;Auric&apos;&#125;,</span><br><span class="line">&#123;&apos;last&apos;: &apos;Blofeld&apos;, &apos;first&apos;: &apos;Ernst&apos;&#125;]</span><br></pre></td></tr></table></figure>
+<h1>XML文件</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P10-11）</p>
+</blockquote>
+<p>带分隔符的文件仅有两维的数据：行和列。如果你想在程序之间交换数据结构，需要一种方法把层次结构、序列、集合和其他的结构编码成文本。<br>
+XML 是最突出的处理这种转换的标记（markup） 格式，它使用标签（tag） 分隔数据，如下面的示例文件 menu.xml 所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;menu&gt;</span><br><span class="line">  &lt;breakfast hours=&quot;7-11&quot;&gt;</span><br><span class="line">    &lt;item price=&quot;$6.00&quot;&gt;breakfast burritos&lt;/item&gt;</span><br><span class="line">    &lt;item price=&quot;$4.00&quot;&gt;pancakes&lt;/item&gt;</span><br><span class="line">  &lt;/breakfast&gt;</span><br><span class="line">  &lt;lunch hours=&quot;11-3&quot;&gt;</span><br><span class="line">    &lt;item price=&quot;$5.00&quot;&gt;hamburger&lt;/item&gt;</span><br><span class="line">  &lt;/lunch&gt;</span><br><span class="line">  &lt;dinner hours=&quot;3-10&quot;&gt;</span><br><span class="line">    &lt;item price=&quot;8.00&quot;&gt;spaghetti&lt;/item&gt;</span><br><span class="line">  &lt;/dinner&gt;</span><br><span class="line">&lt;/menu&gt;</span><br></pre></td></tr></table></figure>
+<p>以下是 XML 的一些重要特性：</p>
+<ul>
+<li>标签以一个 <code>&lt;</code> 字符开头；</li>
+<li>忽略空格；</li>
+<li>通常一个开始标签（例如 <code>&lt;menu&gt;</code>）跟一段其他的内容，然后是最后相匹配的结束标签，例如 <code>&lt;/menu&gt;</code>；</li>
+<li>标签之间是可以存在多级嵌套的；</li>
+<li>可选属性（attribute）可以出现在开始标签里；</li>
+<li>标签中可以包含值（value）；</li>
+<li>如果一个命名为 thing 的标签没有内容或者子标签，它可以用一个在右尖括号的前面添加斜杠的简单标签所表示， 例如 <code>&lt;thing/&gt;</code>；</li>
+<li>存放数据的位置可以是任意的——属性、值或者子标签。</li>
+</ul>
+<p>XML 通常用于数据传送和消息，它存在一些子格式， 如 RSS 和 Atom。工业界有许多定制化的 XML 格式，例如金融领域（<a href="http://www.service-architecture.com/articles/xml/finance_xml.html%EF%BC%89%E3%80%82" target="_blank" rel="noopener">http://www.service-architecture.com/articles/xml/finance_xml.html）。</a><br>
+XML 的灵活性导致出现了很多方法和性能各异的 Python 库。</p>
+<h2 id="ElementTree解析XML">ElementTree解析XML</h2>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P11-12）</p>
+</blockquote>
+<p>在 Python 中解析 XML 最简单的方法是使用 ElementTree，下面的代码用来解析 menu.xml 文件以及输出一些标签和属性：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import xml.etree.ElementTree as et</span><br><span class="line">&gt;&gt;&gt; tree = et.ElementTree(file=&apos;menu.xml&apos;)</span><br><span class="line">&gt;&gt;&gt; root = tree.getroot()</span><br><span class="line">&gt;&gt;&gt; root.tag</span><br><span class="line">&apos;menu&apos;</span><br><span class="line">&gt;&gt;&gt; for child in root:</span><br><span class="line">...     print(&apos;tag:&apos;, child.tag, &apos;attributes:&apos;, child.attrib)</span><br><span class="line">...     for grandchild in child:</span><br><span class="line">...         print(&apos;\ttag:&apos;, grandchild.tag, &apos;attributes:&apos;, grandchild.attrib)</span><br><span class="line">...</span><br><span class="line">tag: breakfast attributes: &#123;&apos;hours&apos;: &apos;7-11&apos;&#125;</span><br><span class="line">    tag: item attributes: &#123;&apos;price&apos;: &apos;$6.00&apos;&#125;</span><br><span class="line">    tag: item attributes: &#123;&apos;price&apos;: &apos;$4.00&apos;&#125;</span><br><span class="line">tag: lunch attributes: &#123;&apos;hours&apos;: &apos;11-3&apos;&#125;</span><br><span class="line">    tag: item attributes: &#123;&apos;price&apos;: &apos;$5.00&apos;&#125;</span><br><span class="line">tag: dinner attributes: &#123;&apos;hours&apos;: &apos;3-10&apos;&#125;</span><br><span class="line">    tag: item attributes: &#123;&apos;price&apos;: &apos;8.00&apos;&#125;</span><br><span class="line">&gt;&gt;&gt; len(root) # 菜单选择的数目</span><br><span class="line">3</span><br><span class="line">&gt;&gt;&gt; len(root[0]) # 早餐项的数目</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+<p>对于嵌套列表中的每一个元素， tag 是标签字符串， attrib 是它属性的一个字典。<br>
+ElementTree 有许多查找 XML 导出数据、修改数据乃至写入 XML 文件的方法，它的<a href="https://docs.python.org/3.3/library/xml.etree.elementtree.html" target="_blank" rel="noopener">文档</a>中有详细的介绍。</p>
+<h2 id="其他标准的Python-XML库">其他标准的Python XML库</h2>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P12）</p>
+</blockquote>
+<p>其他标准的 Python XML 库如下。</p>
+<ul>
+<li>
+<p>xml.dom<br>
+JavaScript 开发者比较熟悉的文档对象模型（DOM）将 Web 文档表示成层次结构，它会把整个 XML 文件载入到内存中，同样允许你获取所有的内容。</p>
+</li>
+<li>
+<p>xml.sax<br>
+简单的XML API或者SAX都是通过在线解析XML， 不需要一次载入所有内容到内存中，因此对于处理巨大的 XML 文件流是一个很好的选择。</p>
+</li>
+</ul>
+<h1>JSON</h1>
+<h2 id="基本解析">基本解析</h2>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P12-13）</p>
+</blockquote>
+<p>不同于众多的 XML 模块， Python 只有一个主要的 JSON 模块 json（名字容易记忆）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; menu = \</span><br><span class="line">...     &#123; </span><br><span class="line">...          &quot;breakfast&quot; : &#123;</span><br><span class="line">...              &quot;hours&quot; : &quot;7-11&quot;,</span><br><span class="line">...              &quot;items&quot; : &#123;</span><br><span class="line">...                  &quot;breakfast burritos&quot; : &quot;$6.00&quot;,</span><br><span class="line">...                  &quot;pancakes&quot; : &quot;$4.00&quot;</span><br><span class="line">...              &#125;</span><br><span class="line">...          &#125;,</span><br><span class="line">...          &quot;lunch&quot; : &#123;</span><br><span class="line">...              &quot;hours&quot; : &quot;11-3&quot;,</span><br><span class="line">...              &quot;items&quot; : &#123;</span><br><span class="line">...                  &quot;hamburger&quot; : &quot;$5.00&quot;</span><br><span class="line">...              &#125;</span><br><span class="line">...          &#125;,</span><br><span class="line">...          &quot;dinner&quot; : &#123;</span><br><span class="line">...              &quot;hours&quot; : &quot;3-10&quot;,</span><br><span class="line">...              &quot;items&quot; : &#123;</span><br><span class="line">...                  &quot;spaghetti&quot; : &quot;$8.00&quot;</span><br><span class="line">...              &#125;</span><br><span class="line">...          &#125;</span><br><span class="line">...     &#125;</span><br></pre></td></tr></table></figure>
+<p>使用 dumps() 将 menu 编码成 JSON 字符串（menu_json）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import json</span><br><span class="line">&gt;&gt;&gt; menu_json = json.dumps(menu)</span><br><span class="line">&gt;&gt;&gt; menu_json</span><br><span class="line">&apos;&#123;&quot;dinner&quot;: &#123;&quot;items&quot;: &#123;&quot;spaghetti&quot;: &quot;$8.00&quot;&#125;, &quot;hours&quot;: &quot;3-10&quot;&#125;,</span><br><span class="line">&quot;lunch&quot;: &#123;&quot;items&quot;: &#123;&quot;hamburger&quot;: &quot;$5.00&quot;&#125;, &quot;hours&quot;: &quot;11-3&quot;&#125;,</span><br><span class="line">&quot;breakfast&quot;: &#123;&quot;items&quot;: &#123;&quot;breakfast burritos&quot;: &quot;$6.00&quot;, &quot;pancakes&quot;:</span><br><span class="line">&quot;$4.00&quot;&#125;, &quot;hours&quot;: &quot;7-11&quot;&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
+<p>现在反过来使用 loads() 把 JSON 字符串 menu_json 解析成 Python 的数据结构（menu2）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; menu2 = json.loads(menu_json)</span><br><span class="line">&gt;&gt;&gt; menu2</span><br><span class="line">&#123;&apos;breakfast&apos;: &#123;&apos;items&apos;: &#123;&apos;breakfast burritos&apos;: &apos;$6.00&apos;, &apos;pancakes&apos;:</span><br><span class="line">&apos;$4.00&apos;&#125;, &apos;hours&apos;: &apos;7-11&apos;&#125;, &apos;lunch&apos;: &#123;&apos;items&apos;: &#123;&apos;hamburger&apos;: &apos;$5.00&apos;&#125;,</span><br><span class="line">&apos;hours&apos;: &apos;11-3&apos;&#125;, &apos;dinner&apos;: &#123;&apos;items&apos;: &#123;&apos;spaghetti&apos;: &apos;$8.00&apos;&#125;, &apos;hours&apos;: &apos;3-10&apos;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>menu 和 menu2 是具有相同键值的字典，和标准的字典用法一样。</p>
+<h2 id="自定义解析方式">自定义解析方式</h2>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P13-14）</p>
+</blockquote>
+<p>你可能会在编码或者解析 JSON 对象时出现异常，例如对象的时间 datetime（在 10.4 节详细介绍）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import datetime</span><br><span class="line">&gt;&gt;&gt; now = datetime.datetime.utcnow()</span><br><span class="line">&gt;&gt;&gt; now</span><br><span class="line">datetime.datetime(2013, 2, 22, 3, 49, 27, 483336)</span><br><span class="line">&gt;&gt;&gt; json.dumps(now)</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line"># …… (删除栈跟踪以保存树)</span><br><span class="line">TypeError: datetime.datetime(2013, 2, 22, 3, 49, 27, 483336) is not JSON serializable</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<p>上述错误发生是因为标准 JSON 没有定义日期或者时间类型，需要自定义处理方式。<br>
+可以通过继承修改 JSON 的编码方式（6.3 节中讲解）。下面为 datetime 修改编码方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; class DTEncoder(json.JSONEncoder):</span><br><span class="line">...     def default(self, obj):</span><br><span class="line">...         # isinstance()检查obj的类型</span><br><span class="line">...         if isinstance(obj, datetime.datetime):</span><br><span class="line">...             return int(mktime(obj.timetuple()))</span><br><span class="line">...         # 否则是普通解码器知道的东西：</span><br><span class="line">...         return json.JSONEncoder.default(self, obj)</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; json.dumps(now, cls=DTEncoder)</span><br><span class="line">&apos;1361526567&apos;</span><br></pre></td></tr></table></figure>
+<p>新类 DTEncoder 是 JSONEncoder 的一个子类。我们需要重载它的 default() 方法来增加处理 datetime 的代码。继承确保了剩下的功能与父类的一致性。</p>
+<h1>ini配置文件</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC8%E7%AB%A0%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8.pdf" target="_blank" rel="noopener">Python语言及其应用-第8章数据存储</a>（P16）</p>
+</blockquote>
+<p>我们使用标准 configparser 模块处理 Windows 风格的初始化 .ini 文件。这些文件包含 key = value 的定义。<br>
+以下是一个简单的配置文件 settings.cfg 例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[english]</span><br><span class="line">greeting = Hello</span><br><span class="line"></span><br><span class="line">[french]</span><br><span class="line">greeting = Bonjour</span><br><span class="line"></span><br><span class="line">[files]</span><br><span class="line">home = /usr/local</span><br><span class="line"># 简单的插入：</span><br><span class="line">bin = %(home)s/bin</span><br></pre></td></tr></table></figure>
+<p>下面的代码是把配置文件读入到 Python 数据结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import configparser</span><br><span class="line">&gt;&gt;&gt; cfg = configparser.ConfigParser()</span><br><span class="line">&gt;&gt;&gt; cfg.read(&apos;settings.cfg&apos;)</span><br><span class="line">[&apos;settings.cfg&apos;]</span><br><span class="line">&gt;&gt;&gt; cfg</span><br><span class="line">&lt;configparser.ConfigParser object at 0x1006be4d0&gt;</span><br><span class="line">&gt;&gt;&gt; cfg[&apos;french&apos;]</span><br><span class="line">&lt;Section: french&gt;</span><br><span class="line">&gt;&gt;&gt; cfg[&apos;french&apos;][&apos;greeting&apos;]</span><br><span class="line">&apos;Bonjour&apos;</span><br><span class="line">&gt;&gt;&gt; cfg[&apos;files&apos;][&apos;bin&apos;]</span><br><span class="line">&apos;/usr/local/bin&apos;</span><br></pre></td></tr></table></figure>
+<p>其他操作包括自定义修改也是可以实现的，请参阅文档 configparser（<a href="https://docs.python.org/3.3/library/configparser.html%EF%BC%89%E3%80%82%E5%A6%82%E6%9E%9C%E4%BD%A0%E9%9C%80%E8%A6%81%E4%B8%A4%E5%B1%82%E4%BB%A5%E4%B8%8A%E7%9A%84%E5%B5%8C%E5%A5%97%E7%BB%93%E6%9E%84%EF%BC%8C%E4%BD%BF%E7%94%A8" target="_blank" rel="noopener">https://docs.python.org/3.3/library/configparser.html）。如果你需要两层以上的嵌套结构，使用</a> YAML 或者 JSON。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>31-结构化的文本文件</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">CSV文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#读写列表集合"><span class="nav-text">读写列表集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读写字典集合"><span class="nav-text">读写字典集合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">XML文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ElementTree解析XML"><span class="nav-text">ElementTree解析XML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他标准的Python-XML库"><span class="nav-text">其他标准的Python XML库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">JSON</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本解析"><span class="nav-text">基本解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义解析方式"><span class="nav-text">自定义解析方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">ini配置文件</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="使用if、 elif和else进行比较 Python语言及其应用-第4章代码结构（P3-4） if 和 else 使用：12345678&amp;gt;&amp;gt;&amp;gt; disaster = True&amp;gt;&amp;gt;&amp;gt; if disaster:...     print(&amp;quot;Woe!&amp;quot;)... else:...     print(&amp;quot;Whee!&amp;quot;)...Woe!">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8&#x2F;11-%E6%AF%94%E8%BE%83.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="使用if、 elif和else进行比较 Python语言及其应用-第4章代码结构（P3-4） if 和 else 使用：12345678&amp;gt;&amp;gt;&amp;gt; disaster = True&amp;gt;&amp;gt;&amp;gt; if disaster:...     print(&amp;quot;Woe!&amp;quot;)... else:...     print(&amp;quot;Whee!&amp;quot;)...Woe!">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.032Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/11-%E6%AF%94%E8%BE%83">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>11-比较</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>使用if、 elif和else进行比较</h1><blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC4%E7%AB%A0%E4%BB%A3%E7%A0%81%E7%BB%93%E6%9E%84.pdf" target="_blank" rel="noopener">Python语言及其应用-第4章代码结构</a>（P3-4）</p>
+</blockquote><p>if 和 else 使用：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; disaster = True</span><br><span class="line">&gt;&gt;&gt; if disaster:</span><br><span class="line">...     print(&quot;Woe!&quot;)</span><br><span class="line">... else:</span><br><span class="line">...     print(&quot;Whee!&quot;)</span><br><span class="line">...</span><br><span class="line">Woe!</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+<p>注意，不需要在 if 判断语句中加上圆括号，例如 if (disaster == True) 是没必要的，但在判断的末尾要加上冒号（:）。如果你像我一样有时会忘记输入冒号，这会导致 Python 解释器报错。<br>
+每一个 print() 在判断语句之后要缩进。我一般缩进四个空格。尽管你可以使用你喜欢的任何方式缩进，但是在同一代码段内最好使用一致的缩进——从每一行的左边开始使用 相同数量的缩进字符。推荐的代码缩进风格 PEP-8（<a href="http://legacy.python.org/dev/peps/pep-0008/%EF%BC%89%E5%90%8C%E6%A0%B7%E4%BD%BF%E7%94%A8%E5%9B%9B%E4%B8%AA%E7%A9%BA%E6%A0%BC%E3%80%82%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8" target="_blank" rel="noopener">http://legacy.python.org/dev/peps/pep-0008/）同样使用四个空格。避免使用</a> Tab 字符或者 Tab 与 Space 混合的缩进风格，这样会 使缩进字符的数量变得混乱。<br>
+如果要检查超过两个条件，可以使用 if、 elif（即 else if）和 else：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; color = &quot;puce&quot;</span><br><span class="line">&gt;&gt;&gt; if color == &quot;red&quot;:</span><br><span class="line">...     print(&quot;It&apos;s a tomato&quot;)</span><br><span class="line">... elif color == &quot;green&quot;:</span><br><span class="line">...     print(&quot;It&apos;s a green pepper&quot;)</span><br><span class="line">... elif color == &quot;bee purple&quot;:</span><br><span class="line">...     print(&quot;I don&apos;t know what it is, but only bees can see it&quot;)</span><br><span class="line">... else:</span><br><span class="line">...     print(&quot;I&apos;ve never heard of the color&quot;, color)</span><br><span class="line">...</span><br><span class="line">I&apos;ve never heard of the color puce</span><br></pre></td></tr></table></figure>
+<h1>比较操作符</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC4%E7%AB%A0%E4%BB%A3%E7%A0%81%E7%BB%93%E6%9E%84.pdf" target="_blank" rel="noopener">Python语言及其应用-第4章代码结构</a>（P4-5）</p>
+</blockquote>
+<p>Python 中的比较操作符见下表。</p>
+<table>
+<thead>
+<tr>
+<th>比较</th>
+<th>操作符</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>相等</td>
+<td>==</td>
+</tr>
+<tr>
+<td>不等于</td>
+<td>!=</td>
+</tr>
+<tr>
+<td>小于</td>
+<td>&lt;</td>
+</tr>
+<tr>
+<td>不大于</td>
+<td>&lt;=</td>
+</tr>
+<tr>
+<td>大于</td>
+<td>&gt;</td>
+</tr>
+<tr>
+<td>不小于</td>
+<td>&gt;=</td>
+</tr>
+<tr>
+<td>属于</td>
+<td>in…</td>
+</tr>
+</tbody>
+</table>
+<p>这些操作符都返回布尔值 True 或者 False。<br>
+如果你想同时进行多重比较判断， 可以使用布尔操作符 and、 or 或者 not 连接来决定最终表达式的布尔取值。<br>
+布尔操作符的优先级没有比较表达式的代码段高， 也就是说，表达式要先比较运算然后布尔运算。避免混淆的最简单的办法是加花括号。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = 7</span><br><span class="line">&gt;&gt;&gt; 5 &lt; x and x &lt; 10</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; ( 5 &lt; x ) and ( x &lt; 10)</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
+<h1>非布尔类型真值（True）判断</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC4%E7%AB%A0%E4%BB%A3%E7%A0%81%E7%BB%93%E6%9E%84.pdf" target="_blank" rel="noopener">Python语言及其应用-第4章代码结构</a>（P5）</p>
+</blockquote>
+<p>如果你在判断一个表达式而不是一个简单的变量， Python 会先计算表达式的值，然后返回布尔型结果。<br>
+如果表达式的返回类型不是布尔会发生什么？什么情况下 Python 会认为是 True 和 False? 一个判断为假赋值不一定明确表示为 False，下面的情况也会被认为是 False。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>真值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>布尔</td>
+<td>False</td>
+</tr>
+<tr>
+<td>null 类型</td>
+<td>None</td>
+</tr>
+<tr>
+<td>整型</td>
+<td>0</td>
+</tr>
+<tr>
+<td>浮点型</td>
+<td>0.0</td>
+</tr>
+<tr>
+<td>空字符串</td>
+<td>‘’</td>
+</tr>
+<tr>
+<td>空列表</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>空元组</td>
+<td>()</td>
+</tr>
+<tr>
+<td>空字典</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>空集合</td>
+<td>set()</td>
+</tr>
+</tbody>
+</table>
+<p>剩下的都会被认为是 True。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>11-比较</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用if、 elif和else进行比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">比较操作符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">非布尔类型真值（True）判断</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

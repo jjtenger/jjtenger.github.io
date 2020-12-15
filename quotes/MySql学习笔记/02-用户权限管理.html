@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="用户权限管理主要有以下作用：  可以限制用户访问哪些库、哪些表   可以限制用户对哪些表执行SELECT、CREATE、DELETE、DELETE、ALTER等操作   可以限制用户登录的IP或域名   可以限制用户自己的权限是否可以授权给别的用户  用户授权操作：grant1mysql&amp;gt; grant all privileges on *.* to &amp;apos;yangxin&amp;apos;@&amp;apos;%&amp;apos; identi">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;MySql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;02-%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="用户权限管理主要有以下作用：  可以限制用户访问哪些库、哪些表   可以限制用户对哪些表执行SELECT、CREATE、DELETE、DELETE、ALTER等操作   可以限制用户登录的IP或域名   可以限制用户自己的权限是否可以授权给别的用户  用户授权操作：grant1mysql&amp;gt; grant all privileges on *.* to &amp;apos;yangxin&amp;apos;@&amp;apos;%&amp;apos; identi">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584879723_20200322201830517_3932.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584879722_20200322201830203_31657.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.032Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584879723_20200322201830517_3932.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/MySql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/02-%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/MySql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">MYSQL学习笔记</a></li>
+            <li>02-用户权限管理</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>用户权限管理主要有以下作用：</p><ol>
+<li>
+<p>可以限制用户访问哪些库、哪些表</p>
+</li>
+<li>
+<p>可以限制用户对哪些表执行SELECT、CREATE、DELETE、DELETE、ALTER等操作</p>
+</li>
+<li>
+<p>可以限制用户登录的IP或域名</p>
+</li>
+<li>
+<p>可以限制用户自己的权限是否可以授权给别的用户</p>
+</li>
+</ol><h1>用户授权操作：grant</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> grant all privileges on *.* to <span class="string">'yangxin'</span>@<span class="string">'%'</span> identified by <span class="string">'yangxin123456'</span> with grant option;</span></span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+<ul>
+<li>all privileges：表示将所有权限授予给用户。也可指定具体的权限，如：SELECT、CREATE、DROP等。</li>
+<li>on：表示这些权限对哪些数据库和表生效，格式：数据库名.表名，这里写“*”表示所有数据库，所有表。如果我要指定将权限应用到test库的user表中，可以这么写：test.user</li>
+<li>to：将权限授予哪个用户。格式：”用户名”@”登录IP或域名”。%表示没有限制，在任何主机都可以登录。比如：”yangxin”@”192.168.0.%”，表示yangxin这个用户只能在192.168.0IP段登录</li>
+<li>identified by：指定用户的登录密码</li>
+<li>with grant option：表示允许用户将自己的权限授权给其它用户</li>
+</ul>
+<p>可以使用GRANT给用户添加权限，权限会自动叠加，不会覆盖之前授予的权限，比如你先给用户添加一个SELECT权限，后来又给用户添加了一个INSERT权限，那么该用户就同时拥有了SELECT和INSERT权限。</p>
+<p>用户详情的权限列表请参考MySQL官网说明：<a href="http://dev.mysql.com/doc/refman/5.7/en/privileges-provided.html" target="_blank" rel="noopener">http://dev.mysql.com/doc/refman/5.7/en/privileges-provided.html</a></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584879723_20200322201830517_3932.png" alt></p>
+<h1>密码操作</h1>
+<h2 id="修改密码">修改密码</h2>
+<p>方法一：更新mysql.user表</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line"><span class="comment"># mysql5.7之前</span></span><br><span class="line">mysql&gt; update user set password=password('123456') where user='root';</span><br><span class="line"><span class="comment"># mysql5.7之后</span></span><br><span class="line">mysql&gt; update user set authentication_string=password('123456') where user='root';</span><br><span class="line">mysql&gt; flush privileges;</span><br></pre></td></tr></table></figure>
+<p>注意：mysql库的user表，5.7以下版本密码字段为password，5.7以上版本密码字段为authentication_string</p>
+<p>方法二： 用set password命令</p>
+<p>语法：set password for ‘用户名’@‘登录地址’=password(‘密码’)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> <span class="built_in">set</span> password <span class="keyword">for</span> <span class="string">'root'</span>@<span class="string">'localhost'</span>=password(<span class="string">'123456'</span>);</span></span><br></pre></td></tr></table></figure>
+<p>方法三：mysqladmin</p>
+<p>语法：mysqladmin -u用户名 -p旧的密码 password 新密码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> mysqladmin -uroot -p123456 password 1234abcd</span></span><br></pre></td></tr></table></figure>
+<p>注意：mysqladmin位于mysql安装目录的bin目录下</p>
+<h2 id="忘记密码">忘记密码</h2>
+<ol>
+<li>添加登录跳过权限检查配置</li>
+</ol>
+<p>修改my.cnf，在mysqld配置节点添加skip-grant-tables配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">skip-grant-tables</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>重新启动mysql服务</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">shell&gt;</span><span class="bash"> service mysqld restart</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>修改密码</li>
+</ol>
+<p>此时在终端用mysql命令登录时不需要用户密码，然后按照修改密码的第一种方式将密码修改即可。</p>
+<ol start="4">
+<li>还原登录权限跳过检查配置</li>
+</ol>
+<p>将my.cnf中mysqld节点的skip-grant-tables配置删除，然后重新启动服务即可。</p>
+<h1>其它权限操作</h1>
+<h2 id="刷新权限：flush-privileges">刷新权限：flush privileges</h2>
+<p>对用户做了权限变更之后，一定记得重新加载一下权限，将权限信息从内存中写入数据库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> flush privileges;</span></span><br></pre></td></tr></table></figure>
+<h2 id="查看用户权限：show-grants">查看用户权限：show grants</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> grant select,create,drop,update,alter on *.* to <span class="string">'yangxin'</span>@<span class="string">'localhost'</span> identified by <span class="string">'yangxin0917'</span> with grant option;</span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> show grants <span class="keyword">for</span> <span class="string">'yangxin'</span>@<span class="string">'localhost'</span>;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584879722_20200322201830203_31657.png" alt></p>
+<h2 id="回收权限：revoke">回收权限：revoke</h2>
+<p>删除yangxin这个用户的create权限，该用户将不能创建数据库和表。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> revoke create on *.* from <span class="string">'yangxin@localhost'</span>;</span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> flush privileges;</span></span><br></pre></td></tr></table></figure>
+<h2 id="删除用户：drop-user">删除用户：drop user</h2>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select host,user from user;</span><br><span class="line">+<span class="comment">---------------+---------+</span></span><br><span class="line">| host          | user    |</span><br><span class="line">+<span class="comment">---------------+---------+</span></span><br><span class="line">| %             | root    |</span><br><span class="line">| %             | test3   |</span><br><span class="line">| %             | yx      |</span><br><span class="line">| 192.168.0.%   | root    |</span><br><span class="line">| 192.168.0.%   | test2   |</span><br><span class="line">| 192.168.0.109 | test    |</span><br><span class="line">| ::1           | yangxin |</span><br><span class="line">| localhost     | yangxin |</span><br><span class="line">+<span class="comment">---------------+---------+</span></span><br><span class="line">8 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line">mysql&gt; <span class="keyword">drop</span> <span class="keyword">user</span> <span class="string">'yangxin'</span>@<span class="string">'localhost'</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="用户重命名：rename-user">用户重命名：rename user</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">shell&gt;</span><span class="bash"> rename user <span class="string">'test3'</span>@<span class="string">'%'</span> to <span class="string">'test1'</span>@<span class="string">'%'</span>;</span></span><br></pre></td></tr></table></figure>
+<h1>开启MySQL远程访问权限</h1>
+<ol>
+<li>登陆mysql数据库</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
+<p>查看user表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mysql;</span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; select host,user,password from user;</span><br><span class="line">+<span class="comment">--------------+------+-------------------------------------------+</span></span><br><span class="line">| host         | user | password                                  |</span><br><span class="line">+<span class="comment">--------------+------+-------------------------------------------+</span></span><br><span class="line">| localhost    | root | *A731AEBFB621E354CD41BAF207D884A609E81F5E |</span><br><span class="line">| 192.168.1.1 | root | *A731AEBFB621E354CD41BAF207D884A609E81F5E |</span><br><span class="line">+<span class="comment">--------------+------+-------------------------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+<p>可以看到在user表中已创建的root用户。host字段表示登录的主机，其值可以用IP，也可用主机名，</p>
+<p>如果想用指定IP登录，那么可以将以上的Host值改为指定的Ip即可。</p>
+<p>将host字段的值改为%就表示在任何客户端机器上能以root用户登录到mysql服务器，建议在开发时设为%。</p>
+<ol start="2">
+<li>实现远程连接(授权法)</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update user set host = ’%’ where user = ’root’;</span><br></pre></td></tr></table></figure>
+<p>将权限改为ALL PRIVILEGES</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> use mysql;</span></span><br><span class="line">Database changed</span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> grant all privileges  on *.* to root@<span class="string">'%'</span> identified by <span class="string">"password"</span>;</span></span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"> </span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> flush privileges;</span></span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"> </span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> select host,user,password from user;</span></span><br><span class="line">+--------------+------+-------------------------------------------+</span><br><span class="line">| host         | user | password                                  |</span><br><span class="line">+--------------+------+-------------------------------------------+</span><br><span class="line">| localhost    | root | *A731AEBFB621E354CD41BAF207D884A609E81F5E |</span><br><span class="line">| 192.168.1.1 | root | *A731AEBFB621E354CD41BAF207D884A609E81F5E |</span><br><span class="line">| %            | root | *A731AEBFB621E354CD41BAF207D884A609E81F5E |</span><br><span class="line">+--------------+------+-------------------------------------------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+<p>这样机器就可以以用户名root密码root远程访问该机器上的MySql</p>
+<ol start="3">
+<li>实现远程连接（改表法）</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> mysql;</span><br><span class="line"><span class="keyword">update</span> <span class="keyword">user</span> <span class="keyword">set</span> host = <span class="string">'%'</span> <span class="keyword">where</span> <span class="keyword">user</span> = <span class="string">'root'</span>;</span><br></pre></td></tr></table></figure>
+<p>这样在远端就可以通过root用户访问Mysql</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/MySql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">MYSQL学习笔记</a></li>
+            <li>02-用户权限管理</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">用户授权操作：grant</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">密码操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#修改密码"><span class="nav-text">修改密码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#忘记密码"><span class="nav-text">忘记密码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">其它权限操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#刷新权限：flush-privileges"><span class="nav-text">刷新权限：flush privileges</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看用户权限：show-grants"><span class="nav-text">查看用户权限：show grants</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回收权限：revoke"><span class="nav-text">回收权限：revoke</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除用户：drop-user"><span class="nav-text">删除用户：drop user</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户重命名：rename-user"><span class="nav-text">用户重命名：rename user</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">开启MySQL远程访问权限</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

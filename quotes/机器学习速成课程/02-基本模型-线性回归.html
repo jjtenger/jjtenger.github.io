@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="基本模型：线性回归 深入了解机器学习 (Descending into ML)：线性回归  偏差：b（y 轴截距） 权重：w1（斜率） 训练与损失 深入了解机器学习 (Descending into ML)：训练与损失  经验风险最小化 在监督式学习中，机器学习算法通过以下方式构建模型：检查多个样本并尝试找出可最大限度地减少损失的模型；这一过程称为经验风险最小化。 损失及损失函数 损失用于衡量模型">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E9%80%9F%E6%88%90%E8%AF%BE%E7%A8%8B&#x2F;02-%E5%9F%BA%E6%9C%AC%E6%A8%A1%E5%9E%8B-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="基本模型：线性回归 深入了解机器学习 (Descending into ML)：线性回归  偏差：b（y 轴截距） 权重：w1（斜率） 训练与损失 深入了解机器学习 (Descending into ML)：训练与损失  经验风险最小化 在监督式学习中，机器学习算法通过以下方式构建模型：检查多个样本并尝试找出可最大限度地减少损失的模型；这一过程称为经验风险最小化。 损失及损失函数 损失用于衡量模型">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584263481_2019-10-30-09-29-18.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584263481_2019-10-30-09-30-20.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584263481_2019-10-30-09-31-05.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584263482_2019-10-30-09-31-26.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.048Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584263481_2019-10-30-09-29-18.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E9%80%9F%E6%88%90%E8%AF%BE%E7%A8%8B/02-%E5%9F%BA%E6%9C%AC%E6%A8%A1%E5%9E%8B-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E9%80%9F%E6%88%90%E8%AF%BE%E7%A8%8B/">机器学习速成课程</a></li>
+            <li>02-基本模型-线性回归</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>基本模型：线性回归</h1><blockquote>
+<p><a href="https://developers.google.cn/machine-learning/crash-course/descending-into-ml/linear-regression" target="_blank" rel="noopener"><em>深入了解机器学习 (Descending into ML)：线性回归</em></a></p>
+</blockquote><p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584263481_2019-10-30-09-29-18.png" alt></p><ul>
+<li>偏差：b（y 轴截距）</li>
+<li>权重：w1（斜率）</li>
+</ul><h1>训练与损失</h1><blockquote>
+<p><a href="https://developers.google.cn/machine-learning/crash-course/descending-into-ml/training-and-loss" target="_blank" rel="noopener"><em>深入了解机器学习 (Descending into ML)：训练与损失</em></a></p>
+</blockquote><ul>
+<li>经验风险最小化<br>
+在监督式学习中，机器学习算法通过以下方式构建模型：检查多个样本并尝试找出可最大限度地减少损失的模型；这一过程称为经验风险最小化。</li>
+<li>损失及损失函数<br>
+损失用于衡量模型的预测偏离其标签的程度。要确定此值，模型必须定义损失函数。
+<ul>
+<li>均方误差(MSE) ：每个样本的平均平方损失，常用于线性回归模型。<br>
+<img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584263481_2019-10-30-09-30-20.png" alt></li>
+<li>均方根误差(RMSE)：均方误差的平方根。<br>
+优点是：可以在与原目标相同的规模下解读。</li>
+</ul>
+</li>
+</ul><a id="more"></a>
+
+
+
+
+
+
+<h1>降低损失</h1>
+<blockquote>
+<p><a href="https://developers.google.cn/machine-learning/crash-course/reducing-loss/an-iterative-approach" target="_blank" rel="noopener"><em>降低损失：迭代方法</em></a></p>
+</blockquote>
+<ul>
+<li>迭代方法<br>
+<img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584263481_2019-10-30-09-31-05.png" alt>
+<ul>
+<li>选定参数（权重、偏差）初始值；</li>
+<li>执行预测并计算损失；</li>
+<li>评估损失并调整参数；</li>
+<li>不断重复迭代（步骤2~3），直到模型收敛。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><a href="https://developers.google.cn/machine-learning/crash-course/reducing-loss/gradient-descent" target="_blank" rel="noopener"><em>降低损失 (Reducing Loss)：梯度下降法</em></a></p>
+</blockquote>
+<ul>
+<li>梯度下降法<br>
+<img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584263482_2019-10-30-09-31-26.png" alt>
+<ul>
+<li>凸形问题：回归模型预测产生的损失与权重图（损失曲线）为凸形。<br>
+凸形问题只有一个最低点；即只存在一个斜率正好为 0 的位置。这个最小值就是损失函数收敛之处。</li>
+<li>梯度：损失相对于单个参数（权重）的偏导数（矢量）。<br>
+梯度始终指向损失函数中增长最为迅猛的方向，大小为相对于参数的增长速度。</li>
+<li>梯度下降：沿着负梯度的方向不断调整参数重复迭代，以便尽快降低损失。<br>
+为了确定损失曲线上的下一个点，梯度下降法算法会将梯度大小的一部分与起点相加。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><a href="https://developers.google.cn/machine-learning/crash-course/reducing-loss/learning-rate" target="_blank" rel="noopener"><em>降低损失 (Reducing Loss)：学习速率</em></a></p>
+</blockquote>
+<ul>
+<li>学习速率
+<ul>
+<li>用于确定梯度步长的超参数<br>
+在每次迭代期间，梯度下降法都会将学习速率（有时也称为步长）与梯度相乘。得出的乘积称为梯度步长，用以确定下一个点的位置。</li>
+<li>金发姑娘学习速率<br>
+学习速率过小，会花费太长时间；​学习速率过大，下一个点将永远在 U 形曲线的底部随意弹跳，到不了最低点；​较小的梯度可以尝试更大的学习速率，以获得更大的梯度步长。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><a href="https://developers.google.cn/machine-learning/crash-course/reducing-loss/stochastic-gradient-descent" target="_blank" rel="noopener"><em>降低损失 (Reducing Loss)：随机梯度下降法</em></a></p>
+</blockquote>
+<ul>
+<li>随机梯度下降法
+<ul>
+<li>批量：用于在单次迭代中计算梯度的样本总数<br>
+假定是整个数据集（全批量），但实际不太可能。超大批量单次迭代会花费很长时间，并且其具备的预测价值往往并不比大型批量高。​</li>
+<li>随机梯度下降法 (SGD) ：批量大小为 1</li>
+<li>小批量随机梯度下降法（小批量 SGD）：通常包含 10-1000 个随机选择的样本<br>
+可以减少 SGD 中的杂乱样本数量，但仍然比全批量更高效。</li>
+</ul>
+</li>
+</ul>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E9%80%9F%E6%88%90%E8%AF%BE%E7%A8%8B/">机器学习速成课程</a></li>
+            <li>02-基本模型-线性回归</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">基本模型：线性回归</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">训练与损失</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">降低损失</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

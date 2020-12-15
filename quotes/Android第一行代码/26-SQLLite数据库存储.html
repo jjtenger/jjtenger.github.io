@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="在刚开始接触Android的时候，我甚至都不敢相信，Android系统竟然是内置了数据库的！好吧，是我太孤陋寡闻了。SQLite是一款轻量级的关系型数据库，它的运算速度非常快，占用资源很少，通常只需要几百KB的内存就足够了，因而特别适合在移动设备上使用。SQLite不仅支持标准的SQL语法，还遵循了数据库的ACID事务，所以只要你以前使用过其他的关系型数据库，就可以很快地上手SQLite。而SQL">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81&#x2F;26-SQLLite%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="在刚开始接触Android的时候，我甚至都不敢相信，Android系统竟然是内置了数据库的！好吧，是我太孤陋寡闻了。SQLite是一款轻量级的关系型数据库，它的运算速度非常快，占用资源很少，通常只需要几百KB的内存就足够了，因而特别适合在移动设备上使用。SQLite不仅支持标准的SQL语法，还遵循了数据库的ACID事务，所以只要你以前使用过其他的关系型数据库，就可以很快地上手SQLite。而SQL">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437864_20200317172917719_9633.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437860_20200317172917207_21964.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437859_20200317172916394_24022.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437858_20200317172915785_9864.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437855_20200317172915175_13821.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437854_20200317172914564_15938.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437852_20200317172913854_25773.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437851_20200317172913344_27909.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437850_20200317172912835_24137.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437848_20200317172912125_29958.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437847_20200317172911512_20678.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437846_20200317172910903_8261.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437845_20200317172910394_25890.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437843_20200317172909784_2999.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437843_20200317172909276_16670.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437841_20200317172908767_24561.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437836_20200317172908158_13050.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437835_20200317172907139_28022.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437833_20200317172906521_21054.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.004Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584437864_20200317172917719_9633.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/26-SQLLite%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/">ANDROID第一行代码</a></li>
+            <li>26-SQLLITE数据库存储</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>在刚开始接触Android的时候，我甚至都不敢相信，Android系统竟然是内置了数据库的！好吧，是我太孤陋寡闻了。SQLite是一款轻量级的关系型数据库，它的运算速度非常快，占用资源很少，通常只需要几百KB的内存就足够了，因而特别适合在移动设备上使用。SQLite不仅支持标准的SQL语法，还遵循了数据库的ACID事务，所以只要你以前使用过其他的关系型数据库，就可以很快地上手SQLite。而SQLite又比一般的数据库要简单得多，它甚至不用设置用户名和密码就可以使用。Android正是把这个功能极为强大的数据库嵌入到了系统当中，使得本地持久化的功能有了一次质的飞跃。</p><a id="more"></a>
+<p>前面我们所学的文件存储和SharedPreferences存储毕竟只适用于保存一些简单的数据和键值对，当需要存储大量复杂的关系型数据的时候，你就会发现以上两种存储方式很难应付得了。比如我们手机的短信程序中可能会有很多个会话，每个会话中又包含了很多条信息内容，并且大部分会话还可能各自对应了电话簿中的某个联系人。很难想象如何用文件或者SharedPreferences来存储这些数据量大、结构性复杂的数据吧？但是使用数据库就可以做得到。那么我们就赶快来看一看，Android中的SQLite数据库到底是如何使用的。</p>
+<h1>1.创建数据库</h1>
+<p>Android为了让我们能够更加方便地管理数据库，专门提供了一个<strong>SQLiteOpenHelper帮助类</strong>，借助这个类就可以非常简单地对数据库进行创建和升级。既然有好东西可以直接使用，那我们自然要尝试一下了，下面我就对SQLiteOpenHelper的基本用法进行介绍。</p>
+<p>首先你要知道SQLiteOpenHelper是一个抽象类，这意味着如果我们想要使用它的话，就需要创建一个自己的帮助类去继承它。<strong>SQLiteOpenHelper中有两个抽象方法，分别是onCreate()和onUpgrade()，我们必须在自己的帮助类里面重写这两个方法，然后分别在这两个方法中去实现创建、升级数据库的逻辑。</strong></p>
+<p>SQLiteOpenHelper中还有两个非常重要的实例方法：<strong>getReadableDatabase()和getWritableDatabase()</strong>。这两个方法都可以创建或打开一个现有的数据库（如果数据库已存在则直接打开，否则创建一个新的数据库），并返回一个可对数据库进行读写操作的对象。不同的是，<strong>当数据库不可写入的时候（如磁盘空间已满），getReadableDatabase()方法返回的对象将以只读的方式去打开数据库，而getWritableDatabase()方法则将出现异常。</strong></p>
+<p>SQLiteOpenHelper中有两个构造方法可供重写，一般使用参数少一点的那个构造方法即可。这个构造方法中接收4个参数：</p>
+<ul>
+<li>第一个参数是Context，这个没什么好说的，必须要有它才能对数据库进行操作。</li>
+<li>第二个参数是数据库名，创建数据库时使用的就是这里指定的名称。</li>
+<li>第三个参数允许我们在查询数据的时候返回一个自定义的Cursor，一般都是传入null。</li>
+<li>第四个参数表示当前数据库的版本号，可用于对数据库进行升级操作。</li>
+</ul>
+<p>构建出SQLiteOpenHelper的实例之后，再调用它的getReadableDatabase()或getWritableDatabase()方法就能够创建数据库了，<strong>数据库文件会存放在/data/data/packagename/databases/目录下。此时，重写的onCreate()方法也会得到执行，所以通常会在这里去处理一些创建表的逻辑。</strong></p>
+<p>接下来还是让我们通过例子的方式来更加直观地体会SQLiteOpenHelper的用法吧，首先新建一个DatabaseTest项目。</p>
+<p>这里我们希望创建一个名为BookStore.db的数据库，然后在这个数据库中新建一张Book表，表中有id（主键）、作者、价格、页数和书名等列。创建数据库表当然还是需要用建表语句的，这里也是要考验一下你的SQL基本功了，Book表的建表语句如下所示：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Book (</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">integer</span> primary <span class="keyword">key</span> autoincrement,</span><br><span class="line">    author <span class="built_in">text</span>,</span><br><span class="line">    price <span class="built_in">real</span>,</span><br><span class="line">    pages <span class="built_in">integer</span>,</span><br><span class="line">    <span class="keyword">name</span> <span class="built_in">text</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>只要你对SQL方面的知识稍微有一些了解，上面的建表语句对你来说应该都不难吧。SQLite不像其他的数据库拥有众多繁杂的数据类型，它的<strong>数据类型很简单，integer表示整型，real表示浮点型，text表示文本类型，blob表示二进制类型。<strong>另外，上述建表语句中我们</strong>还使用了primary key将id列设为主键，并用autoincrement关键字表示id列是自增长的。</strong></p>
+<p>然后需要在代码中去执行这条SQL语句，才能完成创建表的操作。新建MyDatabaseHelper类继承自SQLiteOpenHelper，代码如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyDatabaseHelper</span> <span class="keyword">extends</span> <span class="title">SQLiteOpenHelper</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CREATE_BOOK = <span class="string">"create table Book ("</span></span><br><span class="line">            + <span class="string">"id integer primary key autoincrement, "</span></span><br><span class="line">            + <span class="string">"author text, "</span></span><br><span class="line">            + <span class="string">"price real, "</span></span><br><span class="line">            + <span class="string">"pages integer, "</span></span><br><span class="line">            + <span class="string">"name text)"</span>;</span><br><span class="line">    <span class="keyword">private</span> Context mContext;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyDatabaseHelper</span><span class="params">(Context context, String name,</span></span></span><br><span class="line"><span class="function"><span class="params">                            SQLiteDatabase.CursorFactory factory, <span class="keyword">int</span> version)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, name, factory, version);</span><br><span class="line">        mContext = context;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(SQLiteDatabase db)</span> </span>&#123;</span><br><span class="line">        db.execSQL(CREATE_BOOK);</span><br><span class="line">        Toast.makeText(mContext, <span class="string">"Create succeeded"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUpgrade</span><span class="params">(SQLiteDatabase db, <span class="keyword">int</span> oldVersion, <span class="keyword">int</span> newVersion)</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，我们把建表语句定义成了一个字符串常量，然后在onCreate()方法中又调用了SQLiteDatabase的execSQL()方法去执行这条建表语句，并弹出一个Toast提示创建成功，这样就可以保证在数据库创建完成的同时还能成功创建Book表。</p>
+<p>现在修改activity_main.xml中的代码，如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span>    &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Button</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/create_database"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:text</span>=<span class="string">"Create database"</span></span></span><br><span class="line"><span class="tag">        /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>布局文件很简单，就是加入了一个按钮，用于创建数据库。</p>
+<p>最后修改MainActivity中的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> MyDatabaseHelper dbHelper;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        dbHelper = <span class="keyword">new</span> MyDatabaseHelper(<span class="keyword">this</span>, <span class="string">"BookStore.db"</span>, <span class="keyword">null</span>, <span class="number">1</span>);</span><br><span class="line">        Button createDatabase = (Button)findViewById(R.id.create_database);</span><br><span class="line">        createDatabase.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                dbHelper.getWritableDatabase();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里我们在onCreate()方法中构建了一个MyDatabase-Helper对象，并且通过构造函数的参数将数据库名指定为Book-Store.db，版本号指定为1，然后在Create database按钮的点击事件里调用了getWritableDatabase()方法。<strong>这样当第一次点击Create database按钮时，就会检测到当前程序中并没有Book-Store.db这个数据库，于是会创建该数据库并调用MyDatabase-Helper中的onCreate()方法，这样Book表也就得到了创建</strong>，然后会弹出一个Toast提示创建成功。再次点击Create database按钮时，会发现此时已经存在BookStore.db数据库了，因此不会再创建一次。</p>
+<p>现在就可以运行一下代码了，在程序主界面点击Createdatabase按钮，结果如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437864_20200317172917719_9633.png" alt></p>
+<p>此时BookStore.db数据库和Book表应该都已经创建成功了，因为当你再次点击Create database按钮时，不会再有Toast弹出。</p>
+<p>可是又回到了之前的那个老问题，怎样才能证实它们的确创建成功了？如果还是使用File Explorer，那么最多你只能看到databases目录下出现了一个BookStore.db文件，Book表是无法通过File Explorer看到的。因此这次我们准备换一种查看方式，使用adb shell来对数据库和表的创建情况进行检查。</p>
+<h1>2.adb sqlite查看数据库</h1>
+<p><strong>adb</strong>是Android SDK中自带的一个调试工具，使用这个工具可以直接对连接在电脑上的手机或模拟器进行调试操作。它存放在sdk的platformtools目录下，<strong>如果想要在命令行中使用这个工具，就需要先把它的路径配置到环境变量里</strong>。</p>
+<p>如果你使用的是Windows系统，可以右击计算机→属性→高级系统设置→环境变量，然后在系统变量里找到Path并点击编辑，将platform-tools目录配置进去，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437860_20200317172917207_21964.png" alt></p>
+<p>如果你使用的是Linux或Mac系统，可以在home路径下编辑.bash文件，将platform-tools目录配置进去即可，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437859_20200317172916394_24022.png" alt></p>
+<p>配置好了环境变量之后，就可以使用adb工具了。打开命令行界面，输入adb shell，就会进入到设备的控制台，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437858_20200317172915785_9864.png" alt></p>
+<p>其中，#符号是超级管理员的意思，也就是说现在你可以访问模拟器中的一切数据。如果你的命令行上显示的是$符号，那么就表示你现在是普遍管理员，<strong>需输入su命令切换成超级管理员</strong>，才能执行下面的操作。</p>
+<p>接下来使用cd命令进入到/data/data/com.example.databasetest/databases/目录下，并使用ls命令查看到该目录里的文件，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437855_20200317172915175_13821.png" alt></p>
+<p>这个目录下出现了两个数据库文件，一个正是我们创建的BookStore.db，而另一个BookStore.db-journal则是为了让数据库能够支持事务而产生的临时日志文件，通常情况下这个文件的大小都是0字节。</p>
+<p>接下来我们就要<strong>借助sqlite命令来打开数据库了，只需要键入sqlite3，后面加上数据库名即可</strong>，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437854_20200317172914564_15938.png" alt></p>
+<p>这时就已经打开了BookStore.db数据库，现在就可以对这个数据库中的表进行管理了。</p>
+<p>首先来看一下目前数据库中有哪些表，键入**.table命令**，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437852_20200317172913854_25773.png" alt></p>
+<p>可以看到，此时数据库中有两张表，android_metadata表是每个数据库中都会自动生成的，不用管它，而另外一张Book表就是我们在MyDatabaseHelper中创建的了。</p>
+<p>这里还可以通过**.schema命令**来查看它们的建表语句，如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437851_20200317172913344_27909.png" alt></p>
+<p>由此证明，BookStore.db数据库和Book表确实已经创建成功了。之后键入.exit或.quit命令可以退出数据库的编辑，再键入exit命令就可以退出设备控制台了。</p>
+<h1>3.升级数据库</h1>
+<p>如果你足够细心，一定会发现MyDatabaseHelper中还有一个空方法呢！没错，onUpgrade()方法是用于对数据库进行升级的，它在整个数据库的管理工作当中起着非常重要的作用，可千万不能忽视它哟。</p>
+<p>目前DatabaseTest项目中已经有一张Book表用于存放书的各种详细数据，如果我们想再添加一张Category表用于记录图书的分类，该怎么做呢？</p>
+<p>比如Category表中有id（主键）、分类名和分类代码这几个列，那么建表语句就可以写成：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">Category</span> (</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">integer</span> primary <span class="keyword">key</span> autoincrement,</span><br><span class="line">    category_name <span class="built_in">text</span>,</span><br><span class="line">    category_code <span class="built_in">integer</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>接下来我们将这条建表语句添加到MyDatabaseHelper中，代码如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyDatabaseHelper</span> <span class="keyword">extends</span> <span class="title">SQLiteOpenHelper</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CREATE_BOOK = <span class="string">"create table Book ("</span></span><br><span class="line">            + <span class="string">"id integer primary key autoincrement, "</span></span><br><span class="line">            + <span class="string">"author text, "</span></span><br><span class="line">            + <span class="string">"price real, "</span></span><br><span class="line">            + <span class="string">"pages integer, "</span></span><br><span class="line">            + <span class="string">"name text)"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CREATE_CATEGORY = <span class="string">"create table Category ("</span></span><br><span class="line">            + <span class="string">"id integer primary key autoincrement, "</span></span><br><span class="line">            + <span class="string">"category_name text, "</span></span><br><span class="line">            + <span class="string">"category_code integer)"</span>;</span><br><span class="line">    <span class="keyword">private</span> Context mContext;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyDatabaseHelper</span><span class="params">(Context context, String name, SQLiteDatabase.CursorFactory factory, <span class="keyword">int</span> version)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, name, factory, version);</span><br><span class="line">        mContext = context;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(SQLiteDatabase db)</span> </span>&#123;</span><br><span class="line">        db.execSQL(CREATE_BOOK);</span><br><span class="line">        db.execSQL(CREATE_CATEGORY);</span><br><span class="line">        Toast.makeText(mContext, <span class="string">"Create succeeded"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUpgrade</span><span class="params">(SQLiteDatabase db, <span class="keyword">int</span> oldVersion, <span class="keyword">int</span> newVersion)</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看上去好像都挺对的吧？现在我们重新运行一下程序，并点击Create database按钮，咦？竟然没有弹出创建成功的提示。当然，你也可以通过adb工具到数据库中再去检查一下，这样你会更加地确认Category表没有创建成功！</p>
+<p>其实没有创建成功的原因不难思考，因为此时BookStore.db数据库已经存在了，之后不管我们怎样点击Create database按钮，MyDatabaseHelper中的onCreate()方法都不会再次执行，因此新添加的表也就无法得到创建了。</p>
+<p>解决这个问题的办法也相当简单，只需要先将程序卸载掉，然后重新运行，这时BookStore.db数据库已经不存在了，如果再点击Create database按钮，MyDatabaseHelper中的onCreate()方法就会执行，这时Category表就可以创建成功了。</p>
+<p>不过，通过卸载程序的方式来新增一张表毫无疑问是很极端的做法，其实我们只需要巧妙地运用SQLiteOpenHelper的升级功能就可以很轻松地解决这个问题。</p>
+<p>修改MyDatabaseHelper中的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyDatabaseHelper</span> <span class="keyword">extends</span> <span class="title">SQLiteOpenHelper</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUpgrade</span><span class="params">(SQLiteDatabase db, <span class="keyword">int</span> oldVersion, <span class="keyword">int</span> newVersion)</span> </span>&#123;</span><br><span class="line">        db.execSQL(<span class="string">"drop table if exists Book"</span>);</span><br><span class="line">        db.execSQL(<span class="string">"drop table if exists Category"</span>);</span><br><span class="line">        onCreate(db);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，我们在onUpgrade()方法中执行了两条DROP语句，如果发现数据库中已经存在Book表或Category表了，就将这两张表删除掉，然后再调用onCreate()方法重新创建。这里先将已经存在的表删除掉，因为如果在创建表时发现这张表已经存在了，就会直接报错。</p>
+<p>接下来的问题就是如何让onUpgrade()方法能够执行了，还记得SQLiteOpenHelper的构造方法里接收的第四个参数吗？它表示当前数据库的版本号，<strong>之前我们传入的是1，现在只要传入一个比1大的数，就可以让onUpgrade()方法得到执行了。</strong></p>
+<p>修改MainActivity中的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> MyDatabaseHelper dbHelper;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        dbHelper = <span class="keyword">new</span> MyDatabaseHelper(<span class="keyword">this</span>, <span class="string">"BookStore.db"</span>, <span class="keyword">null</span>, <span class="number">2</span>);</span><br><span class="line">        Button createDatabase = (Button) findViewById(R.id.create_database);</span><br><span class="line">        createDatabase.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                dbHelper.getWritableDatabase();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里将数据库版本号指定为2，表示我们对数据库进行升级了。现在重新运行程序，并点击Create database按钮，这时就会再次弹出创建成功的提示。</p>
+<p>为了验证一下Category表是不是已经创建成功了，我们在adb shell中打开BookStore.db数据库，然后键入.table命令，结果如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437850_20200317172912835_24137.png" alt></p>
+<p>接着键入.schema命令查看一下建表语句，结果如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437848_20200317172912125_29958.png" alt></p>
+<p>由此可以看出，Category表已经创建成功了，同时也说明我们的升级功能的确起到了作用。</p>
+<h1>4.添加数据</h1>
+<p>现在你已经掌握了创建和升级数据库的方法，接下来就该学习一下如何对表中的数据进行操作了。其实我们可以对数据进行的操作无非有4种，即CRUD。其中C代表添加（Create），R代表查询（Retrieve），U代表更新（Update），D代表删除（Delete）。每一种操作又各自对应了一种SQL命令，如果你比较熟悉SQL语言的话，一定会知道添加数据时使用insert，查询数据时使用select，更新数据时使用update，删除数据时使用delete。但是开发者的水平总会是参差不齐的，未必每一个人都能非常熟悉地使用SQL语言，因此Android也提供了一系列的辅助性方法，使得在Android中即使不去编写SQL语句，也能轻松完成所有的CRUD操作。</p>
+<p>前面我们已经知道，调用SQLiteOpenHelper的getReadableDatabase()或getWritableDatabase()方法是可以用于创建和升级数据库的，不仅如此，这<strong>两个方法还都会返回一个SQLiteDatabase对象，借助这个对象就可以对数据进行CRUD操作了。</strong></p>
+<p>那么下面我们首先学习一下如何向数据库的表中添加数据吧。SQLiteDatabase中提供了一个insert()方法，这个方法就是专门用于添加数据的。它接收3个参数：</p>
+<ul>
+<li>第一个参数是表名，我们希望向哪张表里添加数据，这里就传入该表的名字。</li>
+<li>第二个参数用于在未指定添加数据的情况下给某些可为空的列自动赋值NULL，一般我们用不到这个功能，直接传入null即可。</li>
+<li>第三个参数是一个ContentValues对象，它提供了一系列的put()方法重载，用于向ContentValues中添加数据，只需要将表中的每个列名以及相应的待添加数据传入即可。</li>
+</ul>
+<p>介绍完了基本用法，接下来还是让我们通过例子的方式来亲身体验一下如何添加数据吧。修改activity_main.xml中的代码，如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    &gt;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="tag">&lt;<span class="name">Button</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/add_data"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:text</span>=<span class="string">"Add data"</span></span></span><br><span class="line"><span class="tag">        /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，我们在布局文件中又新增了一个按钮，稍后就会在这个按钮的点击事件里编写添加数据的逻辑。接着修改MainActivity中的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> MyDatabaseHelper dbHelper;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        dbHelper = <span class="keyword">new</span> MyDatabaseHelper(<span class="keyword">this</span>, <span class="string">"BookStore.db"</span>, <span class="keyword">null</span>, <span class="number">2</span>);</span><br><span class="line">        ...</span><br><span class="line">        Button addData = (Button) findViewById(R.id.add_data);</span><br><span class="line">        addData.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                SQLiteDatabase db = dbHelper.getWritableDatabase();</span><br><span class="line">                ContentValues values = <span class="keyword">new</span> ContentValues();</span><br><span class="line">                <span class="comment">// 开始组装第一条数据</span></span><br><span class="line">                values.put(<span class="string">"name"</span>, <span class="string">"The Da Vinci Code"</span>);</span><br><span class="line">                values.put(<span class="string">"author"</span>, <span class="string">"Dan Brown"</span>);</span><br><span class="line">                values.put(<span class="string">"pages"</span>, <span class="number">454</span>);</span><br><span class="line">                values.put(<span class="string">"price"</span>, <span class="number">16.96</span>);</span><br><span class="line">                db.insert(<span class="string">"Book"</span>, <span class="keyword">null</span>, values); <span class="comment">// 插入第一条数据</span></span><br><span class="line">                values.clear();</span><br><span class="line">                <span class="comment">// 开始组装第二条数据</span></span><br><span class="line">                values.put(<span class="string">"name"</span>, <span class="string">"The Lost Symbol"</span>);</span><br><span class="line">                values.put(<span class="string">"author"</span>, <span class="string">"Dan Brown"</span>);</span><br><span class="line">                values.put(<span class="string">"pages"</span>, <span class="number">510</span>);</span><br><span class="line">                values.put(<span class="string">"price"</span>, <span class="number">19.95</span>);</span><br><span class="line">                db.insert(<span class="string">"Book"</span>, <span class="keyword">null</span>, values); <span class="comment">// 插入第二条数据</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在添加数据按钮的点击事件里面，我们先获取到了SQLiteDatabase对象，然后使用ContentValues来对要添加的数据进行组装。如果你比较细心的话应该会发现，这里只对Book表里其中四列的数据进行了组装，id那一列并没给它赋值。这是因为在前面创建表的时候，我们就将id列设置为自增长了，它的值会在入库的时候自动生成，所以不需要手动给它赋值了。接下来调用了insert()方法将数据添加到表当中，注意这里我们实际上添加了两条数据，上述代码中使用ContentValues分别组装了两次不同的内容，并调用了两次insert()方法。</p>
+<p>好了，现在可以重新运行一下程序了，界面如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437847_20200317172911512_20678.png" alt></p>
+<p>点击一下Add data按钮，此时两条数据应该都已经添加成功了，不过为了证实一下，我们还是打开BookStore.db数据库瞧一瞧。输入SQL查询语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> Book;</span><br></pre></td></tr></table></figure>
+<p>结果如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437846_20200317172910903_8261.png" alt></p>
+<p>由此可以看出，我们刚刚组装的两条数据都已经准确无误地添加到Book表中了。</p>
+<h1>5.更新数据</h1>
+<p>学习完了如何向表中添加数据，接下来我们看看怎样才能修改表中已有的数据。SQLiteDatabase中也提供了一个非常好用的<strong>update()方法</strong>，用于对数据进行更新，这个方法接收4个参数：</p>
+<ul>
+<li>第一个参数和insert()方法一样，也是表名，在这里指定去更新哪张表里的数据。</li>
+<li>第二个参数是ContentValues对象，要把更新数据在这里组装进去。</li>
+<li>第三、第四个参数用于约束更新某一行或某几行中的数据，不指定的话默认就是更新所有行。</li>
+</ul>
+<p>那么接下来我们仍然是在DatabaseTest项目的基础上修改，看一下更新数据的具体用法。比如说刚才添加到数据库里的第一本书，由于过了畅销季，卖得不是很火了，现在需要通过降低价格的方式来吸引更多的顾客，我们应该怎么操作呢？</p>
+<p>首先修改activity_main.xml中的代码，如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    &gt;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="tag">&lt;<span class="name">Button</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/update_data"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">android:text</span>=<span class="string">"Update data"</span></span></span><br><span class="line"><span class="tag">       /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>布局文件中的代码已经非常简单了，就是添加了一个用于更新数据的按钮。然后修改MainActivity中的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> MyDatabaseHelper dbHelper;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        dbHelper = <span class="keyword">new</span> MyDatabaseHelper(<span class="keyword">this</span>, <span class="string">"BookStore.db"</span>, <span class="keyword">null</span>, <span class="number">2</span>);</span><br><span class="line">        ...</span><br><span class="line">        Button updateData = (Button) findViewById(R.id.update_data);</span><br><span class="line">        updateData.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                SQLiteDatabase db = dbHelper.getWritableDatabase();</span><br><span class="line">                ContentValues values = <span class="keyword">new</span> ContentValues();</span><br><span class="line">                values.put(<span class="string">"price"</span>, <span class="number">10.99</span>);</span><br><span class="line">                db.update(<span class="string">"Book"</span>, values, <span class="string">"name = ?"</span>, </span><br><span class="line">                    <span class="keyword">new</span> String[] &#123; <span class="string">"The Da Vinci Code"</span> &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里在更新数据按钮的点击事件里面构建了一个ContentValues对象，并且只给它指定了一组数据，说明我们只是想把价格这一列的数据更新成10.99。然后调用了SQLiteDatabase的update()方法去执行具体的更新操作，可以看到，这里使用了第三、第四个参数来指定具体更新哪几行。**第三个参数对应的是SQL语句的where部分，表示更新所有name等于?的行，而?是一个占位符，可以通过第四个参数提供的一个字符串数组为第三个参数中的每个占位符指定相应的内容。**因此上述代码想表达的意图是将名字是The Da Vinci Code的这本书的价格改成10.99。</p>
+<p>现在重新运行一下程序，界面如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437845_20200317172910394_25890.png" alt></p>
+<p>点击一下Update data按钮后，再次输入查询语句查看表中的数据情况，结果如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437843_20200317172909784_2999.png" alt></p>
+<p>可以看到，The Da Vinci Code这本书的价格已经被成功改为10.99了。</p>
+<h1>6.删除数据</h1>
+<p>怎么样？添加和更新数据的功能都还挺简单的吧，代码也不多，理解起来又容易，那么我们要马不停蹄地开始学习下一种操作了，即从表中删除数据。删除数据对你来说应该就更简单了，因为它所需要用到的知识点你全部已经学过了。SQLiteDatabase中提供了一个<strong>delete()方法</strong>，专门用于删除数据，这个方法接收3个参数，第一个参数仍然是表名，这个已经没什么好说的了，第二、第三个参数又是用于约束删除某一行或某几行的数据，不指定的话默认就是删除所有行。</p>
+<p>是不是理解起来很轻松了？那我们就继续动手实践吧，修改activity_main.xml中的代码，如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    &gt;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="tag">&lt;<span class="name">Button</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/delete_data"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:text</span>=<span class="string">"Delete data"</span></span></span><br><span class="line"><span class="tag">        /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>仍然是在布局文件中添加了一个按钮，用于删除数据。然后修改MainActivity中的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> MyDatabaseHelper dbHelper;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        dbHelper = <span class="keyword">new</span> MyDatabaseHelper(<span class="keyword">this</span>, <span class="string">"BookStore.db"</span>, <span class="keyword">null</span>, <span class="number">2</span>);</span><br><span class="line">        ...</span><br><span class="line">        Button deleteButton = (Button) findViewById(R.id.delete_data);</span><br><span class="line">        deleteButton.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                SQLiteDatabase db = dbHelper.getWritableDatabase();</span><br><span class="line">                db.delete(<span class="string">"Book"</span>, <span class="string">"pages &gt; ?"</span>, <span class="keyword">new</span> String[] &#123; <span class="string">"500"</span> &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，我们在删除按钮的点击事件里指明去删除Book表中的数据，并且通过第二、第三个参数来指定仅删除那些页数超过500页的书。当然这个需求很奇怪，这里也仅仅是为了做个测试。你可以先查看一下当前Book表里的数据，其中The LostSymbol这本书的页数超过了500页，也就是说当我们点击删除按钮时，这条记录应该会被删除掉。</p>
+<p>现在重新运行一下程序，界面如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437843_20200317172909276_16670.png" alt></p>
+<p>点击一下Delete data按钮后，再次输入查询语句查看表中的数据情况，结果如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437841_20200317172908767_24561.png" alt></p>
+<h1>7.查询数据</h1>
+<p>终于到了最后一种操作了，掌握了查询数据的方法之后，你就将数据库的CRUD操作全部学完了。不过千万不要因此而放松，因为查询数据是CRUD中最复杂的一种操作。</p>
+<p>我们都知道SQL的全称是Structured Query Language，翻译成中文就是结构化查询语言。它的大部功能都体现在“查”这个字上的，而“增删改”只是其中的一小部分功能。由于SQL查询涉及的内容实在是太多了，因此在这里我不准备对它展开来讲解，而是只会介绍Android上的查询功能。如果你对SQL语言非常感兴趣，可以找一本专门介绍SQL的书进行学习。</p>
+<p>相信你已经猜到了，SQLiteDatabase中还提供了一个<strong>query()方法</strong>用于对数据进行查询。这个方法的参数非常复杂，最短的一个方法重载也需要传入7个参数。那我们就先来看一下这7个参数各自的含义吧。</p>
+<ul>
+<li>第一个参数不用说，当然还是表名，表示我们希望从哪张表中查询数据。</li>
+<li>第二个参数用于指定去查询哪几列，如果不指定则默认查询所有列。</li>
+<li>第三、第四个参数用于约束查询某一行或某几行的数据，不指定则默认查询所有行的数据。</li>
+<li>第五个参数用于指定需要去group by的列，不指定则表示不对查询结果进行group by操作。</li>
+<li>第六个参数用于对group by之后的数据进行进一步的过滤，不指定则表示不进行过滤。</li>
+<li>第七个参数用于指定查询结果的排序方式，不指定则表示使用默认的排序方式。</li>
+</ul>
+<p>更多详细的内容可以参考下表。其他几个query()方法的重载其实也大同小异，你可以自己去研究一下，这里就不再进行介绍了。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437836_20200317172908158_13050.png" alt></p>
+<p>虽然query()方法的参数非常多，但是不要对它产生畏惧，因为我们不必为每条查询语句都指定所有的参数，多数情况下只需要传入少数几个参数就可以完成查询操作了。<strong>调用query()方法后会返回一个Cursor对象，查询到的所有数据都将从这个对象中取出。</strong></p>
+<p>下面还是让我们通过例子的方式来体验一下查询数据的具体用法，修改activity_main.xml中的代码，如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    &gt;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="tag">&lt;<span class="name">Button</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/query_data"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:text</span>=<span class="string">"Query data"</span></span></span><br><span class="line"><span class="tag">        /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这个已经没什么好说的了，添加了一个按钮用于查询数据。</p>
+<p>然后修改MainActivity中的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> MyDatabaseHelper dbHelper;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        dbHelper = <span class="keyword">new</span> MyDatabaseHelper(<span class="keyword">this</span>, <span class="string">"BookStore.db"</span>, <span class="keyword">null</span>, <span class="number">2</span>);</span><br><span class="line">        ...</span><br><span class="line">        Button queryButton = (Button) findViewById(R.id.query_data);</span><br><span class="line">        queryButton.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                SQLiteDatabase db = dbHelper.getWritableDatabase();</span><br><span class="line">                <span class="comment">// 查询Book表中所有的数据</span></span><br><span class="line">                Cursor cursor = db.query(<span class="string">"Book"</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">                <span class="keyword">if</span> (cursor.moveToFirst()) &#123;</span><br><span class="line">                    <span class="keyword">do</span> &#123;</span><br><span class="line">                        <span class="comment">// 遍历Cursor对象，取出数据并打印</span></span><br><span class="line">                        String name = cursor.getString(cursor.getColumnIndex(<span class="string">"name"</span>));</span><br><span class="line">                        String author = cursor.getString(cursor.getColumnIndex(<span class="string">"author"</span>));</span><br><span class="line">                        <span class="keyword">int</span> pages = cursor.getInt(cursor.getColumnIndex(<span class="string">"pages"</span>));</span><br><span class="line">                        <span class="keyword">double</span> price = cursor.getDouble(cursor.getColumnIndex(<span class="string">"price"</span>));</span><br><span class="line">                        Log.d(<span class="string">"MainActivity"</span>, <span class="string">"book name is "</span> + name);</span><br><span class="line">                        Log.d(<span class="string">"MainActivity"</span>, <span class="string">"book author is "</span> + author);</span><br><span class="line">                        Log.d(<span class="string">"MainActivity"</span>, <span class="string">"book pages is "</span> + pages);</span><br><span class="line">                        Log.d(<span class="string">"MainActivity"</span>, <span class="string">"book price is "</span> + price);</span><br><span class="line">                    &#125; <span class="keyword">while</span> (cursor.moveToNext());</span><br><span class="line">                &#125;</span><br><span class="line">                cursor.close();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，我们首先在查询按钮的点击事件里面调用了SQLiteDatabase的query()方法去查询数据。这里的query()方法非常简单，只是使用了第一个参数指明去查询Book表，后面的参数全部为null。这就表示希望查询这张表中的所有数据，虽然这张表中目前只剩下一条数据了。</p>
+<p>查询完之后就得到了一个Cursor对象，接着我们<strong>调用它的moveToFirst()方法将数据的指针移动到第一行的位置</strong>，然后进入了一个循环当中，去遍历查询到的每一行数据。在这个循环中<strong>可以通过Cursor的getColumnIndex()方法获取到某一列在表中对应的位置索引，然后将这个索引传入到相应的取值方法中，就可以得到从数据库中读取到的数据了。</strong></p>
+<p>接着我们使用Log的方式将取出的数据打印出来，借此来检查一下读取工作有没有成功完成。<strong>最后别忘了调用close()方法来关闭Cursor。</strong></p>
+<p>好了，现在再次重新运行程序，界面如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437835_20200317172907139_28022.png" alt></p>
+<p>点击一下Query data按钮后，查看logcat的打印内容，结果如图所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584437833_20200317172906521_21054.png" alt></p>
+<p>可以看到，这里已经将Book表中唯一的一条数据成功地读取出来了。</p>
+<p>当然这个例子只是对查询数据的用法进行了最简单的示范，在真正的项目中你可能会遇到比这要复杂得多的查询功能，更多高级的用法还需要你自己去慢慢摸索，毕竟query()方法中还有那么多的参数我们都还没用到呢。</p>
+<h1>8.使用SQL操作数据库</h1>
+<p>虽然Android已经给我们提供了很多非常方便的API用于操作数据库，不过总会有一些人不习惯去使用这些辅助性的方法，而是更加青睐于直接使用SQL来操作数据库。这种人一般都属于SQL大牛，如果你也是其中之一的话，那么恭喜，Android充分考虑到了你们的编程习惯，同样提供了一系列的方法，使得可以直接通过SQL来操作数据库。</p>
+<p>下面我就来简略演示一下，如何直接使用SQL来完成前面几小节中学过的CRUD操作。</p>
+<ul>
+<li>添加数据的方法如下：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">db.execSQL(<span class="string">"insert into Book (name, author, pages, price) values(?, ?, ?, ?)"</span>,</span><br><span class="line">    <span class="keyword">new</span> String[] &#123; <span class="string">"The Da Vinci Code"</span>, <span class="string">"Dan Brown"</span>, <span class="string">"454"</span>, <span class="string">"16.96"</span> &#125;);</span><br><span class="line"></span><br><span class="line">db.execSQL(<span class="string">"insert into Book (name, author, pages, price) values(?, ?, ?, ?)"</span>,</span><br><span class="line">    <span class="keyword">new</span> String[] &#123; <span class="string">"The Lost Symbol"</span>, <span class="string">"Dan Brown"</span>, <span class="string">"510"</span>, <span class="string">"19.95"</span> &#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>更新数据的方法如下：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.execSQL(<span class="string">"update Book set price = ? where name = ?"</span>, </span><br><span class="line">    <span class="keyword">new</span> String[] &#123; <span class="string">"10.99"</span>, <span class="string">"The Da Vinci Code"</span> &#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>删除数据的方法如下：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.execSQL(<span class="string">"delete from Book where pages &gt; ?"</span>, <span class="keyword">new</span> String[] &#123; <span class="string">"500"</span> &#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查询数据的方法如下：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.rawQuery(<span class="string">"select * from Book"</span>, <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+<p>可以看到，<strong>除了查询数据的时候调用的是SQLiteDatabase的rawQuery()方法，其他的操作都是调用的execSQL()方法。</strong></p>
+<p>以上演示的几种方式，执行结果会和前面几小节中我们学习的CRUD操作的结果完全相同，选择使用哪一种方式就看你个人的喜好了。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Android%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81/">ANDROID第一行代码</a></li>
+            <li>26-SQLLITE数据库存储</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">1.创建数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">2.adb sqlite查看数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">3.升级数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">4.添加数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">5.更新数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">6.删除数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">7.查询数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">8.使用SQL操作数据库</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

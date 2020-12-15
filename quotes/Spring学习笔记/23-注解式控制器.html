@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="注解式控制器简介一、Spring2.5之前，我们都是通过实现Controller接口或其实现来定义我们的处理器类。已经@Deprecated。二、Spring2.5引入注解式处理器支持，通过@Controller和@RequestMapping注解定义我们的处理器类，并且提供了一组强大的注解： 需要配置处理器映射DefaultAnnotationHandlerMapping和处理器适配器Annot">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;23-%E6%B3%A8%E8%A7%A3%E5%BC%8F%E6%8E%A7%E5%88%B6%E5%99%A8.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="注解式控制器简介一、Spring2.5之前，我们都是通过实现Controller接口或其实现来定义我们的处理器类。已经@Deprecated。二、Spring2.5引入注解式处理器支持，通过@Controller和@RequestMapping注解定义我们的处理器类，并且提供了一组强大的注解： 需要配置处理器映射DefaultAnnotationHandlerMapping和处理器适配器Annot">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584800394_20200321221018341_27415.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584800394_20200321221017925_21199.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584800394_20200321221017612_24154.jpg">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.036Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584800394_20200321221018341_27415.jpg">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/23-%E6%B3%A8%E8%A7%A3%E5%BC%8F%E6%8E%A7%E5%88%B6%E5%99%A8">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>23-注解式控制器</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>注解式控制器简介</h1><p>一、Spring2.5之前，我们都是通过实现Controller接口或其实现来定义我们的处理器类。已经@Deprecated。</p><p>二、Spring2.5引入注解式处理器支持，通过@Controller和@RequestMapping注解定义我们的处理器类，并且提供了一组强大的注解：</p><ul>
+<li>需要配置处理器映射DefaultAnnotationHandlerMapping和处理器适配器AnnotationMethodHandlerAdapter来开启支持@Controller和@RequestMapping注解的处理器。</li>
+<li>@Controller：用于标识是处理器类；</li>
+<li>@RequestMapping：请求到处理器功能方法的映射规则；</li>
+<li>@RequestParam：请求参数到处理器功能处理方法的方法参数上的绑定；</li>
+<li>@ModelAttribute：请求参数到命令对象的绑定；</li>
+<li>@SessionAttributes：用于声明session级别存储的属性，放置在处理器类上，通常列出模型属性（如@ModelAttribute）对应的名称，则这些属性会透明的保存到session中；</li>
+<li>@InitBinder：自定义数据绑定注册支持，用于将请求参数转换到命令对象属性的对应类型；</li>
+</ul><a id="more"></a>
+
+
+
+<p>三、Spring3.0引入RESTful架构风格支持(通过@PathVariable注解和一些其他特性支持),且又引入了更多的注解支持：</p>
+<ul>
+<li>@CookieValue：cookie数据到处理器功能处理方法的方法参数上的绑定；</li>
+<li>@RequestHeader：请求头（header）数据到处理器功能处理方法的方法参数上的绑定；</li>
+<li>@RequestBody：请求的body体的绑定（通过HttpMessageConverter进行类型转换）；</li>
+<li>@ResponseBody：处理器功能处理方法的返回值作为响应体（通过HttpMessageConverter进行类型转换）；</li>
+<li>@ResponseStatus：定义处理器功能处理方法/异常处理器返回的状态码和原因；</li>
+<li>@ExceptionHandler：注解式声明异常处理器；</li>
+<li>@PathVariable：请求URI中的模板变量部分到处理器功能处理方法的方法参数上的绑定，从而支持RESTful架构风格的URI；</li>
+</ul>
+<p>四、Spring3.1使用新的处理器映射RequestMappingHandlerMapping和处理器适配器RequestMappingHandlerAdapter来支持@Contoller和@RequestMapping注解处理器。新的组合代替了Spring2.5开始的处理器映射DefaultAnnotationHandlerMapping和处理器适配器AnnotationMethodHandlerAdapter，提供更多的扩展点。</p>
+<p><strong>示例一：Hello World</strong></p>
+<p>1、控制器实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 现在的处理器无需实现/继承任何接口/类，只需要在相应的类/方法上放置相应的注解说明下即可，非常方便。</span></span><br><span class="line"><span class="keyword">package</span> cn.javass.chapter6.web.controller; </span><br><span class="line"> </span><br><span class="line"><span class="comment">//省略import </span></span><br><span class="line"><span class="meta">@Controller</span>  <span class="comment">// 或 @RequestMapping   //①将一个POJO类声明为处理器  </span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldController</span> </span>&#123; </span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"/hello"</span>)    <span class="comment">//②请求URL到处理器功能处理方法的映射</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ModelAndView <span class="title">helloWorld</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="comment">//1、收集参数  </span></span><br><span class="line">        <span class="comment">//2、绑定参数到命令对象  </span></span><br><span class="line">        <span class="comment">//3、调用业务对象  </span></span><br><span class="line">        <span class="comment">//4、选择下一个页面  </span></span><br><span class="line">        ModelAndView mv = <span class="keyword">new</span> ModelAndView();  </span><br><span class="line">        <span class="comment">//添加模型数据 可以是任意的POJO对象  </span></span><br><span class="line">        mv.addObject(<span class="string">"message"</span>, <span class="string">"Hello World!"</span>);  </span><br><span class="line">        <span class="comment">//设置逻辑视图名，视图解析器会根据该名字解析到具体的视图页面  </span></span><br><span class="line">        mv.setViewName(<span class="string">"hello"</span>);  </span><br><span class="line">        <span class="keyword">return</span> mv;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2、HandlerMapping和HandlerAdapter的配置（chapter6-servlet.xml中）</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">!—Spring3.1之前的注解HandlerMapping</span> <span class="attr">--</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span>  <span class="attr">class</span>=<span class="string">"org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"</span>/&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">!—Spring3.1之前的注解HandlerAdapter</span> <span class="attr">--</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"</span>/&gt;</span>     </span><br><span class="line"> </span><br><span class="line"><span class="comment">&lt;!--Spring3.1开始的注解HandlerMapping --&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"</span>/&gt;</span> </span><br><span class="line"><span class="comment">&lt;!--Spring3.1开始的注解HandlerAdapter --&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>3、视图解析器的配置（默认）</p>
+<p>还是使用之前的org.springframework.web.servlet.view.InternalResourceViewResolver。</p>
+<p>4、处理器的配置</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 处理器 --&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"cn.javass.chapter6.web.controller.HelloWorldController"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>只需要将处理器实现类注册到spring配置文件即可，spring的DefaultAnnotationHandlerMapping或RequestMappingHandlerMapping</p>
+<p>能根据注解@Controller或@RequestMapping自动发现。</p>
+<p>5、视图页面（/WEB-INF/jsp/hello.jsp）</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> contentType=<span class="string">"text/html; charset=UTF-8"</span> pageEncoding=<span class="string">"UTF-8"</span>%&gt; </span><br><span class="line">&lt;!DOCTYPE html PUBLIC <span class="string">"-//W3C//DTD HTML 4.01 Transitional//EN"</span> <span class="string">"http://www.w3.org/TR/html4/loose.dtd"</span>&gt;</span><br><span class="line">&lt;html&gt; </span><br><span class="line">&lt;head&gt; </span><br><span class="line">&lt;meta http-equiv=<span class="string">"Content-Type"</span> content=<span class="string">"text/html; charset=UTF-8"</span>&gt; </span><br><span class="line">&lt;title&gt;Hello World&lt;/title&gt; </span><br><span class="line">&lt;/head&gt; </span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;!-- $&#123;message&#125;：表示显示由HelloWorldController处理器传过来的模型数据 --&gt;</span><br><span class="line">$&#123;message&#125; </span><br><span class="line">&lt;/body&gt; </span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>6、运行流程</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584800394_20200321221018341_27415.jpg" alt></p>
+<p>和以前唯一不同的两处是：</p>
+<p>1、HandlerMapping实现：使用DefaultAnnotationHandlerMapping（spring3.1之前）或RequestMappingHandlerMapping（spring3.1）替换之前的BeanNameUrlHandlerMapping。<strong>注解式处理器映射会扫描spring容器中的bean，发现bean实现类上拥有@Controller或@RequestMapping注解的bean，并将它们作为处理器。</strong></p>
+<p>2、HandlerAdapter实现：使用AnnotationMethodHandlerAdapter（spring3.1之前）或RequestMappingHandlerAdapter（spring3.1）替换之前的SimpleControllerHandlerAdapter。<strong>注解式处理器适配器会通过反射调用相应的功能处理方法（方法上拥有@RequestMapping注解）。</strong></p>
+<h1>@Controller</h1>
+<p>定义普通POJO类为Controller。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldController</span> </span>&#123;  </span><br><span class="line">   ……  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>推荐使用这种方式声明处理器，它和我们的@Service、@Repository很好的对应了我们常见的三层开发架构的组件。</p>
+<h1>@RequestMapping：请求映射</h1>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldController</span> </span>&#123; </span><br><span class="line">    …… </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方式也是可以工作的，但如果在类上使用@RequestMapping注解一般是用于窄化功能处理方法的映射的，如下示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter6.web.controller; </span><br><span class="line"><span class="meta">@Controller</span> </span><br><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/user"</span>)                 <span class="comment">//①处理器的通用映射前缀  </span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldController2</span> </span>&#123; </span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"/hello2"</span>)        <span class="comment">//②相对于①处的映射进行窄化  </span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ModelAndView <span class="title">helloWorld</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">         <span class="comment">//省略实现  </span></span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因此http://localhost:9080/springmvc-chapter6/hello2 无法映射到HelloWorldController2的 helloWorld功能处理方法；而http://localhost:9080/springmvc-chapter6/user/hello2是可以的。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584800394_20200321221017925_21199.jpg" alt></p>
+<p><strong>窄化请求映射可以认为是方法级别的@RequestMapping继承类级别的@RequestMapping</strong>。</p>
+<p>此外，@RequestMapping的value属性能够接受一个String类型的数组。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter6.web.controller; </span><br><span class="line"><span class="meta">@Controller</span> </span><br><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/user"</span>)                 <span class="comment">//①处理器的通用映射前缀  </span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldController2</span> </span>&#123; </span><br><span class="line">    <span class="meta">@RequestMapping</span>(&#123;<span class="string">"/hello1"</span>,<span class="string">"/hello2"</span>&#125;)        <span class="comment">//②相对于①处的映射进行窄化  </span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ModelAndView <span class="title">helloWorld</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">         <span class="comment">//省略实现  </span></span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在，HelloWorldController2的helloWorld()方法能够映射到对“/hello1”和“/hello2”的请求。</p>
+<h2 id="URL路径映射">URL路径映射</h2>
+<p><strong>1.普通URL路径映射</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=&#123;<span class="string">"/test1"</span>, <span class="string">"/user/create"</span>&#125;)  </span><br><span class="line"><span class="comment">//多个URL路径可以映射到同一个处理器的功能处理方法</span></span><br></pre></td></tr></table></figure>
+<p><strong>2.URI模板模式映射</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/users/&#123;userId&#125;"</span>)</span><br><span class="line"><span class="comment">//&#123;×××&#125;占位符， 请求的URL可以是 “/users/123456”或“/users/abcd”，通过@PathVariable可以提取URI模板模式中的&#123;×××&#125;中的×××变量</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/users/&#123;userId&#125;/create"</span>)</span><br><span class="line"><span class="comment">//这样也是可以的，请求的URL可以是“/users/123/create”</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/users/&#123;userId&#125;/topics/&#123;topicId&#125;"</span>)</span><br><span class="line"><span class="comment">//这样也是可以的，请求的URL可以是“/users/123/topics/123”</span></span><br></pre></td></tr></table></figure>
+<p><strong>3.Ant风格的URL路径映射</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/users/**"</span>)</span><br><span class="line"><span class="comment">//可以匹配“/users/abc/abc”，但“/users/123”将会被【URI模板模式映射中的“/users/&#123;userId&#125;”模式优先映射到】【详见最长匹配优先】</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/product?"</span>)</span><br><span class="line"><span class="comment">//可匹配“/product1”或“/producta”，但不匹配“/product”或“/productaa”</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/product*"</span>)</span><br><span class="line"><span class="comment">//可匹配“/productabc”或“/product”，但不匹配“/productabc/abc”</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/product/*"</span>)</span><br><span class="line"><span class="comment">//可匹配“/product/abc”，但不匹配“/productabc”</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/products/**/&#123;productId&#125;"</span>)</span><br><span class="line"><span class="comment">//可匹配“/products/abc/abc/123”或“/products/123”，也就是Ant风格和URI模板变量风格可混用</span></span><br></pre></td></tr></table></figure>
+<p>此处需要注意的是【4.14中提到的最长匹配优先】，Ant风格的模式请参考4.14。</p>
+<p><strong>4.正则表达式风格的URL路径映射</strong></p>
+<p>从Spring3.0开始支持正则表达式风格的URL路径映射，格式为{变量名:正则表达式}，这样我们就可以通过@PathVariable提取模式中的{×××：正则表达式匹配的值}中的×××变量了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/products/&#123;categoryCode:\\d+&#125;-&#123;pageNumber:\\d+&#125;"</span>)</span><br><span class="line"><span class="comment">//可以匹配“/products/123-1”，但不能匹配“/products/abc-1”，这样可以设计更加严格的规则</span></span><br></pre></td></tr></table></figure>
+<p>正则表达式风格的URL路径映射是一种特殊的URI模板模式映射：URI模板模式映射不能指定模板变量的数据格式，如是数字还是字符串，但正则表达式风格的URL路径映射，可以指定模板变量的数据格式，并可以将规则写的相当复杂。</p>
+<p><strong>5.组合使用（“或”的关系）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=&#123;<span class="string">"/test1"</span>, <span class="string">"/user/create"</span>&#125;)</span><br><span class="line"><span class="comment">//即“/test1”或“/user/create”请求URL路径都可以映射到@RequestMapping指定的功能处理方法。</span></span><br></pre></td></tr></table></figure>
+<h2 id="请求类型映射">请求类型映射</h2>
+<p>以某种方式来告诉相应的功能处理方法只处理如GET请求方法的请求或POST请求方法的请求。</p>
+<p>示例：使用@RequestMapping来实现SimpleFormController的功能</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter6.web.controller.method;  </span><br><span class="line"><span class="comment">//省略import  </span></span><br><span class="line"><span class="meta">@Controller</span>  </span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/customers/**"</span>)      <span class="comment">//①处理器的通用映射前缀，表示该处理器只处理匹配“/customers/**”的请求</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RequestMethodController</span> </span>&#123;  </span><br><span class="line"> </span><br><span class="line">   <span class="meta">@RequestMapping</span>(value=<span class="string">"/create"</span>, method = RequestMethod.GET)<span class="comment">//②类级别的@RequestMapping窄化，表示showForm可处理匹配“/customers/**/create”且请求方法为“GET”的请求</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">showForm</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">       System.out.println(<span class="string">"===============GET"</span>);  </span><br><span class="line">       <span class="keyword">return</span> <span class="string">"customer/create"</span>;    </span><br><span class="line">   &#125;  </span><br><span class="line">   <span class="meta">@RequestMapping</span>(value=<span class="string">"/create"</span>, method = RequestMethod.POST)<span class="comment">//③类级别的@RequestMapping窄化，表示submit可处理匹配“/customers/**/create”且请求方法为“POST”的请求</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">submit</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">       System.out.println(<span class="string">"================POST"</span>);  </span><br><span class="line">       <span class="keyword">return</span> <span class="string">"redirect:/success"</span>;          </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>可以组合使用（“或”的关系）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/methodOr"</span>, method = &#123;RequestMethod.POST, RequestMethod.GET&#125;)</span><br><span class="line"><span class="comment">//请求方法可以是GET或POST</span></span><br></pre></td></tr></table></figure>
+<p>提示：</p>
+<p>1、一般浏览器只支持GET、POST请求方法，如想浏览器支持PUT、DELETE等请求方法只能模拟。</p>
+<p>2、除了GET、POST，还有HEAD、OPTIONS、PUT、DELETE、TRACE。</p>
+<p>3、DispatcherServlet默认开启对 GET、POST、PUT、DELETE、HEAD的支持；</p>
+<p>4、如果需要支持OPTIONS、TRACE，请添加DispatcherServlet在web.xml的初始化参数：dispatchOptionsRequest和dispatchTraceRequest为true。</p>
+<h2 id="请求参数映射">请求参数映射</h2>
+<p><strong>1.请求参数中有指定参数名</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter6.web.controller.parameter;  </span><br><span class="line"> </span><br><span class="line"><span class="comment">//省略import  </span></span><br><span class="line"><span class="meta">@Controller</span>  </span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/parameter1"</span>)    <span class="comment">//①处理器的通用映射前缀  </span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RequestParameterController1</span> </span>&#123;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//②进行类级别的@RequestMapping窄化，表示请求中有“create”的参数名且请求方法为“GET”即可匹配，如可匹配的请求URL“http://×××/parameter1?create”</span></span><br><span class="line">   <span class="meta">@RequestMapping</span>(params=<span class="string">"create"</span>, method=RequestMethod.GET)   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">showForm</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">       System.out.println(<span class="string">"===============showForm"</span>);  </span><br><span class="line">       <span class="keyword">return</span> <span class="string">"parameter/create"</span>;          </span><br><span class="line">   &#125;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//③进行类级别的@RequestMapping窄化，表示请求中有“create”的参数名且请求方法为“POST”即可匹配</span></span><br><span class="line">   <span class="meta">@RequestMapping</span>(params=<span class="string">"create"</span>, method=RequestMethod.POST)    </span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">submit</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">       System.out.println(<span class="string">"================submit"</span>);  </span><br><span class="line">       <span class="keyword">return</span> <span class="string">"redirect:/success"</span>;          </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此处的create请求参数名表示你请求的动作，即你想要的功能的一个标识，常见的CRUD(增删改查)我们可以使用如下请求参数名来表达：</p>
+<p>（create请求参数名 且 GET请求方法）：新增页面展示、（create请求参数名 且 POST请求方法）：新增提交；</p>
+<p>（update请求参数名 且 GET请求方法）：新增页面展示、（update请求参数名 且 POST请求方法）：新增提交；</p>
+<p>（delete请求参数名 且 GET请求方法）：新增页面展示、（delete请求参数名 且 POST请求方法）：新增提交；</p>
+<p>（query请求参数名 且 GET请求方法）：新增页面展示、（query请求参数名 且 POST请求方法）：新增提交；</p>
+<p>（list请求参数名 且 GET请求方法）：列表页面展示；</p>
+<p>（view请求参数名 且 GET请求方法）：查看单条记录页面展示。</p>
+<p><strong>2.请求参数中不包含指定参数名</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//请求参数不包含create参数名  </span></span><br><span class="line"><span class="meta">@RequestMapping</span>(params=<span class="string">"!create"</span>, method=RequestMethod.GET)</span><br><span class="line"><span class="comment">//表示请求中没有“create”参数名且请求方法为“GET”即可匹配，如可匹配的请求URL“http://×××/parameter1?abc”</span></span><br></pre></td></tr></table></figure>
+<p><strong>3.请求参数中指定参数名=值</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter6.web.controller.parameter;  </span><br><span class="line"> </span><br><span class="line"><span class="comment">//省略import  </span></span><br><span class="line"><span class="meta">@Controller</span>  </span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/parameter2"</span>)                      <span class="comment">//①处理器的通用映射前缀  </span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RequestParameterController2</span> </span>&#123;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//②进行类级别的@RequestMapping窄化，表示请求中有“submitFlag=create”请求参数且请求方法为“GET”即可匹配，如请求URL为“http://×××/parameter2?submitFlag=create”</span></span><br><span class="line">   <span class="meta">@RequestMapping</span>(params=<span class="string">"submitFlag=create"</span>, method=RequestMethod.GET)    </span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">showForm</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">       System.out.println(<span class="string">"===============showForm"</span>);  </span><br><span class="line">       <span class="keyword">return</span> <span class="string">"parameter/create"</span>;          </span><br><span class="line">   &#125;  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">//③进行类级别的@RequestMapping窄化，表示请求中有“submitFlag=create”请求参数且请求方法为“POST”即可匹配</span></span><br><span class="line">   <span class="meta">@RequestMapping</span>(params=<span class="string">"submitFlag=create"</span>, method=RequestMethod.POST)     </span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">submit</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">       System.out.println(<span class="string">"===============submit"</span>);  </span><br><span class="line">       <span class="keyword">return</span> <span class="string">"redirect:/success"</span>;          </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>常见的CRUD(增删改查)我们可以使用如下请求参数名来表达：</p>
+<p>（submitFlag=create请求参数名 且 GET请求方法）：新增页面展示、（submitFlag=create请求参数名 且 POST请求方法）：新增提交；</p>
+<p>（submitFlag=update请求参数名 且 GET请求方法）：新增页面展示、（submitFlag=update请求参数名 且 POST请求方法）：新增提交；</p>
+<p>（submitFlag=delete请求参数名 且 GET请求方法）：新增页面展示、（submitFlag=delete请求参数名 且 POST请求方法）：新增提交；</p>
+<p>（submitFlag=query请求参数名 且 GET请求方法）：新增页面展示、（submitFlag=query请求参数名 且 POST请求方法）：新增提交；</p>
+<p>（submitFlag=list请求参数名 且 GET请求方法）：列表页面展示；</p>
+<p>（submitFlag=view请求参数名 且 GET请求方法）：查看单条记录页面展示。</p>
+<p><strong>4.请求参数中指定参数名!=值</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//请求参数submitFlag不等于create  </span></span><br><span class="line"><span class="meta">@RequestMapping</span>(params=<span class="string">"submitFlag!=create"</span>, method=RequestMethod.GET)</span><br><span class="line"><span class="comment">//表示请求中的参数“submitFlag!=create”且请求方法为“GET”即可匹配，如可匹配的请求URL“http://×××/parameter1?submitFlag=abc”</span></span><br></pre></td></tr></table></figure>
+<p><strong>5.组合使用（“且”的关系）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(params=&#123;<span class="string">"test1"</span>, <span class="string">"test2=create"</span>&#125;)</span><br><span class="line"><span class="comment">//表示请求中的有“test1”参数名且有“test2=create”参数即可匹配，如可匹配的请求URL"http://×××/parameter3?test1&amp;test2=create"</span></span><br></pre></td></tr></table></figure>
+<h2 id="请求头映射">请求头映射</h2>
+<p><strong>1.请求头中有指定参数名</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/header/test1"</span>, headers = <span class="string">"abc"</span>)</span><br><span class="line"><span class="comment">//表示请求的URL必须为“/header/test1”，且请求头中必须有abc参数才能匹配</span></span><br></pre></td></tr></table></figure>
+<p><strong>2.请求头中没有指定参数名</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/header/test2"</span>, headers = <span class="string">"!abc"</span>)  </span><br><span class="line"><span class="comment">//表示请求的URL必须为“/header/test2”且请求头中必须没有abc参数才能匹配</span></span><br></pre></td></tr></table></figure>
+<p><strong>3.请求头中指定参数名=值</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/header/test3"</span>, headers = <span class="string">"Content-Type=application/json"</span>)</span><br><span class="line"><span class="comment">//表示请求的URL必须为“/header/test3”且请求头中必须有“Content-Type=application/json”参数即可匹配</span></span><br></pre></td></tr></table></figure>
+<p>当你请求的URL为“/header/test3”但如果请求头中没有或不是“Content-Type=application/json”参数（如“text/html”其他参数，将返回“HTTP Status 415”状态码【表示不支持的媒体类型(Media Type)，也就是MIME类型】，即<strong>我们的功能处理方法只能处理application/json的媒体类型。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/header/test4"</span>, headers = <span class="string">"Accept=application/json"</span>)</span><br><span class="line"><span class="comment">//表示请求的URL必须为“/header/test4”且请求头中必须有“Accept=application/json”参数即可匹配</span></span><br></pre></td></tr></table></figure>
+<p>当你请求的URL为“/header/test4” 但如果请求头中没有“Accept=application/json”参数（如“text/html”其他参数），将返回“HTTP Status 406”状态码【不可接受，服务器无法根据Accept头的媒体类型为客户端生成响应】，即客户只接受“application/json”媒体类型的数据，即<strong>我们的功能处理方法的响应只能返回“application/json”媒体类型的数据。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/header/test5"</span>, headers = <span class="string">"Accept=text/*"</span>)</span><br><span class="line"><span class="comment">//表示请求的URL必须为“/header/test5”且请求头中必须有类似“Accept=text/plain”参数即可匹配</span></span><br></pre></td></tr></table></figure>
+<p>Accept=text/*：表示主类型为text，子类型任意，如“text/plain”、“text/html”等都可以匹配。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/header/test6"</span>, headers = <span class="string">"Accept=*/*"</span>)</span><br><span class="line"><span class="comment">//表示请求的URL必须为“/header/test6”且请求头中必须有任意Accept参数即可匹配</span></span><br></pre></td></tr></table></figure>
+<p>Accept=<em>/</em>：表示主类型任意，子类型任意，如“text/plain”、“application/xml”等都可以匹配。</p>
+<p><strong>4.请求头中指定参数名!=值</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/header/test7"</span>, headers = <span class="string">"Accept!=text/vnd.wap.wml"</span>)</span><br><span class="line"><span class="comment">//表示请求的URL必须为“/header/test7”且请求头中必须有“Accept”参数但值不等于“text/vnd.wap.wml”即可匹配</span></span><br></pre></td></tr></table></figure>
+<p><strong>5.组合使用（“且”的关系）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/header/test8"</span>, headers = &#123;<span class="string">"Accept!=text/vnd.wap.wml"</span>,<span class="string">"abc=123"</span>&#125;)</span><br><span class="line"><span class="comment">//表示请求的URL必须为“/header/test8”且请求头中必须有“Accept”参数但值不等于“text/vnd.wap.wml”且请求中必须有参数“abc=123”即可匹配</span></span><br></pre></td></tr></table></figure>
+<h2 id="生产者和消费者限定">生产者和消费者限定</h2>
+<p>Spring3.1开始支持消费者、生产者限定，而且必须使用如下HandlerMapping和HandlerAdapter才支持：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Spring3.1开始的注解HandlerMapping --&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"</span>/&gt;</span>   </span><br><span class="line"><span class="comment">&lt;!-- Spring3.1开始的注解HandlerAdapter --&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>1.请求/响应中的生产者和消费者</strong></p>
+<p>生产者消费者流程，如下图：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584800394_20200321221017612_24154.jpg" alt></p>
+<p>从图可以看出：</p>
+<ul>
+<li>请求阶段：客户端是生产者【生产Content-Type媒体类型的请求内容区数据】，服务器是消费者【消费客户端生产的Content-Type媒体类型的请求内容区数据】；</li>
+<li>响应阶段：服务器是生产者【生产客户端请求头参数Accept指定的响应体数据】，客户端是消费者【消费服务器根据Accept请求头生产的响应体数据】。</li>
+</ul>
+<p><strong>2.指定功能方法能消费的媒体类型</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/consumes"</span>, consumes = &#123;<span class="string">"application/json"</span>&#125;)</span><br><span class="line"><span class="comment">//此处使用consumes来指定功能处理方法能消费的媒体类型，其通过请求头的“Content-Type”来判断</span></span><br></pre></td></tr></table></figure>
+<p>此种方式相对使用@RequestMapping的“headers = “Content-Type=application/json””更能表明你的目的。</p>
+<p><strong>3.指定功能方法能生产的媒体类型</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/produces"</span>, produces = <span class="string">"application/json"</span>)</span><br><span class="line"><span class="comment">//表示将功能处理方法将生产json格式的数据，此时根据请求头中的Accept进行匹配，如请求头“Accept:application/json”时即可匹配</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/produces"</span>, produces = <span class="string">"application/xml"</span>)</span><br><span class="line"><span class="comment">//表示将功能处理方法将生产xml格式的数据，此时根据请求头中的Accept进行匹配，如请求头“Accept:application/xml”时即可匹配</span></span><br></pre></td></tr></table></figure>
+<p>此种方式相对使用@RequestMapping的“headers = “Accept=application/json””更能表明你的目的。</p>
+<p>当你有如下Accept头：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Accept：text/html,application/xml,application/json</span><br><span class="line"><span class="comment">//按照如下顺序进行produces的匹配 ①text/html ②application/xml ③application/json</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Accept：application/xml;q=<span class="number">0.5</span>,application/json;q=<span class="number">0.9</span>,text/html</span><br><span class="line"><span class="comment">//按照如下顺序进行produces的匹配 ①text/html ②application/json ③application/xml</span></span><br><span class="line"><span class="comment">//（q参数为媒体类型的质量因子，越大则优先权越高(从0到1)）</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Accept：*<span class="comment">/*,text/*,text/html</span></span><br><span class="line"><span class="comment">//按照如下顺序进行produces的匹配 ①text/html ②text/* ③*/</span>*</span><br><span class="line"><span class="comment">//即匹配规则为：最明确的优先匹配。</span></span><br></pre></td></tr></table></figure>
+<p><strong>4.覆盖和组合使用（或）</strong></p>
+<p><strong>（1）映射窄化时，覆盖而非继承原有配置</strong></p>
+<p>只有生产者/消费者限定是覆盖，其他配置是继承，如headers、params等都是继承。</p>
+<p>如类级别的映射为 @RequestMapping(value=“/narrow”, produces=“text/html”)，方法级别的为@RequestMapping(produces=“application/xml”)，此时方法级别的映射将覆盖类级别的，因此请求头“Accept:application/xml”是成功的，而“text/html”将报406错误码，表示不支持的请求媒体类型。</p>
+<p><strong>（2）组合使用（“或”的关系）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(produces=&#123;<span class="string">"text/html"</span>, <span class="string">"application/json"</span>&#125;)</span><br><span class="line"><span class="comment">//将匹配“Accept:text/html”或“Accept:application/json”</span></span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>23-注解式控制器</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">注解式控制器简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">@Controller</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">@RequestMapping：请求映射</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#URL路径映射"><span class="nav-text">URL路径映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求类型映射"><span class="nav-text">请求类型映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求参数映射"><span class="nav-text">请求参数映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求头映射"><span class="nav-text">请求头映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生产者和消费者限定"><span class="nav-text">生产者和消费者限定</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

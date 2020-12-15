@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="为什么需要Hive？Hadoop的出现，正如当年Java语言的出现，得到了极大的关注和广泛应用。Hadoop及其生态圈提供了一个成熟高效的处理大数据的解决方案。然而，一个问题出现：开发人员如何从现有的基于关系数据库的数据架构转移到Hadoop上呢？对于熟悉SQL技术的人员，编写专业的MapReduce程序并非易事。实际上，对于一个简单的问题，在原有关系数据库基础上只需一个简单的SQL语句即可解决，">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;01-Hive%E6%A6%82%E8%BF%B0.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="为什么需要Hive？Hadoop的出现，正如当年Java语言的出现，得到了极大的关注和广泛应用。Hadoop及其生态圈提供了一个成熟高效的处理大数据的解决方案。然而，一个问题出现：开发人员如何从现有的基于关系数据库的数据架构转移到Hadoop上呢？对于熟悉SQL技术的人员，编写专业的MapReduce程序并非易事。实际上，对于一个简单的问题，在原有关系数据库基础上只需一个简单的SQL语句即可解决，">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584888189_20200322223851353_28885.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.016Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584888189_20200322223851353_28885.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/01-Hive%E6%A6%82%E8%BF%B0">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HIVE学习笔记</a></li>
+            <li>01-HIVE概述</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>为什么需要Hive？</h1><p>Hadoop的出现，正如当年Java语言的出现，得到了极大的关注和广泛应用。Hadoop及其生态圈提供了一个成熟高效的处理大数据的解决方案。然而，一个问题出现：开发人员如何从现有的基于关系数据库的数据架构转移到Hadoop上呢？对于熟悉SQL技术的人员，编写专业的MapReduce程序并非易事。实际上，对于一个简单的问题，在原有关系数据库基础上只需一个简单的SQL语句即可解决，而转移到Hadoop上后需要编写复杂的MapReduce程序。Hive的出现就是来解决这个问题，Hive让那些精通SQL而Java技术相对薄弱的数据分析师能够利用Hadoop进行各种数据分析。</p><a id="more"></a>
+
+<p>Hive是基于Hadoop的一个数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供简单的sql查询功能，可以将sql语句转换为MapReduce任务进行运行。 其优点是学习成本低，可以通过类SQL语句快速实现简单的MapReduce统计，不必开发专门的MapReduce应用，十分适合数据仓库的统计分析。</p>
+<p>在Hadoop生态圈中还有一个Pig组件，作用与Hive类似，但是Pig提供的不是SQL接口，而是一种叫做Pig Latin的语言接口，增加了学习成本。所以Pig没有Hive这么流行了。</p>
+<p>在实际开发中，80%的操作都不会直接由MapReduce程序完成，而是由Hive来完成。所以说Hive实践性、使用频率非常高，不需要高深的理论，只需熟悉SQL即可。掌握Hive对于使用Hadoop来说至关重要。</p>
+<h1>Hive特点</h1>
+<p>Hive 已是目前业界最为通用、廉价的构建大数据时代数据仓库的解决方案。</p>
+<p>(1) Hive 最大的特点是 Hive 通过类 SQL 来分析大数据，而避免了写 MapReduce Java 程序来分析数据，这样使得分析数据更容易；</p>
+<p>(2) 数据是存储在 HDFS 上的，Hive 本身并不提供数据的存储功能；</p>
+<p>(3) Hive 是将数据映射成数据库和一张张的表，库和表的元数据信息一般存在关系型数据库上（比如 MySQL）；</p>
+<p>(4) 数据存储方面：他能够存储很大的数据集，并且对数据完整性、格式要求并不严格；</p>
+<p>(5) 数据处理方面：不适用于实时计算和响应，使用于离线分析；</p>
+<h1>Hive架构及组件</h1>
+<p>简单地说，Hive底层存储使用了HDFS，查询语句转变为MapReduce作业。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584888189_20200322223851353_28885.png" alt></p>
+<p><strong>与Hadoop的HDFS和MapReduce计算框架不同，Hive并不是分布式架构，它独立于集群之外，可以看做一个Hadoop的客户端。我们可以通过CLI（命令行接口）、Web GUI（Web接口）以及Thrift Server提供的JDBC或ODBC方式访问Hive，其中最常用的是命令行接口</strong> 。</p>
+<p><strong>用户通过以上方式向Hive提交查询命令，命令进入Driver模块后进行解释和编译，SQL优化，然后生成执行计划，执行计划将查询分解为若干个MapReduce作业。</strong></p>
+<h2 id="服务端组件">服务端组件</h2>
+<ul>
+<li>Driver组件：该组件包括Complier、Optimizer和Executor，它的作用是将HiveQL（类SQL）语句进行解析、编译优化，生成执行计划，然后调用底层的mapreduce计算框架；</li>
+<li>Metastore组件：元数据服务组件，这个组件存储Hive的元数据。Hive的元数据存储在关系数据库里，Hive支持的关系数据库有derby和mysql。元数据对于Hive十分重要，因此Hive支持把metastore服务独立出来，安装到远程的服务器集群里，从而解耦Hive服务和metastore服务，保证Hive运行的健壮性；</li>
+<li>Thrift服务：thrift是facebook开发的一个软件框架，它用来进行可扩展且跨语言的服务的开发，Hive集成了该服务，能让不同的编程语言调用hive的接口。</li>
+</ul>
+<h2 id="客户端组件">客户端组件</h2>
+<ul>
+<li>CLI：command line interface，命令行接口。</li>
+<li>Thrift客户端：上面的架构图里没有写上Thrift客户端，但是Hive架构的许多客户端接口是建立在thrift客户端之上，包括JDBC和ODBC接口。</li>
+<li>WEBGUI：Hive客户端提供了一种通过网页的方式访问hive所提供的服务。这个接口对应Hive的hwi组件（hive web interface），使用前要启动hwi服务。</li>
+</ul>
+<h1>Hive Metastore</h1>
+<h2 id="Metastore作用">Metastore作用</h2>
+<p>metadata即元数据。元数据包含用Hive创建的database、tabel等的元信息。</p>
+<p>元数据存储在关系型数据库中。如Derby、MySQL等。</p>
+<p>Metastore的作用是：客户端连接metastore服务，metastore再去连接MySQL数据库来存取元数据。有了metastore服务，就可以有多个客户端同时连接，而且这些客户端不需要知道MySQL数据库的用户名和密码，只需要连接metastore服务即可。</p>
+<h2 id="Metastore的三种配置方式">Metastore的三种配置方式</h2>
+<p>Hive Metastore有三种配置方式，分别是：</p>
+<ul>
+<li>Embedded Metastore Database (Derby) 内嵌模式</li>
+<li>Local Metastore Server 本地元存储</li>
+<li>Remote Metastore Server 远程元存储</li>
+</ul>
+<p>本地元存储和远程元存储的区别是：本地元存储不需要单独起metastore服务，用的是跟hive在同一个进程里的metastore服务。远程元存储需要单独起metastore服务，然后每个客户端都在配置文件里配置连接到该metastore服务。远程元存储的metastore服务和hive运行在不同的进程里。</p>
+<p>在生产环境中，建议用远程元存储来配置Hive Metastore。</p>
+<h1>数据类型</h1>
+<h2 id="基本类型">基本类型</h2>
+<p>Hive 支持关系型数据中大多数基本数据类型。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean</td>
+<td>true/false</td>
+<td>TRUE</td>
+</tr>
+<tr>
+<td>tinyint</td>
+<td>1字节的有符号整数</td>
+<td>-128~127 1Y</td>
+</tr>
+<tr>
+<td>smallint</td>
+<td>2个字节的有符号整数，-32768~32767</td>
+<td>1S</td>
+</tr>
+<tr>
+<td>int</td>
+<td>4个字节的带符号整数</td>
+<td>1</td>
+</tr>
+<tr>
+<td>bigint</td>
+<td>8字节带符号整数</td>
+<td>1L</td>
+</tr>
+<tr>
+<td>float</td>
+<td>4字节单精度浮点数</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>double</td>
+<td>8字节双精度浮点数</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>deicimal</td>
+<td>任意精度的带符号小数</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>String</td>
+<td>字符串，变长</td>
+<td>“a”,‘b’</td>
+</tr>
+<tr>
+<td>varchar</td>
+<td>变长字符串</td>
+<td>“a”,‘b’</td>
+</tr>
+<tr>
+<td>char</td>
+<td>固定长度字符串</td>
+<td>“a”,‘b’</td>
+</tr>
+<tr>
+<td>binary</td>
+<td>字节数组</td>
+<td>无法表示</td>
+</tr>
+<tr>
+<td>timestamp</td>
+<td>时间戳，纳秒精度</td>
+<td>122327493795</td>
+</tr>
+<tr>
+<td>date</td>
+<td>日期</td>
+<td>‘2016-03-29’</td>
+</tr>
+</tbody>
+</table>
+<p>和其他的SQL语言一样，这些都是保留字。需要注意的是所有的这些数据类型都是对Java中接口的实现，因此这些类型的具体行为细节和Java中对应的类型是完全一致的。例如，string类型实现的是Java中的String，float实现的是Java中的float，等等。</p>
+<h2 id="复杂类型">复杂类型</h2>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>array</td>
+<td>有序的的同类型的集合</td>
+<td>array(1,2)</td>
+</tr>
+<tr>
+<td>map</td>
+<td>key-value,key必须为原始类型，value可以任意类型</td>
+<td>map(‘a’,1,‘b’,2)</td>
+</tr>
+<tr>
+<td>struct</td>
+<td>字段集合,类型可以不同</td>
+<td>struct(‘1’,1,1.0), named_struct(‘col1’,‘1’,‘col2’,1,‘clo3’,1.0)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> create table employees(</span></span><br><span class="line">    &gt; id int,</span><br><span class="line">    &gt; name map&lt;string,string&gt;,</span><br><span class="line">    &gt; birthday date,</span><br><span class="line">    &gt; salary double,</span><br><span class="line">    &gt; address struct&lt;street:string,city:string,zip:int&gt;,</span><br><span class="line">    &gt; phone array&lt;string&gt;</span><br><span class="line">    &gt; );</span><br><span class="line">OK</span><br><span class="line">Time taken: 1.044 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h1>存储格式</h1>
+<p>Hive会为每个创建的数据库在HDFS上创建一个目录，该数据库的表会以子目录形式存储，表中的数据会以表目录下的文件形式存储。对于default数据库，默认的缺省数据库没有自己的目录，default数据库下的表默认存放在/user/hive/warehouse目录下。</p>
+<p>（1）textfile</p>
+<p>textfile为默认格式，存储方式为行存储。数据不做压缩，磁盘开销大，数据解析开销大。</p>
+<p>（2）SequenceFile</p>
+<p>SequenceFile是Hadoop API提供的一种二进制文件支持，其具有使用方便、可分割、可压缩的特点。</p>
+<p>SequenceFile支持三种压缩选择：NONE， RECORD， BLOCK。 Record压缩率低，一般建议使用BLOCK压缩。</p>
+<p>（3）RCFile</p>
+<p>一种行列存储相结合的存储方式。</p>
+<p>（4）ORCFile</p>
+<p>数据按照行分块，每个块按照列存储，其中每个块都存储有一个索引。hive给出的新格式，属于RCFile的升级版，性能有大幅度提升，而且数据可以压缩存储，压缩快，快速列存取。</p>
+<p>（5）Parquet</p>
+<p>Parquet也是一种行式存储，同时具有很好的压缩性能；同时可以减少大量的表扫描和反序列化的时间。</p>
+<p>hive 表的文件格式一般是在创建表时用 stored as 语句声明</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> create table tb1(id int，name string)</span></span><br><span class="line">    &gt; stored as textfile;</span><br><span class="line">OK</span><br><span class="line">Time taken: 0.84 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br><span class="line"> </span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"> desc tb1;</span></span><br><span class="line">OK</span><br><span class="line">id                      int                                         </span><br><span class="line">name                    string                                      </span><br><span class="line">Time taken: 0.174 seconds， Fetched: 2 row(s)</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<h1>数据分割符</h1>
+<p>当数据存储在文本文件中，必须按照一定格式区别行和列，并且在Hive中指明这些区分符。Hive默认使用了几个平时很少出现的字符，这些字符一般不会作为内容出现在记录中。</p>
+<p>Hive默认的行和列分隔符如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th>分隔符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\n</td>
+<td>对于文本文件来说，每行是一条记录，所以\n 来分割记录</td>
+</tr>
+<tr>
+<td>^A (Ctrl+A)</td>
+<td>分割字段，也可以用\001 来表示</td>
+</tr>
+<tr>
+<td>^B (Ctrl+B)</td>
+<td>用于分割 Arrary 或者 Struct 中的元素，或者用于 map 中键值之间的分割，也可以用\002 分割。</td>
+</tr>
+<tr>
+<td>^C</td>
+<td>用于 map 中键和值自己分割，也可以用\003 表示。</td>
+</tr>
+</tbody>
+</table>
+<p>用户可以根据需要自定义分隔符，例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hive&gt;</span><span class="bash"> create table tb2(id int,name string)</span></span><br><span class="line">    &gt; row format delimited fields terminated by '\t'</span><br><span class="line">    &gt; stored as textfile;</span><br><span class="line">OK</span><br><span class="line">Time taken: 0.276 seconds</span><br><span class="line"><span class="meta">hive&gt;</span><span class="bash"></span></span><br></pre></td></tr></table></figure>
+<p>其中row format delimited fields terminated by ‘\t’指定了列分隔符为’\t’，也就是tab键（制表符）。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hive%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HIVE学习笔记</a></li>
+            <li>01-HIVE概述</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">为什么需要Hive？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Hive特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Hive架构及组件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#服务端组件"><span class="nav-text">服务端组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端组件"><span class="nav-text">客户端组件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Hive Metastore</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Metastore作用"><span class="nav-text">Metastore作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Metastore的三种配置方式"><span class="nav-text">Metastore的三种配置方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本类型"><span class="nav-text">基本类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复杂类型"><span class="nav-text">复杂类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">存储格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">数据分割符</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

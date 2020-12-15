@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="两种情况下需要进行数据验证： 数据绑定失败：比如需要数字却输入了字母； 数据不合法：可以认为是业务错误，通过自定义验证器验证，如用户名长度必须在5-20之间，我们却输入了100个字符等。 错误对象：当我们数据绑定失败或验证失败后，错误信息存放的对象，我们叫错误对象，在Spring Web MVC中Errors是具体的代表者；线程不安全对象；">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;25-%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81%E5%8F%8A%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="两种情况下需要进行数据验证： 数据绑定失败：比如需要数字却输入了字母； 数据不合法：可以认为是业务错误，通过自定义验证器验证，如用户名长度必须在5-20之间，我们却输入了100个字符等。 错误对象：当我们数据绑定失败或验证失败后，错误信息存放的对象，我们叫错误对象，在Spring Web MVC中Errors是具体的代表者；线程不安全对象；">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584802219_20200321224852145_28331.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584802219_20200321224851936_26007.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584802218_20200321224851728_26586.jpg">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.040Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584802219_20200321224852145_28331.jpg">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/25-%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81%E5%8F%8A%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>25-数据验证及错误处理</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p><strong>两种情况下需要进行数据验证：</strong></p><ul>
+<li>数据绑定失败：比如需要数字却输入了字母；</li>
+<li>数据不合法：可以认为是业务错误，通过自定义验证器验证，如用户名长度必须在5-20之间，我们却输入了100个字符等。</li>
+</ul><p><strong>错误对象</strong>：当我们数据绑定失败或验证失败后，错误信息存放的对象，我们叫错误对象，在Spring Web MVC中Errors是具体的代表者；线程不安全对象；</p><a id="more"></a>
+
+
+<p><strong>错误消息</strong>：是硬编码，还是可配置？实际工作应该使用配置方式，我们只是把错误码（errorCode）放入错误对象，在展示时读取相应的错误消息配置文件来获取要显示的错误消息(errorMessage)；</p>
+<p><strong>验证流程：</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584802219_20200321224852145_28331.jpg" alt></p>
+<p>首先进行数据绑定验证，<strong>如果验证失败会通过MessageCodesResolver生成错误码放入Errors错误对象</strong>；</p>
+<p>然后进行数据不合法验证，通过自定义的验证器验证，如果失败需要手动将错误码放入Errors错误对象。</p>
+<h1>Error接口及其实现类</h1>
+<p>错误对象的代表者是Errors接口，并且提供了几个实现者，在Spring Web MVC中我们使用的是如下实现：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584802219_20200321224851936_26007.jpg" alt></p>
+<h2 id="Errors接口">Errors接口</h2>
+<p>Errors接口：存储和暴露关于数据绑定错误和验证错误相关信息的接口，提供了相关存储和获取错误消息的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.validation;  </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Errors</span> </span>&#123;  </span><br><span class="line"> </span><br><span class="line"> <span class="comment">//====全局错误消息（验证/绑定整个对象的）====</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment">//注册一个全局的错误码（）  </span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">reject</span><span class="params">(String errorCode)</span></span>;  </span><br><span class="line"> </span><br><span class="line"> <span class="comment">//注册一个全局的错误码，当根据errorCode没有找到相应错误消息时，使用defaultMessage作为错误消息  </span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">reject</span><span class="params">(String errorCode, String defaultMessage)</span></span>;  </span><br><span class="line"> </span><br><span class="line"> <span class="comment">//注册一个全局的错误码，当根据errorCode没有找到相应错误消息时（带错误参数的），使用defaultMessage作为错误消息  </span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">reject</span><span class="params">(String errorCode, Object[] errorArgs, String defaultMessage)</span></span>;  </span><br><span class="line"> </span><br><span class="line"> <span class="comment">//====局部错误消息（验证/绑定对象字段的）====</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment">//注册一个当前对象字段的错误码，field指定验证失败的字段名  </span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">rejectValue</span><span class="params">(String field, String errorCode)</span></span>;  </span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">rejectValue</span><span class="params">(String field, String errorCode, String defaultMessage)</span></span>;  </span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">rejectValue</span><span class="params">(String field, String errorCode, Object[] errorArgs, String defaultMessage)</span></span>;  </span><br><span class="line"> </span><br><span class="line"> <span class="comment">//===============================</span></span><br><span class="line"> </span><br><span class="line"> <span class="function"><span class="keyword">boolean</span> <span class="title">hasErrors</span><span class="params">()</span></span>;      <span class="comment">////是否有错误  </span></span><br><span class="line"> <span class="function"><span class="keyword">boolean</span> <span class="title">hasGlobalErrors</span><span class="params">()</span></span>; <span class="comment">//是否有全局错误  </span></span><br><span class="line"> <span class="function"><span class="keyword">boolean</span> <span class="title">hasFieldErrors</span><span class="params">()</span></span>;  <span class="comment">//是否有字段错误  </span></span><br><span class="line"> <span class="function">Object <span class="title">getFieldValue</span><span class="params">(String field)</span></span>; <span class="comment">//返回当前验证通过的值，或验证失败时失败的值，这样就可以给用户展示出错时的值（而不是空或其他的默认值等）；  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="BindingResult接口">BindingResult接口</h2>
+<p>BindingResult：代表数据绑定的结果，继承了Errors接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.validation;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.beans.PropertyEditor;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.PropertyEditorRegistry;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BindingResult</span> <span class="keyword">extends</span> <span class="title">Errors</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   String MODEL_KEY_PREFIX = BindingResult.class.getName() + <span class="string">"."</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="function">Object <span class="title">getTarget</span><span class="params">()</span></span>;</span><br><span class="line"> </span><br><span class="line">   <span class="function">Map&lt;String, Object&gt; <span class="title">getModel</span><span class="params">()</span></span>;</span><br><span class="line"> </span><br><span class="line">   <span class="function">Object <span class="title">getRawFieldValue</span><span class="params">(String field)</span></span>;</span><br><span class="line"> </span><br><span class="line">   <span class="function">PropertyEditor <span class="title">findEditor</span><span class="params">(String field, Class&lt;?&gt; valueType)</span></span>;</span><br><span class="line"> </span><br><span class="line">   <span class="function">PropertyEditorRegistry <span class="title">getPropertyEditorRegistry</span><span class="params">()</span></span>;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addError</span><span class="params">(ObjectError error)</span></span>;</span><br><span class="line"> </span><br><span class="line">   String[] resolveMessageCodes(String errorCode);</span><br><span class="line"> </span><br><span class="line">   String[] resolveMessageCodes(String errorCode, String field);</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">recordSuppressedField</span><span class="params">(String field)</span></span>;</span><br><span class="line"> </span><br><span class="line">   String[] getSuppressedFields();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="BindException实现类">BindException实现类</h2>
+<p>BindException：代表数据绑定的异常，它继承Exception，并实现了BindingResult，这是内部使用的错误对象。</p>
+<h2 id="AbstractBindingResult抽象类">AbstractBindingResult抽象类</h2>
+<p>BindingResult接口的抽象实现类，封装了对ObjectError和FieldErrors对象管理操作。</p>
+<p>下面为AbstractBindingResult的部分代码，代码中可以看出，BindingResult对象中使用messageCodesResolver注册错误码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"serial"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractBindingResult</span> <span class="keyword">extends</span> <span class="title">AbstractErrors</span> <span class="keyword">implements</span> <span class="title">BindingResult</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> String objectName;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> MessageCodesResolver messageCodesResolver = <span class="keyword">new</span> DefaultMessageCodesResolver();</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> List&lt;ObjectError&gt; errors = <span class="keyword">new</span> LinkedList&lt;ObjectError&gt;();</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> Set&lt;String&gt; suppressedFields = <span class="keyword">new</span> HashSet&lt;String&gt;();</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMessageCodesResolver</span><span class="params">(MessageCodesResolver messageCodesResolver)</span> </span>&#123;</span><br><span class="line">      Assert.notNull(messageCodesResolver, <span class="string">"MessageCodesResolver must not be null"</span>);</span><br><span class="line">      <span class="keyword">this</span>.messageCodesResolver = messageCodesResolver;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> MessageCodesResolver <span class="title">getMessageCodesResolver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.messageCodesResolver;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reject</span><span class="params">(String errorCode, Object[] errorArgs, String defaultMessage)</span> </span>&#123;</span><br><span class="line">      addError(<span class="keyword">new</span> ObjectError(getObjectName(), resolveMessageCodes(errorCode), errorArgs, defaultMessage));</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">rejectValue</span><span class="params">(String field, String errorCode, Object[] errorArgs, String defaultMessage)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="string">""</span>.equals(getNestedPath()) &amp;&amp; !StringUtils.hasLength(field)) &#123;</span><br><span class="line">         <span class="comment">// We're at the top of the nested object hierarchy,</span></span><br><span class="line">         <span class="comment">// so the present level is not a field but rather the top object.</span></span><br><span class="line">         <span class="comment">// The best we can do is register a global error here...</span></span><br><span class="line">         reject(errorCode, errorArgs, defaultMessage);</span><br><span class="line">         <span class="keyword">return</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      String fixedField = fixedField(field);</span><br><span class="line">      Object newVal = getActualFieldValue(fixedField);</span><br><span class="line">      FieldError fe = <span class="keyword">new</span> FieldError(</span><br><span class="line">            getObjectName(), fixedField, newVal, <span class="keyword">false</span>,</span><br><span class="line">            resolveMessageCodes(errorCode, field), errorArgs, defaultMessage);</span><br><span class="line">      addError(fe);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addError</span><span class="params">(ObjectError error)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.errors.add(error);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="keyword">public</span> String[] resolveMessageCodes(String errorCode) &#123;</span><br><span class="line">      <span class="keyword">return</span> getMessageCodesResolver().resolveMessageCodes(errorCode, getObjectName());</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="keyword">public</span> String[] resolveMessageCodes(String errorCode, String field) &#123;</span><br><span class="line">      Class&lt;?&gt; fieldType = getFieldType(field);</span><br><span class="line">      <span class="keyword">return</span> getMessageCodesResolver().resolveMessageCodes(</span><br><span class="line">            errorCode, getObjectName(), fixedField(field), fieldType);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>错误消息解析、封装接口</h1>
+<h2 id="MessageCodesResolver：错误码解析器">MessageCodesResolver：错误码解析器</h2>
+<p>当调用来自Errors接口的rejectValue或者其他reject方法时，其SpringMVC底层实现不仅会注册传入的错误码，还会使用<strong>MessageCodesResolver</strong>接口对象注册一些额外的错误码。注册怎样的错误码取决于它所使用的<strong>MessageCodesResolver</strong>，默认情况下，会使用<strong>DefaultMessageCodesResolver</strong>。其不仅仅会使用你提供的错误码注册消息，还会注册包含你传递给注册方法的字段名称的消息。这样做是为了方便开发人员来定位错误消息。</p>
+<p><strong>DefaultMessageCodesResolver默认将为验证的对象自动生成如下错误消息键</strong>：</p>
+<ul>
+<li>验证错误注解简单类名.验证对象名.字段名</li>
+<li>验证错误注解简单类名.字段名</li>
+<li>验证错误注解简单类名.字段类型全限定类名</li>
+<li>验证错误注解简单类名</li>
+</ul>
+<p>使用的优先级是：从高到低，即最前边的具有最高的优先级，而且以上所有默认的错误消息键优先级高于自定义的错误消息键。</p>
+<p>如测试用例ValidatorAnnotationTestController中的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">pattern</span><span class="params">(@Valid @ModelAttribute(<span class="string">"model"</span>)</span> PatternModel model, Errors errors)</span></span><br></pre></td></tr></table></figure>
+<p>将自动产生如下错误消息键：</p>
+<ul>
+<li>Pattern.model.value=验证错误注解简单类名.验证对象名.字段名</li>
+<li>Pattern.value=验证错误注解简单类名.字段名</li>
+<li>Pattern.java.lang.String=验证错误注解简单类名.字段类型全限定类名</li>
+<li>Pattern=验证错误注解简单类名</li>
+</ul>
+<h2 id="MessageSourceResolvable接口：消息封装">MessageSourceResolvable接口：消息封装</h2>
+<p>MessageSourceResolvable接口封装属性名、参数数组以及默认信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.context;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MessageSourceResolvable</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Return the codes to be used to resolve this message, in the order that</span></span><br><span class="line"><span class="comment">    * they should get tried. The last code will therefore be the default one.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span> a String array of codes which are associated with this message</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   String[] getCodes();</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Return the array of arguments to be used to resolve this message.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span> an array of objects to be used as parameters to replace</span></span><br><span class="line"><span class="comment">    * placeholders within the message text</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@see</span> java.text.MessageFormat</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   Object[] getArguments();</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Return the default message to be used to resolve this message.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span> the default message, or &#123;<span class="doctag">@code</span> null&#125; if no default</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function">String <span class="title">getDefaultMessage</span><span class="params">()</span></span>;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ObjectError实现类">ObjectError实现类</h2>
+<p>ObjectError实现了MessageSourceResolvable接口，封装了对象错误消息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ObjectError</span> <span class="keyword">extends</span> <span class="title">DefaultMessageSourceResolvable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> String objectName;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Create a new instance of the ObjectError class.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> objectName the name of the affected object</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> defaultMessage the default message to be used to resolve this message</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">ObjectError</span><span class="params">(String objectName, String defaultMessage)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>(objectName, <span class="keyword">null</span>, <span class="keyword">null</span>, defaultMessage);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Create a new instance of the ObjectError class.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> objectName the name of the affected object</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> codes the codes to be used to resolve this message</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> arguments    the array of arguments to be used to resolve this message</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> defaultMessage the default message to be used to resolve this message</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">ObjectError</span><span class="params">(String objectName, String[] codes, Object[] arguments, String defaultMessage)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">super</span>(codes, arguments, defaultMessage);</span><br><span class="line">      Assert.notNull(objectName, <span class="string">"Object name must not be null"</span>);</span><br><span class="line">      <span class="keyword">this</span>.objectName = objectName;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Return the name of the affected object.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">getObjectName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.objectName;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">"Error in object '"</span> + <span class="keyword">this</span>.objectName + <span class="string">"': "</span> + resolvableToString();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object other)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span> == other) &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (!(getClass().equals(other.getClass())) || !<span class="keyword">super</span>.equals(other)) &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      ObjectError otherError = (ObjectError) other;</span><br><span class="line">      <span class="keyword">return</span> getObjectName().equals(otherError.getObjectName());</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">super</span>.hashCode() * <span class="number">29</span> + getObjectName().hashCode();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="FieldError实现类">FieldError实现类</h2>
+<p>FieldError继承了ObjectError，进一步对对象字段错误消息进行了封装。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FieldError</span> <span class="keyword">extends</span> <span class="title">ObjectError</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> String field;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> Object rejectedValue;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> bindingFailure;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Create a new FieldError instance.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> objectName the name of the affected object</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> field the affected field of the object</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> defaultMessage the default message to be used to resolve this message</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">FieldError</span><span class="params">(String objectName, String field, String defaultMessage)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>(objectName, field, <span class="keyword">null</span>, <span class="keyword">false</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, defaultMessage);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Create a new FieldError instance.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> objectName the name of the affected object</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> field the affected field of the object</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> rejectedValue the rejected field value</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> bindingFailure whether this error represents a binding failure</span></span><br><span class="line"><span class="comment">    * (like a type mismatch); else, it is a validation failure</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> codes the codes to be used to resolve this message</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> arguments the array of arguments to be used to resolve this message</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> defaultMessage the default message to be used to resolve this message</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">FieldError</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">         String objectName, String field, Object rejectedValue, <span class="keyword">boolean</span> bindingFailure,</span></span></span><br><span class="line"><span class="function"><span class="params">         String[] codes, Object[] arguments, String defaultMessage)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">super</span>(objectName, codes, arguments, defaultMessage);</span><br><span class="line">      Assert.notNull(field, <span class="string">"Field must not be null"</span>);</span><br><span class="line">      <span class="keyword">this</span>.field = field;</span><br><span class="line">      <span class="keyword">this</span>.rejectedValue = rejectedValue;</span><br><span class="line">      <span class="keyword">this</span>.bindingFailure = bindingFailure;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Return the affected field of the object.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">getField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.field;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Return the rejected field value.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Object <span class="title">getRejectedValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.rejectedValue;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Return whether this error represents a binding failure</span></span><br><span class="line"><span class="comment">    * (like a type mismatch); otherwise it is a validation failure.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isBindingFailure</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.bindingFailure;</span><br><span class="line">   &#125;</span><br><span class="line">   ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>错误处理</h1>
+<h2 id="手动生成错误">手动生成错误</h2>
+<p>有两种方法：</p>
+<ul>
+<li>方法一：使用BindingResult.addError()将自定义的ObjectError对象放到绑定的BindingResult对象中。</li>
+<li>方法二：使用Errors.reject()方法注册错误。</li>
+</ul>
+<h3 id="方法一：直接使用ObjectError">方法一：直接使用ObjectError</h3>
+<p><strong>1. Controller代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ... <span class="comment">//省略</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/sql2Report"</span>)</span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sql2ReportController</span> </span>&#123;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = Logger.getLogger(Sql2ReportController.class);</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Autowired</span></span><br><span class="line">   <span class="keyword">private</span> Sql2ReportService sql2ReportService;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@RequestMapping</span>(<span class="string">"/export"</span>)</span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">runExport</span><span class="params">(@ModelAttribute(<span class="string">"sql"</span>)</span>SqlVo sql, BindingResult result, HttpServletResponse response)</span>&#123;</span><br><span class="line"> </span><br><span class="line">       String name = sql.getName();</span><br><span class="line">       String sqlStr = sql.getSqlStr();</span><br><span class="line">       Boolean isContinue = sql.getIsContinue();</span><br><span class="line">       Boolean isAsync = sql.getIsAsync();</span><br><span class="line">       sql.setMessage(<span class="keyword">null</span>);</span><br><span class="line"> </span><br><span class="line">       <span class="keyword">if</span> (name == <span class="keyword">null</span> || name.isEmpty()) &#123;</span><br><span class="line">           FieldError fieldError = <span class="keyword">new</span> FieldError(<span class="string">"sql"</span>, <span class="string">"name"</span>, <span class="string">"报表文件名不能为空"</span>);</span><br><span class="line">           result.addError(fieldError);</span><br><span class="line">           <span class="keyword">return</span> <span class="string">"sql2Report/sqlReport"</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">if</span> (name.length() &gt; <span class="number">100</span>)&#123;</span><br><span class="line">           FieldError fieldError = <span class="keyword">new</span> FieldError(<span class="string">"sql"</span>, <span class="string">"name"</span>, <span class="string">"报表文件名太长，不能超过100个字符"</span>);</span><br><span class="line">           result.addError(fieldError);</span><br><span class="line">           <span class="keyword">return</span> <span class="string">"sql2Report/sqlReport"</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">if</span> (!ReportFileUtils.isValidFileName(name))&#123;</span><br><span class="line">           FieldError fieldError = <span class="keyword">new</span> FieldError(<span class="string">"sql"</span>, <span class="string">"name"</span>, <span class="string">"报表文件名不合法"</span>);</span><br><span class="line">           result.addError(fieldError);</span><br><span class="line">           <span class="keyword">return</span> <span class="string">"sql2Report/sqlReport"</span>;</span><br><span class="line">       &#125;</span><br><span class="line"> </span><br><span class="line">       <span class="keyword">if</span> (sqlStr == <span class="keyword">null</span> || sqlStr.isEmpty())&#123;</span><br><span class="line">           FieldError fieldError = <span class="keyword">new</span> FieldError(<span class="string">"sql"</span>, <span class="string">"sqlStr"</span>, <span class="string">"sql语句不能为空"</span>);</span><br><span class="line">           result.addError(fieldError);</span><br><span class="line">           <span class="keyword">return</span> <span class="string">"sql2Report/sqlReport"</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       Select select = <span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           select = (Select)CCJSqlParserUtil.parse(sqlStr);</span><br><span class="line">       &#125;<span class="keyword">catch</span> (JSQLParserException e)&#123;</span><br><span class="line">           FieldError fieldError = <span class="keyword">new</span> FieldError(<span class="string">"sql"</span>, <span class="string">"sqlStr"</span>, <span class="string">"sql语法有误，请检查"</span>);</span><br><span class="line">           result.addError(fieldError);</span><br><span class="line">       &#125;<span class="keyword">catch</span> (ClassCastException e)&#123;</span><br><span class="line">           FieldError fieldError = <span class="keyword">new</span> FieldError(<span class="string">"sql"</span>, <span class="string">"sqlStr"</span>, <span class="string">"非Select查询语句，不支持该sql"</span>);</span><br><span class="line">           result.addError(fieldError);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">if</span> (select == <span class="keyword">null</span>)&#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="string">"sql2Report/sqlReport"</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       String formatSqlStr = select.toString();</span><br><span class="line"> </span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="keyword">if</span> (isContinue == <span class="keyword">false</span> || isAsync == <span class="keyword">false</span>)&#123;</span><br><span class="line">               Long count = <span class="number">0L</span>;</span><br><span class="line">               <span class="keyword">try</span> &#123;</span><br><span class="line">                   count = sql2ReportService.getSqlCount(select);</span><br><span class="line">               &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">                   FieldError fieldError = <span class="keyword">new</span> FieldError(<span class="string">"sql"</span>, <span class="string">"sqlStr"</span>, <span class="string">"sql语法有误，请检查"</span>);</span><br><span class="line">                   result.addError(fieldError);</span><br><span class="line">                   <span class="keyword">return</span> <span class="string">"sql2Report/sqlReport"</span>;</span><br><span class="line">               &#125;</span><br><span class="line"> </span><br><span class="line">               <span class="keyword">if</span> (isAsync == <span class="keyword">false</span>)&#123;</span><br><span class="line">                   <span class="keyword">if</span> (count &lt; acceptable)&#123;</span><br><span class="line">                       FieldError fieldError = <span class="keyword">new</span> FieldError(<span class="string">"sql"</span>, <span class="string">"isAsync"</span>, <span class="string">"当前报表数据量无法预测，请使用异步导出！"</span>);</span><br><span class="line">                       result.addError(fieldError);</span><br><span class="line">                       <span class="keyword">return</span> <span class="string">"sql2Report/sqlReport"</span>;</span><br><span class="line">                   &#125;</span><br><span class="line">                   <span class="keyword">if</span> (count &gt; maxSyncCount)&#123;</span><br><span class="line">                       FieldError fieldError = <span class="keyword">new</span> FieldError(<span class="string">"sql"</span>, <span class="string">"isAsync"</span>, <span class="string">"当前报表数据超出"</span> + maxSyncCount + <span class="string">"，请使用异步导出！"</span>);</span><br><span class="line">                       result.addError(fieldError);</span><br><span class="line">                       <span class="keyword">return</span> <span class="string">"sql2Report/sqlReport"</span>;</span><br><span class="line">                   &#125;</span><br><span class="line">                   <span class="keyword">return</span> <span class="string">"forward:downSyncReport"</span>;</span><br><span class="line">               &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                   <span class="keyword">if</span> (count &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                       sql.setMessage(<span class="string">"当前报表数据量无法预测，请确认继续"</span>);</span><br><span class="line">                   &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                       sql.setMessage(<span class="string">"当前报表数据有"</span> + count + <span class="string">"条，请确认继续"</span>);</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">               sql.setIsContinue(<span class="keyword">false</span>);</span><br><span class="line">               SqlOperator sqlOperator = SqlOperator.newSqlOperator(name,formatSqlStr,sql2ReportService.getReportBase());</span><br><span class="line">               <span class="keyword">if</span> (sqlOperator == <span class="keyword">null</span>)&#123;</span><br><span class="line">                   FieldError fieldError = <span class="keyword">new</span> FieldError(<span class="string">"sql"</span>, <span class="string">"name"</span>, <span class="string">"该报表文件名已被使用，请更换"</span>);</span><br><span class="line">                   result.addError(fieldError);</span><br><span class="line">                   <span class="keyword">return</span> <span class="string">"sql2Report/sqlReport"</span>;</span><br><span class="line">               &#125;</span><br><span class="line">               sqlOperator.submit();</span><br><span class="line"> </span><br><span class="line">           &#125;</span><br><span class="line">       &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">           logger.error(e.getMessage());</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="string">"sql2Report/sqlReport"</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>2. JSP页面使用form标签库</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> contentType=<span class="string">"text/html; charset=UTF-8"</span></span><br><span class="line">        pageEncoding=<span class="string">"UTF-8"</span>%&gt;</span><br><span class="line">&lt;%@ include file=<span class="string">"/WEB-INF/jsp/system/header.jsp"</span>%&gt;</span><br><span class="line">&lt;%@ taglib uri=<span class="string">"http://www.springframework.org/tags/form"</span> prefix=<span class="string">"form"</span> %&gt;</span><br><span class="line">&lt;%@ page isELIgnored=<span class="string">"false"</span>%&gt;</span><br><span class="line"> </span><br><span class="line">&lt;style&gt;</span><br><span class="line">   .border&#123;</span><br><span class="line">       border: SkyBlue solid;</span><br><span class="line">       border-width: <span class="number">1</span>px;</span><br><span class="line">   &#125;</span><br><span class="line">   .blue&#123;</span><br><span class="line">       line-height: <span class="number">30</span>px;</span><br><span class="line">       color: blue;</span><br><span class="line">       margin-right: <span class="number">100</span>px;</span><br><span class="line">   &#125;</span><br><span class="line">   .error&#123;</span><br><span class="line">       color:red;</span><br><span class="line">   &#125;</span><br><span class="line">&lt;/style&gt;</span><br><span class="line"> </span><br><span class="line">&lt;table style=<span class="string">"height: 100%;width: 90%;"</span> align=<span class="string">"left"</span> cellpadding=<span class="string">"30"</span>&gt;</span><br><span class="line">   &lt;thead&gt;</span><br><span class="line">   &lt;tr&gt;</span><br><span class="line">       &lt;th width="40%"&gt;&lt;/th&gt;</span><br><span class="line">       &lt;th width="2%"&gt;&lt;/th&gt;</span><br><span class="line">       &lt;th width="40%"&gt;&lt;/th&gt;</span><br><span class="line">   &lt;/tr&gt;</span><br><span class="line">   &lt;/thead&gt;</span><br><span class="line">   &lt;tbody&gt;</span><br><span class="line">       &lt;tr&gt;</span><br><span class="line">           &lt;td valign=<span class="string">"top"</span> align=<span class="string">"right"</span>&gt;</span><br><span class="line">               &lt;form:form id=<span class="string">"sqlForm"</span> enctype=<span class="string">"multipart/form-data"</span> modelAttribute=<span class="string">"sql"</span>&gt;</span><br><span class="line">                   &lt;table style=<span class="string">"height: 100%;width: 100%;"</span> align=<span class="string">"right"</span> cellpadding=<span class="string">"30"</span>&gt;</span><br><span class="line">                       &lt;tbody&gt;</span><br><span class="line">                       &lt;tr&gt;</span><br><span class="line">                           &lt;td align="left"&gt;&lt;h3&gt;报表名称：&lt;/h3&gt;&lt;/td&gt;</span><br><span class="line">                       &lt;/tr&gt;</span><br><span class="line">                       &lt;tr&gt;</span><br><span class="line">                           &lt;td&gt;</span><br><span class="line">                               &lt;form:errors path=<span class="string">"name"</span> cssClass=<span class="string">"error"</span>/&gt;</span><br><span class="line">                           &lt;/td&gt;</span><br><span class="line">                       &lt;/tr&gt;</span><br><span class="line">                       &lt;tr&gt;</span><br><span class="line">                           &lt;td&gt;</span><br><span class="line">                               &lt;form:input path=<span class="string">"name"</span> id=<span class="string">"nameV"</span> cssClass=<span class="string">"border"</span>/&gt;</span><br><span class="line">                           &lt;/td&gt;</span><br><span class="line">                       &lt;/tr&gt;</span><br><span class="line">                       &lt;tr&gt;</span><br><span class="line">                           &lt;td align="left"&gt;&lt;h3&gt;Select语句：(最多导出100W条数据)&lt;/h3&gt;&lt;/td&gt;</span><br><span class="line">                       &lt;/tr&gt;</span><br><span class="line">                       &lt;tr&gt;</span><br><span class="line">                           &lt;td&gt;</span><br><span class="line">                               &lt;form:errors path=<span class="string">"sqlStr"</span> cssClass=<span class="string">"error"</span>/&gt;</span><br><span class="line">                           &lt;/td&gt;</span><br><span class="line">                       &lt;/tr&gt;</span><br><span class="line">                       &lt;tr&gt;</span><br><span class="line">                           &lt;td&gt;</span><br><span class="line"> </span><br><span class="line">                               &lt;form:textarea path=<span class="string">"sqlStr"</span> cssClass=<span class="string">"border"</span> cssStyle=<span class="string">"height: 400px;width: 100%;"</span>/&gt;</span><br><span class="line">                           &lt;/td&gt;</span><br><span class="line">                       &lt;/tr&gt;</span><br><span class="line">                       &lt;tr&gt;</span><br><span class="line">                           &lt;td&gt;</span><br><span class="line">                               &lt;form:errors path=<span class="string">"isAsync"</span> cssClass=<span class="string">"error"</span>/&gt;</span><br><span class="line">                               &lt;form:hidden path=<span class="string">"isAsync"</span> id=<span class="string">"isAsyncV"</span>/&gt;</span><br><span class="line">                               &lt;form:errors path=<span class="string">"isContinue"</span> cssClass=<span class="string">"error"</span>/&gt;</span><br><span class="line">                               &lt;form:hidden path=<span class="string">"isContinue"</span> id=<span class="string">"isContinueV"</span>/&gt;</span><br><span class="line">                               &lt;form:hidden path=<span class="string">"message"</span> id=<span class="string">"messageV"</span>/&gt;</span><br><span class="line">                           &lt;/td&gt;</span><br><span class="line">                       &lt;/tr&gt;</span><br><span class="line">                       &lt;tr&gt;</span><br><span class="line">                           &lt;td align=<span class="string">"right"</span>&gt;</span><br><span class="line">                               &lt;button id="syncButton" onclick="syncSubmit()"&gt;立即执行&lt;/button&gt;</span><br><span class="line">                               &lt;button id="asyncButtom" onclick="asyncSubmit()"&gt;后台执行&lt;/button&gt;</span><br><span class="line">                           &lt;/td&gt;</span><br><span class="line">                       &lt;/tr&gt;</span><br><span class="line">                       &lt;/tbody&gt;</span><br><span class="line">                   &lt;/table&gt;</span><br><span class="line">               &lt;/form:form&gt;</span><br><span class="line">           &lt;/td&gt;</span><br><span class="line">           &lt;td&gt;&lt;/td&gt;</span><br><span class="line">           &lt;td valign=<span class="string">"top"</span> align=<span class="string">"left"</span>&gt;</span><br><span class="line">               &lt;table id="datagrid" class="border" style="height: 500px;width: 90%;"&gt;&lt;/table&gt;</span><br><span class="line">           &lt;/td&gt;</span><br><span class="line">       &lt;/tr&gt;</span><br><span class="line">   &lt;/tbody&gt;</span><br><span class="line">&lt;/table&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="方法二：手动注册错误">方法二：手动注册错误</h3>
+<p><strong>1. 绑定错误对象</strong></p>
+<p>控制器代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter4.web.controller;  </span><br><span class="line"><span class="comment">//省略import  </span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ErrorController</span> <span class="keyword">extends</span> <span class="title">AbstractCommandController</span> </span>&#123;  </span><br><span class="line"> </span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">ErrorController</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">             setCommandClass(DataBinderTestModel.class);  </span><br><span class="line">             setCommandName(<span class="string">"command"</span>);  </span><br><span class="line">      &#125;  </span><br><span class="line"> </span><br><span class="line">      <span class="meta">@Override</span>  </span><br><span class="line">      <span class="function"><span class="keyword">protected</span> ModelAndView <span class="title">handle</span><span class="params">(HttpServletRequest req, HttpServletResponse resp, Object command, BindException errors)</span> <span class="keyword">throws</span> Exception </span>&#123;     </span><br><span class="line"> </span><br><span class="line">             <span class="comment">//注册全局错误码“username.not.empty”，表示用户名不为空</span></span><br><span class="line">             <span class="comment">//我们必须提供messageSource来提供错误码“username.not.empty”对应的错误信息（如果没有会抛出NoSuchMessageException异常）</span></span><br><span class="line">             errors.reject(<span class="string">"username.not.empty"</span>);  </span><br><span class="line"> </span><br><span class="line">             <span class="comment">//注册全局错误码“username.not.empty1，带有默认错误消息"用户名不能为空1"</span></span><br><span class="line">             <span class="comment">//如果从messageSource没没有找到错误码“username.not.empty1”对应的错误信息，则将显示默认消息“用户名不能为空1”</span></span><br><span class="line">             errors.reject(<span class="string">"username.not.empty1"</span>, <span class="string">"用户名不能为空1"</span>);  </span><br><span class="line"> </span><br><span class="line">             <span class="comment">//错误码为“username.length.error”，并且需要两个参数</span></span><br><span class="line">             <span class="comment">//如我们在我们的配置文件中定义“用户名长度不合法，长度必须在&#123;0&#125;到&#123;1&#125;之间”，则实际的错误消息为“用户名长度不合法，长度必须在5到10之间”          </span></span><br><span class="line">             errors.reject(<span class="string">"username.length.error"</span>, <span class="keyword">new</span> Object[]&#123;<span class="number">5</span>, <span class="number">10</span>&#125;);  </span><br><span class="line">              </span><br><span class="line">             <span class="comment">//当有错误信息时，一定将errors.getModel()放入我们要返回的ModelAndView中，以便使用里边的错误对象来显示错误信息</span></span><br><span class="line">             Map model = errors.getModel();  </span><br><span class="line">             <span class="keyword">return</span> <span class="keyword">new</span> ModelAndView(<span class="string">"bindAndValidate/error"</span>, model);  </span><br><span class="line">      &#125;  </span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>控制定义</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"/error"</span> <span class="attr">class</span>=<span class="string">"cn.javass.chapter4.web.controller.ErrorController"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>2. 错误消息配置</strong></p>
+<p>添加如下错误消息配置：</p>
+<ul>
+<li>
+<p>Spring容器中配置messageSource</p>
+</li>
+<li>
+<p>资源文件messages.properties（需要执行NativeToAscii）</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username.not.empty=用户名不能为空  </span><br><span class="line">username.length.error=用户名长度不合法，长度必须在&#123;0&#125;到&#123;1&#125;之间</span><br></pre></td></tr></table></figure>
+<p><strong>3. JSP页面使用form标签库</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 此处使用了spring的form标签库 --&gt;</span><br><span class="line">&lt;%<span class="meta">@taglib</span> prefix=<span class="string">"form"</span> uri=<span class="string">"http://www.springframework.org/tags/form"</span> %&gt;  </span><br><span class="line">&lt;!-- 表单标签，commandName表示绑定的命令对象名字，默认为command --&gt;  </span><br><span class="line">&lt;form:form commandName=<span class="string">"command"</span>&gt;  </span><br><span class="line">   &lt;!-- 显示错误信息的标签，如果path为“*”表示显示所有错误信息 --&gt;</span><br><span class="line">   &lt;form:errors path="*"&gt;&lt;/form:errors&gt;  </span><br><span class="line">&lt;/form:form&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="数据绑定错误处理">数据绑定错误处理</h2>
+<p>可以将MessageCodesResolver生成的错误码定位到数据绑定错误。</p>
+<p>数据绑定失败（类型不匹配）会自动生成如下错误码（错误码对应的错误消息按照如下顺序依次查找）：</p>
+<ul>
+<li>typeMismatch.命令对象名.属性名（建议使用该错误码进行错误消息配置）</li>
+<li>typeMismatch.属性名</li>
+<li>typeMismatch.属性全限定类名（包名.类名）</li>
+<li>typeMismatch</li>
+</ul>
+<p>示例如下：</p>
+<p><strong>1. 控制器DataBinderErrorTestController</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.chapter4.web.controller;  </span><br><span class="line"><span class="comment">//省略import  </span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataBinderErrorTestController</span> <span class="keyword">extends</span> <span class="title">SimpleFormController</span> </span>&#123;  </span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">DataBinderErrorTestController</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">             setCommandClass(DataBinderTestModel.class);  </span><br><span class="line">             setCommandName(<span class="string">"dataBinderTest"</span>);  </span><br><span class="line">      &#125;</span><br><span class="line"> </span><br><span class="line">      <span class="comment">//表单展示逻辑</span></span><br><span class="line">      <span class="meta">@Override</span>  </span><br><span class="line">      <span class="function"><span class="keyword">protected</span> ModelAndView <span class="title">showForm</span><span class="params">(HttpServletRequest request, HttpServletResponse response, BindException errors)</span> <span class="keyword">throws</span> Exception </span>&#123;  </span><br><span class="line">             <span class="comment">//如果表单提交有任何错误都会再回到表单展示页面  </span></span><br><span class="line">             System.out.println(errors);  </span><br><span class="line">             <span class="keyword">return</span> <span class="keyword">super</span>.showForm(request, response, errors);  </span><br><span class="line">      &#125;  </span><br><span class="line">      <span class="comment">//表单处理逻辑</span></span><br><span class="line">      <span class="meta">@Override</span>  </span><br><span class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doSubmitAction</span><span class="params">(Object command)</span> <span class="keyword">throws</span> Exception </span>&#123;  </span><br><span class="line">             System.out.println(command); <span class="comment">//表单提交成功（数据绑定成功）后进行功能处理  </span></span><br><span class="line">      &#125;  </span><br><span class="line">      <span class="meta">@Override</span>  </span><br><span class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initBinder</span><span class="params">(HttpServletRequest request, ServletRequestDataBinder binder)</span> <span class="keyword">throws</span> Exception </span>&#123;  </span><br><span class="line">             <span class="keyword">super</span>.initBinder(request, binder);  </span><br><span class="line">             <span class="comment">//注册自定义的属性编辑器  </span></span><br><span class="line">             <span class="comment">//1、日期  </span></span><br><span class="line">             DateFormat df = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);  </span><br><span class="line">             CustomDateEditor dateEditor = <span class="keyword">new</span> CustomDateEditor(df, <span class="keyword">true</span>);  </span><br><span class="line">             <span class="comment">//表示如果命令对象有Date类型的属性，将使用该属性编辑器进行类型转换  </span></span><br><span class="line">             binder.registerCustomEditor(Date.class, dateEditor);  </span><br><span class="line">              </span><br><span class="line">             <span class="comment">//自定义的电话号码编辑器  </span></span><br><span class="line">             binder.registerCustomEditor(PhoneNumberModel.class, <span class="keyword">new</span> PhoneNumberEditor());  </span><br><span class="line">      &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中可能的数据绑定错误如下：</p>
+<ul>
+<li>bool：boolean类型，此时如果我们前台传入非兼容的数据，则会数据绑定失败；</li>
+<li>date：Date类型，此时如果我们前台传入非兼容的数据，同样会数据绑定失败；</li>
+<li>phoneNumber：自定义的PhoneNumberModel类型，如果如果我们前台传入非兼容的数据，同样会数据绑定失败。</li>
+</ul>
+<p>可以使用MessageCodesResolver生成的错误码定位到数据绑定错误，比如示例中日期对象date绑定错误，按优先级会生成如下错误码：</p>
+<p>typeMismatch.dataBinderTest.date<br>
+typeMismatch.date<br>
+typeMismatch.java.util.Date<br>
+typeMismatch</p>
+<p><strong>2. 错误消息配置</strong></p>
+<p>添加如下错误消息配置：</p>
+<ul>
+<li>
+<p>Spring容器中配置messageSource</p>
+</li>
+<li>
+<p>messages.properties中，需要执行NativeToAscii</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typeMismatch.dataBinderTest.date=您输入的数据格式错误，请重新输入（格式：2012-03-19 22:17:17）  </span><br><span class="line">#typeMismatch.date=2  </span><br><span class="line">#typeMismatch.java.util.Date=3  </span><br><span class="line">#typeMismatch=4</span><br></pre></td></tr></table></figure>
+<p><strong>3.JSP页面使用form标签库</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language=<span class="string">"java"</span> contentType=<span class="string">"text/html; charset=UTF-8"</span>   pageEncoding=<span class="string">"UTF-8"</span>%&gt;  </span><br><span class="line">&lt;%<span class="meta">@taglib</span> prefix=<span class="string">"form"</span> uri=<span class="string">"http://www.springframework.org/tags/form"</span> %&gt;  </span><br><span class="line">&lt;!-- 指定命令对象为dataBinderTest，默认command --&gt;  </span><br><span class="line">&lt;form:form commandName=<span class="string">"dataBinderTest"</span>&gt;  </span><br><span class="line">   &lt;!-- 显示错误消息，当提交表单有错误时展示错误消息（数据绑定错误/数据不合法） --&gt;</span><br><span class="line">   &lt;form:errors path="*" cssStyle="color:red"&gt;&lt;/form:errors&gt;&lt;br/&gt;&lt;br/&gt;  </span><br><span class="line">   &lt;!-- &lt;form:input path=<span class="string">"bool"</span>/&gt;等价于&lt;input type=’text’&gt;，但会从命令对象中取出bool属性进行填充value属性，</span><br><span class="line">       或如果表单提交有错误会从错误对象取出之前的错误数据（而非空或默认值） --&gt;</span><br><span class="line">   bool:&lt;form:input path=<span class="string">"bool"</span>/&gt;&lt;br/&gt;  </span><br><span class="line">   phoneNumber:&lt;form:input path=<span class="string">"phoneNumber"</span>/&gt;&lt;br/&gt;  </span><br><span class="line">   date:&lt;form:input path=<span class="string">"date"</span>/&gt;&lt;br/&gt;  </span><br><span class="line">   &lt;!-- spring没有提供相应的提交按钮，因此需要使用html的 --&gt;</span><br><span class="line">   &lt;input type=<span class="string">"submit"</span> value=<span class="string">"提交"</span>/&gt;  </span><br><span class="line">&lt;/form:form&gt;</span><br></pre></td></tr></table></figure>
+<p>提交表单我们会看到我们设置的错误消息：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584802218_20200321224851728_26586.jpg" alt></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>25-数据验证及错误处理</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Error接口及其实现类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Errors接口"><span class="nav-text">Errors接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BindingResult接口"><span class="nav-text">BindingResult接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BindException实现类"><span class="nav-text">BindException实现类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AbstractBindingResult抽象类"><span class="nav-text">AbstractBindingResult抽象类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">错误消息解析、封装接口</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MessageCodesResolver：错误码解析器"><span class="nav-text">MessageCodesResolver：错误码解析器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MessageSourceResolvable接口：消息封装"><span class="nav-text">MessageSourceResolvable接口：消息封装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ObjectError实现类"><span class="nav-text">ObjectError实现类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FieldError实现类"><span class="nav-text">FieldError实现类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">错误处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#手动生成错误"><span class="nav-text">手动生成错误</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方法一：直接使用ObjectError"><span class="nav-text">方法一：直接使用ObjectError</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法二：手动注册错误"><span class="nav-text">方法二：手动注册错误</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据绑定错误处理"><span class="nav-text">数据绑定错误处理</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

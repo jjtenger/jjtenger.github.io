@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Filter过滤器是在 java Servlet 2.3 中定义的，它能够对Servlet容器中的请求和响应对象，进行检查和修改。Filter过滤器并不会生成request和response对象，它只起到过滤的作用。Filter过滤器会在请求还未到Servlet之前检查request对象，修改 Request Header 和 Request 内容；在Servlet被调用后检查Response对象">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;16-Filter%E8%BF%87%E6%BB%A4%E5%99%A8.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Filter过滤器是在 java Servlet 2.3 中定义的，它能够对Servlet容器中的请求和响应对象，进行检查和修改。Filter过滤器并不会生成request和response对象，它只起到过滤的作用。Filter过滤器会在请求还未到Servlet之前检查request对象，修改 Request Header 和 Request 内容；在Servlet被调用后检查Response对象">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584778251_20200321155259695_23895.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.020Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584778251_20200321155259695_23895.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/16-Filter%E8%BF%87%E6%BB%A4%E5%99%A8">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>16-FILTER过滤器</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>Filter过滤器是在 java Servlet 2.3 中定义的，它能够对Servlet容器中的请求和响应对象，进行检查和修改。</p><p>Filter过滤器并不会生成request和response对象，它只起到过滤的作用。</p><p>Filter过滤器会在请求还未到Servlet之前检查request对象，修改 Request Header 和 Request 内容；在Servlet被调用后检查Response对象，修改 Response Header 和 Response 内容。</p><a id="more"></a>
+
+
+<p>Filter过滤器可以过滤 Servlet , JSP , HTML 等web组件（JSP最终也是转换为Servlet的）。</p>
+<h1>FilterChain（过滤器链）</h1>
+<p>在一个web应用中，可以开发多个Filter匹配同一个资源，而web服务器会根据这些Filter在web.xml文件中的注册顺序，组装成一条链，称为FilterChain（过滤器执行链）。</p>
+<p>当过滤器链中过滤器的doFilter()方法被调用时，web服务器会创建一个代表目标资源过滤器链的FilterChain对象传递给该方法。</p>
+<p>然后在执行过滤器的doFilter()方法时，开发人员如果调用了FilterChain对象的doFilter方法，则web服务器会检查FilterChain对象中是否还有filter，如果有，则暂停本Filter执行流程，进入下一个Filter的doFilter()的执行流程……这样执行到过滤器链的末端，最后执行目标资源。</p>
+<p>需要注意的是，目标资源执行完毕后，还必须逆向沿着FilterChain链，依次执行doFilter方法后面的代码，直到返回web容器最顶层，将处理结果返回给客户端。</p>
+<p>另外，在过滤器执行过程中，如果某Filter没有调用FilterChain对象的doFilter方法，整个处理流程将会到该Filter处执行返回，而会不传送到下一个Filter。</p>
+<p><strong>具体执行的顺序</strong></p>
+<p>执行第一个过滤器的chain.doFilter()之前的代码</p>
+<p>——&gt;第二个过滤器的chain.doFilter()之前的代码</p>
+<p>——&gt;……——&gt;第n个过滤器的chain.doFilter()之前的代码</p>
+<p>——&gt;所请求servlet的service()方法中的代码</p>
+<p>——&gt;所请求servlet的doGet()或doPost()方法中的代码</p>
+<p>——&gt;第n个过滤器的chain.doFilter()之后的代码</p>
+<p>——&gt;……——&gt;第二个过滤器的chain.doFilter()之后的代码</p>
+<p>——&gt;第一个过滤器的chain.doFilter()之后的代码。</p>
+<p><strong>Filter执行流程示意图</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584778251_20200321155259695_23895.png" alt></p>
+<h1>Filter开发步骤</h1>
+<ul>
+<li>编写过滤器类实现Filter接口</li>
+<li>在web.xml文件中配置过滤器</li>
+</ul>
+<h2 id="Filter类">Filter类</h2>
+<p>要想让一个类成为过滤器类，必须</p>
+<ul>
+<li>实现 java.servlet.Filter接口。</li>
+<li>实现接口定义的三个方法: doFilter()、init()和destroy()。</li>
+</ul>
+<p><strong>init(FilterConfig filterConfig) 方法</strong></p>
+<p>初始化。web应用程序启动时，服务器将创建Filter的实例对象，并调用其init方法，完成对象的初始化功能，从而为后续的用户请求作好拦截的准备工作，filter对象只会创建一次，init方法也只会执行一次。通过init方法的参数，可获得代表当前filter配置信息的FilterConfig对象。</p>
+<p><strong>doFilter(ServletRequest request,ServletResponse response,FilterChain chain) 方法</strong></p>
+<p>完成实际的过滤操作。</p>
+<p>这个方法调用后，里面重要的一点是要调用chain.doFilter(request,response)方法，来完成对下一个过滤器doFilter（ServletRequest request,ServletResponse response,FilterChain chain)）方法的调用，如果没有下一个过滤器，则把客户请求传给相应的web组件。</p>
+<p><strong>destroy() 方法</strong></p>
+<p>销毁过滤器。</p>
+<p>在Servlet容器销毁过滤器实例之前该方法得到调用，以释放过滤器使用的资源。</p>
+<p>示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.*;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@ClassName</span>: FilterDemo01</span></span><br><span class="line"><span class="comment">* <span class="doctag">@Description</span>:filter的三种典型应用：</span></span><br><span class="line"><span class="comment">*    1、可以在filter中根据条件决定是否调用chain.doFilter(request, response)方法，</span></span><br><span class="line"><span class="comment">*                        即是否让目标资源执行</span></span><br><span class="line"><span class="comment">*    2、在让目标资源执行之前，可以对request\response作预处理，再让目标资源执行</span></span><br><span class="line"><span class="comment">*    3、在目标资源执行之后，可以捕获目标资源的执行结果，从而实现一些特殊的功能</span></span><br><span class="line"><span class="comment">* <span class="doctag">@date</span>: 2014-8-31 下午10:09:24</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FilterDemo01</span> <span class="keyword">implements</span> <span class="title">Filter</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(FilterConfig filterConfig)</span> <span class="keyword">throws</span> ServletException </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"----FilterDemo01过滤器初始化----"</span>);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(ServletRequest request, ServletResponse response,</span></span></span><br><span class="line"><span class="function"><span class="params">                        FilterChain chain)</span> <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//对request和response进行一些预处理</span></span><br><span class="line"><span class="comment">//        request.setCharacterEncoding("UTF-8");</span></span><br><span class="line"><span class="comment">//        response.setCharacterEncoding("UTF-8");</span></span><br><span class="line"><span class="comment">//        response.setContentType("text/html;charset=UTF-8");</span></span><br><span class="line"> </span><br><span class="line">       System.out.println(<span class="string">"FilterDemo01执行前！！！"</span>);</span><br><span class="line">       chain.doFilter(request, response);  <span class="comment">//让目标资源执行，放行</span></span><br><span class="line">       System.out.println(<span class="string">"FilterDemo01执行后！！！"</span>);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"----FilterDemo01过滤器销毁----"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>web.xml中过滤器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span> <span class="attr">xmlns</span>=<span class="string">"http://java.sun.com/xml/ns/javaee"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://java.sun.com/xml/ns/javaee</span></span></span><br><span class="line"><span class="tag"><span class="string"> http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">version</span>=<span class="string">"3.0"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment">&lt;!--配置过滤器--&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>FilterDemo01<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>FilterDemo01<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment">&lt;!--映射过滤器--&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>FilterDemo01<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!--“/*”表示拦截所有的请求 --&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="FilterConfig接口">FilterConfig接口</h2>
+<p>用户在配置filter时，可以使用 <code>&lt;init-param&gt;</code> 为filter配置一些初始化参数，当web容器实例化Filter对象，调用其init方法时，会把封装了filter初始化参数的filterConfig对象传递进来。因此开发人员在编写filter时，通过filterConfig对象的方法，就可获得：</p>
+<ul>
+<li>String getFilterName()：得到filter的名称。</li>
+<li>String getInitParameter(String name)： 返回在部署描述中指定名称的初始化参数的值。如果不存在返回null.</li>
+<li>Enumeration getInitParameterNames()：返回过滤器的所有初始化参数的名字的枚举集合。</li>
+<li>public ServletContext getServletContext()：返回Servlet上下文对象的引用。</li>
+</ul>
+<p>代码示例如下：</p>
+<ol>
+<li>JAVA代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.*;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.Enumeration;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Created by jiateng.jiang on 2016/8/24.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FilterConfigDemo01</span> <span class="keyword">implements</span> <span class="title">Filter</span> </span>&#123;</span><br><span class="line">   <span class="comment">/* 过滤器初始化</span></span><br><span class="line"><span class="comment">     * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(FilterConfig filterConfig)</span> <span class="keyword">throws</span> ServletException </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"----FilterConfigDemo01过滤器初始化----"</span>);</span><br><span class="line">       <span class="comment">//得到过滤器的名字</span></span><br><span class="line">       String filterName = filterConfig.getFilterName();</span><br><span class="line">       <span class="comment">//得到在web.xml文件中配置的初始化参数</span></span><br><span class="line">       String initParam1 = filterConfig.getInitParameter(<span class="string">"name"</span>);</span><br><span class="line">       String initParam2 = filterConfig.getInitParameter(<span class="string">"like"</span>);</span><br><span class="line">       <span class="comment">//返回过滤器的所有初始化参数的名字的枚举集合。</span></span><br><span class="line">       Enumeration&lt;String&gt; initParameterNames = filterConfig.getInitParameterNames();</span><br><span class="line"> </span><br><span class="line">       System.out.println(filterName);</span><br><span class="line">       System.out.println(initParam1);</span><br><span class="line">       System.out.println(initParam2);</span><br><span class="line">       <span class="keyword">while</span> (initParameterNames.hasMoreElements()) &#123;</span><br><span class="line">           String paramName = (String) initParameterNames.nextElement();</span><br><span class="line">           System.out.println(paramName);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(ServletRequest request, ServletResponse response,</span></span></span><br><span class="line"><span class="function"><span class="params">                        FilterChain chain)</span> <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"FilterConfigDemo01执行前！！！"</span>);</span><br><span class="line">       chain.doFilter(request, response);  <span class="comment">//让目标资源执行，放行</span></span><br><span class="line">       System.out.println(<span class="string">"FilterConfigDemo01执行后！！！"</span>);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       System.out.println(<span class="string">"----FilterConfigDemo01过滤器销毁----"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>web.xml中过滤器配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span> <span class="attr">xmlns</span>=<span class="string">"http://java.sun.com/xml/ns/javaee"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://java.sun.com/xml/ns/javaee</span></span></span><br><span class="line"><span class="tag"><span class="string"> http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">version</span>=<span class="string">"3.0"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>FilterConfigDemo01<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>FilterConfigDemo01<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!--配置FilterConfigDemo01过滤器的初始化参数--&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">description</span>&gt;</span>配置FilterConfigDemo01过滤器的初始化参数<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>name<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>gacl<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">description</span>&gt;</span>配置FilterConfigDemo01过滤器的初始化参数<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>like<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>java<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>FilterConfigDemo01<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!--“/*”表示拦截所有的请求 --&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="web-xml文件配置过滤器">web.xml文件配置过滤器</h2>
+<p>在web.xml文件中使用 <code>&lt;filter&gt;</code> 和 <code>&lt;filter-mapping&gt;</code> 标签对编写的filter类进行注册，并设置它所能拦截的资源。</p>
+<p>Filter的配置分为两个步骤：</p>
+<h3 id="注册Filter">注册Filter</h3>
+<p>范例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">description</span>&gt;</span>FilterDemo02过滤器<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>FilterDemo02<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>me.gacl.web.filter.FilterDemo02<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!--配置FilterDemo02过滤器的初始化参数--&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">description</span>&gt;</span>配置FilterDemo02过滤器的初始化参数<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>name<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>gacl<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">description</span>&gt;</span>配置FilterDemo02过滤器的初始化参数<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>like<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>java<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>&lt;description&gt;</code> 用于添加描述信息，该元素的内容可为空， <code>&lt;description&gt;</code> 可以不配置。</li>
+<li><code>&lt;filter-name&gt;</code> 用于为过滤器指定一个名字，该元素的内容不能为空。</li>
+<li><code>&lt;filter-class&gt;</code> 元素用于指定过滤器的完整的限定类名。</li>
+<li><code>&lt;init-param&gt;</code> 元素用于为过滤器指定初始化参数，它的子元素 <code>&lt;param-name&gt;</code> 指定参数的名字， <code>&lt;param-value&gt;</code> 指定参数的值。在过滤器中，可以使用FilterConfig接口对象来访问初始化参数。如果过滤器不需要指定初始化参数，那么 <code>&lt;init-param&gt;</code> 元素可以不配置。</li>
+</ul>
+<h3 id="映射Filter">映射Filter</h3>
+<p>在web.xml文件中注册了Filter之后，还要在web.xml文件中映射Filter</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--映射过滤器--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>FilterDemo02<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--“/*”表示拦截所有的请求 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>&lt;filter-mapping&gt;</code> 元素用于设置一个 Filter 所负责拦截的资源。一个Filter拦截的资源可通过两种方式来指定：Servlet 名称和资源访问的请求路径</li>
+<li><code>&lt;filter-name&gt;</code> 子元素用于设置filter的注册名称。该值必须是在 <code>&lt;filter&gt;</code> 元素中声明过的过滤器的名字</li>
+<li><code>&lt;url-pattern&gt;</code> 设置 filter 所拦截的请求路径(过滤器关联的URL样式)</li>
+<li><code>&lt;servlet-name&gt;</code> 指定过滤器所拦截的Servlet名称。</li>
+<li><code>&lt;dispatcher&gt;</code> 指定过滤器所拦截的资源被 Servlet 容器调用的方式，可以是REQUEST,INCLUDE,FORWARD和ERROR之一，默认REQUEST。用户可以设置多个 <code>&lt;dispatcher&gt;</code>  子元素用来指定 Filter 对资源的多种调用方式进行拦截。如下：</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>testFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/index.jsp<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">dispatcher</span>&gt;</span>REQUEST<span class="tag">&lt;/<span class="name">dispatcher</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">dispatcher</span>&gt;</span>FORWARD<span class="tag">&lt;/<span class="name">dispatcher</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>&lt;dispatcher&gt;</code>  子元素可以设置的值及其意义：</p>
+<ul>
+<li>REQUEST：当用户直接访问页面时，Web容器将会调用过滤器。如果目标资源是通过RequestDispatcher的include()或forward()方法访问时，那么该过滤器就不会被调用。</li>
+<li>INCLUDE：如果目标资源是通过RequestDispatcher的include()方法访问时，那么该过滤器将被调用。除此之外，该过滤器不会被调用。</li>
+<li>FORWARD：如果目标资源是通过RequestDispatcher的forward()方法访问时，那么该过滤器将被调用，除此之外，该过滤器不会被调用。</li>
+<li>ERROR：如果目标资源是通过声明式异常处理机制调用时，那么该过滤器将被调用。除此之外，过滤器不会被调用。</li>
+</ul>
+<h1>Filter开发实例</h1>
+<h2 id="请求处理">请求处理</h2>
+<p><strong>HttpServletRequestWrapper类</strong></p>
+<p>Servlet API 中提供了一个request对象的Decorator设计模式的默认实现类HttpServletRequestWrapper，HttpServletRequestWrapper类实现了request接口中的所有方法，但这些方法的内部实现都是仅仅调用了一下所包装的的request对象的对应方法，以避免用户在对request对象进行增强时需要实现request接口中的所有方法。</p>
+<p>所以当需要增强request对象时，只需要写一个类继承HttpServletRequestWrapper类，然后在重写需要增强的方法即可。</p>
+<p>（1）<a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/%E4%BD%BF%E7%94%A8filter%E8%A7%A3%E5%86%B3web%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98.zip" target="_blank" rel="noopener">使用filter解决web中文乱码问题</a></p>
+<p>（2）<a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/%E4%BD%BF%E7%94%A8filter%E5%AE%9E%E7%8E%B0html%E6%A0%87%E7%AD%BE%E8%BD%AC%E4%B9%89%E5%8A%9F%E8%83%BD.zip" target="_blank" rel="noopener">使用filter实现html标签转义功能</a></p>
+<p>（3）<a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/%E4%BD%BF%E7%94%A8filter%E5%AE%9E%E7%8E%B0%E6%95%8F%E6%84%9F%E5%AD%97%E7%AC%A6%E8%BF%87%E6%BB%A4%E5%8A%9F%E8%83%BD.zip" target="_blank" rel="noopener">使用filter实现敏感字符过滤功能</a></p>
+<p>（4）<a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/%E4%B8%89%E5%90%88%E4%B8%80%E5%8A%9F%E8%83%BD.zip" target="_blank" rel="noopener">三合一功能</a></p>
+<h2 id="响应处理">响应处理</h2>
+<p><strong>HttpServletResponseWrapper类</strong></p>
+<p>Servlet API 中提供了response对象的Decorator设计模式的默认实现类HttpServletResponseWrapper，HttpServletResponseWrapper类实现了response接口中的所有方法，但这些方法的内部实现都是仅仅调用了一下所包装的的 response对象的对应方法，以避免用户在对response对象进行增强时需要实现response接口中的所有方法。</p>
+<p>当需要增强response对象时，只需要写一个类继承HttpServletResponseWrapper类，然后在重写需要增强的方法即可。</p>
+<p>（1）<a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/%E4%BD%BF%E7%94%A8filter%E5%8E%8B%E7%BC%A9%E5%93%8D%E5%BA%94%E6%AD%A3%E6%96%87%E5%86%85%E5%AE%B9.zip" target="_blank" rel="noopener">使用filter压缩响应正文内容</a></p>
+<p>（2）<a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/%E4%BD%BF%E7%94%A8filter%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E5%88%B0%E5%86%85%E5%AD%98.zip" target="_blank" rel="noopener">使用filter缓存数据到内存</a></p>
+<h2 id="其它应用">其它应用</h2>
+<p>（1）<a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/%E4%BD%BF%E7%94%A8filter%E6%8E%A7%E5%88%B6%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98%E9%A1%B5%E9%9D%A2%E4%B8%AD%E7%9A%84%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90.zip" target="_blank" rel="noopener">使用filter控制浏览器缓存页面中的静态资源</a></p>
+<p>（2）<a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/%E4%BD%BF%E7%94%A8filter%E7%A6%81%E6%AD%A2%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98%E6%89%80%E6%9C%89%E5%8A%A8%E6%80%81%E9%A1%B5%E9%9D%A2.zip" target="_blank" rel="noopener">使用filter禁止浏览器缓存所有动态页面</a></p>
+<p>（3）<a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/%E5%AE%9E%E7%8E%B0%E7%94%A8%E6%88%B7%E8%87%AA%E5%8A%A8%E7%99%BB%E9%99%86.zip" target="_blank" rel="noopener">实现用户自动登陆</a></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>16-FILTER过滤器</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">FilterChain（过滤器链）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Filter开发步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Filter类"><span class="nav-text">Filter类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FilterConfig接口"><span class="nav-text">FilterConfig接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#web-xml文件配置过滤器"><span class="nav-text">web.xml文件配置过滤器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注册Filter"><span class="nav-text">注册Filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#映射Filter"><span class="nav-text">映射Filter</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Filter开发实例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#请求处理"><span class="nav-text">请求处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#响应处理"><span class="nav-text">响应处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其它应用"><span class="nav-text">其它应用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

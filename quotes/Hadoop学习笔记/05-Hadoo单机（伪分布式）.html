@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="官方参考文档：http:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;r2.7.3&#x2F;hadoop-project-dist&#x2F;hadoop-common&#x2F;SingleCluster.html伪分布式配置Hadoop配置文件Hadoop的配置文件存放于Hadoop根目录下的etc&#x2F;hadoop目录，进入该目录">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;05-Hadoo%E5%8D%95%E6%9C%BA%EF%BC%88%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%EF%BC%89.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="官方参考文档：http:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;r2.7.3&#x2F;hadoop-project-dist&#x2F;hadoop-common&#x2F;SingleCluster.html伪分布式配置Hadoop配置文件Hadoop的配置文件存放于Hadoop根目录下的etc&#x2F;hadoop目录，进入该目录">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584882879_20200322211326524_5998.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584882879_20200322211326206_18167.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584882879_20200322211325889_29.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584882879_20200322211325558_32350.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584882878_20200322211325234_4958.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584882878_20200322211323316_23491.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584882878_20200322211323004_30866.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584882878_20200322211322689_12662.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584882878_20200322211322374_4241.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584882877_20200322211322053_935.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584882879_20200322211326524_5998.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/05-Hadoo%E5%8D%95%E6%9C%BA%EF%BC%88%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%EF%BC%89">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>05-HADOO单机（伪分布式）</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>官方参考文档：</p><p><a href="http://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">http://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-common/SingleCluster.html</a></p><h1>伪分布式配置</h1><p><strong>Hadoop配置文件</strong></p><p>Hadoop的配置文件存放于Hadoop根目录下的etc/hadoop目录，进入该目录</p><a id="more"></a>
+
+
+
+
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584882879_20200322211326524_5998.png" alt></p>
+<ol>
+<li>
+<p><a href="http://xn--hadoop-env-yu6pe85r.sh" target="_blank" rel="noopener">修改hadoop-env.sh</a>：export JAVA_HOME</p>
+</li>
+<li>
+<p>修改slaves文件：默认值localhost修改为node1</p>
+</li>
+<li>
+<p>修改hdfs-site.xml：dfs.replication</p>
+</li>
+<li>
+<p>修改core-site.xml：fs.defaultFS</p>
+</li>
+<li>
+<p>修改mapred-site.xml ：mapreduce.framework.name为yarn</p>
+</li>
+<li>
+<p>修改yarn-site.xml：yarn.nodemanager.aux-services为mapreduce_shuffle</p>
+</li>
+</ol>
+<h2 id="Hadoop环境变量设置">Hadoop环境变量设置</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# vi /etc/profile.d/custom.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">Hadoop path</span></span><br><span class="line">export HADOOP_HOME=/opt/hadoop-2.7.3</span><br><span class="line">export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin</span><br><span class="line">[root@node1 ~]# source /etc/profile.d/custom.sh</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584882879_20200322211326206_18167.png" alt></p>
+<h2 id="hadoop-env-sh"><a href="http://hadoop-env.sh" target="_blank" rel="noopener">hadoop-env.sh</a></h2>
+<p>hadoop-env.sh中配置Java运行环境：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=$&#123;JAVA_HOME&#125;</span><br></pre></td></tr></table></figure>
+<p>修改为</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/opt/jdk1.8.0_112</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584882879_20200322211325889_29.png" alt></p>
+<h2 id="core-site-xml">core-site.xml</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop]# vi core-site.xml</span><br></pre></td></tr></table></figure>
+<p>在 <code>&lt;configuration&gt;</code> 和 <code>&lt;/configuration&gt;</code> 之间添加如下内容：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">name</span>&gt;</span>fs.defaultFS<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://node1:9000<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>保存退出。</p>
+<h2 id="hdfs-site-xml">hdfs-site.xml</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop]# vi hdfs-site.xml</span><br></pre></td></tr></table></figure>
+<p>在 <code>&lt;configuration&gt;</code> 和 <code>&lt;/configuration&gt;</code> 之间添加如下内容：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.replication<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">value</span>&gt;</span>1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>保存退出</p>
+<h2 id="mapred-site-xml">mapred-site.xml</h2>
+<p>默认情况下该目录下没有mapred-site.xml文件，而是存在一个模版文件mapred-site.xml.template，因此首先将模版文件复制一份为mapred-site.xml。然后在通过vi编辑该mapred-site.xml文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop]# cp mapred-site.xml.template mapred-site.xml</span><br><span class="line">[root@node1 hadoop]# vi mapred-site.xml</span><br></pre></td></tr></table></figure>
+<p>在 <code>&lt;configuration&gt;</code> 和 <code>&lt;/configuration&gt;</code> 之间添加如下内容：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>保存退出。</p>
+<h2 id="slaves文件配置">slaves文件配置</h2>
+<p>编辑slaves文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop]# vi slaves</span><br></pre></td></tr></table></figure>
+<p>将默认值localhost修改为node1，保存退出。</p>
+<h2 id="yarn-site-xml">yarn-site.xml</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop]# vi yarn-site.xml</span><br></pre></td></tr></table></figure>
+<p>在 <code>&lt;configuration&gt;</code> 和 <code>&lt;/configuration&gt;</code> 之间添加如下内容：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">value</span>&gt;</span>mapreduce_shuffle<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>保存退出。</p>
+<h1>伪分布式运行</h1>
+<ol>
+<li>
+<p>namenode格式化：hadoop namenode -format</p>
+</li>
+<li>
+<p>启动HDFS：<a href="http://start-dfs.sh" target="_blank" rel="noopener">start-dfs.sh</a></p>
+</li>
+<li>
+<p>查看Java进程：jps -l</p>
+</li>
+<li>
+<p>启动YARN：<a href="http://start-yarn.sh" target="_blank" rel="noopener">start-yarn.sh</a></p>
+</li>
+<li>
+<p>HDFS WEB界面默认端口：50070</p>
+</li>
+<li>
+<p>YARN WEB界面默认端口：8088</p>
+</li>
+</ol>
+<h2 id="namenode格式化">namenode格式化</h2>
+<p>执行bin/hadoop namenode -format命令，进行namenode格式化</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop-2.7.3]# bin/hadoop namenode -format</span><br></pre></td></tr></table></figure>
+<p>输出信息(下半部分)：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584882879_20200322211325558_32350.png" alt></p>
+<p>在执行结果中可以找到has been successfully formatted，说明namenode格式化成功了！</p>
+<h2 id="启动HDFS">启动HDFS</h2>
+<p>执行sbin/start-dfs.sh命令启动HDFS</p>
+<p>在启动HDFS过程中，按照提示输入“yes”</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584882878_20200322211325234_4958.png" alt></p>
+<p>通过jps命令可以查看hadoop进程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop-2.7.3]# jps</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584882878_20200322211323316_23491.png" alt></p>
+<h2 id="启动YARN">启动YARN</h2>
+<p>通过命令sbin/start-yarn.sh启动YARN</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584882878_20200322211323004_30866.png" alt></p>
+<p>然后通过jps查看YARN的进程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop-2.7.3]# jps</span><br><span class="line">5440 DataNode</span><br><span class="line">7253 ResourceManager</span><br><span class="line">7351 NodeManager</span><br><span class="line">5342 NameNode</span><br><span class="line">5630 SecondaryNameNode</span><br><span class="line">7662 Jps</span><br><span class="line">[root@node1 hadoop-2.7.3]#</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584882878_20200322211322689_12662.png" alt></p>
+<p>可以看到多了ResourceManager和NodeManager两个进程。</p>
+<h2 id="HDFS-WEB界面">HDFS WEB界面</h2>
+<p>HDFS的Web界面默认端口号是50070。因为宿主机Windows的hosts文件没有配置虚拟机相关IP信息，所以需要通过IP地址来访问HDFS WEB界面，在浏览器中打开:<a href="http://192.168.80.131:50070/" target="_blank" rel="noopener">http://192.168.80.131:50070</a></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584882878_20200322211322374_4241.png" alt></p>
+<h2 id="YARN-WEB界面">YARN WEB界面</h2>
+<p>YARN的Web界面默认端口号是8088。</p>
+<p><a href="http://192.168.80.131:8088/" target="_blank" rel="noopener">http://192.168.80.131:8088</a></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584882877_20200322211322053_935.png" alt></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>05-HADOO单机（伪分布式）</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">伪分布式配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hadoop环境变量设置"><span class="nav-text">Hadoop环境变量设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hadoop-env-sh"><span class="nav-text">hadoop-env.sh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#core-site-xml"><span class="nav-text">core-site.xml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hdfs-site-xml"><span class="nav-text">hdfs-site.xml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mapred-site-xml"><span class="nav-text">mapred-site.xml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#slaves文件配置"><span class="nav-text">slaves文件配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yarn-site-xml"><span class="nav-text">yarn-site.xml</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">伪分布式运行</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#namenode格式化"><span class="nav-text">namenode格式化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动HDFS"><span class="nav-text">启动HDFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动YARN"><span class="nav-text">启动YARN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS-WEB界面"><span class="nav-text">HDFS WEB界面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YARN-WEB界面"><span class="nav-text">YARN WEB界面</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

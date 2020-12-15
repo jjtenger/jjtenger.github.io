@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1. Appium介绍1.1. Appium与SeleniumAppium类库封装了标准Selenium客户端类库，为用户提供所有常见的JSON格式Selenium命令以及额外的移动设备控制相关的命令，如多点触控手势和屏幕朝向。Appium客户端类库实现了Mobile JSON Wire Protocol（一个标准协议的官方扩展草稿）和W3C WebDriver spec（一个传输不可预知的自动化">
+<meta name="keywords" content="Doing">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自动化测试&#x2F;Appium学习笔记">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;posts&#x2F;%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95&#x2F;Appium%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;index.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="1. Appium介绍1.1. Appium与SeleniumAppium类库封装了标准Selenium客户端类库，为用户提供所有常见的JSON格式Selenium命令以及额外的移动设备控制相关的命令，如多点触控手势和屏幕朝向。Appium客户端类库实现了Mobile JSON Wire Protocol（一个标准协议的官方扩展草稿）和W3C WebDriver spec（一个传输不可预知的自动化">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;mx-wc&#x2F;appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-1-%E2%80%94%E2%80%94-appium%E4%BB%8B%E7%BB%8D&#x2F;assets&#x2F;1585888873-65238489ee904ad189c6b43b65a49d6b.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;mx-wc&#x2F;Appium%E5%9C%A8AndroidUI%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8&#x2F;assets&#x2F;1585891625-f54228522522c100c19ce9dc6391e6b2.jpg">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;mx-wc&#x2F;appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-1-%E2%80%94%E2%80%94-appium%E4%BB%8B%E7%BB%8D&#x2F;assets&#x2F;1585888873-65238489ee904ad189c6b43b65a49d6b.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/posts/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Appium%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>自动化测试/Appium学习笔记 | JJT-个人Wiki</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/posts/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Appium%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="jiateng.jiang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="JJT-个人Wiki">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自动化测试/Appium学习笔记
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-04 15:04:47" itemprop="dateCreated datePublished" datetime="2020-04-04T15:04:47+00:00">2020-04-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-15 11:07:33" itemprop="dateModified" datetime="2020-12-15T11:07:33+00:00">2020-12-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">自动化测试</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>1. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-1-%E2%80%94%E2%80%94-appium%E4%BB%8B%E7%BB%8D/index.html">Appium介绍</a></h1><h2 id="1-1-Appium与Selenium">1.1. Appium与Selenium</h2><p>Appium类库封装了标准Selenium客户端类库，为用户提供所有常见的JSON格式Selenium命令以及额外的移动设备控制相关的命令，如多点触控手势和屏幕朝向。</p><p>Appium客户端类库实现了Mobile JSON Wire Protocol（一个标准协议的官方扩展草稿）和W3C WebDriver spec（一个传输不可预知的自动化协议，该协议定义了MultiAction 接口）的元素。</p><a id="more"></a>
+
+
+
+<p>Appium服务端定义了官方协议的扩展，为Appium用户提供了方便的接口来执行各种设备动作，例如在测试过程中安装/卸载App。这就是为什么我们需要Appium特定的客户端，而不是通用的Selenium客户端。当然，Appium客户端类库只是增加了一些功能，而实际上这些功能就是简单的扩展了Selenium客户端，所以他们仍然可以用来运行通用的Selenium会话。</p>
+<h2 id="1-2-Appium工作原理">1.2. Appium工作原理</h2>
+<p><img src="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-1-%E2%80%94%E2%80%94-appium%E4%BB%8B%E7%BB%8D/assets/1585888873-65238489ee904ad189c6b43b65a49d6b.png" alt="appium工作原理"></p>
+<h1>2. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E7%AE%80%E6%98%8E%E6%95%99%E7%A8%8B-2-%E2%80%94%E2%80%94appium%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/index.html">Appium的基本概念</a></h1>
+<p>Session就是一个会话，在webdriver/appium，你的所有工作永远都是在session start后才可以进行的。一般来说，通过POST /session这个URL，然后传入Desired Capabilities就可以开启session了。 开启session后，会返回一个全局唯一的session id，以后几乎所有的请求都必须带上这个session id，因为这个seesion id代表了你所打开的浏览器或者是移动设备的模拟器。 进一步思考一下，由于session id是全局唯一，那么在同一台机器上启动多个session就变成了可能，这也就是selenium gird所依赖的具体理论根据。</p>
+<h1>3. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/%E5%9C%A8Windows%E4%B8%8A%E8%BF%90%E8%A1%8CAppium/index.html">Appium安装及运行</a></h1>
+<ul>
+<li>通过 NPM 去安装 Appium：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g appium</span><br></pre></td></tr></table></figure>
+<p>命令行中简单地输入 appium 就可以快速开启 Appium。</p>
+<p>注意：<br>
+在 Windows 上运行 Appium.exe 需要管理员权限，或者当你以源码方式运行，你要在 cmd 运行时有管理员权限。<br>
+在 Windows 上运行 Andoid 测试时，务必记得添加上–no-reset 或 --full-reset 参数。</p>
+<ul>
+<li>指定淘宝源安装：（参见 <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/%E4%BD%BF%E7%94%A8npm%E5%AE%89%E8%A3%85appium%E6%97%B6%E7%9A%84%E5%9D%91/index.html">使用npm安装appium时的坑</a>）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install appium -g --chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/chromedriver</span><br></pre></td></tr></table></figure>
+<ul>
+<li>uiautomatorviewer无法启动：
+<ul>
+<li>JAVA_HOME 设置为：java 8 （<code>C:\Program Files\Java\jdk1.8.0_102</code>，原始值为：<code>C:\Program Files\Java\jdk1.7.0_79</code>）。</li>
+<li>ANDROID_HOME 设置为Android JDk目录位置。</li>
+</ul>
+</li>
+</ul>
+<p>参见：<br>
+<a href="https://github.com/appium/appium/blob/master/docs/en/about-appium/getting-started.md" target="_blank" rel="noopener">Getting Started</a><br>
+<a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-2-%E2%80%94%E2%80%94-%E5%AE%89%E8%A3%85-Android-SDK/index.html">安装 Android SDK</a><br>
+<s><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-3-%E2%80%94%E2%80%94-%E5%AE%89%E8%A3%85-appium-Server/index.html">安装 Appium Server</a></s></p>
+<h1>4. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-6-%E2%80%94%E2%80%94-appium-desktop/index.html">Appium-Desktop</a></h1>
+<p>Appium-Desktop运行脚本提示：Could not sign with default certificate. （无法打开appium-uiautomator2-server-debug-androidTest.apk）<br>
+<s>- 以管理员身份运行该软件后解决该问题：右键appium图标，以管理员运行，然后就解决了…</s><br>
+<s>- SDK的build-tools版本从29降到了28.0.3</s><br>
+<s>- Path环境变量中Java Bin路径修改为：<code>%JAVA_HOME%\bin;%JAVA_HOME%\jre\bin</code>（原始值为：<code>C:\Program Files\Java\jdk1.7.0_79\bin</code>）</s><br>
+检查到<code>C:\Users\jiateng.jiang\AppData\Local\Programs\Appium\resources\app\node_modules\appium\node_modules\appium-uiautomator2-server\apks</code>目录下的appium-uiautomator2-server-debug-androidTest.apk安装包大小为0字节，下载不成功。因此在在appium安装目录（<code>C:\Users\jiateng.jiang\AppData\Local\Programs\Appium\resources\app\node_modules\appium</code>）下执行命令：<code>npm install appium-uiautomator2-driver</code>重新安装appium-uiautomator2-driver。安装完成后，apks目录下应该有2个apk文件，大小正常。问题解决！<br>
+（<a href="https://www.cnblogs.com/testway/p/7157508.html" target="_blank" rel="noopener">参考文章</a>）</p>
+<h1>5. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-4-%E2%80%94%E2%80%94-java-client%E5%AE%89%E8%A3%85%E4%B8%8E%E6%B5%8B%E8%AF%95/index.html">java-client安装与测试</a></h1>
+<h2 id="5-1-最新Maven配置">5.1. <a href="https://github.com/appium/java-client" target="_blank" rel="noopener">最新Maven配置</a></h2>
+<p>Add the following to pom.xml:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">repositories</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">repository</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span>&gt;</span>jitpack.io<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://jitpack.io<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">repository</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">repositories</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>Add the dependency:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.appium<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>java-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>latest commit ID from master branch<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="5-2-http-127-0-0-1-4723-wd-hub-的解释">5.2. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/http-127-0-0-1-4723-wd-hub-%E7%9A%84%E8%A7%A3%E9%87%8A/index.html">&quot;http://127.0.0.1:4723/wd/hub&quot;的解释</a></h2>
+<ul>
+<li>wd：可以理解是WebDriver 的缩写。</li>
+<li>hub：是指主（中心）节点，在selenium 分布式里中心节点。</li>
+</ul>
+<p>参见：<br>
+<a href="https://github.com/appium/appium/blob/master/docs/cn/writing-running-appium/running-tests.md" target="_blank" rel="noopener">运行测试</a><br>
+<a href="https://github.com/appium/appium/tree/master/sample-code/java" target="_blank" rel="noopener">Java Sample Code</a><br>
+<a href="https://github.com/appium/java-client" target="_blank" rel="noopener">java-client</a><br>
+<a href="https://www.javadoc.io/doc/io.appium/java-client/latest/index.html" target="_blank" rel="noopener">api doc</a><br>
+<a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-5-%E2%80%94%E2%80%94-python-client%E5%AE%89%E8%A3%85%E4%B8%8E%E6%B5%8B%E8%AF%95/index.html">python-client安装与测试</a></p>
+<h1>6. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-7-%E2%80%94%E2%80%94-Desired-Capabilities/index.html">Desired Capabilities</a></h1>
+<p>Appium 的 Desired Capabilities 基本配置如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">DesiredCapabilities capabilities = <span class="keyword">new</span> DesiredCapabilities();</span><br><span class="line">capabilities.setCapability(<span class="string">"deviceName"</span>, <span class="string">"Android Emulator"</span>);</span><br><span class="line">capabilities.setCapability(<span class="string">"automationName"</span>, <span class="string">"Appium"</span>);</span><br><span class="line">capabilities.setCapability(<span class="string">"platformName"</span>, <span class="string">"Android"</span>);</span><br><span class="line">capabilities.setCapability(<span class="string">"platformVersion"</span>, <span class="string">"5.1"</span>);</span><br><span class="line">capabilities.setCapability(<span class="string">"appPackage"</span>, <span class="string">"com.android.calculator2"</span>);</span><br><span class="line">capabilities.setCapability(<span class="string">"appActivity"</span>, <span class="string">".Calculator"</span>);</span><br><span class="line"></span><br><span class="line">WebDriver driver = <span class="keyword">new</span> AndroidDriver(<span class="keyword">new</span> URL(<span class="string">"http://127.0.0.1:4723/wd/hub"</span>), capabilities);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>deviceName：启动哪种设备，是真机还是模拟器？iPhone Simulator，iPad Simulator，iPhone Retina 4-inch，Android Emulator，Galaxy S4…</p>
+</li>
+<li>
+<p>automationName：使用哪种自动化引擎。appium（默认）还是Selendroid。</p>
+</li>
+<li>
+<p>platformName：使用哪种移动平台。iOS, Android, orFirefoxOS。</p>
+</li>
+<li>
+<p>platformVersion：指定平台的系统版本。例如指的Android平台，版本为5.1。</p>
+</li>
+<li>
+<p>appActivity：待测试的app的Activity名字。比如MainActivity、.Settings。注意，原生app的话要在activity前加个&quot;.&quot;。</p>
+</li>
+<li>
+<p>appPackage：待测试的app的Java package。比如com.example.android.myApp, com.android.settings。</p>
+</li>
+</ul>
+<p>更多的参数配置：</p>
+<ul>
+<li>
+<p>app：应用的绝对路径，注意一定是绝对路径。如果指定了appPackage和appActivity的话，这个属性是可以不设置的。另外这个属性和browserName属性是冲突的。</p>
+</li>
+<li>
+<p>browserName：移动浏览器的名称。比如Safari’ for iOS and ‘Chrome’, ‘Chromium’, or ‘Browser’ for Android；与app属性互斥。</p>
+</li>
+<li>
+<p>udid：物理机的id。比如1ae203187fc012g。</p>
+</li>
+</ul>
+<p>参见 <a href="https://github.com/appium/appium/blob/master/docs/cn/writing-running-appium/caps.md" target="_blank" rel="noopener">Capability参数详解</a></p>
+<h1>7. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-8-%E2%80%94%E2%80%94-%E5%AE%9A%E4%BD%8D%E6%8E%A7%E4%BB%B6/index.html">元素定位</a></h1>
+<ul>
+<li>id 定位</li>
+</ul>
+<p>resource-id 就是我们理解的id属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.findElement(By.id(<span class="string">"com.android.calculator2:id/formula"</span>))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>name 定位</li>
+</ul>
+<p>text就是我们要查找的name</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.findElement(By.name(<span class="string">"9"</span>))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>class name 定位</li>
+</ul>
+<p>使用 Class Name 一般获得的 view 都不止一个，所以应该需要遍历一遍得到的 views，然后缩小搜索条件来获得目标控件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WebElement button = driver.findElement(By.className(<span class="string">"android.widget.Button"</span>));</span><br></pre></td></tr></table></figure>
+<ul>
+<li>XPath定位</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.findElement(By.xpath(<span class="string">"//android.view.ViewGroup/android.widget.Button"</span>)) <span class="comment">//7</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Accessibility ID定位</li>
+</ul>
+<p>这个方法属于Appium扩展的定位方法。<br>
+核心是要找到元素的contentDescription属性。它就是元素的 content-desc 。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java driver.findElementByAccessibilityId(<span class="string">"plus"</span>).click();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>android uiautomator定位</li>
+</ul>
+<p>这个方法也属于 Appium（Android）扩展的定位方法。同样使用 UIAutomatorViewer.bat 工具直接查看。</p>
+<p>一个元素的任意属性都可以通过android uiautomator方法来进行定位，但要保证这种定位方式的唯一性。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">driver.findElementByAndroidUIAutomator(<span class="string">"new UiSelector().description(\"plus\")"</span>).click();</span><br><span class="line">driver.findElementByAndroidUIAutomator(<span class="string">"new UiSelector().text(\"clr\")"</span>).click();</span><br></pre></td></tr></table></figure>
+<p>参见：<br>
+<a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/AndroidUI%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E4%B9%8BUiSelector/index.html">AndroidUI自动化测试之UiSelector</a><br>
+<a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/uiautomator%E4%B9%8BUiSelector%E5%AD%A6%E4%B9%A0/index.html">uiautomator之UiSelector学习</a></p>
+<ul>
+<li>By 对象定位</li>
+</ul>
+<p>我们可以用By对象来设置不同的定位策略，具体语法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">find_element(By.ID,<span class="string">"kw"</span>)</span><br><span class="line"><span class="comment">//find_element(By.NAME,"wd")</span></span><br><span class="line">find_element(By.CLASS_NAME,<span class="string">"s_ipt"</span>)</span><br><span class="line">find_element(By.TAG_NAME,<span class="string">"input"</span>)</span><br><span class="line">find_element(By.LINK_TEXT,u<span class="string">"新闻"</span>)</span><br><span class="line">find_element(By.PARTIAL_LINK_TEXT,u<span class="string">"新"</span>)</span><br><span class="line">find_element(By.XPATH,<span class="string">"//*[@class='bg s_btn']"</span>)</span><br><span class="line">find_element(By.CSS_SELECTOR,<span class="string">"span.bg s_btn_wr&gt;input#su"</span>)</span><br></pre></td></tr></table></figure>
+<p>上面这些使用的前提是需要导入By类：<code>from selenium.webdriver.common.by import By</code></p>
+<p>查找appium中的webdriver发现，新增的appium.webdriver.common.mobileby有个MobileBy对象，这是对by对象的一个扩展。所以还可以可以通过MobileBy来定位对象：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">login_button_loc = (MobileBy.ACCESSIBILITY_ID, <span class="string">'登录'</span>)</span><br><span class="line">el = self.find_element(*self.login_button_loc)</span><br></pre></td></tr></table></figure>
+<p>这样就避免了重新封装公共方法，还可以通过之前的公共方法来定位元素。（参见 <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/Appium%E5%85%AC%E5%85%B1%E6%96%B9%E6%B3%95%E5%B0%81%E8%A3%85_Python/index.html">Appium公共方法封装_Python</a>）</p>
+<blockquote>
+<p>注意：在appium1.5之后，by name的这种定位方式已经彻底移除，详见 <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/%E8%A7%A3%E5%86%B3appium%E5%8D%87%E7%BA%A7%E5%90%8E%E4%B8%8D%E6%94%AF%E6%8C%81%E4%BD%BF%E7%94%A8name%E5%AE%9A%E4%BD%8D%E7%9A%84%E9%97%AE%E9%A2%98/index.html">解决appium升级后不支持使用name定位的问题</a></p>
+</blockquote>
+<p>参见：<br>
+<a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/%E5%8F%B2%E4%B8%8A%E6%9C%80%E5%85%A8-Selenium%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D%E7%9A%8430%E7%A7%8D%E6%96%B9%E5%BC%8F/index.html">史上最全！Selenium元素定位的30种方式</a><br>
+<a href="https://github.com/appium/appium/blob/master/docs/cn/writing-running-appium/finding-elements.md" target="_blank" rel="noopener">元素的定位与交互</a><br>
+<a href="https://github.com/appium/appium/blob/master/docs/en/commands/element/find-elements.md#selector-strategies" target="_blank" rel="noopener">Find Elements（选择器策略 ）</a></p>
+<h1>8. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-9-%E2%80%94%E2%80%94-appium-API-%E4%B9%8B%E5%BA%94%E7%94%A8%E6%93%8D%E4%BD%9C/index.html">Appium API 之应用操作</a></h1>
+<ul>
+<li>安装应用</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">driver.installApp(<span class="string">"path/to/my.apk"</span>); </span><br><span class="line">driver.installApp(<span class="string">"D:\\android\\apk\\ContactManager.apk"</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>卸载应用</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.removeApp(<span class="string">"com.example.android.apis"</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>关闭应用</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">closeApp()</span><br></pre></td></tr></table></figure>
+<p>关闭打开的应用，默认关闭当前打开的应用，所以不需要入参。<br>
+这个方法并非真正的关闭应用，相当于按home键将应用置于后台，可以通过launchApp()再次启动。</p>
+<ul>
+<li>启动应用</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">launchApp()</span><br></pre></td></tr></table></figure>
+<p>你一定很迷惑，不是在初始化的配置信息已经指定了应用，脚本运行的时候就需要启动应用，为什么还要有这个方法去启动应用呢？重新启动应用也是一个测试点，该方法需要配合closeApp()使用的。</p>
+<ul>
+<li>检查应用是否安装</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.isAppInstalled(<span class="string">'com.example.android.apis'</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将应用置于后台</li>
+</ul>
+<p>将当前活跃的应用程序发送到后台。这个方法需要入参，用于指定应用置于后台的时长。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.runAppInBackground(<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>应用重置</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">resetApp()</span><br></pre></td></tr></table></figure>
+<p>重置当前被测程序到出始化状态。该方法不需要入参。</p>
+<p><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-10-%E2%80%94%E2%80%94-appium-API-%E4%B9%8B%E4%B8%8A%E4%B8%8B%E6%96%87%E6%93%8D%E4%BD%9C/index.html">Appium API 之上下文操作</a></p>
+<h1>9. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-11-%E2%80%94%E2%80%94-appium-API-%E4%B9%8B%E9%94%AE%E7%9B%98%E6%93%8D%E4%BD%9C/index.html">Appium API 之键盘操作</a></h1>
+<ul>
+<li>sendKeys()方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.findElements(By.name(<span class="string">"Name"</span>)).sendKeys(<span class="string">"jack"</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>pressKey方法（Android特有）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.pressKey(<span class="keyword">new</span> KeyEvent(AndroidKey.BACK));</span><br></pre></td></tr></table></figure>
+<p><s>pressKeyCode()方法（Android特有）已移除</s></p>
+<ul>
+<li>Android keycode参考表</li>
+</ul>
+<h1>10. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-12-%E2%80%94%E2%80%94-appium-API-%E4%B9%8B-TouchAction-%E6%93%8D%E4%BD%9C/index.html">Appium API 之 TouchAction 操作</a></h1>
+<p>参见 <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/TouchAction%E6%93%8D%E4%BD%9C%E5%85%83%E7%B4%A0/index.html">TouchAction操作元素</a></p>
+<p>在界面按键没有元素进行定位的可以用TouchAction这个函数TouchAction包含一系列操作，例如短按、长按、点击、移动、暂停，由不同的操作可以组成一套动作。</p>
+<p>组合示例:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">TouchAction(driver). press(x,y) .wait(<span class="number">1000</span>).move_to(x2,y2).release() .perform()</span><br><span class="line"><span class="comment">#短按点击-&gt;等待1000毫秒-&gt;移动-&gt;释放-传送至服务器</span></span><br><span class="line"></span><br><span class="line">TouchAction(driver). press(x,y) .wait(<span class="number">1000</span>).move_to(x2,y2).release()</span><br><span class="line"><span class="comment">#短按点击-&gt;等待1000毫秒-&gt;移动-&gt;释放</span></span><br><span class="line"></span><br><span class="line">TouchAction(driver). press(x,y) .wait(<span class="number">1000</span>).release() .perform()</span><br><span class="line"><span class="comment">#短按点击-&gt;等待1000毫秒-&gt;释放-传送至服务器</span></span><br><span class="line"></span><br><span class="line">TouchAction(driver). press(x,y) .wait(<span class="number">1000</span>).release()</span><br><span class="line"><span class="comment">#短按点击-&gt;等待1000毫秒-&gt;释放</span></span><br></pre></td></tr></table></figure>
+<h2 id="10-1-Appium-java-client库更新到6-x-TouchAction类中弃用的函数及替代方法">10.1. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/Appium-java-client%E5%BA%93%E6%9B%B4%E6%96%B0%E5%88%B06-x-TouchAction%E7%B1%BB%E4%B8%AD%E5%BC%83%E7%94%A8%E7%9A%84%E5%87%BD%E6%95%B0%E5%8F%8A%E6%9B%BF%E4%BB%A3%E6%96%B9%E6%B3%95/index.html">Appium java-client库更新到6.x TouchAction类中弃用的函数及替代方法</a></h2>
+<p>总的来看，弃用的是 press() ，longPress()，moveTo()，tap() 参数使用 x、y轴和 webElement 的这种类型，和用到 Duration 类型的方法。取而代之的是参数类型变了：</p>
+<ul>
+<li>涉及到 X、Y 轴定位的方法，参数使用了 <code>PointOption.point(X坐标, Y坐标)；</code></li>
+<li>涉及到 Duration的方法 waitAction()，参数使用了 <code>WaitOptions.waitOptions(Duration.ofNanos(时间间隔));</code></li>
+</ul>
+<h2 id="10-2-使用TouchAction替换swipe方法">10.2. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/Appium%E4%B9%8B%E4%B8%8A%E5%88%92%E3%80%81%E4%B8%8B%E5%88%92-%E5%B7%A6%E5%88%92%E3%80%81%E5%8F%B3%E5%88%92/index.html">使用TouchAction替换swipe方法</a></h2>
+<p>在新版本client中，swipe方法已被移除</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> Duration duration=Duration.ofSeconds(<span class="number">1</span>);</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">swipeToUp</span><span class="params">(AndroidDriver driver)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> width = driver.manage().window().getSize().width;</span><br><span class="line">    <span class="keyword">int</span> height = driver.manage().window().getSize().height;</span><br><span class="line">    <span class="keyword">new</span> TouchAction(driver).press(PointOption.point(width/<span class="number">2</span>,height*<span class="number">3</span>/<span class="number">4</span>))</span><br><span class="line">                           .waitAction(WaitOptions.waitOptions(duration))</span><br><span class="line">                           .moveTo(PointOption.point(width/<span class="number">2</span>, height/<span class="number">4</span>))</span><br><span class="line">                           .release().perform();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>11. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8-13-%E2%80%94%E2%80%94-appium-API-%E4%B9%8B%E5%85%B6%E4%BB%96%E6%93%8D%E4%BD%9C/index.html">Appium API 之其他操作</a></h1>
+<ul>
+<li>熄屏</li>
+</ul>
+<p>在iOS设备可以设置熄屏一段时间。Android上面不带参数，所以熄屏之后就不会再点亮屏幕了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">driver.lockDevice(<span class="number">1000</span>); <span class="comment">// iOS </span></span><br><span class="line">driver.lockDriice(); <span class="comment">//Android</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>当前Activity（Android only）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String ca = driver.currentActivity(); </span><br><span class="line">System.out.print(ca);</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.activities.PeopleActivity</span><br></pre></td></tr></table></figure>
+<ul>
+<li>收起键盘</li>
+</ul>
+<p>这个方法很有用，当我们对一个输入框输入完成后，需要将键盘收起，再切换到一下输入框进行输入。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.hideKeyboard(); <span class="comment">//收起键盘</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>拉出文件</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.pullFile(<span class="string">'Library/AddressBook/AddressBook.sqlitedb'</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>推送文件</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">String content = <span class="string">"some data for the file"</span>; </span><br><span class="line"><span class="keyword">byte</span>[] data = Base64.encodeBase64(content.getBytes()); </span><br><span class="line">driver.pushFile(<span class="string">"sdcard/test.txt"</span>, data);</span><br></pre></td></tr></table></figure>
+<h1>12. Appium API 之getPageSource</h1>
+<p>参见 <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/Appium%E5%9C%A8AndroidUI%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/index.html">Appium在AndroidUI测试中的应用</a></p>
+<p>AppiumDriver(Client) 可以很方便的获得当前正在运行的 Activity 的 UI 描述，随后可根据返回的 XML 文档来寻找元素。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> dr.page_source</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/Appium%E5%9C%A8AndroidUI%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/assets/1585891625-f54228522522c100c19ce9dc6391e6b2.jpg" alt="getPageSource"></p>
+<p>确定元素位置后，即可根据前述的 Find 方法来查找/选择元素。</p>
+<h1>13. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/Appium%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%B1%BB%E5%BA%93/index.html">Appium客户端API详解</a></h1>
+<h1>14. 元素滑动判断</h1>
+<h2 id="14-1-判断元素在当前手机屏幕上">14.1. 判断元素在当前手机屏幕上</h2>
+<p>使用坐标的y轴判断：<code>webElement.getLocation().y</code></p>
+<p>参见 <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/%E6%80%8E%E4%B9%88%E5%88%A4%E6%96%AD%E5%85%83%E7%B4%A0%E5%9C%A8%E5%BD%93%E5%89%8D%E6%89%8B%E6%9C%BA%E5%B1%8F%E5%B9%95%E4%B8%8A/index.html">怎么判断元素在当前手机屏幕上</a></p>
+<h2 id="14-2-判断滑动到底">14.2. 判断滑动到底</h2>
+<p>参见：<a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/Appium-Native%E6%BB%91%E5%8A%A8%E5%88%B0%E5%85%83%E7%B4%A0%E6%88%96%E6%BB%91%E5%8A%A8%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%BA%95%E9%83%A8/index.html">Appium+Native滑动到元素或滑动到页面底部</a></p>
+<p>方法一：获取listview的最后一个元素，在滑动之后再次获取最后一个元素然后用string的等于匹配第一次获取的文本来判断是否滑动到了底部。</p>
+<p>方法二：使用appium自带的getPageSource方法。</p>
+<p>方法三：界限元素或文本判断。（参见 <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/Appium%E6%BB%91%E5%8A%A8%E7%9B%B4%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%BA%95%E9%83%A8/index.html">Appium滑动直到页面底部</a>）</p>
+<p>小结：webview可以find到不在view内的元素。但是Appium的native_view不能find到不在view内的元素。</p>
+<h1>15. <a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/Java%E4%BB%A3%E7%A0%81%E5%90%AF%E5%8A%A8AppiumServer/index.html">Java代码启动AppiumServer</a></h1>
+<p><code>appiumDriverLocalService.start()</code>报错：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">org.testng.TestNGException:</span><br><span class="line">Cannot instantiate class NotLogin</span><br><span class="line">at org.testng.internal.ObjectFactoryImpl.newInstance(ObjectFactoryImpl.java:31)</span><br><span class="line">at org.testng.internal.ClassHelper.createInstance1(ClassHelper.java:410)</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>以上错误在maven中添加：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.seleniumhq.selenium&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;selenium-java&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>AppiumDriverLocalService 这个类可以直接启动不同的Server。通过指定并启动不同端口的server来分发测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">builder.usingPort(<span class="number">4723</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node /Applications/Appium.app/Contents/Resources/node_modules/appium/build/lib/main.js --no-reset -p "4923" -bp "4933"</span><br></pre></td></tr></table></figure>
+<p>appium启动app时是否清除应用数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cap.setCapability(<span class="string">"noReset"</span>, <span class="string">"false"</span>);</span><br></pre></td></tr></table></figure>
+<p>注意：如果在设备（noReset=true）上安装了被测应用程序，则至少要设置appActivity和appPackage选项，因为在这种情况下没有可用的软件包清单。（参考：<a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/How-To-Troubleshoot-Activities-Startup/index.html">How To Troubleshoot Activities Startup</a>）</p>
+<p>允许session（会话）被覆盖：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">builder.withArgument(GeneralServerFlag.SESSION_OVERRIDE);</span><br><span class="line"><span class="comment">//如果未加--session-override选项，那么在当前session未结束的时候，如果重新跑新的命令，就会报错，需等到session结束，server清空session后方可重新运行命令。（https://www.jianshu.com/p/9d36b32c4a7f）</span></span><br></pre></td></tr></table></figure>
+<h1>16. Webdriver中等待元素的三种方式及until方法</h1>
+<ul>
+<li>强制等待:sleep()</li>
+<li>隐式等待:implicitly_wait()</li>
+<li>显示等待:WebDriverWait()
+<ul>
+<li>与until()或者until_not()方法结合使用</li>
+<li>WebDriverWait与expected_conditions结合使用</li>
+<li>自定义等待条件</li>
+</ul>
+</li>
+</ul>
+<p>参见：<br>
+<a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/webdriver%E4%B8%AD%E7%9A%84%E7%AD%89%E5%BE%85%E2%80%94%E2%80%94%E4%B8%BB%E8%A6%81%E8%AE%B2%E8%A7%A3WebDriverWait/index.html">webdriver中的等待——主要讲解WebDriverWait</a><br>
+<a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/Selenium%E4%B8%89%E7%A7%8D%E7%AD%89%E5%BE%85%E5%85%83%E7%B4%A0%E7%9A%84%E6%96%B9%E5%BC%8F%E5%8F%8A%E4%BB%A3%E7%A0%81-%E9%9C%80%E8%A6%81%E7%89%B9%E5%88%AB%E6%B3%A8%E6%84%8FimplicitlyWait%E7%9A%84%E7%94%A8%E6%B3%95/index.html">Selenium三种等待元素的方式及代码，需要特别注意implicitlyWait的用法</a><br>
+<a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/implicitly_wait-%E9%9A%90%E5%BC%8F%E7%AD%89%E5%BE%85/index.html">implicitly_wait()隐式等待</a></p>
+<h1>17. Appium常用API二次封装</h1>
+<p>参见：<br>
+<a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E7%AC%94%E8%AE%B0%E5%85%AD-appium%E5%B8%B8%E7%94%A8api%E4%BA%8C%E6%AC%A1%E5%B0%81%E8%A3%85/index.html">常用方法封装（1）</a><br>
+<a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/appium%E5%AE%89%E5%8D%93%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B8%B8%E7%94%A8driver%E6%96%B9%E6%B3%95%E5%B0%81%E8%A3%85/index.html">常用方法封装（2）</a></p>
+<p>首先要进行driver实例的连接，连接后才能做相应的一些操作，及得造作完成要关闭driver，避免内存占用。</p>
+<p>连接driver：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * @method: 连接driver</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUp</span><span class="params">(DesiredCapabilities dCapabilities)</span> <span class="keyword">throws</span> MalformedURLException  </span>&#123;</span><br><span class="line">   driver = <span class="keyword">new</span> AndroidDriver&lt;&gt;(<span class="keyword">new</span> URL(<span class="string">"http://127.0.0.1:4723/wd/hub"</span>), dCapabilities);</span><br><span class="line">   logger.info(driver.currentActivity());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>断开driver:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * @method: 断开driver</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tearDown</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (<span class="keyword">null</span> != driver) &#123;</span><br><span class="line">      driver.quit();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>18. 其它相关教程</h1>
+<p><a href="/quotes/ADB%E7%94%A8%E6%B3%95%E5%A4%A7%E5%85%A8.html">ADB用法大全</a></p>
+<blockquote>
+<p>adb devices：查找已连接adb设备。</p>
+</blockquote>
+<p><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/%E8%8E%B7%E5%8F%96android-appActivity%E7%9A%84%E5%9B%9B%E7%A7%8D%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/index.html">获取android appActivity的四种常用方法</a></p>
+<p>udid参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;udid&quot;: &quot;192.168.56.101:5555&quot;</span><br></pre></td></tr></table></figure>
+<p>仅查看第三方的apk：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">package adb shell pm list package -3 -f</span><br></pre></td></tr></table></figure>
+<p>使用dumpsys activity直接进行查找：首先启动待测的package，输入以下cmd</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb shell dumpsys activity | grep mFocusedActivity</span><br><span class="line">adb shell dumpsys activity activities | grep mResumedActivity # Android 8.0以上</span><br></pre></td></tr></table></figure>
+<p>注意：cmd terminal的查找命令在linux和mac操作系统中对应关键字时grep，在Windows操作系统中对应关键字是 findstr。</p>
+<p><a href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/mx-wc/Appium%E4%B8%AD%E6%96%87%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/index.html">Appium中文使用指南</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Doing/" rel="tag"># Doing</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/posts/%E5%90%8E%E7%AB%AF/Spring/Spring%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6-%E7%9B%AE%E5%BD%95/" rel="next" title="后端/Spring/Spring任务调度-目录">
+                  <i class="fa fa-chevron-left"></i> 后端/Spring/Spring任务调度-目录
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/posts/%E6%9E%B6%E6%9E%84/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E5%B8%88/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E5%B8%88%E6%95%99%E7%A8%8B-%E7%9B%AE%E5%BD%95/" rel="prev" title="架构/系统架构设计师/系统架构设计师教程-目录">
+                  架构/系统架构设计师/系统架构设计师教程-目录 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">1. Appium介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-Appium与Selenium"><span class="nav-text">1.1. Appium与Selenium</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-Appium工作原理"><span class="nav-text">1.2. Appium工作原理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">2. Appium的基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">3. Appium安装及运行</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">4. Appium-Desktop</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">5. java-client安装与测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-最新Maven配置"><span class="nav-text">5.1. 最新Maven配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-http-127-0-0-1-4723-wd-hub-的解释"><span class="nav-text">5.2. &quot;http://127.0.0.1:4723/wd/hub&quot;的解释</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">6. Desired Capabilities</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">7. 元素定位</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">8. Appium API 之应用操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">9. Appium API 之键盘操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">10. Appium API 之 TouchAction 操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#10-1-Appium-java-client库更新到6-x-TouchAction类中弃用的函数及替代方法"><span class="nav-text">10.1. Appium java-client库更新到6.x TouchAction类中弃用的函数及替代方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-2-使用TouchAction替换swipe方法"><span class="nav-text">10.2. 使用TouchAction替换swipe方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">11. Appium API 之其他操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">12. Appium API 之getPageSource</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">13. Appium客户端API详解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">14. 元素滑动判断</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#14-1-判断元素在当前手机屏幕上"><span class="nav-text">14.1. 判断元素在当前手机屏幕上</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#14-2-判断滑动到底"><span class="nav-text">14.2. 判断滑动到底</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">15. Java代码启动AppiumServer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">16. Webdriver中等待元素的三种方式及until方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">17. Appium常用API二次封装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">18. 其它相关教程</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

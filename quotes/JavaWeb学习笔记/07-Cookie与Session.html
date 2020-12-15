@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Web会话技术会话的概念会话可简单理解为：用户开一个浏览器，点击多个超链接，访问服务器多个web资源，然后关闭浏览器，整个过程称之为一个会话。有状态会话：一个同学来过教室，下次再来教室，我们会知道这个同学曾经来过，这称之为有状态会话。会话过程中要解决的一些问题每个用户在使用浏览器与服务器进行会话的过程中，不可避免会产生与用户会话状态相关的一些数据，web应用要想办法为每个用户保存这些数据。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;07-Cookie%E4%B8%8ESession.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Web会话技术会话的概念会话可简单理解为：用户开一个浏览器，点击多个超链接，访问服务器多个web资源，然后关闭浏览器，整个过程称之为一个会话。有状态会话：一个同学来过教室，下次再来教室，我们会知道这个同学曾经来过，这称之为有状态会话。会话过程中要解决的一些问题每个用户在使用浏览器与服务器进行会话的过程中，不可避免会产生与用户会话状态相关的一些数据，web应用要想办法为每个用户保存这些数据。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.020Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/07-Cookie%E4%B8%8ESession">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>07-COOKIE与SESSION</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>Web会话技术</h1><p><strong>会话的概念</strong></p><p>会话可简单理解为：用户开一个浏览器，点击多个超链接，访问服务器多个web资源，然后关闭浏览器，整个过程称之为一个会话。</p><p>有状态会话：一个同学来过教室，下次再来教室，我们会知道这个同学曾经来过，这称之为有状态会话。</p><p><strong>会话过程中要解决的一些问题</strong></p><p>每个用户在使用浏览器与服务器进行会话的过程中，不可避免会产生与用户会话状态相关的一些数据，web应用要想办法为每个用户保存这些数据。</p><a id="more"></a>
+
+
+
+
+
+<p>保存会话数据的两种技术：Cookie和Session。</p>
+<h1>Cookie</h1>
+<p>Cookie是客户端技术，web应用把每个用户的数据以cookie的形式返回给用户浏览器。当用户使用浏览器下次再访问服务器时，浏览器会带上该数据，供web应用再次使用。这样用户数据是保存到浏览器本地。</p>
+<p>一个Cookie只能标识一种信息，它至少含有一个标识该信息的名称（NAME）和设置值（VALUE）。</p>
+<p>一个WEB站点可以给一个WEB浏览器发送多个Cookie，一个WEB浏览器也可以存储多个WEB站点提供的Cookie。</p>
+<p>浏览器一般只允许存放300个Cookie，每个站点最多存放20个Cookie，每个Cookie的大小限制为4KB。</p>
+<p>如果创建了一个cookie，并将他发送到浏览器，默认情况下它是一个会话级别的cookie（即存储在浏览器的内存中），用户退出浏览器之后即被删除。若希望浏览器将该cookie存储在磁盘上，则需要使用maxAge，并给出一个以秒为单位的时间。将最大时效设为0则是命令浏览器删除该cookie。</p>
+<h2 id="主要方法">主要方法</h2>
+<p>Cookie类的主要方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Cookie(String name, String value)  <span class="comment">//构造方法，实例化Cookie对象，传入cooke名称和cookie的值     </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> <span class="comment">//取得Cookie的名字</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getValue</span><span class="params">()</span> <span class="comment">//取得Cookie的值     </span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(String newValue)</span> <span class="comment">//设置Cookie的值     </span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMaxAge</span><span class="params">(<span class="keyword">int</span> expiry)</span> <span class="comment">//设置Cookie的最大保存时间，即cookie的有效期。     </span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMaxAge</span><span class="params">()</span> <span class="comment">//获取Cookies的有效期     </span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPath</span><span class="params">(String uri)</span> <span class="comment">//设置cookie的有效路径     </span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getPath</span><span class="params">()</span> <span class="comment">//获取cookie的有效路径     </span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDomain</span><span class="params">(String pattern)</span> <span class="comment">//设置cookie的有效域     </span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getDomain</span><span class="params">()</span> <span class="comment">//获取cookie的有效域</span></span></span><br></pre></td></tr></table></figure>
+<p>response接口中定义了一个addCookie方法，它用于在其响应头中增加一个相应的Set-Cookie头字段。同样，request接口中也定义了一个getCookies方法，它用于获取客户端提交的Cookie。</p>
+<h2 id="Cookie的有效期">Cookie的有效期</h2>
+<p>当服务器给浏览器回送一个cookie时，如果在服务器端没有调用setMaxAge方法设置cookie的有效期，那么cookie的有效期只在一次会话过程中有效。用户开一个浏览器，点击多个超链接，访问服务器多个web资源，然后关闭浏览器，整个过程称之为一次会话，当用户关闭浏览器，会话就结束了，此时cookie就会失效。</p>
+<p>如果在服务器端使用setMaxAge方法设置了cookie的有效期，比如设置了30分钟，那么当服务器把cookie发送给浏览器时，此时cookie就会在客户端的硬盘上存储30分钟，在30分钟内，即使浏览器关了，cookie依然存在，在30分钟内，打开浏览器访问服务器时，浏览器都会把cookie一起带上，这样就可以在服务器端获取到客户端浏览器传递过来的cookie里面的信息了，这就是cookie设置maxAge和不设置maxAge的区别，不设置maxAge，那么cookie就只在一次会话中有效，一旦用户关闭了浏览器，那么cookie就没有了。</p>
+<p>那么浏览器是怎么做到这一点的呢，我们启动一个浏览器，就相当于启动一个应用程序，而服务器回送的cookie首先是存在浏览器的缓存中的，当浏览器关闭时，浏览器的缓存自然就没有了，所以存储在缓存中的cookie自然就被清掉了，而如果设置了cookie的有效期，那么浏览器在关闭时，就会把缓存中的cookie写到硬盘上存储起来，这样cookie就能够一直存在了。</p>
+<h2 id="Cookie的有效路径">Cookie的有效路径</h2>
+<p>比如把cookie的有效路径设置为&quot;/xdp&quot;，那么浏览器访问&quot;xdp&quot;路径下的web资源时，都会带上cookie。</p>
+<p>再比如把cookie的有效路径设置为&quot;/xdp/gacl&quot;，那么浏览器只有在访问&quot;/xdp/gacl&quot;这个路径下的web资源时才会带上cookie一起访问，而当访问&quot;xdp&quot;路径下的web资源时，浏览器是不带cookie的。</p>
+<h2 id="Cookie操作示例">Cookie操作示例</h2>
+<h3 id="使用Cookie">使用Cookie</h3>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.annotation.WebServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.Cookie;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.PrintWriter;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 使用cookie记录用户上一次访问的时间</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@WebServlet</span>(urlPatterns = &#123;<span class="string">"/cookie_getAndSet"</span>&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cookie_GetAndSet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">       <span class="comment">//设置服务器端以UTF-8编码进行输出</span></span><br><span class="line">       response.setCharacterEncoding(<span class="string">"UTF-8"</span>);</span><br><span class="line">       <span class="comment">//设置浏览器以UTF-8编码进行接收,解决中文乱码问题</span></span><br><span class="line">       response.setContentType(<span class="string">"text/html;charset=UTF-8"</span>);</span><br><span class="line">       PrintWriter out = response.getWriter();</span><br><span class="line">       <span class="comment">//获取浏览器访问访问服务器时传递过来的cookie数组</span></span><br><span class="line">       Cookie[] cookies = request.getCookies();</span><br><span class="line">       <span class="comment">//如果用户是第一次访问，那么得到的cookies将是null</span></span><br><span class="line">       <span class="keyword">if</span> (cookies!=<span class="keyword">null</span>) &#123;</span><br><span class="line">           Date date = <span class="keyword">null</span>;</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; cookies.length; i++) &#123;</span><br><span class="line">               Cookie cookie = cookies[i];</span><br><span class="line">               <span class="keyword">if</span> (cookie.getName().equals(<span class="string">"lastAccessTime"</span>)) &#123;</span><br><span class="line">                   Long lastAccessTime =Long.parseLong(cookie.getValue());</span><br><span class="line">                   date = <span class="keyword">new</span> Date(lastAccessTime);</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">if</span> (date != <span class="keyword">null</span>)&#123;</span><br><span class="line">               out.write(<span class="string">"您上次访问的时间是："</span>);</span><br><span class="line">               out.write(date.toLocaleString());</span><br><span class="line">           &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">               out.write(<span class="string">"这是您第一次访问本站！"</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">           out.write(<span class="string">"这是您第一次访问本站！"</span>);</span><br><span class="line">       &#125;</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//用户访问过之后重新设置用户的访问时间，存储到cookie中，然后发送到客户端浏览器</span></span><br><span class="line">       Cookie cookie = <span class="keyword">new</span> Cookie(<span class="string">"lastAccessTime"</span>, System.currentTimeMillis()+<span class="string">""</span>);<span class="comment">//创建一个cookie，cookie的名字是lastAccessTime</span></span><br><span class="line"> </span><br><span class="line">       <span class="comment">//设置Cookie的有效期为1天</span></span><br><span class="line">       <span class="comment">//cookie.setMaxAge(24*60*60);</span></span><br><span class="line"> </span><br><span class="line">       <span class="comment">//将cookie对象添加到response对象中，这样服务器在输出response对象中的内容时就会把cookie也输出到客户端浏览器</span></span><br><span class="line">       response.addCookie(cookie);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">       doGet(request, response);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="删除Cookie">删除Cookie</h3>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.annotation.WebServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.Cookie;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 删除Cookie</span></span><br><span class="line"><span class="comment">*      删除cookie时，path必须一致，否则不会删除</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@WebServlet</span>(urlPatterns = &#123;<span class="string">"/cookie_deleteCookie"</span>&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cookie_DeleteCookie</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">       <span class="comment">//创建一个名字为lastAccessTime的cookie</span></span><br><span class="line">       Cookie cookie = <span class="keyword">new</span> Cookie(<span class="string">"lastAccessTime"</span>, System.currentTimeMillis()+<span class="string">""</span>);</span><br><span class="line">       <span class="comment">//将cookie的有效期设置为0，命令浏览器删除该cookie</span></span><br><span class="line">       cookie.setMaxAge(<span class="number">0</span>);</span><br><span class="line">       response.addCookie(cookie);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">       doGet(request, response);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Cookie中存取中文">Cookie中存取中文</h3>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.annotation.WebServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.Cookie;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.PrintWriter;</span><br><span class="line"><span class="keyword">import</span> java.net.URLDecoder;</span><br><span class="line"><span class="keyword">import</span> java.net.URLEncoder;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* cookie中存取中文</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@WebServlet</span>(urlPatterns = &#123;<span class="string">"/cookie_cookieWithChinese"</span>&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cookie_CookieWithChinese</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line"> </span><br><span class="line">       <span class="comment">//req.setCharacterEncoding("utf-8");</span></span><br><span class="line">       String name = req.getParameter(<span class="string">"userName"</span>);</span><br><span class="line"> </span><br><span class="line">       resp.setCharacterEncoding(<span class="string">"utf-8"</span>);</span><br><span class="line">       resp.setHeader(<span class="string">"content-type"</span>, <span class="string">"text/html;charset=UTF-8"</span>);</span><br><span class="line">       PrintWriter out = resp.getWriter();</span><br><span class="line"> </span><br><span class="line">       <span class="keyword">if</span> (<span class="keyword">null</span> != name &amp;&amp; !<span class="string">""</span>.equals(name))&#123;</span><br><span class="line"> </span><br><span class="line">           <span class="comment">//get方法使用ISO8859-1转码来避免中文乱码，而不是使用req.setCharacterEncoding</span></span><br><span class="line">           name = <span class="keyword">new</span> String(name.getBytes(<span class="string">"ISO8859-1"</span>),<span class="string">"utf-8"</span>);</span><br><span class="line">           out.write(<span class="string">"欢迎光临！ "</span> + name);</span><br><span class="line"> </span><br><span class="line">           <span class="comment">//如果直接将中文字符存入Cookie会报错</span></span><br><span class="line">           <span class="comment">//Cookie cookie = new Cookie("userName",name);</span></span><br><span class="line">           Cookie cookie = <span class="keyword">new</span> Cookie(<span class="string">"userName"</span>, URLEncoder.encode(name,<span class="string">"utf-8"</span>));</span><br><span class="line">           cookie.setMaxAge(<span class="number">24</span>*<span class="number">60</span>*<span class="number">60</span>);</span><br><span class="line">           resp.addCookie(cookie);</span><br><span class="line">       &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">           Cookie[] cookies = req.getCookies();</span><br><span class="line">           <span class="keyword">for</span> (Cookie c : cookies)&#123;</span><br><span class="line">               <span class="keyword">if</span> (c.getName().equals(<span class="string">"userName"</span>))&#123;</span><br><span class="line">                   name = c.getValue();</span><br><span class="line">                   <span class="comment">//Cookie取出来的时候再解码为中文字符</span></span><br><span class="line">                   out.write(<span class="string">"欢迎光临！ "</span> + URLDecoder.decode(name,<span class="string">"utf-8"</span>));</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">%@</span> <span class="attr">page</span> <span class="attr">language</span>=<span class="string">"java"</span> <span class="attr">import</span>=<span class="string">"java.util.*"</span> <span class="attr">pageEncoding</span>=<span class="string">"UTF-8"</span>%&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">%@</span> <span class="attr">page</span> <span class="attr">import</span>=<span class="string">"java.net.URLEncoder"</span> %&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">title</span>&gt;</span>cookie中存取中文测试<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"$&#123;pageContext.request.contextPath&#125;/cookie_cookieWithChinese"</span> <span class="attr">method</span>=<span class="string">"get"</span>&gt;</span></span><br><span class="line">   姓名：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"userName"</span>/&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"get方式提交表单"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1>Session</h1>
+<p>Session是服务器端技术，用户在访问web应用时，应用为每一个用户创建一个其独享的session对象，用户数据被放在各自的session对象中，当用户下次访问时，web应用再从用户各自的session中取出数据为用户服务。</p>
+<h2 id="Session的实现原理">Session的实现原理</h2>
+<p>Web应用创建Session对象后，会把Session的id值以cookie的形式回写给客户端。这样，在客户端的会话期间，再去访问该应用时，都会带着Session的id。而服务器端应用则可以通过客户端每次访问的cookie中的Session id值，获取与之对应的用户Session对象。</p>
+<p>服务器响应头中：Set-Cookie中设置的session信息类似于：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">“Set-Cookie: JSESSIONID=8404F805C282F150F451A0C879B41E66; Path=/javaWeb/; HttpOnly”</span><br></pre></td></tr></table></figure>
+<p>浏览器请求头中：Cookie中的session信息类似于：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">“JSESSIONID=8404F805C282F150F451A0C879B41E66”</span><br></pre></td></tr></table></figure>
+<p>request.getSession()方法内部新创建了Session之后应该是做了如下类似处理：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取session的Id</span></span><br><span class="line">String sessionId = session.getId();</span><br><span class="line"><span class="comment">//将session的Id存储到名字为JSESSIONID的cookie中</span></span><br><span class="line">Cookie cookie = <span class="keyword">new</span> Cookie(<span class="string">"JSESSIONID"</span>, sessionId);</span><br><span class="line"><span class="comment">//设置cookie的有效路径</span></span><br><span class="line">cookie.setPath(request.getContextPath());</span><br><span class="line">response.addCookie(cookie);</span><br></pre></td></tr></table></figure>
+<h2 id="Session对象的创建">Session对象的创建</h2>
+<p>当用户第一次请求，调用request.getSession()方法时就会创建一个新的Session对象，以后再访问该方法时，会返回之前创建的Session对象。</p>
+<p>可以用isNew()方法来判断Session是不是新创建的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.annotation.WebServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpSession;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@WebServlet</span>(urlPatterns = &#123;<span class="string">"/session_getSession"</span>&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Session_GetSession</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">       response.setCharacterEncoding(<span class="string">"UTF-8"</span>);</span><br><span class="line">       response.setContentType(<span class="string">"text/html;charset=UTF-8"</span>);</span><br><span class="line">       <span class="comment">//使用request对象的getSession()获取session，如果session不存在则创建一个</span></span><br><span class="line">       HttpSession session = request.getSession();</span><br><span class="line">       <span class="comment">//将数据存储到session中</span></span><br><span class="line">       session.setAttribute(<span class="string">"data"</span>, <span class="string">"孤傲苍狼"</span>);</span><br><span class="line">       <span class="comment">//获取session的Id</span></span><br><span class="line">       String sessionId = session.getId();</span><br><span class="line">       <span class="comment">//判断session是不是新创建的</span></span><br><span class="line">       <span class="keyword">if</span> (session.isNew()) &#123;</span><br><span class="line">           response.getWriter().print(<span class="string">"session创建成功，session的id是："</span>+sessionId);</span><br><span class="line">       &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">           response.getWriter().print(<span class="string">"服务器已经存在该session了，session的id是："</span>+sessionId);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">       doGet(request, response);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Session对象的销毁">Session对象的销毁</h2>
+<p>session会话的有效期体现在两个方面：</p>
+<ol>
+<li>
+<p>浏览器cookies中缓存的session id值，如果session id值被清除，则无法获取session对象，会话失效；</p>
+</li>
+<li>
+<p>session对象的失效时间：session对象默认30分钟没有使用，则服务器会自动销毁session。</p>
+</li>
+</ol>
+<p>可以使用 setMaxInactiveInterval 方法设置session的失效时间，也可以在web.xml文件中配置失效时间。</p>
+<p>可以手工调用session.invalidate方法，摧毁session。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.annotation.WebServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpSession;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@WebServlet</span>(urlPatterns = &#123;<span class="string">"/session_timeOut"</span>&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Session_TimeOut</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span></span>&#123;</span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">       <span class="comment">//获取当前Session</span></span><br><span class="line">       HttpSession session = req.getSession();</span><br><span class="line">       <span class="comment">//设置Session失效时间,以秒为单位</span></span><br><span class="line">       session.setMaxInactiveInterval(<span class="number">20</span>);</span><br><span class="line">       <span class="comment">//手动使当前Session立即失效。</span></span><br><span class="line">       <span class="comment">//session.invalidate();</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>web.xml文件中配置session的失效时间：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span> <span class="attr">version</span>=<span class="string">"2.5"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns</span>=<span class="string">"http://java.sun.com/xml/ns/javaee"</span>;</span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span>;</span></span><br><span class="line"><span class="tag">    <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://java.sun.com/xml/ns/javaee</span></span></span><br><span class="line"><span class="tag"><span class="string">http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"</span>&gt;</span>;</span><br><span class="line">  <span class="tag">&lt;<span class="name">display-name</span>&gt;</span><span class="tag">&lt;/<span class="name">display-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">welcome-file-list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">welcome-file</span>&gt;</span>index.jsp<span class="tag">&lt;/<span class="name">welcome-file</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">welcome-file-list</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 设置Session的有效时间:以分钟为单位--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">session-config</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">session-timeout</span>&gt;</span>15<span class="tag">&lt;/<span class="name">session-timeout</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">session-config</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="URL重写">URL重写</h2>
+<p>当浏览器禁用Cookie，用户的Session Id无法写入时，应该如何处理？解决方案：URL重写。</p>
+<ul>
+<li><strong>response.encodeRedirectURL(java.lang.String url)</strong>： 用于对sendRedirect方法后的url地址进行重写。</li>
+<li><strong>response.encodeURL(java.lang.String url)</strong>：用于对表单action和超链接的url地址进行重写</li>
+</ul>
+<p>使用这两个方法重写url时，如果客户端禁用cookie，重写的url后面都会带上Session Id。例如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">'/JavaWeb_Session_Study_20140720/servlet/BuyServlet;jsessionid=96BDFB9D87A08D5AB1EAA2537CDE2DB2?id=2'</span>&gt;</span>购买<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>而且，这两个方法非常智能，当检测到浏览器没有禁用cookie时，那么就不进行URL重写了。</p>
+<p>为了实现健壮的session跟踪，支持不能使用cookies的浏览器，应用发布的所有URL都必须经过该方法重写。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.annotation.WebServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.PrintWriter;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 首页：列出所有书，点击链接购买书。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@WebServlet</span>(urlPatterns = <span class="string">"/response_encodeURL/indexServlet"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IndexServlet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">       response.setContentType(<span class="string">"text/html;charset=UTF-8"</span>);</span><br><span class="line">       PrintWriter out = response.getWriter();</span><br><span class="line">       <span class="comment">//创建Session</span></span><br><span class="line">       request.getSession();</span><br><span class="line">       out.write(<span class="string">"本网站有如下书：&lt;br/&gt;"</span>);</span><br><span class="line">       Set&lt;Map.Entry&lt;String,Book&gt;&gt; set = BookDB.getAll().entrySet();</span><br><span class="line">       <span class="keyword">for</span>(Map.Entry&lt;String,Book&gt; me : set)&#123;</span><br><span class="line">           Book book = me.getValue();</span><br><span class="line">           String url =request.getContextPath()+ <span class="string">"/response_encodeURL/buyServlet?id="</span> + book.getId();</span><br><span class="line">           <span class="comment">//response. encodeURL(String url)用于对表单action和超链接的url地址进行重写</span></span><br><span class="line">           <span class="comment">//为了实现健壮的session跟踪，支持不能使用cookies的浏览器，servlet发布的所有URL都必须经过该方法重写。</span></span><br><span class="line">           url = response.encodeURL(url);<span class="comment">//将超链接的url地址进行重写</span></span><br><span class="line">           out.println(book.getName()  + <span class="string">"   &lt;a href='"</span>+url+<span class="string">"'&gt;购买&lt;/a&gt;&lt;br/&gt;"</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span></span><br><span class="line"><span class="function">           <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">       doGet(request, response);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/JavaWeb%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVAWEB学习笔记</a></li>
+            <li>07-COOKIE与SESSION</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Web会话技术</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#主要方法"><span class="nav-text">主要方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cookie的有效期"><span class="nav-text">Cookie的有效期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cookie的有效路径"><span class="nav-text">Cookie的有效路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cookie操作示例"><span class="nav-text">Cookie操作示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Cookie"><span class="nav-text">使用Cookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除Cookie"><span class="nav-text">删除Cookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cookie中存取中文"><span class="nav-text">Cookie中存取中文</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Session</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Session的实现原理"><span class="nav-text">Session的实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Session对象的创建"><span class="nav-text">Session对象的创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Session对象的销毁"><span class="nav-text">Session对象的销毁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#URL重写"><span class="nav-text">URL重写</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="TCP／IP通信编程Socket（套接字）通信Socket是连接运行在网络上的两个程序间的双向通讯的端点。java中使用Socket类与ServerSocket类来进行TCP&#x2F;IP通信编程。 java.net.Socket类代表一个套接字，而java.net.ServerSocket类为服务器程序提供了一种来监听客户端，并与他们建立连接的机制。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;66-Java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="TCP／IP通信编程Socket（套接字）通信Socket是连接运行在网络上的两个程序间的双向通讯的端点。java中使用Socket类与ServerSocket类来进行TCP&#x2F;IP通信编程。 java.net.Socket类代表一个套接字，而java.net.ServerSocket类为服务器程序提供了一种来监听客户端，并与他们建立连接的机制。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584765749_20200321123813644_29837.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584765748_20200321123813429_25008.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584765748_20200321123813214_28724.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584765746_20200321123812882_12330.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.028Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584765749_20200321123813644_29837.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/66-Java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVA学习笔记</a></li>
+            <li>66-JAVA网络编程</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>TCP／IP通信编程</h1><h2 id="Socket（套接字）通信">Socket（套接字）通信</h2><p>Socket是连接运行在网络上的两个程序间的双向通讯的端点。</p><p>java中使用Socket类与ServerSocket类来进行TCP/IP通信编程。 java.net.Socket类代表一个套接字，而java.net.ServerSocket类为服务器程序提供了一种来监听客户端，并与他们建立连接的机制。</p><a id="more"></a>
+
+
+
+<h3 id="Socket通信原理">Socket通信原理</h3>
+<p>服务器程序将一个套接字绑定到一个特定的端口，并通过此套接字等待和监听客户的连接请求（ServerSocket套接字）。客户程序根据服务器程序所在的主机名和端口号发出连接请求。如果一切正常，服务器接受连接请求。并获得一个新的的套接字（Socket套接字，绑定到其它端口地址）。最后客户和服务器通过读、写Socket套接字进行通讯。</p>
+<p>为了实现服务器的多客户端通信支持，服务器端的程序需要为每一个与客户机连接的socket建立一个线程，来解决同时通信的问题。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584765749_20200321123813644_29837.png" alt></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584765748_20200321123813429_25008.png" alt></p>
+<p>整个实现流程如下：</p>
+<ul>
+<li>服务器实例化一个ServerSocket对象，表示通过服务器上的端口通信。</li>
+<li>服务器调用ServerSocket类的accept()方法，该方法将一直阻塞，直到客户端连接到服务器上给定的端口。</li>
+<li>服务器正在等待时，一个客户端实例化一个Socket对象，指定服务器名称和端口号来请求连接。</li>
+<li>在客户端：Socket类的构造函数试图将客户端连接到指定的服务器和端口号。如果通信被建立，则在客户端创建一个Socket对象能够与服务器进行通信。</li>
+<li>在服务器端，如果通信被建立，accept()方法解除阻塞，返回服务器上一个新的socket引用，该socket连接到客户端的socket。</li>
+<li>连接建立后，通过使用I/O流在进行通信。每一个socket都有一个输出流和一个输入流。客户端的输出流连接到服务器端的输入流，而客户端的输入流连接到服务器端的输出流。</li>
+<li>通过输入输出流读/写数据。</li>
+<li>通信完毕，关闭Socket（关闭输入/输出流）。</li>
+</ul>
+<p>如下图所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584765748_20200321123813214_28724.png" alt></p>
+<h2 id="ServerSocket类">ServerSocket类</h2>
+<p>服务器应用程序通过使用java.net.ServerSocket类以获取一个端口,并且侦听客户端请求。</p>
+<h3 id="构造方法">构造方法</h3>
+<p>ServerSocket类有四个构造方法：</p>
+<table>
+<thead>
+<tr>
+<th>构造方法</th>
+<th>方法描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public ServerSocket(int port) throws IOException</td>
+<td>创建绑定到特定端口的服务器套接字。</td>
+</tr>
+<tr>
+<td>public ServerSocket(int port, int backlog) throws IOException</td>
+<td>利用指定的backlog创建服务器套接字并将其绑定到指定的本地端口号。</td>
+</tr>
+<tr>
+<td>public ServerSocket(int port, int backlog, InetAddress address) throws IOException</td>
+<td>使用指定的端口、侦听backlog和要绑定到的本地IP地址创建服务器。</td>
+</tr>
+<tr>
+<td>public ServerSocket() throws IOException</td>
+<td>创建非绑定服务器套接字。</td>
+</tr>
+</tbody>
+</table>
+<p>如果ServerSocket构造方法没有抛出异常，就意味着你的应用程序已经成功绑定到指定的端口，并且侦听客户端请求。</p>
+<h3 id="常用方法">常用方法</h3>
+<p>ServerSocket类的常用方法：</p>
+<table>
+<thead>
+<tr>
+<th>常用方法</th>
+<th>方法描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public int getLocalPort()</td>
+<td>返回此套接字在其上侦听的端口。</td>
+</tr>
+<tr>
+<td>public Socket accept() throws IOException</td>
+<td>侦听并接受到此套接字的连接。</td>
+</tr>
+<tr>
+<td>public void setSoTimeout(int timeout)</td>
+<td>通过指定超时值启用/禁用SO_TIMEOUT，以毫秒为单位。</td>
+</tr>
+<tr>
+<td>public void bind(SocketAddress host, int backlog)</td>
+<td>将ServerSocket绑定到特定地址（IP 地址和端口号）。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Socket类">Socket类</h2>
+<p>java.net.Socket类代表客户端和服务器都用来互相沟通的套接字。客户端要获取一个Socket对象需要通过new关键字实例化，而服务器获得一个Socket对象则通过accept()方法返回对象。当Socket构造方法返回，并不止是简单的实例化了一个Socket对象，它实际上会尝试连接到指定的服务器和端口。</p>
+<h3 id="构造方法-2">构造方法</h3>
+<p>Socket类有五个构造方法：</p>
+<table>
+<thead>
+<tr>
+<th>构造方法</th>
+<th>方法描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public Socket(String host, int port) throws UnknownHostException, IOException</td>
+<td>创建一个流套接字并将其连接到指定主机上的指定端口号。</td>
+</tr>
+<tr>
+<td>public Socket(InetAddress host, int port) throws IOException</td>
+<td>创建一个流套接字并将其连接到指定 IP 地址的指定端口号。</td>
+</tr>
+<tr>
+<td>public Socket(String host, int port, InetAddress localAddress, int localPort) throws IOException</td>
+<td>创建一个套接字并将其连接到指定远程主机上的指定远程端口。</td>
+</tr>
+<tr>
+<td>public Socket(InetAddress host, int port, InetAddress localAddress, int localPort) throws IOException</td>
+<td>创建一个套接字并将其连接到指定远程地址上的指定远程端口。</td>
+</tr>
+<tr>
+<td>public Socket()</td>
+<td>通过系统默认类型的 SocketImpl 创建未连接套接字。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="常用方法-2">常用方法</h3>
+<p>注意客户端和服务器端都有一个Socket对象，所以无论客户端还是服务端都能够调用这些方法。</p>
+<table>
+<thead>
+<tr>
+<th>常用方法</th>
+<th>方法描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public void connect(SocketAddress host, int timeout) throws IOException</td>
+<td>将此套接字连接到服务器，并指定一个超时值。</td>
+</tr>
+<tr>
+<td>public InetAddress getInetAddress()</td>
+<td>返回套接字连接的地址。</td>
+</tr>
+<tr>
+<td>public int getPort()</td>
+<td>返回此套接字连接到的远程端口。</td>
+</tr>
+<tr>
+<td>public int getLocalPort()</td>
+<td>返回此套接字绑定到的本地端口。</td>
+</tr>
+<tr>
+<td>public SocketAddress getRemoteSocketAddress()</td>
+<td>返回此套接字连接的端点的地址，如果未连接则返回 null。</td>
+</tr>
+<tr>
+<td>public InputStream getInputStream() throws IOException</td>
+<td>返回此套接字的输入流。</td>
+</tr>
+<tr>
+<td>public OutputStream getOutputStream() throws IOException</td>
+<td>返回此套接字的输出流。</td>
+</tr>
+<tr>
+<td>public void close() throws IOException</td>
+<td>关闭此套接字。</td>
+</tr>
+</tbody>
+</table>
+<h1>UDP通信编程</h1>
+<h2 id="Datagram（数据报）的概念">Datagram（数据报）的概念</h2>
+<p>数据报是网上传输的独立数据包 ，数据报是否能正确地到达目的地，到达的时间，顺序，内容的正确性均没有保障。</p>
+<p>java中使用DatagramSocket与DatagramPacket类来进行UDP通信编程。</p>
+<h2 id="DatagramSocket类">DatagramSocket类</h2>
+<p>DatagramSocket类利用UDP协议来实现客户与服务器的Socket.</p>
+<ul>
+<li>send(): 发送数据报</li>
+<li>receive(): 接收数据报</li>
+</ul>
+<p>整个实现流程如下：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584765746_20200321123812882_12330.png" alt></p>
+<h1>Http通信：URLConnections类</h1>
+<p>为获得URL类的实际内容信息，可以用它的openConnection( )方法创建一个URLConnection对象。</p>
+<p>URLConnection是访问远程资源属性的一般用途的类。如果你建立了与远程服务器之间的连接，你可以在传输连接内容到本地之前用URLConnection来检察远程对象的属性。这些属性由HTTP协议规范定义并且仅对用HTTP协议的URL对象有意义。例如： 如果你连接HTTP协议的URL, openConnection() 方法返回HttpURLConnection对象。如果你连接的URL为一个JAR文件, openConnection()方法将返回JarURLConnection对象。 等等…</p>
+<p>URLConnection 方法列表如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>方法描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object getContent()</td>
+<td>检索URL链接内容</td>
+</tr>
+<tr>
+<td>Object getContent(Class[] classes)</td>
+<td>检索URL链接内容</td>
+</tr>
+<tr>
+<td>String getContentEncoding()</td>
+<td>返回头部content-encoding字段值。</td>
+</tr>
+<tr>
+<td>int getContentLength()</td>
+<td>返回头部content-length字段值</td>
+</tr>
+<tr>
+<td>String getContentType()</td>
+<td>返回头部content-type字段值</td>
+</tr>
+<tr>
+<td>int getLastModified()</td>
+<td>返回头部last-modified字段值。</td>
+</tr>
+<tr>
+<td>long getExpiration()</td>
+<td>返回头部expires字段值。</td>
+</tr>
+<tr>
+<td>long getIfModifiedSince()</td>
+<td>返回对象的ifModifiedSince字段值。</td>
+</tr>
+<tr>
+<td>public void setDoInput(boolean input)</td>
+<td>URL连接可用于输入和/或输出。如果打算使用URL连接进行输入，则将DoInput标志设置为true；如果不打算使用，则设置为false。默认值为true。</td>
+</tr>
+<tr>
+<td>public void setDoOutput(boolean output)</td>
+<td>URL连接可用于输入和/或输出。如果打算使用URL连接进行输出，则将DoOutput标志设置为true；如果不打算使用，则设置为false。默认值为false。</td>
+</tr>
+<tr>
+<td>public InputStream getInputStream() throws IOException</td>
+<td>返回URL的输入流，用于读取资源</td>
+</tr>
+<tr>
+<td>public OutputStream getOutputStream() throws IOException</td>
+<td>返回URL的输出流, 用于写入资源。</td>
+</tr>
+<tr>
+<td>public URL getURL()</td>
+<td>返回URLConnection对象连接的URL</td>
+</tr>
+</tbody>
+</table>
+<p>实例：以下实例中URL采用了HTTP协议。openConnection返回HttpURLConnection对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 文件名 : URLConnDemo.java</span></span><br><span class="line"><span class="keyword">import</span> java.net.*;</span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">URLConnDemo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            URL url = <span class="keyword">new</span> URL(<span class="string">"http://www.w3cschool.cc"</span>);</span><br><span class="line">            URLConnection urlConnection = url.openConnection();</span><br><span class="line">            HttpURLConnection connection = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">if</span>(urlConnection <span class="keyword">instanceof</span> HttpURLConnection)</span><br><span class="line">            &#123;</span><br><span class="line">                connection = (HttpURLConnection) urlConnection;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                System.out.println(<span class="string">"Please enter an HTTP URL."</span>);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(</span><br><span class="line">                connection.getInputStream()));</span><br><span class="line">            String urlString = <span class="string">""</span>;</span><br><span class="line">            String current;</span><br><span class="line">            <span class="keyword">while</span>((current = in.readLine()) != <span class="keyword">null</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                urlString += current;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(urlString);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span>(IOException e)</span><br><span class="line">        &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上实例编译运行结果如下：</p>
+<p>$ java URLConnDemo</p>
+<p>…a complete HTML content of home page of <a href="http://amrood.com" target="_blank" rel="noopener">amrood.com</a>…</p>
+<h1>其它常用类</h1>
+<h2 id="URL类">URL类</h2>
+<p>URL类用于创建代表了一个URL链接的对象，该类提供了丰富的URL构建方式。URL对象表示一个绝对URL地址，但URL对象可用绝对URL、相对URL和部分URL构建。如果创建失败， 会抛出一个MalformedURLException异常。</p>
+<h3 id="URL（统一资源定位符）">URL（统一资源定位符）</h3>
+<p>URL(Uniform Resource Locator)是统一资源定位符的简称，它表示Internet上某一资源的地址。通过URL我们可以访问Internet上的各种网络资源，比如最常见的WWW，FTP站点。浏览器通过解析给定的URL可以在网络上查找相应的文件或其他资源。 URL是最为直观的一种网络定位方法。使用URL符合人们的语言习惯，容易记忆，所以应用十分广泛。而且在目前使用最为广泛的TCP/IP中对于URL中主机名的解也是协议的一个标准，即所谓的域名解析服务。</p>
+<p>URL可以分为两个部分。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protocol://host:port/path?query#ref</span><br></pre></td></tr></table></figure>
+<p>• 协议标识符（protocols）：可以是 HTTP, HTTPS, FTP, 和File等。</p>
+<p>• 资源名字，包括：</p>
+<p>• host：主机名。</p>
+<p>• port ：端口号。</p>
+<p>• path：文件路径及文件名。</p>
+<p>• ref：引用</p>
+<p>HTTP协议的URL实例如下：</p>
+<p><a href="http://java.sun.com:80/docs/books/tutorial/index.html#DOWN" target="_blank" rel="noopener">http://java.sun.com:80/docs/books/tutorial/index.html#DOWN</a></p>
+<h3 id="URI与URL的区别">URI与URL的区别</h3>
+<p>URI与URL都是定位资源位置的，就是表示这个资源的位置信息，就像经纬度一样可以表示你在世界的哪个角落。URI是一种宽泛的含义更广的定义，而URL则是URI的一个子集，就是说URL是URI的一部分。</p>
+<h3 id="URL类的构造方法">URL类的构造方法</h3>
+<table>
+<thead>
+<tr>
+<th>构造方法</th>
+<th>方法描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public URL(String protocol, String host, int port, String file) throws MalformedURLException</td>
+<td>通过给定的参数(协议、主机名、端口号、文件名)创建URL。</td>
+</tr>
+<tr>
+<td>public URL(String protocol, String host, String file) throws MalformedURLException</td>
+<td>使用指定的协议、主机名、文件名创建URL，端口使用协议的默认端口。</td>
+</tr>
+<tr>
+<td>public URL(String url) throws MalformedURLException</td>
+<td>通过给定的URL字符串创建URL</td>
+</tr>
+<tr>
+<td>public URL(URL context, String url) throws MalformedURLException</td>
+<td>使用基地址和相对URL创建</td>
+</tr>
+</tbody>
+</table>
+<p>例如：<a href="http://www.gamelan.com/pages/index..html" target="_blank" rel="noopener">http://www.gamelan.com/pages/index..html</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> URL(<span class="string">"http://www.gamelan.com/pages/index.html"</span>;;);</span><br><span class="line">URL gamelan = <span class="keyword">new</span> URL(<span class="string">"http://www.gamelan.com/pages/"</span>;;);</span><br><span class="line">URL gamelanGames = <span class="keyword">new</span> URL(gamelan,<span class="string">"game.html"</span>);</span><br><span class="line"><span class="keyword">new</span> URL(<span class="string">"http"</span>, <span class="string">"www.gamelan.com"</span>,<span class="string">"/pages/index.html"</span>;;);</span><br><span class="line"><span class="keyword">new</span> URL(<span class="string">"http"</span>, <span class="string">"www.gamelan.com"</span>;;, <span class="number">80</span>, <span class="string">"pages/index.network.html"</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="参数访问">参数访问</h3>
+<p>URL类中包含了很多方法用于访问URL的各个部分，具体方法及描述如下：</p>
+<table>
+<thead>
+<tr>
+<th>常用方法</th>
+<th>方法描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public String getPath()</td>
+<td>返回URL路径部分。</td>
+</tr>
+<tr>
+<td>public String getQuery()</td>
+<td>返回URL查询部分。</td>
+</tr>
+<tr>
+<td>public String getAuthority()</td>
+<td>获取此 URL 的授权部分。</td>
+</tr>
+<tr>
+<td>public int getPort()</td>
+<td>返回URL端口部分</td>
+</tr>
+<tr>
+<td>public int getDefaultPort()</td>
+<td>返回协议的默认端口号。</td>
+</tr>
+<tr>
+<td>public String getProtocol()</td>
+<td>返回URL的协议</td>
+</tr>
+<tr>
+<td>public String getHost()</td>
+<td>返回URL的主机</td>
+</tr>
+<tr>
+<td>public String getFile()</td>
+<td>返回URL文件名部分</td>
+</tr>
+<tr>
+<td>public String getRef()</td>
+<td>获取此 URL 的锚点（也称为&quot;引用&quot;）。</td>
+</tr>
+<tr>
+<td>public URLConnection openConnection() throws IOException</td>
+<td>打开一个URL连接，并运行客户端访问资源。</td>
+</tr>
+</tbody>
+</table>
+<p>实例：以下实例演示了使用java.net的URL类获取URL的各个部分参数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.net.*;</span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">URLDemo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            URL url = <span class="keyword">new</span> URL(<span class="string">"http://www.w3cschool.cc/index.html?language=cn#j2se"</span>);</span><br><span class="line">            System.out.println(<span class="string">"URL is "</span> + url.toString());</span><br><span class="line">            System.out.println(<span class="string">"protocol is "</span> + url.getProtocol());</span><br><span class="line">            System.out.println(<span class="string">"authority is "</span> + url.getAuthority());</span><br><span class="line">            System.out.println(<span class="string">"file name is "</span> + url.getFile());</span><br><span class="line">            System.out.println(<span class="string">"host is "</span> + url.getHost());</span><br><span class="line">            System.out.println(<span class="string">"path is "</span> + url.getPath());</span><br><span class="line">            System.out.println(<span class="string">"port is "</span> + url.getPort());</span><br><span class="line">            System.out.println(<span class="string">"default port is "</span> + url.getDefaultPort());</span><br><span class="line">            System.out.println(<span class="string">"query is "</span> + url.getQuery());</span><br><span class="line">            System.out.println(<span class="string">"ref is "</span> + url.getRef());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span>(IOException e)</span><br><span class="line">        &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上实例编译运行结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">URL is http://www.w3cschool.cc/index.html?language=cn#j2se</span><br><span class="line">protocol is http</span><br><span class="line">authority is www.w3cschool.cc</span><br><span class="line">file name is /index.htm?language=cn</span><br><span class="line">host is www.amrood.com</span><br><span class="line">path is /index.html</span><br><span class="line">port is -1</span><br><span class="line">default port is 80</span><br><span class="line">query is language=cn</span><br><span class="line">ref is j2se</span><br></pre></td></tr></table></figure>
+<h2 id="InetAddress类">InetAddress类</h2>
+<p>InetAddress类用来封装数字式的IP地址和该地址的域名。</p>
+<p>InetAddress类没有明显的构造函数，使用工厂方法来生成一个InetAddress对象。有以下几个方法可以用来创建InetAddress的实例，详细如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> InetAddress <span class="title">getLocalHost</span><span class="params">( )</span> <span class="keyword">throws</span> UnknownHostException</span></span><br><span class="line"><span class="function"><span class="comment">//getLocalHost( )仅返回象征本地主机的InetAddress对象。</span></span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function"><span class="keyword">static</span> InetAddress <span class="title">getByName</span><span class="params">(String hostName)</span> <span class="keyword">throws</span> UnknownHostException</span></span><br><span class="line"><span class="function"><span class="comment">//getByName( )方法返回一个代表主机名hostName的InetAddress对象。</span></span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function"><span class="keyword">static</span> InetAddress[ ] <span class="title">getAllByName</span><span class="params">(String hostName)</span> <span class="keyword">throws</span> UnknownHostException</span></span><br><span class="line"><span class="function"><span class="comment">//在Internet上，用一个名称来代表多个机器是常有的事。getAllByName( )工厂方法返回代表由一个特殊名称分解的所有地址的InetAddresses类数组。</span></span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function"><span class="keyword">static</span> InetAddress <span class="title">getByAddress</span><span class="params">(<span class="keyword">byte</span>[] addr)</span></span></span><br><span class="line"><span class="function"><span class="comment">//在给定原始IP地址的情况下，返回InetAddress对象。</span></span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function"><span class="keyword">static</span> InetAddress <span class="title">getByAddress</span><span class="params">(String host, <span class="keyword">byte</span>[] addr)</span></span></span><br><span class="line"><span class="function"><span class="comment">//根据提供的主机名和IP地址创建 InetAddress。</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="常用方法-3">常用方法</h3>
+<table>
+<thead>
+<tr>
+<th>常用方法</th>
+<th>方法描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String getHostAddress()</td>
+<td>返回IP地址字符串（以文本表现形式）。</td>
+</tr>
+<tr>
+<td>String getHostName()</td>
+<td>获取此IP地址的主机名。</td>
+</tr>
+<tr>
+<td>String toString()</td>
+<td>将此IP地址转换为String。</td>
+</tr>
+</tbody>
+</table>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVA学习笔记</a></li>
+            <li>66-JAVA网络编程</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">TCP／IP通信编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Socket（套接字）通信"><span class="nav-text">Socket（套接字）通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Socket通信原理"><span class="nav-text">Socket通信原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ServerSocket类"><span class="nav-text">ServerSocket类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造方法"><span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用方法"><span class="nav-text">常用方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Socket类"><span class="nav-text">Socket类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造方法-2"><span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用方法-2"><span class="nav-text">常用方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">UDP通信编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Datagram（数据报）的概念"><span class="nav-text">Datagram（数据报）的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DatagramSocket类"><span class="nav-text">DatagramSocket类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">Http通信：URLConnections类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">其它常用类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#URL类"><span class="nav-text">URL类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#URL（统一资源定位符）"><span class="nav-text">URL（统一资源定位符）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#URI与URL的区别"><span class="nav-text">URI与URL的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#URL类的构造方法"><span class="nav-text">URL类的构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数访问"><span class="nav-text">参数访问</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InetAddress类"><span class="nav-text">InetAddress类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用方法-3"><span class="nav-text">常用方法</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

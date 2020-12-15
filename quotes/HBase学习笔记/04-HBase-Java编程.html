@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="https:&#x2F;&#x2F;blog.csdn.net&#x2F;carl810224&#x2F;article&#x2F;details&#x2F;52042555HBase APIHBase Java API 文档https:&#x2F;&#x2F;hbase.apache.org&#x2F;devapidocs&#x2F;index.htmlHBase API程序设计步骤  创建一个Configuration对象；   通过Configuration对象的获取Admin对象和Tab">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;04-HBase-Java%E7%BC%96%E7%A8%8B.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="https:&#x2F;&#x2F;blog.csdn.net&#x2F;carl810224&#x2F;article&#x2F;details&#x2F;52042555HBase APIHBase Java API 文档https:&#x2F;&#x2F;hbase.apache.org&#x2F;devapidocs&#x2F;index.htmlHBase API程序设计步骤  创建一个Configuration对象；   通过Configuration对象的获取Admin对象和Tab">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/04-HBase-Java%E7%BC%96%E7%A8%8B">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HBASE学习笔记</a></li>
+            <li>04-HBASE-JAVA编程</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p><a href="https://blog.csdn.net/carl810224/article/details/52042555" target="_blank" rel="noopener">https://blog.csdn.net/carl810224/article/details/52042555</a></p><h1>HBase API</h1><p>HBase Java API 文档</p><p><a href="https://hbase.apache.org/devapidocs/index.html" target="_blank" rel="noopener">https://hbase.apache.org/devapidocs/index.html</a></p><h2 id="HBase-API程序设计步骤">HBase API程序设计步骤</h2><ol>
+<li>
+<p>创建一个Configuration对象；</p>
+</li>
+<li>
+<p>通过Configuration对象的获取Admin对象和Table对象；</p>
+</li>
+<li>
+<p>执行相应的put 、get 、delete 、scan 等操作；</p>
+</li>
+<li>
+<p>释放各种资源。</p>
+</li>
+</ol><a id="more"></a>
+
+
+
+
+
+<h2 id="Maven依赖">Maven依赖</h2>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hbase<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hbase-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.6<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Connection接口">Connection接口</h2>
+<p>客户端与HBase集群的连接接口，封装了与实际服务器的单个连接以及与zookeeper的连接。</p>
+<p>Connection对象通过ConnectionFactory类实例化。连接的生命周期由调用者管理，调用者必须调用close()方法来关闭连接以释放资源。</p>
+<table>
+<thead>
+<tr>
+<th>返回值</th>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Table</td>
+<td>getTable(TableName tableName)</td>
+<td>获取表对象</td>
+</tr>
+<tr>
+<td>Admin</td>
+<td>getAdmin()</td>
+<td>获取Admin对象，管理HBase集群</td>
+</tr>
+<tr>
+<td>void</td>
+<td>close()</td>
+<td>关闭连接</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Admin接口">Admin接口</h2>
+<p>The administrative API for HBase. Obtain an instance from an Connection.getAdmin() and call close() afterwards. Admin can be used to create, drop, list, enable and disable tables, add and drop table column families and other administrative operations.</p>
+<p>HBase的管理接口。通过Connection.getAdmin()获取一个实例，调用完毕后使用close()方法关闭。Admin可用于创建，删除，列表，启用和禁用表，添加和删除表列和其他管理操作。</p>
+<table>
+<thead>
+<tr>
+<th>返回值</th>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean</td>
+<td>tableExists(TableName tableName)</td>
+<td>判定表是否存在</td>
+</tr>
+<tr>
+<td>List</td>
+<td>listTableDescriptors()</td>
+<td>列出所有的用户空间的数据表</td>
+</tr>
+<tr>
+<td>TableName[]</td>
+<td>listTableNames()</td>
+<td>列出所有的用户空间的数据表的表名</td>
+</tr>
+<tr>
+<td>void</td>
+<td>createTable(TableDescriptor desc)</td>
+<td>创建一个新表</td>
+</tr>
+<tr>
+<td>void</td>
+<td>deleteTable(TableName tableName)</td>
+<td>删除一个表</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Table接口">Table接口</h2>
+<p>Used to communicate with a single HBase table. Obtain an instance from a Connection and call close() afterwards.</p>
+<p>Table can be used to get, put, delete or scan data from a table.</p>
+<p>用于与单个HBase表通信。从Connection获取实例，调用完毕后使用close()关闭。Table对象可用于从表中获取，放置，删除或扫描数据。</p>
+<h1>HBase应用实例</h1>
+<h2 id="创建表">创建表</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HBaseConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HColumnDescriptor;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HTableDescriptor;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.TableName;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Admin;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Connection;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.ConnectionFactory;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CreateDemo</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       Configuration conf = HBaseConfiguration.create();</span><br><span class="line">       conf.set(<span class="string">"hbase.rootdir"</span>, <span class="string">"hdfs://node:9000/hbase"</span>);</span><br><span class="line">       <span class="comment">// 设置Zookeeper</span></span><br><span class="line">       conf.set(<span class="string">"hbase.zookeeper.quorum"</span>, <span class="string">"node"</span>);</span><br><span class="line">       <span class="comment">//建立HBase连接</span></span><br><span class="line">       Connection connection = ConnectionFactory.createConnection(conf);</span><br><span class="line">       <span class="comment">//表管理类</span></span><br><span class="line">       Admin admin = connection.getAdmin();</span><br><span class="line">       <span class="comment">//定义表名</span></span><br><span class="line">       String tablename = <span class="string">"test1"</span>;</span><br><span class="line">       TableName tableNameObj = TableName.valueOf(tablename);</span><br><span class="line">       <span class="comment">//判断表是否存在</span></span><br><span class="line">       <span class="keyword">if</span> (admin.tableExists(tableNameObj)) &#123;</span><br><span class="line">           System.out.println(<span class="string">"Table exists!"</span>);</span><br><span class="line">           System.exit(<span class="number">0</span>);</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="comment">//定义表结构</span></span><br><span class="line">           HTableDescriptor tableDesc = <span class="keyword">new</span> HTableDescriptor(TableName.valueOf(tablename));</span><br><span class="line">           <span class="comment">//添加列族</span></span><br><span class="line">           tableDesc.addFamily(<span class="keyword">new</span> HColumnDescriptor(<span class="string">"info"</span>));</span><br><span class="line">           <span class="comment">//创建表</span></span><br><span class="line">           admin.createTable(tableDesc);</span><br><span class="line">           System.out.println(<span class="string">"create table success!"</span>);</span><br><span class="line">       &#125;</span><br><span class="line">       admin.close();</span><br><span class="line">       connection.close();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="插入数据">插入数据</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HBaseConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.TableName;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Connection;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Put;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Table;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.util.Bytes;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PutDemo</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span><span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       Configuration conf = HBaseConfiguration.create();</span><br><span class="line">       conf.set(<span class="string">"hbase.rootdir"</span>, <span class="string">"hdfs://node:9000/hbase"</span>);</span><br><span class="line">       <span class="comment">// 设置Zookeeper</span></span><br><span class="line">       conf.set(<span class="string">"hbase.zookeeper.quorum"</span>, <span class="string">"node"</span>);</span><br><span class="line">       <span class="comment">//建立连接</span></span><br><span class="line">       Connection connection = ConnectionFactory.createConnection(conf);</span><br><span class="line">       <span class="comment">//获取表</span></span><br><span class="line">       Table table = connection.getTable(TableName.valueOf(<span class="string">"test1"</span>));</span><br><span class="line">       <span class="comment">//通过rowKey实例化Put</span></span><br><span class="line">       Put put = <span class="keyword">new</span> Put(Bytes.toBytes(<span class="string">"001"</span>));</span><br><span class="line">       <span class="comment">//指定列族名、列名和值</span></span><br><span class="line">       String family = <span class="string">"info"</span>;</span><br><span class="line">       String qualifier = <span class="string">"name"</span>;</span><br><span class="line">       String value = <span class="string">"hadron"</span>;</span><br><span class="line">       put.addColumn(Bytes.toBytes(family), Bytes.toBytes(qualifier), Bytes.toBytes(value));</span><br><span class="line">       <span class="comment">//执行Put</span></span><br><span class="line">       table.put(put);</span><br><span class="line">       <span class="comment">//关闭表和连接</span></span><br><span class="line">       table.close();</span><br><span class="line">       connection.close();</span><br><span class="line">       System.out.println(<span class="string">"ok!"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="读取数据">读取数据</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HBaseConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.TableName;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.*;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.util.Bytes;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GetDemo</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span><span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       Configuration conf = HBaseConfiguration.create();</span><br><span class="line">       conf.set(<span class="string">"hbase.rootdir"</span>, <span class="string">"hdfs://node:9000/hbase"</span>);</span><br><span class="line">       <span class="comment">// 设置Zookeeper</span></span><br><span class="line">       conf.set(<span class="string">"hbase.zookeeper.quorum"</span>, <span class="string">"node"</span>);</span><br><span class="line">       <span class="comment">//建立连接</span></span><br><span class="line">       Connection connection = ConnectionFactory.createConnection(conf);</span><br><span class="line">       Table table = connection.getTable(TableName.valueOf(<span class="string">"test1"</span>));</span><br><span class="line">       <span class="comment">//通过rowKey实例化Get</span></span><br><span class="line">       Get get = <span class="keyword">new</span> Get(Bytes.toBytes(<span class="string">"001"</span>));</span><br><span class="line">       <span class="comment">//添加列族名和列名条件</span></span><br><span class="line">       String family = <span class="string">"info"</span>;</span><br><span class="line">       String qualifier = <span class="string">"name"</span>;</span><br><span class="line">       get.addColumn(family.getBytes(), qualifier.getBytes());</span><br><span class="line">       <span class="comment">//执行Get，返回结果</span></span><br><span class="line">       Result result = table.get(get);</span><br><span class="line">       <span class="comment">//提取结果</span></span><br><span class="line">       String value = Bytes.toString(result.getValue(family.getBytes(), qualifier.getBytes()));</span><br><span class="line">       System.out.println(<span class="string">"value="</span> + value);</span><br><span class="line">       <span class="comment">//关闭表和连接</span></span><br><span class="line">       table.close();</span><br><span class="line">       connection.close();</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="扫描表">扫描表</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HBaseConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.TableName;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.*;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.util.Bytes;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScanDemo</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span><span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       Configuration conf = HBaseConfiguration.create();</span><br><span class="line">       conf.set(<span class="string">"hbase.rootdir"</span>, <span class="string">"hdfs://node:9000/hbase"</span>);</span><br><span class="line">       <span class="comment">// 设置Zookeeper</span></span><br><span class="line">       conf.set(<span class="string">"hbase.zookeeper.quorum"</span>, <span class="string">"node"</span>);</span><br><span class="line">       <span class="comment">//建立连接</span></span><br><span class="line">       Connection connection = ConnectionFactory.createConnection(conf);</span><br><span class="line">       Table table = connection.getTable(TableName.valueOf(<span class="string">"test1"</span>));</span><br><span class="line">       <span class="comment">//初始化Scan</span></span><br><span class="line">       Scan scan = <span class="keyword">new</span> Scan();</span><br><span class="line">       <span class="comment">//添加过滤条件</span></span><br><span class="line">       <span class="comment">// 指定开始的rowKey</span></span><br><span class="line">       <span class="comment">// scan.setStartRow("001".getBytes());</span></span><br><span class="line">       <span class="comment">// 指定结束的rowKey</span></span><br><span class="line">       <span class="comment">// scan.setStopRow("005".getBytes());</span></span><br><span class="line">       String family = <span class="string">"info"</span>;</span><br><span class="line">       String qualifier = <span class="string">"name"</span>;</span><br><span class="line">       scan.addColumn(family.getBytes(), qualifier.getBytes());</span><br><span class="line">       <span class="comment">//执行scan返回结果</span></span><br><span class="line">       ResultScanner result = table.getScanner(scan);</span><br><span class="line">       <span class="comment">//迭代提取结果</span></span><br><span class="line">       String value = <span class="string">""</span>;</span><br><span class="line">       <span class="keyword">for</span>(Result r : result) &#123;</span><br><span class="line">           value = Bytes.toString(r.getValue(family.getBytes(), qualifier.getBytes()));</span><br><span class="line">           System.out.println(<span class="string">"value="</span> + value);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//关闭表和连接</span></span><br><span class="line">       table.close();</span><br><span class="line">       connection.close();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="删除数据">删除数据</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HBaseConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.TableName;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Connection;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Delete;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Table;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.util.Bytes;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DeleteDemo</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span><span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       Configuration conf = HBaseConfiguration.create();</span><br><span class="line">       conf.set(<span class="string">"hbase.rootdir"</span>, <span class="string">"hdfs://node:9000/hbase"</span>);</span><br><span class="line">       <span class="comment">// 设置Zookeeper</span></span><br><span class="line">       conf.set(<span class="string">"hbase.zookeeper.quorum"</span>, <span class="string">"node"</span>);</span><br><span class="line">       <span class="comment">//建立连接</span></span><br><span class="line">       Connection connection = ConnectionFactory.createConnection(conf);</span><br><span class="line">       <span class="comment">//获取表</span></span><br><span class="line">       Table table = connection.getTable(TableName.valueOf(<span class="string">"test1"</span>));</span><br><span class="line">       <span class="comment">//通过rowKey实例化Delete</span></span><br><span class="line">       Delete delete = <span class="keyword">new</span> Delete(Bytes.toBytes(<span class="string">"001"</span>));</span><br><span class="line">       <span class="comment">//指定列族名、列名和值</span></span><br><span class="line">       String family = <span class="string">"info"</span>;</span><br><span class="line">       String qualifier = <span class="string">"name"</span>;</span><br><span class="line">       delete.addColumn(family.getBytes(), qualifier.getBytes());</span><br><span class="line">       <span class="comment">//执行Delete</span></span><br><span class="line">       table.delete(delete);</span><br><span class="line">       <span class="comment">//关闭表和连接</span></span><br><span class="line">       table.close();</span><br><span class="line">       connection.close();</span><br><span class="line">       System.out.println(<span class="string">"ok!"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="删除表">删除表</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HBaseConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.TableName;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Admin;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Connection;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.ConnectionFactory;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DropDemo</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span><span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       Configuration conf = HBaseConfiguration.create();</span><br><span class="line">       conf.set(<span class="string">"hbase.rootdir"</span>, <span class="string">"hdfs://node:9000/hbase"</span>);</span><br><span class="line">       <span class="comment">// 设置Zookeeper</span></span><br><span class="line">       conf.set(<span class="string">"hbase.zookeeper.quorum"</span>, <span class="string">"node"</span>);</span><br><span class="line">       <span class="comment">//建立连接</span></span><br><span class="line">       Connection connection = ConnectionFactory.createConnection(conf);</span><br><span class="line">       <span class="comment">//表管理类</span></span><br><span class="line">       Admin admin = connection.getAdmin();</span><br><span class="line">       <span class="comment">//定义表名</span></span><br><span class="line">       TableName table = TableName.valueOf(<span class="string">"test1"</span>);</span><br><span class="line">       <span class="comment">//先禁用</span></span><br><span class="line">       admin.disableTable(table);</span><br><span class="line">       <span class="comment">//再删除</span></span><br><span class="line">       admin.deleteTable(table);</span><br><span class="line">       <span class="comment">//关闭</span></span><br><span class="line">       admin.close();</span><br><span class="line">       connection.close();</span><br><span class="line">       System.out.println(<span class="string">"Successfully deleted data table！"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="综合封装类">综合封装类</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.*;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.*;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.util.Bytes;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HBaseDao</span> </span>&#123;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> Configuration conf = HBaseConfiguration.create();</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> Connection connection = <span class="keyword">null</span>;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> Admin admin = <span class="keyword">null</span>;</span><br><span class="line">   <span class="keyword">static</span> &#123;</span><br><span class="line">       conf.set(<span class="string">"hbase.rootdir"</span>, <span class="string">"hdfs://node:9000/hbase"</span>);</span><br><span class="line">       <span class="comment">// 设置Zookeeper</span></span><br><span class="line">       conf.set(<span class="string">"hbase.zookeeper.quorum"</span>, <span class="string">"node"</span>);</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           connection = ConnectionFactory.createConnection(conf);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           admin = connection.getAdmin();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 创建表</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">createTable</span><span class="params">(String tablename, String columnFamily)</span> </span>&#123;</span><br><span class="line">       TableName tableNameObj = TableName.valueOf(tablename);</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="keyword">if</span> (admin.tableExists(tableNameObj)) &#123;</span><br><span class="line">               System.out.println(<span class="string">"Table exists!"</span>);</span><br><span class="line">               System.exit(<span class="number">0</span>);</span><br><span class="line">           &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">               HTableDescriptor tableDesc = <span class="keyword">new</span> HTableDescriptor(TableName.valueOf(tablename));</span><br><span class="line">               tableDesc.addFamily(<span class="keyword">new</span> HColumnDescriptor(columnFamily));</span><br><span class="line">               admin.createTable(tableDesc);</span><br><span class="line">               System.out.println(<span class="string">"create table success!"</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 删除表</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">deleteTable</span><span class="params">(String tableName)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           TableName table = TableName.valueOf(tableName);</span><br><span class="line">           admin.disableTable(table);</span><br><span class="line">           admin.deleteTable(table);</span><br><span class="line">           System.out.println(<span class="string">"delete table "</span> + tableName + <span class="string">" ok."</span>);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           System.out.println(<span class="string">"删除表出现异常！"</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 插入一行记录</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(String tableName, String rowKey, String family, String qualifier, String value)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           Table table = connection.getTable(TableName.valueOf(tableName));</span><br><span class="line">           Put put = <span class="keyword">new</span> Put(Bytes.toBytes(rowKey));</span><br><span class="line">           put.addColumn(Bytes.toBytes(family), Bytes.toBytes(qualifier), Bytes.toBytes(value));</span><br><span class="line">           table.put(put);</span><br><span class="line">           table.close();</span><br><span class="line">           <span class="comment">//System.out.println("insert recored " + rowKey + " to table " + tableName + " ok.");</span></span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//查询数据</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">get</span><span class="params">(String tableName, String rowKey, String family, String qualifier)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           Table table = connection.getTable(TableName.valueOf(tableName));</span><br><span class="line">           <span class="comment">//通过rowKey实例化Get</span></span><br><span class="line">           Get get = <span class="keyword">new</span> Get(Bytes.toBytes(rowKey));</span><br><span class="line">           <span class="comment">//添加列族名和列名条件</span></span><br><span class="line">           get.addColumn(family.getBytes(), qualifier.getBytes());</span><br><span class="line">           <span class="comment">//执行Get，返回结果</span></span><br><span class="line">           Result result = table.get(get);</span><br><span class="line">           <span class="comment">//返回结果</span></span><br><span class="line">           <span class="keyword">return</span> Bytes.toString(result.getValue(family.getBytes(), qualifier.getBytes()));</span><br><span class="line">       &#125; <span class="keyword">catch</span>(IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//统计记录数</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">count</span><span class="params">(String tableName)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="keyword">final</span> <span class="keyword">long</span>[] rowCount = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">           Table table = connection.getTable(TableName.valueOf(tableName));</span><br><span class="line">           Scan scan = <span class="keyword">new</span> Scan();</span><br><span class="line">           scan.setFilter(<span class="keyword">new</span> FirstKeyOnlyFilter());</span><br><span class="line">           ResultScanner resultScanner = table.getScanner(scan);</span><br><span class="line">           resultScanner.forEach(result -&gt; &#123;</span><br><span class="line">               rowCount[<span class="number">0</span>] += result.size();<span class="comment">//result.size()是int型</span></span><br><span class="line">           &#125;);</span><br><span class="line">           <span class="keyword">return</span> rowCount[<span class="number">0</span>];</span><br><span class="line">       &#125; <span class="keyword">catch</span>(IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">           <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//扫描表</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">scan</span><span class="params">(String tableName, String startRow, String stopRow, String family, String qualifier)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           Table table = connection.getTable(TableName.valueOf(tableName));</span><br><span class="line">           <span class="comment">//初始化Scan</span></span><br><span class="line">           Scan scan = <span class="keyword">new</span> Scan();</span><br><span class="line">           <span class="comment">//指定开始的rowKey</span></span><br><span class="line">           scan.setStartRow(startRow.getBytes());</span><br><span class="line">           <span class="comment">//指定结束的rowKey</span></span><br><span class="line">           scan.setStopRow(stopRow.getBytes());</span><br><span class="line">           scan.addColumn(family.getBytes(), qualifier.getBytes());</span><br><span class="line">           <span class="comment">//执行scan返回结果</span></span><br><span class="line">           ResultScanner result = table.getScanner(scan);</span><br><span class="line">           List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">           String value = <span class="keyword">null</span>;</span><br><span class="line">           <span class="keyword">for</span>(Result r : result) &#123;</span><br><span class="line">               value = Bytes.toString(r.getValue(family.getBytes(), qualifier.getBytes()));</span><br><span class="line">               list.add(value);</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">return</span> list;</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//扫描表</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">scan</span><span class="params">(String tableName, String family, String qualifier)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           Table table = connection.getTable(TableName.valueOf(tableName));</span><br><span class="line">           <span class="comment">//初始化Scan</span></span><br><span class="line">           Scan scan = <span class="keyword">new</span> Scan();</span><br><span class="line">           scan.addColumn(family.getBytes(), qualifier.getBytes());</span><br><span class="line">           <span class="comment">//执行scan返回结果</span></span><br><span class="line">           ResultScanner result = table.getScanner(scan);</span><br><span class="line">           List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">           String value = <span class="keyword">null</span>;</span><br><span class="line">           <span class="keyword">for</span>(Result r : result) &#123;</span><br><span class="line">               value = Bytes.toString(r.getValue(family.getBytes(), qualifier.getBytes()));</span><br><span class="line">               list.add(value);</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">return</span> list;</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">scan</span><span class="params">(String tableName)</span> </span>&#123;</span><br><span class="line">       List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="comment">//获取表</span></span><br><span class="line">           Table table = connection.getTable(TableName.valueOf(tableName));</span><br><span class="line">           Scan scan = <span class="keyword">new</span> Scan();</span><br><span class="line">           ResultScanner resultScanner = table.getScanner(scan);</span><br><span class="line">           StringBuffer sb = <span class="keyword">null</span>;</span><br><span class="line">           <span class="keyword">for</span> (Result result : resultScanner) &#123;</span><br><span class="line">               List&lt;Cell&gt; cells = result.listCells();</span><br><span class="line">               <span class="keyword">for</span> (Cell cell : cells) &#123;</span><br><span class="line">                   sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">                   sb.append(<span class="string">"rowKey:"</span>).append(Bytes.toString(CellUtil.cloneRow(cell))).append(<span class="string">"\t"</span>);</span><br><span class="line">                   sb.append(<span class="string">"family:"</span>).append(Bytes.toString(CellUtil.cloneFamily(cell))).append(<span class="string">","</span>);</span><br><span class="line">                   sb.append(Bytes.toString(CellUtil.cloneQualifier(cell))).append(<span class="string">"="</span>);</span><br><span class="line">                   sb.append(Bytes.toString(CellUtil.cloneValue(cell)));</span><br><span class="line">                   list.add(sb.toString());</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">return</span> list;</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(String tableName, String rowKey, String family, String qualifier)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="comment">//获取表</span></span><br><span class="line">           Table table = connection.getTable(TableName.valueOf(tableName));</span><br><span class="line">           <span class="comment">//通过rowKey实例化Delete</span></span><br><span class="line">           Delete delete = <span class="keyword">new</span> Delete(Bytes.toBytes(rowKey));</span><br><span class="line">           <span class="comment">//指定列族名、列名和值</span></span><br><span class="line">           delete.addColumn(family.getBytes(), qualifier.getBytes());</span><br><span class="line">           <span class="comment">//执行Delete</span></span><br><span class="line">           table.delete(delete);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//关闭</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           admin.close();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           connection.close();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//测试</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">       HBaseDao.deleteTable(<span class="string">"testA"</span>);</span><br><span class="line">       HBaseDao.createTable(<span class="string">"testA"</span>, <span class="string">"info"</span>);</span><br><span class="line">       <span class="comment">//循环插入10条数据</span></span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">           HBaseDao.put(<span class="string">"testA"</span>, <span class="string">"00"</span> + i, <span class="string">"info"</span>, <span class="string">"name"</span>, <span class="string">"test"</span> + i);</span><br><span class="line">           HBaseDao.put(<span class="string">"testA"</span>, <span class="string">"00"</span> + i, <span class="string">"info"</span>, <span class="string">"age"</span>, i + <span class="string">""</span>);</span><br><span class="line">       &#125;</span><br><span class="line">       System.out.println(<span class="string">"count="</span> + HBaseDao.count(<span class="string">"testA"</span>));</span><br><span class="line">       String value = HBaseDao.get(<span class="string">"testA"</span>, <span class="string">"001"</span>, <span class="string">"info"</span>, <span class="string">"name"</span>);</span><br><span class="line">       System.out.println(<span class="string">"value="</span> + value);</span><br><span class="line">       <span class="comment">//扫描</span></span><br><span class="line">       System.out.println(<span class="string">"------------------scan(testA,000,004,info,name)"</span>);</span><br><span class="line">       List&lt;String&gt; list = HBaseDao.scan(<span class="string">"testA"</span>, <span class="string">"000"</span>, <span class="string">"004"</span>, <span class="string">"info"</span>, <span class="string">"name"</span>);</span><br><span class="line">       <span class="keyword">for</span>(String s : list) &#123;</span><br><span class="line">           System.out.println(s);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//扫描</span></span><br><span class="line">       System.out.println(<span class="string">"------------------scan(testA,info,name)"</span>);</span><br><span class="line">       list = HBaseDao.scan(<span class="string">"testA"</span>, <span class="string">"info"</span>, <span class="string">"name"</span>);</span><br><span class="line">       <span class="keyword">for</span>(String s : list) &#123;</span><br><span class="line">           System.out.println(s);</span><br><span class="line">       &#125;</span><br><span class="line">       list.clear();</span><br><span class="line">       <span class="comment">//扫描</span></span><br><span class="line">       System.out.println(<span class="string">"------------------scan(testA)"</span>);</span><br><span class="line">       list = HBaseDao.scan(<span class="string">"testA"</span>);</span><br><span class="line">       <span class="keyword">for</span>(String s : list) &#123;</span><br><span class="line">           System.out.println(s);</span><br><span class="line">       &#125;</span><br><span class="line">       HBaseDao.close();</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HBASE学习笔记</a></li>
+            <li>04-HBASE-JAVA编程</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HBase API</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HBase-API程序设计步骤"><span class="nav-text">HBase API程序设计步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maven依赖"><span class="nav-text">Maven依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Connection接口"><span class="nav-text">Connection接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Admin接口"><span class="nav-text">Admin接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Table接口"><span class="nav-text">Table接口</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">HBase应用实例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建表"><span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入数据"><span class="nav-text">插入数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取数据"><span class="nav-text">读取数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扫描表"><span class="nav-text">扫描表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除数据"><span class="nav-text">删除数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除表"><span class="nav-text">删除表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#综合封装类"><span class="nav-text">综合封装类</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

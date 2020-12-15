@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="基本命令格式化磁盘：mkfs你可以在命令行输入sudo mkfs然后按下Tab键，你可以看到很多个以mkfs为前缀的命令，这些不同的后缀其实就是表示着不同的文件系统，可以用mkfs格式化成的文件系统。我们可以简单的使用下面的命令来将我们的虚拟磁盘镜像格式化为ext4文件系统：1$ sudo mkfs.ext4 virtual.img">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;16-%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="基本命令格式化磁盘：mkfs你可以在命令行输入sudo mkfs然后按下Tab键，你可以看到很多个以mkfs为前缀的命令，这些不同的后缀其实就是表示着不同的文件系统，可以用mkfs格式化成的文件系统。我们可以简单的使用下面的命令来将我们的虚拟磁盘镜像格式化为ext4文件系统：1$ sudo mkfs.ext4 virtual.img">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874651_20200322185610212_6860.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874650_20200322185609587_18225.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874650_20200322185609052_13142.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874650_20200322185608742_20924.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874650_20200322185608425_31706.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874649_20200322185608213_30071.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874649_20200322185607897_16819.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874649_20200322185607477_7660.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874649_20200322185607158_3364.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874648_20200322185606950_4732.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874648_20200322185606743_32624.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.032Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874651_20200322185610212_6860.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/16-%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">LINUX学习笔记</a></li>
+            <li>16-磁盘管理</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>基本命令</h1><h2 id="格式化磁盘：mkfs">格式化磁盘：mkfs</h2><p>你可以在命令行输入sudo mkfs然后按下Tab键，你可以看到很多个以mkfs为前缀的命令，这些不同的后缀其实就是表示着不同的文件系统，可以用mkfs格式化成的文件系统。</p><p>我们可以简单的使用下面的命令来将我们的虚拟磁盘镜像格式化为ext4文件系统：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo mkfs.ext4 virtual.img</span></span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874651_20200322185610212_6860.png" alt></p>
+<p>可以看到实际mkfs.ext4是使用mke2fs来完成格式化工作的。mke2fs的参数很多，不过我们也不会经常格式化磁盘来玩，所以就掌握这基本用法吧，等你有特殊需求时，再查看 man文档解决。</p>
+<h2 id="挂载、卸载磁盘：mount-umount">挂载、卸载磁盘：mount umount</h2>
+<p>用户在Linux/UNIX的机器上打开一个文件以前，包含该文件的文件系统必须先进行挂载的动作，此时用户要对该文件系统执行mount的指令以进行挂载。通常是使用在USB或其他可移除存储设备上，而根目录则需要始终保持挂载的状态。又因为Linux/UNIX文件系统可以对应一个文件而不一定要是硬件设备，所以可以挂载一个包含文件系统的文件到目录树。</p>
+<p>Linux/UNIX命令行的mount指令是告诉操作系统，对应的文件系统已经准备好，可以使用了，而该文件系统会对应到一个特定的点（称为挂载点）。挂载好的文件、目录、设备以及特殊文件即可提供用户使用。</p>
+<p>我们先来使用mount来查看下主机已经挂载的文件系统：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo mount</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874650_20200322185609587_18225.png" alt></p>
+<p>输出的结果中每一行表示一个设备或虚拟设备，每一行最前面是设备名，然后是on后面是挂载点，type后面表示文件系统类型，再后面是挂载选项（比如可以在挂载时设定以只读方式挂载等等）。</p>
+<p>那么我们如何挂载真正的磁盘到目录树呢，mount命令的一般格式如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mount [options] [source] [directory]</span><br><span class="line"><span class="meta">#</span><span class="bash"> mount [-o [操作选项]] [-t 文件系统类型] [-w|--rw|--ro] [文件系统源] [挂载点]</span></span><br></pre></td></tr></table></figure>
+<p>一些常用操作：</p>
+<p>我们现在直接来挂载我们创建的虚拟磁盘镜像到/mnt目录：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mount -o loop -t ext4 virtual.img /mnt</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 也可以省略挂载类型，很多时候 mount 会自动识别</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 以只读方式挂载</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mount -o loop --ro virtual.img /mnt</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 或者mount -o loop,ro virtual.img /mnt</span></span><br></pre></td></tr></table></figure>
+<p>不过遗憾的是，由于我们环境的问题（环境中使用的 Linux 内核在编译时没有添加对 Loop device的支持），所以你将无法挂载成功：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874650_20200322185609052_13142.png" alt></p>
+<p>使用umount命令卸载已挂载磁盘：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 命令格式：sudo umount 已挂载设备名或者挂载点，如：</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo umount /mnt</span></span><br></pre></td></tr></table></figure>
+<h2 id="查看磁盘的容量：df">查看磁盘的容量：df</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> df</span></span><br></pre></td></tr></table></figure>
+<p>在实验楼的环境中你将看到如下的输出内容：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874650_20200322185608742_20924.png" alt></p>
+<p>但在实际的物理主机上会更像这样：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874650_20200322185608425_31706.png" alt></p>
+<p>一般使用情况下，我们更多只是关心第一行的内容也就是环境中的rootfs或者物理主机上的/dev/sda2</p>
+<p>“rootfs”:（Root File System）它是Ramfs（Ramfs是一个非常简单的Linux文件系统，用于实现磁盘缓存机制，可动态可调整大小，基于ram的文件系统）或者tmpfs的一个特殊实例，它作为系统启动时内核载入内存之后，在挂载真正的的磁盘之前的一个临时文件系统。通常的主机会在系统启动后用磁盘上的文件系统替换，只是在一些嵌入式系统中会只存在一个rootfs，或者像我们目前遇到的情况运行在虚拟环境中共享主机资源的系统也可能会采用这种方式。</p>
+<p>物理主机上的/dev/sda2是对应着主机硬盘的分区，后面的数字表示分区号，数字前面的字母a表示第几块硬盘（也可能是可移动磁盘），你如果主机上有多块硬盘则可能还会出现 /dev/sdb，/dev/sdc。这些磁盘设备都会在/dev目录下以文件的存在形式。</p>
+<p>接着你还会看到&quot;1k-blocks&quot;这个陌生的东西，它表示以磁盘块大小的方式显示容量，后面为相应的以块大小表示的已用和可用容量，在你了解Linux的文件系统之前这个就先不管吧，我们以一种你应该看得懂的方式展示：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> df -h</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874649_20200322185608213_30071.png" alt></p>
+<p>现在你就可以使用命令查看你主机磁盘的使用情况了。至于挂载点，如果你还记得前面第4节介绍Linux目录树结构的内容，那么你就应该能很好的理解挂载的概念，这里就不再赘述。</p>
+<h2 id="loop设备">loop设备</h2>
+<p>另外关于loop设备，你可能会有诸多疑问，那么请看下面来自维基百科<a href="http://zh.wikipedia.org/wiki/dev/loop" target="_blank" rel="noopener">/dev/loop</a>的说明：</p>
+<p>在类UNIX系统中，/dev/loop（或称vnd （vnode disk）、lofi（循环文件接口））是一种伪设备，这种设备使得文件可以如同块设备一般被访问。</p>
+<p>在使用之前，循环设备必须与现存文件系统上的文件相关联。这种关联将提供给用户一个应用程序接口，接口将允许文件视为块特殊文件（参见设备文件系统）使用。因此，如果文件中包含一个完整的文件系统，那么这个文件就能如同磁盘设备一般被挂载。</p>
+<p>这种设备文件经常被用于光盘或是磁盘镜像。通过循环挂载来挂载包含文件系统的文件，便使处在这个文件系统中的文件得以被访问。这些文件将出现在挂载点目录。如果挂载目录中本身有文件，这些文件在挂载后将被禁止使用。</p>
+<h1>操作示例</h1>
+<h2 id="使用fdisk为磁盘分区">使用fdisk为磁盘分区</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看硬盘分区表信息</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo fdisk -l</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874649_20200322185607897_16819.png" alt></p>
+<p>输出结果中开头显示了我主机上的磁盘的一些信息，包括容量扇区数，扇区大小，I/O 大小等信息。</p>
+<p>我们重点开一下中间的分区信息，/dev/sda1，/dev/sda2 为主分区分别安装了Windows和Linux操作系统，/dev/sda3为交换分区（可以理解为虚拟内存），/dev/sda4为扩展分区其中包含/dev/sda5，/dev/sda6，/dev/sda7，/dev/sda8四个逻辑分区，因为主机上有几个分区之间有空隙，没有对齐边界扇区，所以分区之间的不是完全连续的。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 进入磁盘分区模式</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo fdisk virtual.img</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874649_20200322185607477_7660.png" alt></p>
+<p>在进行操作前我们首先应先规划好我们的分区方案，这里我将在使用128M（可用127M左右）的虚拟磁盘镜像创建一个30M的主分区，剩余部分为扩展分区包含2个大约45M的逻辑分区。</p>
+<p>操作完成后输入p查看结果如下:</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874649_20200322185607158_3364.png" alt></p>
+<p>最后不要忘记输入w写入分区表。</p>
+<h2 id="使用losetup命令建立磁盘镜像与回环设备的关联">使用losetup命令建立磁盘镜像与回环设备的关联</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 关联设备</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo losetup /dev/loop0 virtual.img</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果提示设备忙你也可以使用其它的回环设备，<span class="string">"ls /dev/loop*"</span>参看所有回环设备</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解除设备关联</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo losetup -d /dev/loop0</span></span><br></pre></td></tr></table></figure>
+<h2 id="使用kpartx工具为各分区建立虚拟设备映射">使用kpartx工具为各分区建立虚拟设备映射</h2>
+<p>不过格式化每个分区之前，我们还要为各分区建立虚拟设备的映射，用到kpartx工具，需要先安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install kpartx</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo kpartx -av /dev/loop0</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 取消映射</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo kpartx -dv /dev/loop0</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874648_20200322185606950_4732.png" alt></p>
+<h2 id="使用mkfs格式化各分区">使用mkfs格式化各分区</h2>
+<p>然后再使用mkfs格式化各分区（前面我们是格式化整个虚拟磁盘镜像文件或磁盘）,我们将其全部格式化为ext4：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo mkfs.ext4 -q /dev/mapper/loop0p1</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mkfs.ext4 -q /dev/mapper/loop0p5</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mkfs.ext4 -q /dev/mapper/loop0p6</span></span><br></pre></td></tr></table></figure>
+<h2 id="使用mount命令挂载虚拟磁盘分区">使用mount命令挂载虚拟磁盘分区</h2>
+<p>格式化完成后在/media目录下新建四个空目录用于挂载虚拟磁盘：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir -p /media/virtualdisk_&#123;1..3&#125;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 挂载磁盘分区</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mount /dev/mapper/loop0p1 /media/virtualdisk_1</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mount /dev/mapper/loop0p5 /media/virtualdisk_2</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mount /dev/mapper/loop0p6 /media/virtualdisk_3</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 卸载磁盘分区</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo umount /dev/mapper/loop0p1</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo umount /dev/mapper/loop0p5</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo umount /dev/mapper/loop0p6</span></span><br></pre></td></tr></table></figure>
+<h2 id="使用df查看磁盘分区信息">使用df查看磁盘分区信息</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> df -h</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874648_20200322185606743_32624.png" alt></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">LINUX学习笔记</a></li>
+            <li>16-磁盘管理</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">基本命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#格式化磁盘：mkfs"><span class="nav-text">格式化磁盘：mkfs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#挂载、卸载磁盘：mount-umount"><span class="nav-text">挂载、卸载磁盘：mount umount</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看磁盘的容量：df"><span class="nav-text">查看磁盘的容量：df</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#loop设备"><span class="nav-text">loop设备</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">操作示例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用fdisk为磁盘分区"><span class="nav-text">使用fdisk为磁盘分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用losetup命令建立磁盘镜像与回环设备的关联"><span class="nav-text">使用losetup命令建立磁盘镜像与回环设备的关联</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用kpartx工具为各分区建立虚拟设备映射"><span class="nav-text">使用kpartx工具为各分区建立虚拟设备映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用mkfs格式化各分区"><span class="nav-text">使用mkfs格式化各分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用mount命令挂载虚拟磁盘分区"><span class="nav-text">使用mount命令挂载虚拟磁盘分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用df查看磁盘分区信息"><span class="nav-text">使用df查看磁盘分区信息</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

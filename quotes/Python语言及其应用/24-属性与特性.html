@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="使用property()对特性进行访问和设置 Python语言及其应用-第6章对象和类（P8-9） Python 不需要 getter 和 setter 方法，因为 Python 里所有特性都是公开的，使用时全凭自觉。如果你不放心直接访问对象的特性， 可以为对象编写 setter 和 getter 方法。但更具 Python 风格的解决方案是使用属性（property）。 下面的例子中，首先定义一">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8&#x2F;24-%E5%B1%9E%E6%80%A7%E4%B8%8E%E7%89%B9%E6%80%A7.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="使用property()对特性进行访问和设置 Python语言及其应用-第6章对象和类（P8-9） Python 不需要 getter 和 setter 方法，因为 Python 里所有特性都是公开的，使用时全凭自觉。如果你不放心直接访问对象的特性， 可以为对象编写 setter 和 getter 方法。但更具 Python 风格的解决方案是使用属性（property）。 下面的例子中，首先定义一">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.036Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/24-%E5%B1%9E%E6%80%A7%E4%B8%8E%E7%89%B9%E6%80%A7">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>24-属性与特性</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>使用property()对特性进行访问和设置</h1><blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC6%E7%AB%A0%E5%AF%B9%E8%B1%A1%E5%92%8C%E7%B1%BB.pdf" target="_blank" rel="noopener">Python语言及其应用-第6章对象和类</a>（P8-9）</p>
+</blockquote><p>Python 不需要 getter 和 setter 方法，因为 Python 里所有特性都是公开的，使用时全凭自觉。如果你不放心直接访问对象的特性， 可以为对象编写 setter 和 getter 方法。但更具 Python 风格的解决方案是使用属性（property）。<br>
+下面的例子中，首先定义一个 Duck 类，它仅包含一个 hidden_name 特性。然后定义两个方法：getter 方法（get_name()）和 setter 方法（set_name()）。最后，把这些方法设置为 name 属性：</p><a id="more"></a>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; class Duck():</span><br><span class="line">...     def __init__(self, input_name):</span><br><span class="line">...         self.hidden_name = input_name</span><br><span class="line">...     def get_name(self):</span><br><span class="line">...         print(&apos;inside the getter&apos;)</span><br><span class="line">...         return self.hidden_name</span><br><span class="line">...     def set_name(self, input_name):</span><br><span class="line">...         print(&apos;inside the setter&apos;)</span><br><span class="line">...         self.hidden_name = input_name</span><br><span class="line">...     name = property(get_name, set_name)</span><br></pre></td></tr></table></figure>
+<p>这两个新方法在最后一行之前都与普通的 getter 和 setter 方法没有任何区别，而最后一行则把这两个方法定义为了 name 属性。 property() 的第一个参数是 getter 方法，第二个参数是 setter 方法。<br>
+现在，当你尝试访问 Duck 类对象的 name 特性时， get_name() 会被自动调用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; fowl = Duck(&apos;Howard&apos;)</span><br><span class="line">&gt;&gt;&gt; fowl.name</span><br><span class="line"># 也可以显式调用 get_name() 方法，像普通方法一样</span><br><span class="line"># fowl.get_name()</span><br><span class="line">inside the getter</span><br><span class="line">&apos;Howard&apos;</span><br></pre></td></tr></table></figure>
+<p>同样，当对 name 特性执行赋值操作时， set_name() 方法会被调用。</p>
+<h1>使用修饰符@property、@name.setter对特性进行访问和设置</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC6%E7%AB%A0%E5%AF%B9%E8%B1%A1%E5%92%8C%E7%B1%BB.pdf" target="_blank" rel="noopener">Python语言及其应用-第6章对象和类</a>（P9-10）</p>
+</blockquote>
+<p>另一种定义属性的方式是使用修饰符（decorator）。下一个例子会定义两个不同的方法，它们都叫 name()，但包含不同的修饰符：</p>
+<ul>
+<li>@property，用于指示 getter 方法；</li>
+<li>@name.setter，用于指示 setter 方法。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; class Duck():</span><br><span class="line">...     def __init__(self, input_name):</span><br><span class="line">...         self.hidden_name = input_name</span><br><span class="line">...     @property</span><br><span class="line">...     def name(self):</span><br><span class="line">...         print(&apos;inside the getter&apos;)</span><br><span class="line">...         return self.hidden_name</span><br><span class="line">...     @name.setter</span><br><span class="line">...     def name(self, input_name):</span><br><span class="line">...        print(&apos;inside the setter&apos;)</span><br><span class="line">...        self.hidden_name = input_name</span><br></pre></td></tr></table></figure>
+<p>你仍然可以像之前访问特性一样访问 name，但这里没有了显式的 get_name() 和 set_name()方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; fowl = Duck(&apos;Howard&apos;)</span><br><span class="line">&gt;&gt;&gt; fowl.name</span><br><span class="line">inside the getter</span><br><span class="line">&apos;Howard&apos;</span><br><span class="line">&gt;&gt;&gt; fowl.name = &apos;Donald&apos;</span><br><span class="line">inside the setter</span><br><span class="line">&gt;&gt;&gt; fowl.name</span><br><span class="line">inside the getter</span><br><span class="line">&apos;Donald</span><br></pre></td></tr></table></figure>
+<p>实际上，如果有人能猜到我们在类的内部用的特性名是 hidden_name，他仍然可以直接通过 fowl.hidden_name 进行读写操作。下一节将看到 Python 中特有的命名私有特性的方式。<br>
+如果你没有指定某一特性的 setter 属性（@name.setter），那么将无法从类的外部对它的值进行设置。这对于那些只读的特性非常有用。</p>
+<h1>使用名称重整保护私有特性</h1>
+<blockquote>
+<p><a href="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8-%E7%AC%AC6%E7%AB%A0%E5%AF%B9%E8%B1%A1%E5%92%8C%E7%B1%BB.pdf" target="_blank" rel="noopener">Python语言及其应用-第6章对象和类</a>（P11-12）</p>
+</blockquote>
+<p>前面的 Duck 例子中，为了隐藏内部特性，我们曾将其命名为 hidden_name。其实， Python 对那些需要刻意隐藏在类内部的特性有自己的命名规范：由连续的两个下划线开头（__）。<br>
+我们来把 hidden_name 改名为 __name，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; class Duck():</span><br><span class="line">...     def __init__(self, input_name):</span><br><span class="line">...         self.__name = input_name</span><br><span class="line">...     @property</span><br><span class="line">...     def name(self):</span><br><span class="line">...         print(&apos;inside the getter&apos;)</span><br><span class="line">...         return self.__name</span><br><span class="line">...     @name.setter</span><br><span class="line">...     def name(self, input_name):</span><br><span class="line">...         print(&apos;inside the setter&apos;)</span><br><span class="line">...         self.__name = input_name</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>现在，你无法在外部访问 __name 特性了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; fowl.__name</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;</span><br><span class="line">AttributeError: &apos;Duck&apos; object has no attribute &apos;__name&apos;</span><br></pre></td></tr></table></figure>
+<p>这种命名规范本质上并没有把特性变成私有，但 Python 确实将它的名字重整了，让外部的代码无法使用。重整规则如下所示:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; fowl._Duck__name</span><br><span class="line">&apos;Donald&apos;</span><br></pre></td></tr></table></figure>
+<p>发现了吗？我们并没有得到 inside the getter，成功绕过了 getter 方法。尽管如我们所见，这种保护特性的方式并不完美， 但它确实能在一定程度上避免我们无意或有意地对特性进行直接访问。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Python%E8%AF%AD%E8%A8%80%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8/">PYTHON语言及其应用</a></li>
+            <li>24-属性与特性</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用property()对特性进行访问和设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用修饰符@property、@name.setter对特性进行访问和设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用名称重整保护私有特性</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

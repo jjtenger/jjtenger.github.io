@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="crontab命令常见于Unix和类Unix的操作系统之中（Linux 就属于类Unix操作系统），用于设置周期性被执行的指令。该命令从输入设备读取指令，并将其存放于crontab文件中，以供之后读取和执行。通常，crontab储存的指令被守护进程激活，crond为其守护进程，crond常常在后台运行，每一分钟会检查一次是否有预定的作业需要执行。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;17-%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="crontab命令常见于Unix和类Unix的操作系统之中（Linux 就属于类Unix操作系统），用于设置周期性被执行的指令。该命令从输入设备读取指令，并将其存放于crontab文件中，以供之后读取和执行。通常，crontab储存的指令被守护进程激活，crond为其守护进程，crond常常在后台运行，每一分钟会检查一次是否有预定的作业需要执行。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874778_20200322185813929_30446.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874777_20200322185813514_367.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874777_20200322185813305_4676.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874777_20200322185813095_13353.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874777_20200322185812785_11474.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874776_20200322185812254_21831.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874776_20200322185811823_14980.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874776_20200322185811376_14689.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874776_20200322185811167_28666.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874775_20200322185810956_31625.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874775_20200322185810541_23628.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874775_20200322185810331_12811.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874775_20200322185810122_16489.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.032Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584874778_20200322185813929_30446.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/17-%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">LINUX学习笔记</a></li>
+            <li>17-计划任务</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>crontab命令常见于Unix和类Unix的操作系统之中（Linux 就属于类Unix操作系统），用于设置周期性被执行的指令。该命令从输入设备读取指令，并将其存放于crontab文件中，以供之后读取和执行。通常，crontab储存的指令被守护进程激活，crond为其守护进程，crond常常在后台运行，每一分钟会检查一次是否有预定的作业需要执行。</p><a id="more"></a>
+<p>通过crontab命令，我们可以在固定的间隔时间执行指定的系统指令或shell script脚本。时间间隔的单位可以是分钟、小时、日、月、周的任意组合。</p>
+<h1>crontab命令格式</h1>
+<p>这里我们看一看crontab的格式：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874778_20200322185813929_30446.png" alt></p>
+<h1>crontab准备</h1>
+<p>crontab在本实验环境中需要做一些特殊的准备，首先我们会启动rsyslog，以便我们可以通过日志中的信息来了解我们的任务是否真正的被执行了（在本实验环境中需要手动启动，而在自己本地中Ubuntu会默认自行启动不需要手动启动）。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service rsyslog start</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874777_20200322185813514_367.png" alt></p>
+<p>在本实验环境中crontab也是不被默认启动的，同时不能在后台由upstart来管理，所以需要我们来启动它（同样在本实验环境中需要手动启动，自己的本地Ubuntu的环境中也不需要手动启动）。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cron -f &amp;</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874777_20200322185813305_4676.png" alt></p>
+<h1>打开任务文档：crontab -e</h1>
+<p>我们通过下面一个命令来添加一个计划任务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab -e</span><br></pre></td></tr></table></figure>
+<p>第一次启动会出现这样一个画面，这是让我们选择编辑的工具，选择第一个基本的vim就可以了。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874777_20200322185813095_13353.png" alt></p>
+<h1>添加计划任务</h1>
+<p>而选择后我们会进入这样一个画面，这就是添加计划的地方了，与一般的配置文档相同，以#号开头的都是注释，通过文档的最后一排我们可以猜猜crontab的格式是什么样的呢？</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874777_20200322185812785_11474.png" alt></p>
+<p>详细的格式可以使用上一节中学习到的man命令查看：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">man crontab</span><br></pre></td></tr></table></figure>
+<p>在了解命令格式之后，我们通过这样的一个例子来完成一个任务的添加，在文档的最后一排加上这样一排命令，该任务是每分钟我们会在/home/shiyanlou目录下创建一个以当前的年月日时分秒为名字的空白文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/1 * * * * touch /home/shiyanlou/$(date +\%Y\%m\%d\%H\%M\%S)</span><br></pre></td></tr></table></figure>
+<p>注意：“%”在crontab文件中，有结束命令行、换行、重定向的作用，前面加”\”符号转意，否则“%”符号将执行其结束命令行或者换行的作用，并且其后的内容会被做为标准输入发送给前面的命令。</p>
+<p>添加成功后我们会得到最后一排installing new crontab的一个提示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874776_20200322185812254_21831.png" alt></p>
+<h1>查看任务：crontab -l</h1>
+<p>当然我们也可以通过这样的一个指令来查看我们添加了哪些任务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab -l</span><br></pre></td></tr></table></figure>
+<p>通过图中的显示，我们也可以看出，我们正确的保存并且添加成功了该任务的。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874776_20200322185811823_14980.png" alt></p>
+<h1>确定cron是否成功启动</h1>
+<h2 id="查看cron进程">查看cron进程</h2>
+<p>虽然我们添加了任务，但是如果cron的守护进程并没有启动，它根本都不会监测到有任务，当然也就不会帮我们执行，我们可以通过一下2种方式来确定我们的cron是否成功的在后台启动，默默的帮我们做事，若是没有就得执行上文准备中的第二步了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux | grep cron</span><br></pre></td></tr></table></figure>
+<p>or</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pgrep cron</span><br></pre></td></tr></table></figure>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874776_20200322185811376_14689.png" alt></p>
+<p>通过这个截图我们可以看到任务在创建之后便创建了一个当时时间的文件（也就是10点18分04秒的时候），后续在每分钟的01秒时执行一次我们的任务。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874776_20200322185811167_28666.png" alt></p>
+<h2 id="查看日志反馈">查看日志反馈</h2>
+<p>我们通过这样一个命令可以查看到执行任务命令之后在日志中的信息反馈。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo tail -f /var/log/syslog</span><br></pre></td></tr></table></figure>
+<p>从图中我们可以看到分别在10点18、19、20、21、22、23分的01秒为我们在 shiyanlou 用户的家目录下创建了文件。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874775_20200322185810956_31625.png" alt></p>
+<h1>删除任务：crontab -r</h1>
+<p>当我们并不需要这个任务的时候我们可以使用这么一个命令去删除任务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab -r</span><br></pre></td></tr></table></figure>
+<p>通过图中我们可以看出我们删除之后再查看任务列表，系统已经显示该用户并没有任务。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874775_20200322185810541_23628.png" alt></p>
+<h1>crontab配置文件</h1>
+<h2 id="var-spool-cron-crontabs">/var/spool/cron/crontabs</h2>
+<p>每个用户使用crontab -e添加计划任务，都会在/var/spool/cron/crontabs中添加一个该用户自己的任务文档，这样目的是为了隔离。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874775_20200322185810331_12811.png" alt></p>
+<p>cron服务监测时间最小单位是分钟，所以cron会每分钟去读取一次/etc/crontab与/var/spool/cron/crontabs里面的內容。</p>
+<h2 id="etc-crontab">/etc/crontab</h2>
+<p>如果是系统级别的定时任务，应该如何处理？只需要以sudo权限编辑 /etc/crontab 文件就可以。</p>
+<p>在/etc 目录下，cron相关的目录有下面几个：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584874775_20200322185810122_16489.png" alt></p>
+<p>每个目录的作用（已在/etc/crontabs中定义计划任务）：</p>
+<ul>
+<li>/etc/cron.daily，目录下的脚本会每天执行一次，在每天的6点25分时运行；</li>
+<li>/etc/cron.hourly，目录下的脚本会每个小时执行一次，在每小时的17分钟时运行；</li>
+<li>/etc/cron.mouthly，目录下的脚本会每月执行一次，在每月1号的6点52分时运行；</li>
+<li>/etc/cron.weekly，目录下的脚本会每周执行一次，在每周第七天的6点47分时运行；</li>
+</ul>
+<p>系统默认执行时间可以根据需求进行修改。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">LINUX学习笔记</a></li>
+            <li>17-计划任务</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">crontab命令格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">crontab准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">打开任务文档：crontab -e</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">添加计划任务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">查看任务：crontab -l</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">确定cron是否成功启动</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看cron进程"><span class="nav-text">查看cron进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看日志反馈"><span class="nav-text">查看日志反馈</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">删除任务：crontab -r</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">crontab配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#var-spool-cron-crontabs"><span class="nav-text">/var/spool/cron/crontabs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#etc-crontab"><span class="nav-text">/etc/crontab</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

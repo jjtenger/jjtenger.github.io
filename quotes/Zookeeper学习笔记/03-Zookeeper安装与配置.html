@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="ZooKeeper服务器是用Java创建的，它在JVM上运行，需要使用JDK 6或更高版本。因此需要首先安装JDK。Zookeeper官网：http:&#x2F;&#x2F;zookeeper.apache.orgZookeeper有三种运行模式：单机模式、伪集群模式和集群模式。zookeeper配置参照官方文档http:&#x2F;&#x2F;zookeeper.apache.org&#x2F;doc&#x2F;r3.4.10&#x2F;zookeeperStar">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;03-Zookeeper%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="ZooKeeper服务器是用Java创建的，它在JVM上运行，需要使用JDK 6或更高版本。因此需要首先安装JDK。Zookeeper官网：http:&#x2F;&#x2F;zookeeper.apache.orgZookeeper有三种运行模式：单机模式、伪集群模式和集群模式。zookeeper配置参照官方文档http:&#x2F;&#x2F;zookeeper.apache.org&#x2F;doc&#x2F;r3.4.10&#x2F;zookeeperStar">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.044Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/03-Zookeeper%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ZOOKEEPER学习笔记</a></li>
+            <li>03-ZOOKEEPER安装与配置</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>ZooKeeper服务器是用Java创建的，它在JVM上运行，需要使用JDK 6或更高版本。因此需要首先安装JDK。</p><p>Zookeeper官网：<a href="http://zookeeper.apache.org" target="_blank" rel="noopener">http://zookeeper.apache.org</a></p><p>Zookeeper有三种运行模式：单机模式、伪集群模式和集群模式。</p><p>zookeeper配置参照官方文档</p><p><a href="http://zookeeper.apache.org/doc/r3.4.10/zookeeperStarted.html" target="_blank" rel="noopener">http://zookeeper.apache.org/doc/r3.4.10/zookeeperStarted.html</a></p><a id="more"></a>
+
+
+
+
+<h1>安装</h1>
+<p>上传Zookeeper压缩包并解压到某个目录：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 app]# tar -zxvf zookeeper-3.4.10.tar.gz /opt</span><br></pre></td></tr></table></figure>
+<p><strong>修改zookeeper解压缩目录的所有者：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 opt]# chown -R root:root zookeeper-3.4.10/</span><br><span class="line">[root@node1 opt]# ll</span><br><span class="line">total 4</span><br><span class="line">drwxr-xr-x  10 root root  161 Aug 17  2016 hadoop-2.7.3</span><br><span class="line">drwxr-xr-x.  8   10  143  255 Sep 23  2016 jdk1.8.0_112</span><br><span class="line">drwxr-xr-x  10 root root 4096 Mar 23 07:28 zookeeper-3.4.10</span><br></pre></td></tr></table></figure>
+<h1>环境变量配置</h1>
+<p><strong>环境变量配置：ZOO_HOME、PATH</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# vi /etc/profile.d/custom.sh</span><br><span class="line">[root@node1 ~]# cat /etc/profile.d/custom.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Java path</span></span><br><span class="line">export JAVA_HOME=/opt/jdk1.8.0_112</span><br><span class="line">export PATH=$PATH:$JAVA_HOME/bin</span><br><span class="line">export CLASSPATH=.:$CLASSPATH:$JAVA_HOME/lib</span><br><span class="line"> </span><br><span class="line"><span class="meta">#</span><span class="bash">Hadoop path</span></span><br><span class="line">export HADOOP_HOME=/opt/hadoop-2.7.3</span><br><span class="line">export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin</span><br><span class="line"> </span><br><span class="line"><span class="meta">#</span><span class="bash">zookeeper path</span></span><br><span class="line">export ZOO_HOME=/opt/zookeeper-3.4.10</span><br><span class="line">export PATH=$PATH:$ZOO_HOME/bin</span><br><span class="line">[root@node1 ~]# source /etc/profile.d/custom.sh</span><br></pre></td></tr></table></figure>
+<h1>单机模式配置</h1>
+<p>Zookeeper的配置文件在conf目录下，这个目录下有zoo_sample.cfg和log4j.properties，你需要做的就是将zoo_sample.cfg改名为zoo.cfg，因为Zookeeper在启动时会找这个文件作为默认配置文件。</p>
+<p>单机配置如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 zookeeper-3.4.10]# vi conf/zoo.cfg</span><br><span class="line">[root@node1 zookeeper-3.4.10]# cat conf/zoo.cfg</span><br><span class="line">tickTime=2000</span><br><span class="line">dataDir=/var/lib/zookeeper</span><br><span class="line">dataLogDir=/var/log</span><br><span class="line">clientPort=2181</span><br></pre></td></tr></table></figure>
+<ul>
+<li>clientPort</li>
+<li>tickTime</li>
+<li>zookeeper日志配置</li>
+</ul>
+<h1>集群模式配置</h1>
+<p>一个 ZooKeeper 集群通常由一组机器组成，一般 3 台以上就可以组成一个可用的 ZooKeeper 集群了。每台集群的具有相同的Zookeeper配置文件。组成 ZooKeeper 集群的每台机器都会在内存中维护当前的服务器状态，并且每台机器之间都会互相保持通信。</p>
+<p>重要的一点是，只要集群中存在超过一半的机器能够正常工作，那么整个集群就能够正常对外服务。</p>
+<p>对于集群模式，至少需要三台服务器，强烈建议您拥有奇数个服务器。 如果您只有两台服务器，那么您处于这样的情况，如果其中一台服务器出现故障，则没有足够的机器来形成大多数法定人数。 两台服务器固然比单一服务器稳定性差，因为有两个单点故障。</p>
+<h2 id="zoo-cfg配置（集群）">zoo.cfg配置（集群）</h2>
+<p>集群模式中，每台服务器上除了之前的单机配置项，还要增加下面几个配置项（每台服务器配置一样）。</p>
+<p>示例如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 zookeeper-3.4.10]# cd conf</span><br><span class="line">[root@node1 conf]# vi zoo.cfg</span><br><span class="line">[root@node1 conf]# cat zoo.cfg</span><br><span class="line">tickTime=2000</span><br><span class="line">initLimit=10</span><br><span class="line">syncLimit=5</span><br><span class="line">dataDir=/var/lib/zookeeper</span><br><span class="line">dataLogDir=/var/log</span><br><span class="line">clientPort=2181</span><br><span class="line">server.1=node1:2888:3888</span><br><span class="line">server.2=node2:2888:3888</span><br><span class="line">server.3=node3:2888:3888</span><br></pre></td></tr></table></figure>
+<p>原有：</p>
+<ul>
+<li>clientPort</li>
+<li>tickTime</li>
+<li>zookeeper日志配置</li>
+</ul>
+<p>新增：</p>
+<ul>
+<li>initLimit</li>
+<li>syncLimit</li>
+<li>server.A=B:C:D</li>
+</ul>
+<h2 id="myid配置">myid配置</h2>
+<p>集群模式下还要配置一个文件myid：在dataDir目录下，文件内容为A的值。</p>
+<p>Zookeeper启动时会读取该数据并与zoo.cfg里面的配置信息比较从而判断到底是那个server。</p>
+<h1>运行</h1>
+<p>（1）启动</p>
+<p>在每个节点执行命令：<code>zkServer.sh start</code></p>
+<p>注意：zookeeper服务器需要一台一台的启动。</p>
+<p>在zookeeper集群的其它服务器未启动之前，查看本服务器状态，会显示异常。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# zkServer.sh start</span><br><span class="line">ZooKeeper JMX enabled by default</span><br><span class="line">Using config: /opt/zookeeper-3.4.10/bin/../conf/zoo.cfg</span><br><span class="line">Starting zookeeper ... STARTED</span><br><span class="line"> </span><br><span class="line">[root@node2 ~]# zkServer.sh start</span><br><span class="line">ZooKeeper JMX enabled by default</span><br><span class="line">Using config: /opt/zookeeper-3.4.10/bin/../conf/zoo.cfg</span><br><span class="line">Starting zookeeper ... STARTED</span><br><span class="line"> </span><br><span class="line">[root@node3 ~]# zkServer.sh start</span><br><span class="line">ZooKeeper JMX enabled by default</span><br><span class="line">Using config: /opt/zookeeper-3.4.10/bin/../conf/zoo.cfg</span><br><span class="line">Starting zookeeper ... STARTED</span><br></pre></td></tr></table></figure>
+<p>（2）查看状态</p>
+<p>在每个节点上执行命令：<code>zkServer.sh status</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# zkServer.sh status</span><br><span class="line">ZooKeeper JMX enabled by default</span><br><span class="line">Using config: /opt/zookeeper-3.4.10/bin/../conf/zoo.cfg</span><br><span class="line">Mode: follower</span><br><span class="line"> </span><br><span class="line">[root@node2 ~]# zkServer.sh status</span><br><span class="line">ZooKeeper JMX enabled by default</span><br><span class="line">Using config: /opt/zookeeper-3.4.10/bin/../conf/zoo.cfg</span><br><span class="line">Mode: leader</span><br><span class="line"> </span><br><span class="line">[root@node3 ~]# zkServer.sh status</span><br><span class="line">ZooKeeper JMX enabled by default</span><br><span class="line">Using config: /opt/zookeeper-3.4.10/bin/../conf/zoo.cfg</span><br><span class="line">Mode: follower</span><br></pre></td></tr></table></figure>
+<p>（3）通过jps命令查看进程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# jps</span><br><span class="line">2346 Jps</span><br><span class="line">2255 QuorumPeerMain</span><br><span class="line"> </span><br><span class="line">[root@node2 ~]# jps</span><br><span class="line">2216 QuorumPeerMain</span><br><span class="line">2298 Jps</span><br><span class="line"> </span><br><span class="line">[root@node3 ~]# jps</span><br><span class="line">2320 Jps</span><br><span class="line">2265 QuorumPeerMain</span><br></pre></td></tr></table></figure>
+<p>（4）停止zookeep服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zkServer.sh stop</span><br></pre></td></tr></table></figure>
+<h2 id="Zookeep启动异常：Error-contacting-service…">Zookeep启动异常：Error contacting service…</h2>
+<p>Zookeep启动异常：Error contacting service. It is probably not running.</p>
+<p>解决方案：</p>
+<ol>
+<li>
+<p>zoo.cfg配置文件中指定目录却没有创建！ 创建相应目录即可。</p>
+</li>
+<li>
+<p>在编辑zoo.cfg配置文件时，指定了log的输出目录，但是却未创建！ 创建相应目录即可。</p>
+</li>
+<li>
+<p>zoo.cfg中dataDir指定路径为Myid文件的路径。</p>
+</li>
+</ol>
+<p>Myid内容与：server.?=localhost:2888:3888 中所设置？一致！</p>
+<ol start="4">
+<li>
+<p>使用service iptables stop 关闭防火墙，使用service iptables status确认。</p>
+</li>
+<li>
+<p>2181端口被占用！#我就是死在这的，死了很久很久。。</p>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">zkServer.sh stop #先停止zookeep</span><br><span class="line">netstat -an | grep 2181 #查看端口是否占用，如果占用</span><br><span class="line">clientPort = 2888 #随便找个没占用的端口号！</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>当服务器重启时zookeeper非正常退出，zookeeper_server.pid中的值没有被清除，再次执行zookeeper启动脚本时，就以为zookeeper已经启动。清空该文件即可。</li>
+</ol>
+<h1>zoo.cfg参数解读</h1>
+<p>配置文件：conf 目录下，将 zoo_sample.cfg 改名为 zoo.cfg，作为默认配置文件。</p>
+<h2 id="clientPort">clientPort</h2>
+<p>单机模式/集群模式</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>clientPort</td>
+<td>2181</td>
+<td>客户端连接 Zookeeper 服务器的端口。</td>
+</tr>
+</tbody>
+</table>
+<p>可以通过 netstat – ano 命令查看是否有你配置的 clientPort 端口号在监听服务。</p>
+<h2 id="tickTime">tickTime</h2>
+<p>单机模式/集群模式</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tickTime</td>
+<td>2000</td>
+<td>心跳检查的时间，以及可配置的最小时间单元，单位毫秒(ms)，默认值2秒</td>
+</tr>
+</tbody>
+</table>
+<h2 id="zookeeper日志配置">zookeeper日志配置</h2>
+<p>单机模式/集群模式</p>
+<p>zookeeper服务器会产生三类日志：事务日志、快照日志和log4j日志。</p>
+<p>在zookeeper默认配置文件zoo.cfg（可以修改文件名）中有一个配置项dataDir，该配置项用于配置zookeeper快照日志和事务日志的存储地址。在官方提供的默认参考配置文件zoo_sample.cfg中，只有dataDir配置项。其实在实际应用中，还可以为事务日志专门配置存储地址，配置项名称为dataLogDir，在zoo_sample.cfg中并未体现出来。在没有dataLogDir配置项的时候，zookeeper默认将事务日志文件和快照日志文件都存储在dataDir对应的目录下。</p>
+<p>建议将事务日志（dataLogDir）与快照日志（dataLog）单独配置，因为当zookeeper集群进行频繁的数据读写操作是，会产生大量的事务日志信息，将两类日志分开存储会提高系统性能，而且，可以允许将两类日志存在在不同的存储介质上，减少磁盘压力。</p>
+<p>log4j用于记录zookeeper集群服务器运行日志，该日志的配置地址在conf/目录下的log4j.properties文件中，该文件中有一个配置项为“zookeeper.log.dir=.”，表示log4j日志文件在与执行程序（<code>zkServer.sh</code>）在同一目录下。当执行<code>zkServer.sh</code>时，在该文件夹下会产生zookeeper.out日志文件。下面主要介绍事务日志与快照日志。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dataDir</td>
+<td>/tmp/zookeeper</td>
+<td>Zookeeper服务器存储快照文件的目录，必须配置并修改为非/tmp目录</td>
+</tr>
+</tbody>
+</table>
+<h2 id="initLimit">initLimit</h2>
+<p>集群模式</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>initLimit</td>
+<td>10</td>
+<td>leader服务器等待follower启动并完成数据同步的时间，默认值10倍心跳时间</td>
+</tr>
+</tbody>
+</table>
+<p>这个配置项是用来配置Zookeeper接受客户端（这里所说的客户端不是用户连接Zookeeper服务器的客户端，而是Zookeeper服务器集群中，连接到leader的follower服务器）初始化连接时最长能忍受多少个心跳时间间隔数。当已经超过5个心跳的时间（也就是tickTime）长度后Zookeeper服务器还没有收到客户端的返回信息，那么表明这个客户端连接失败。总的时间长度就是5*2000=10秒。</p>
+<h2 id="syncLimit">syncLimit</h2>
+<p>集群模式</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>syncLimit</td>
+<td>5</td>
+<td>leader服务器和follower之间进行心跳检测的最大延时时间，默认值5倍心跳时间</td>
+</tr>
+</tbody>
+</table>
+<h2 id="server-A-B-C-D">server.A=B:C:D</h2>
+<p>集群模式</p>
+<p>其中：</p>
+<p>A是一个数字，表示这个是第几号服务器；</p>
+<p>B是这个服务器的ip地址；</p>
+<p>C表示的是这个服务器与集群中的leader服务器交换信息的端口；</p>
+<p>D表示的是万一集群中的leader服务器挂了，需要一个端口来重新进行选举，选出一个新的leader，而这个端口就是用来执行选举时服务器相互通信的端口。</p>
+<p>如果是伪集群的配置方式，由于B都是一样，所以不同的Zookeeper实例通信端口号不能一样，所以要给它们分配不同的端口号，即C、D都不能重复。</p>
+<h2 id="maxClientCnxns">maxClientCnxns</h2>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>maxClientCnxns</td>
+<td>60</td>
+<td>客户端连接的最大数量。如果您需要处理更多的客户端，请增加此参数</td>
+</tr>
+</tbody>
+</table>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ZOOKEEPER学习笔记</a></li>
+            <li>03-ZOOKEEPER安装与配置</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">环境变量配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">单机模式配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">集群模式配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#zoo-cfg配置（集群）"><span class="nav-text">zoo.cfg配置（集群）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#myid配置"><span class="nav-text">myid配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">运行</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Zookeep启动异常：Error-contacting-service…"><span class="nav-text">Zookeep启动异常：Error contacting service…</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">zoo.cfg参数解读</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#clientPort"><span class="nav-text">clientPort</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tickTime"><span class="nav-text">tickTime</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zookeeper日志配置"><span class="nav-text">zookeeper日志配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#initLimit"><span class="nav-text">initLimit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#syncLimit"><span class="nav-text">syncLimit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#server-A-B-C-D"><span class="nav-text">server.A=B:C:D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#maxClientCnxns"><span class="nav-text">maxClientCnxns</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

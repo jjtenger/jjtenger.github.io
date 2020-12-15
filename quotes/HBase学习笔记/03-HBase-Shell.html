@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="HBase Shell官方快速入门教程http:&#x2F;&#x2F;hbase.apache.org&#x2F;book.html#quickstart基本操作进入HBase Shell12345678910[root@node1 ~]# hbase shellSLF4J: Class path contains multiple SLF4J bindings.SLF4J: Found binding in [jar:fi">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;03-HBase-Shell.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="HBase Shell官方快速入门教程http:&#x2F;&#x2F;hbase.apache.org&#x2F;book.html#quickstart基本操作进入HBase Shell12345678910[root@node1 ~]# hbase shellSLF4J: Class path contains multiple SLF4J bindings.SLF4J: Found binding in [jar:fi">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/03-HBase-Shell">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HBASE学习笔记</a></li>
+            <li>03-HBASE-SHELL</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>HBase Shell官方快速入门教程</p><p><a href="http://hbase.apache.org/book.html#quickstart" target="_blank" rel="noopener">http://hbase.apache.org/book.html#quickstart</a></p><h1>基本操作</h1><h2 id="进入HBase-Shell">进入HBase Shell</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# hbase shell</span><br><span class="line">SLF4J: Class path contains multiple SLF4J bindings.</span><br><span class="line">SLF4J: Found binding in [jar:file:/opt/hbase-1.2.6/lib/slf4j-log4j12-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]</span><br><span class="line">SLF4J: Found binding in [jar:file:/opt/hadoop-2.7.3/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]</span><br><span class="line">SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.</span><br><span class="line">SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]</span><br><span class="line">HBase Shell; enter 'help&lt;RETURN&gt;' for list of supported commands.</span><br><span class="line">Type "exit&lt;RETURN&gt;" to leave the HBase Shell</span><br><span class="line">Version 1.2.6, rUnknown, Mon May 29 02:25:32 CDT 2017</span><br><span class="line">hbase(main):001:0&gt;</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+
+<h2 id="查看版本：version">查看版本：version</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):001:0&gt; version</span><br><span class="line">1.2.6, rUnknown, Mon May 29 02:25:32 CDT 2017</span><br><span class="line">hbase(main):002:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="查看状态：status">查看状态：status</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):002:0&gt; status</span><br><span class="line">1 active master, 1 backup masters, 3 servers, 0 dead, 0.6667 average load</span><br><span class="line">hbase(main):003:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="查看当前用户：whoami">查看当前用户：whoami</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):003:0&gt; whoami</span><br><span class="line">root (auth:SIMPLE)</span><br><span class="line">   groups: root</span><br><span class="line">hbase(main):004:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="查看帮助：help">查看帮助：help</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):004:0&gt; help</span><br><span class="line">HBase Shell, version 1.2.6, rUnknown, Mon May 29 02:25:32 CDT 2017</span><br><span class="line">Type 'help "COMMAND"', (e.g. 'help "get"' -- the quotes are necessary) for help on a specific command.</span><br><span class="line">Commands are grouped. Type 'help "COMMAND_GROUP"', (e.g. 'help "general"') for help on a command group.</span><br><span class="line">COMMAND GROUPS:</span><br><span class="line"> Group name: general</span><br><span class="line"> Commands: status, table_help, version, whoami</span><br><span class="line">Group name: ddl</span><br><span class="line"> Commands: alter, alter_async, alter_status, create, describe, disable, disable_all, drop, drop_all, enable, enable_all, exists, get_table, is_disabled, is_enabled, list, locate_region, show_filters</span><br><span class="line">Group name: namespace</span><br><span class="line"> Commands: alter_namespace, create_namespace, describe_namespace, drop_namespace, list_namespace, list_namespace_tables</span><br><span class="line">Group name: dml</span><br><span class="line"> Commands: append, count, delete, deleteall, get, get_counter, get_splits, incr, put, scan, truncate, truncate_preserve</span><br><span class="line">Group name: tools</span><br><span class="line"> Commands: assign, balance_switch, balancer, balancer_enabled, catalogjanitor_enabled, catalogjanitor_run, catalogjanitor_switch, close_region, compact, compact_rs, flush, major_compact, merge_region, move, normalize, normalizer_enabled, normalizer_switch, split, trace, unassign, wal_roll, zk_dump</span><br><span class="line">Group name: replication</span><br><span class="line"> Commands: add_peer, append_peer_tableCFs, disable_peer, disable_table_replication, enable_peer, enable_table_replication, list_peers, list_replicated_tables, remove_peer, remove_peer_tableCFs, set_peer_tableCFs, show_peer_tableCFs</span><br><span class="line">Group name: snapshots</span><br><span class="line"> Commands: clone_snapshot, delete_all_snapshot, delete_snapshot, list_snapshots, restore_snapshot, snapshot</span><br><span class="line">Group name: configuration</span><br><span class="line"> Commands: update_all_config, update_config</span><br><span class="line">Group name: quotas</span><br><span class="line"> Commands: list_quotas, set_quota</span><br><span class="line">Group name: security</span><br><span class="line"> Commands: grant, list_security_capabilities, revoke, user_permission</span><br><span class="line">Group name: procedures</span><br><span class="line"> Commands: abort_procedure, list_procedures</span><br><span class="line">Group name: visibility labels</span><br><span class="line"> Commands: add_labels, clear_auths, get_auths, list_labels, set_auths, set_visibility</span><br><span class="line">SHELL USAGE:</span><br><span class="line">Quote all names in HBase Shell such as table and column names.  Commas delimit</span><br><span class="line">command parameters.  Type &lt;RETURN&gt; after entering a command to run it.</span><br><span class="line">Dictionaries of configuration used in the creation and alteration of tables are</span><br><span class="line">Ruby Hashes. They look like this:</span><br><span class="line">&#123;'key1' =&gt; 'value1', 'key2' =&gt; 'value2', ...&#125;</span><br><span class="line">and are opened and closed with curley-braces.  Key/values are delimited by the</span><br><span class="line">'=&gt;' character combination.  Usually keys are predefined constants such as</span><br><span class="line">NAME, VERSIONS, COMPRESSION, etc.  Constants do not need to be quoted.  Type</span><br><span class="line">'Object.constants' to see a (messy) list of all constants in the environment.</span><br><span class="line">If you are using binary keys or values and need to enter them in the shell, use</span><br><span class="line">double-quote'd hexadecimal representation. For example:</span><br><span class="line"><span class="meta">hbase&gt;</span><span class="bash"> get <span class="string">'t1'</span>, <span class="string">"key\x03\x3f\xcd"</span></span></span><br><span class="line"><span class="meta"> hbase&gt;</span><span class="bash"> get <span class="string">'t1'</span>, <span class="string">"key\003\023\011"</span></span></span><br><span class="line"><span class="meta"> hbase&gt;</span><span class="bash"> put <span class="string">'t1'</span>, <span class="string">"test\xef\xff"</span>, <span class="string">'f1:'</span>, <span class="string">"\x01\x33\x40"</span></span></span><br><span class="line">The HBase shell is the (J)Ruby IRB with the above HBase-specific commands added.</span><br><span class="line">For more on the HBase Shell, see http://hbase.apache.org/book.html</span><br><span class="line">hbase(main):005:0&gt;</span><br></pre></td></tr></table></figure>
+<h1>表操作</h1>
+<h2 id="创建表：create">创建表：create</h2>
+<p>语法：create ‘表名’, ‘列簇’</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):007:0&gt; create 't1' ,'cf1','cf2'</span><br><span class="line">0 row(s) in 4.5550 seconds</span><br><span class="line">=&gt; Hbase::Table - t1</span><br><span class="line">hbase(main):008:0&gt;</span><br></pre></td></tr></table></figure>
+<p>查看create帮助</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):005:0&gt; create</span><br><span class="line">ERROR: wrong number of arguments (0 for 1)</span><br><span class="line">Here is some help for this command:</span><br><span class="line">Creates a table. Pass a table name, and a set of column family</span><br><span class="line">specifications (at least one), and, optionally, table configuration.</span><br><span class="line">Column specification can be a simple string (name), or a dictionary</span><br><span class="line">(dictionaries are described below in main help output), necessarily</span><br><span class="line">including NAME attribute.</span><br><span class="line">Examples:</span><br><span class="line">Create a table with namespace=ns1 and table qualifier=t1</span><br><span class="line"><span class="meta"> hbase&gt;</span><span class="bash"> create <span class="string">'ns1:t1'</span>, &#123;NAME =&gt; <span class="string">'f1'</span>, VERSIONS =&gt; 5&#125;</span></span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<h2 id="列举表：list">列举表：list</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):008:0&gt; list</span><br><span class="line">TABLE</span><br><span class="line">t1</span><br><span class="line">1 row(s) in 0.0570 seconds</span><br><span class="line">=&gt; ["t1"]</span><br><span class="line">hbase(main):009:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="查看表结构：desc">查看表结构：desc</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):009:0&gt; desc 't1'</span><br><span class="line">Table t1 is ENABLED</span><br><span class="line">t1</span><br><span class="line">COLUMN FAMILIES DESCRIPTION</span><br><span class="line">&#123;NAME =&gt; 'cf1', BLOOMFILTER =&gt; 'ROW', VERSIONS =&gt; '1', IN_MEMORY =&gt; 'false', KEEP_DELETED_CELLS =&gt; 'FALSE', </span><br><span class="line">DATA_BLOCK_ENCODING =&gt; 'NONE', TTL =&gt; 'FOREVER', COMPRESSION =&gt; 'NONE', </span><br><span class="line">MIN_VERSIONS =&gt; '0', BLOCKCACHE =&gt; 'true', BLOCKSIZE =&gt; '65536', REPLICATION_SCOPE =&gt; '0'&#125;</span><br><span class="line">&#123;NAME =&gt; 'cf2', BLOOMFILTER =&gt; 'ROW', VERSIONS =&gt; '1', IN_MEMORY =&gt; 'false', KEEP_DELETED_CELLS =&gt; 'FALSE', </span><br><span class="line">DATA_BLOCK_ENCODING =&gt; 'NONE', TTL =&gt; 'FOREVER', COMPRESSION =&gt; 'NONE', </span><br><span class="line">MIN_VERSIONS =&gt; '0', BLOCKCACHE =&gt; 'true', BLOCKSIZE =&gt; '65536', REPLICATION_SCOPE =&gt; '0'&#125;</span><br><span class="line">2 row(s) in 0.3030 seconds</span><br><span class="line">hbase(main):010:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="表是否存在：exists">表是否存在：exists</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):010:0&gt; exists 't1'</span><br><span class="line">Table t1 does exist</span><br><span class="line">0 row(s) in 0.5200 seconds</span><br><span class="line">hbase(main):011:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="禁用-使能表：disable-enable">禁用/使能表：disable/enable</h2>
+<h2 id="删除表：drop">删除表：drop</h2>
+<p>数据准备</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):018:0&gt; create 't2','info'</span><br><span class="line">0 row(s) in 2.4840 seconds</span><br><span class="line">=&gt; Hbase::Table - t2</span><br><span class="line">hbase(main):019:0&gt; list</span><br><span class="line">TABLE</span><br><span class="line">t1</span><br><span class="line">t2</span><br><span class="line">2 row(s) in 0.0250 seconds</span><br><span class="line">=&gt; ["t1", "t2"]</span><br><span class="line">hbase(main):020:0&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>分两步，首先disable，然后drop</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):020:0&gt; disable 't2'</span><br><span class="line">0 row(s) in 2.2960 seconds</span><br><span class="line">hbase(main):021:0&gt; drop 't2'</span><br><span class="line">0 row(s) in 1.3080 seconds</span><br><span class="line">hbase(main):022:0&gt; list</span><br><span class="line">TABLE</span><br><span class="line">t1</span><br><span class="line">1 row(s) in 0.0130 seconds</span><br><span class="line">=&gt; ["t1"]</span><br><span class="line">hbase(main):023:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="清空表：truncate">清空表：truncate</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):023:0&gt; count 't1'</span><br><span class="line">4 row(s) in 0.0670 seconds</span><br><span class="line">=&gt; 4</span><br><span class="line">hbase(main):024:0&gt; truncate 't1'</span><br><span class="line">Truncating 't1' table (it may take a while):</span><br><span class="line">- Disabling table...</span><br><span class="line">- Truncating table...</span><br><span class="line">0 row(s) in 4.2030 seconds</span><br><span class="line">hbase(main):025:0&gt; count 't1'</span><br><span class="line">0 row(s) in 0.1620 seconds</span><br><span class="line">=&gt; 0</span><br><span class="line">hbase(main):026:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="修改表结构：alter">修改表结构：alter</h2>
+<p><strong>先disable后enable</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):026:0&gt; disable 't1'</span><br><span class="line">0 row(s) in 2.3110 seconds</span><br><span class="line">hbase(main):027:0&gt; alter 't1',READONLY</span><br><span class="line">Updating all regions with the new schema...</span><br><span class="line">1/1 regions updated.</span><br><span class="line">Done.</span><br><span class="line">0 row(s) in 1.9830 seconds</span><br><span class="line">hbase(main):028:0&gt; enable 't1'</span><br><span class="line">0 row(s) in 1.3060 seconds</span><br><span class="line">hbase(main):029:0&gt;</span><br></pre></td></tr></table></figure>
+<h1>数据操作</h1>
+<h2 id="添加数据：put">添加数据：put</h2>
+<p>添加4行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):010:0&gt; put 't1','r1','cf1:name','aa'</span><br><span class="line">0 row(s) in 0.1800 seconds</span><br><span class="line">hbase(main):011:0&gt; put 't1','r2','cf2:age','22'</span><br><span class="line">0 row(s) in 0.0620 seconds</span><br><span class="line">hbase(main):012:0&gt; put 't1','r3','cf1:name','bb'</span><br><span class="line">0 row(s) in 0.0230 seconds</span><br><span class="line">hbase(main):013:0&gt; put 't1','r4','cf2:age','23'</span><br><span class="line">0 row(s) in 0.0190 seconds</span><br><span class="line">hbase(main):014:0&gt;</span><br></pre></td></tr></table></figure>
+<p>添加1行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):014:0&gt; put 't1','rk1','cf1:name','bb'</span><br><span class="line">0 row(s) in 0.0210 seconds</span><br><span class="line">hbase(main):015:0&gt; put 't1','rk1','cf1:age','23'</span><br><span class="line">0 row(s) in 0.0220 seconds</span><br><span class="line">hbase(main):016:0&gt; put 't1','rk1','cf2:cid','1001'</span><br><span class="line">0 row(s) in 0.0220 seconds</span><br><span class="line">hbase(main):017:0&gt; put 't1','rk1','cf2:dept','bigdata'</span><br><span class="line">0 row(s) in 0.0210 seconds</span><br><span class="line">hbase(main):018:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="查询数据：get">查询数据：get</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):018:0&gt; get 't1','rk1'</span><br><span class="line">COLUMN                                           CELL</span><br><span class="line">cf1:age                                         timestamp=1501251921190, value=23</span><br><span class="line">cf1:name                                        timestamp=1501251900543, value=bb</span><br><span class="line">cf2:cid                                         timestamp=1501251958895, value=1001</span><br><span class="line">cf2:dept                                        timestamp=1501252040732, value=bigdata</span><br><span class="line">4 row(s) in 0.1210 seconds</span><br><span class="line">hbase(main):019:0&gt; get 't1','rk1','cf1:name'</span><br><span class="line">COLUMN                                           CELL</span><br><span class="line">cf1:name                                        timestamp=1501251900543, value=bb</span><br><span class="line">1 row(s) in 0.0440 seconds</span><br><span class="line">hbase(main):020:0&gt; get 't1','rk1','cf2:dept'</span><br><span class="line">COLUMN                                           CELL</span><br><span class="line">cf2:dept                                        timestamp=1501252040732, value=bigdata</span><br><span class="line">1 row(s) in 0.0200 seconds</span><br><span class="line">hbase(main):021:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="扫描表：scan">扫描表：scan</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):021:0&gt; scan 't1'</span><br><span class="line">ROW                                              COLUMN+CELL</span><br><span class="line">r1                                              column=cf1:name, timestamp=1501251794870, value=aa</span><br><span class="line">r2                                              column=cf2:age, timestamp=1501251806541, value=22</span><br><span class="line">r3                                              column=cf1:name, timestamp=1501251815736, value=bb</span><br><span class="line">r4                                              column=cf2:age, timestamp=1501251824433, value=23</span><br><span class="line">rk1                                             column=cf1:age, timestamp=1501251921190, value=23</span><br><span class="line">rk1                                             column=cf1:name, timestamp=1501251900543, value=bb</span><br><span class="line">rk1                                             column=cf2:cid, timestamp=1501251958895, value=1001</span><br><span class="line">rk1                                             column=cf2:dept, timestamp=1501252040732, value=bigdata</span><br><span class="line">5 row(s) in 0.0900 seconds</span><br><span class="line">hbase(main):022:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="删除整行数据：deleteall">删除整行数据：deleteall</h2>
+<p>删除整行数据</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):014:0&gt; deleteall 't1','r1'</span><br><span class="line">0 row(s) in 0.1620 seconds</span><br><span class="line">hbase(main):015:0&gt; scan 't1'</span><br><span class="line">ROW                                              COLUMN+CELL</span><br><span class="line">r2                                              column=cf2:age, timestamp=1501251806541, value=22</span><br><span class="line">r3                                              column=cf1:name, timestamp=1501251815736, value=bb</span><br><span class="line">r4                                              column=cf2:age, timestamp=1501251824433, value=23</span><br><span class="line">rk1                                             column=cf1:age, timestamp=1501251921190, value=23</span><br><span class="line">rk1                                             column=cf1:name, timestamp=1501251900543, value=bb</span><br><span class="line">rk1                                             column=cf2:cid, timestamp=1501251958895, value=1001</span><br><span class="line">rk1                                             column=cf2:dept, timestamp=1501252040732, value=bigdata</span><br><span class="line">4 row(s) in 0.2190 seconds</span><br><span class="line">hbase(main):016:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="删除指定行的列：delete">删除指定行的列：delete</h2>
+<p>删除指定行的列（单元数据）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):016:0&gt; delete 't1','rk1','cf2:dept'</span><br><span class="line">0 row(s) in 0.0260 seconds</span><br><span class="line">hbase(main):017:0&gt; get 't1','rk1'</span><br><span class="line">COLUMN                                           CELL </span><br><span class="line">cf1:age                                         timestamp=1501251921190, value=23  </span><br><span class="line">cf1:name                                        timestamp=1501251900543, value=bb</span><br><span class="line">cf2:cid                                         timestamp=1501251958895, value=1001</span><br><span class="line">3 row(s) in 0.0840 seconds</span><br><span class="line">hbase(main):018:0&gt;</span><br></pre></td></tr></table></figure>
+<h1>命名空间</h1>
+<p>关系数据库系统中，命名空间namespace是表的逻辑分组,同一组中的表有类似的用途。</p>
+<p>HBase的表也有命名空间的管理方式，命名空间的概念为即将到来的多租户特性打下基础：</p>
+<ul>
+<li>配额管理（ Quota Management (HBASE-8410)）：限制一个namespace可以使用的资源，资源包括region和table等；</li>
+<li>命名空间安全管理（ Namespace Security Administration (HBASE-9206)）：提供了另一个层面的多租户安全管理；</li>
+<li>Region服务器组（Region server groups (HBASE-6721)）：一个命名空间或一张表，可以被固定到一组 regionservers上，从而保证了数据隔离性。</li>
+</ul>
+<h2 id="缺省命名空间">缺省命名空间</h2>
+<p>HBase系统默认定义了两个缺省的namespace：</p>
+<ul>
+<li>hbase：系统内建表，包括namespace和meta表。</li>
+<li>default：用户建表时未指定namespace的表都创建在此。</li>
+</ul>
+<h2 id="指定命名空间">指定命名空间</h2>
+<p>命令参数中指定namespace中的表：‘namespace:table’。</p>
+<p>例如：</p>
+<p>（1）在指定namespace下创建表</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):033:0&gt; create 'mydb:test',&#123;NAME =&gt; 'f1', VERSIONS =&gt; 5&#125;</span><br><span class="line">0 row(s) in 1.2490 seconds</span><br><span class="line">=&gt; Hbase::Table - mydb:test</span><br><span class="line">hbase(main):034:0&gt;</span><br><span class="line">hbase(main):034:0&gt; list</span><br><span class="line">TABLE</span><br><span class="line">mydb:test </span><br><span class="line">t1</span><br><span class="line">2 row(s) in 0.0390 seconds</span><br><span class="line">=&gt; ["mydb:test", "t1"]</span><br><span class="line">hbase(main):035:0&gt;</span><br></pre></td></tr></table></figure>
+<p>（2）添加数据</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):035:0&gt; put 'mydb:test','rk1','f1:name','abc'</span><br><span class="line">0 row(s) in 0.1310 seconds</span><br><span class="line">hbase(main):036:0&gt; put 'mydb:test','rk1','f1:age','2'</span><br><span class="line">0 row(s) in 0.0220 seconds</span><br><span class="line">hbase(main):037:0&gt; scan 'mydb:test'</span><br><span class="line">ROW                                              COLUMN+CELL</span><br><span class="line">rk1                                             column=f1:age, timestamp=1501335244278, value=2  </span><br><span class="line">rk1                                             column=f1:name, timestamp=1501335234503, value=abc </span><br><span class="line">1 row(s) in 0.0970 seconds</span><br><span class="line">hbase(main):038:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="查看namespace结构：describe-namespace">查看namespace结构：describe_namespace</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):032:0&gt; describe_namespace 'mydb'</span><br><span class="line">DESCRIPTION </span><br><span class="line">&#123;NAME =&gt; 'mydb'&#125;   </span><br><span class="line">1 row(s) in 0.0330 seconds</span><br><span class="line">hbase(main):033:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="列举namespace：list-namespace">列举namespace：list_namespace</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):029:0&gt; list_namespace</span><br><span class="line">NAMESPACE</span><br><span class="line">default </span><br><span class="line">hbase </span><br><span class="line">2 row(s) in 0.2170 seconds</span><br><span class="line">hbase(main):030:0&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="创建namespace：create-namespace">创建namespace：create_namespace</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hbase(main):030:0&gt; create_namespace 'mydb'</span><br><span class="line">0 row(s) in 0.1070 seconds</span><br><span class="line">hbase(main):031:0&gt; list_namespace</span><br><span class="line">NAMESPACE</span><br><span class="line">default </span><br><span class="line">hbase </span><br><span class="line">mydb  </span><br><span class="line">3 row(s) in 0.0400 seconds</span><br><span class="line">hbase(main):032:0&gt;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/HBase%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HBASE学习笔记</a></li>
+            <li>03-HBASE-SHELL</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#进入HBase-Shell"><span class="nav-text">进入HBase Shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看版本：version"><span class="nav-text">查看版本：version</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看状态：status"><span class="nav-text">查看状态：status</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看当前用户：whoami"><span class="nav-text">查看当前用户：whoami</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看帮助：help"><span class="nav-text">查看帮助：help</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">表操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建表：create"><span class="nav-text">创建表：create</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#列举表：list"><span class="nav-text">列举表：list</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看表结构：desc"><span class="nav-text">查看表结构：desc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表是否存在：exists"><span class="nav-text">表是否存在：exists</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#禁用-使能表：disable-enable"><span class="nav-text">禁用/使能表：disable/enable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除表：drop"><span class="nav-text">删除表：drop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#清空表：truncate"><span class="nav-text">清空表：truncate</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改表结构：alter"><span class="nav-text">修改表结构：alter</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">数据操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#添加数据：put"><span class="nav-text">添加数据：put</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询数据：get"><span class="nav-text">查询数据：get</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扫描表：scan"><span class="nav-text">扫描表：scan</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除整行数据：deleteall"><span class="nav-text">删除整行数据：deleteall</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除指定行的列：delete"><span class="nav-text">删除指定行的列：delete</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">命名空间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#缺省命名空间"><span class="nav-text">缺省命名空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定命名空间"><span class="nav-text">指定命名空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看namespace结构：describe-namespace"><span class="nav-text">查看namespace结构：describe_namespace</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#列举namespace：list-namespace"><span class="nav-text">列举namespace：list_namespace</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建namespace：create-namespace"><span class="nav-text">创建namespace：create_namespace</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

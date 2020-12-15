@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="MongoDB是最为流行的开源文档数据库之一。Spring Data MongoDB提供了三种方式在Spring应用中使用MongoDB： 通过注解实现对象-文档映射； 使用MongoTemplate实现基于模板的数据库访问； 自动化的运行时Repository生成功能。 我们已经看到Spring Data JPA如何为基于JPA的数据访问实现自动化Repository生成功能。Spring Da">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;45-%E4%BD%BF%E7%94%A8MongoDB%E6%8C%81%E4%B9%85%E5%8C%96%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="MongoDB是最为流行的开源文档数据库之一。Spring Data MongoDB提供了三种方式在Spring应用中使用MongoDB： 通过注解实现对象-文档映射； 使用MongoTemplate实现基于模板的数据库访问； 自动化的运行时Repository生成功能。 我们已经看到Spring Data JPA如何为基于JPA的数据访问实现自动化Repository生成功能。Spring Da">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851169_20200322101406258_29734.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851168_20200322101405741_5990.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851168_20200322101405424_28384.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851168_20200322101405213_11052.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851168_20200322101405002_20376.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851167_20200322101404689_3719.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851167_20200322101404273_18149.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851167_20200322101403751_8131.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851167_20200322101403426_21046.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851167_20200322101402897_8225.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851166_20200322101402686_12596.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851166_20200322101402475_247.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851166_20200322101402265_28366.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851166_20200322101402055_19698.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851166_20200322101401742_32057.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851165_20200322101401530_2863.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851165_20200322101401322_371.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851165_20200322101401107_19985.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851165_20200322101400793_10756.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851165_20200322101400585_28136.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851164_20200322101400374_7697.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851164_20200322101400164_18423.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851164_20200322101359956_1282.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851164_20200322101359744_19544.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851164_20200322101359534_11331.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851164_20200322101359323_16835.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851163_20200322101359009_14320.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851163_20200322101358690_31828.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851163_20200322101358480_25700.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851163_20200322101358260_25785.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.040Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584851169_20200322101406258_29734.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/45-%E4%BD%BF%E7%94%A8MongoDB%E6%8C%81%E4%B9%85%E5%8C%96%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>45-使用MONGODB持久化文档数据</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>MongoDB是最为流行的开源文档数据库之一。Spring Data MongoDB提供了三种方式在Spring应用中使用MongoDB：</p><ul>
+<li>通过注解实现对象-文档映射；</li>
+<li>使用MongoTemplate实现基于模板的数据库访问；</li>
+<li>自动化的运行时Repository生成功能。</li>
+</ul><p>我们已经看到Spring Data JPA如何为基于JPA的数据访问实现自动化Repository生成功能。Spring Data MongoDB为基于MongoDB的数据访问提供了相同的功能。</p><a id="more"></a>
+
+
+<p>不过，与Spring Data JPA不同的是，Spring Data MongoDB提供了将Java对象映射为文档的功能。（Spring Data JPA没有必要为JPA提供这样的注解，因为JPA规范本身就提供了对象-关系映射注解）。</p>
+<p>除此之外，Spring Data MongoDB为通用的文档操作任务提供了基于模板的数据访问方式。</p>
+<p>在使用这些特性之前，我们首先要配置Spring Data MongoDB。</p>
+<h1>配置并启用MongoDB</h1>
+<p>为了有效地使用Spring Data MongoDB，我们需要在Spring配置中添加几个必要的bean。首先，我们需要配置 <strong>MongoClient</strong> ，以便于访问MongoDB数据库。同时，我们还需要有一个 <strong>MongoTemplate bean</strong> ，实现基于模板的数据库访问。此外，不是必须，但是强烈推荐启用Spring Data MongoDB的 <strong>自动化Repository生成功能</strong> 。</p>
+<p>如下的程序清单展现了如何编写简单的Spring Data MongoDB配置类，它包含了上述的几个bean：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851169_20200322101406258_29734.png" alt></p>
+<p>在上一章中，我们通过@EnableJpaRepositories注解，启用了Spring Data的自动化JPA Repository生成功能。与之类似， <strong>@EnableMongoRepositories为MongoDB</strong> 实现了相同的功能。</p>
+<p>除了@EnableMongoRepositories之外，上面程序清单中还包含了两个带有@Bean注解的方法。第一个@Bean方法使用 <strong>MongoFactoryBean</strong> 声明了一个Mongo实例。这个bean将Spring Data MongoDB与数据库本身连接了起来（与使用关系型数据时DataSource所做的事情并没有什么区别）。尽管我们可以使用 <strong>MongoClient</strong> 直接创建Mongo实例，但如果这样做的话，就必须要处理MongoClient构造器所抛出的UnknownHostException异常。在这里，使用Spring Data MongoDB的MongoFactoryBean更加简单。因为它是一个工厂bean，因此MongoFactoryBean会负责构建Mongo实例，我们不必再担心UnknownHostException异常。</p>
+<p>另外一个@Bean方法声明了 <strong>MongoTemplate bean</strong> ，在它构造时，使用了其他@Bean方法所创建的Mongo实例的引用以及数据库的名称。稍后，你将会看到如何使用MongoTemplate来查询数据库。即便不直接使用MongoTemplate，我们也会需要这个bean，因为 <strong>Repository的自动化生成功能在底层使用了它</strong> 。</p>
+<p>除了直接声明这些bean，我们还可以 <strong>让配置类扩展AbstractMongo-Configuration并重载getDatabaseName()和mongo()方法</strong> 。如下的程序清单展现了如何使用这种配置方式。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851168_20200322101405741_5990.png" alt></p>
+<p>这个新的配置类与第一个程序清单的功能是相同的，只不过在篇幅上更加简洁。最为显著的区别在于 <strong>这个配置中没有直接声明MongoTemplate bean，当然它还是会被隐式地创建</strong> 。我们在这里重载了getDatabaseName()方法来提供数据库的名称。mongo()方法依然会创建一个MongoClient的实例，因为它会抛出Exception，所以我们可以直接使用MongoClient，而不必再使用MongoFactoryBean了。</p>
+<p>到目前为止，不管是使用程序清单一还是二，都为Spring Data MongoDB提供了一个运行配置，也就是说，只要MongoDB服务器运行在本地即可。如果MongoDB服务器运行在其他的机器上，那么可以在创建MongoClient的时候进行指定：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851168_20200322101405424_28384.png" alt></p>
+<p>另外，MongoDB服务器有可能监听的端口并不是默认的27017。如果是这样的话，在创建MongoClient的时候，还需要指定端口：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851168_20200322101405213_11052.png" alt></p>
+<p>如果MongoDB服务器运行在生产配置上，我认为你可能还启用了认证功能。在这种情况下，为了访问数据库，我们还需要提供应用的凭证。访问需要认证的MongoDB服务器稍微有些复杂，如下面的程序清单所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851168_20200322101405002_20376.png" alt></p>
+<p>为了访问需要认证的MongoDB服务器，MongoClient在实例化的时候必须要有一个MongoCredential的列表。在上面程序中，我们为此创建了一个MongoCredential。 <strong>为了将凭证信息的细节放在配置类外边，它们是通过注入的Environment对象解析得到的。</strong></p>
+<p>为了使这个讨论更加完整，Spring Data MongoDB还支持通过XML来进行配置。你可能也知道，我更喜欢Java配置的方案。但是，如果你喜欢XML配置的话，如下的程序清单展现了如何使用mongo配置命名空间来配置Spring Data MongoDB。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851167_20200322101404689_3719.png" alt></p>
+<p>现在Spring Data MongoDB已经配置完成了，我们很快就可以使用它来保存和查询文档了。但首先，需要使用Spring Data MongoDB的对象-文档映射注解为Java领域对象建立到持久化文档的映射关系。</p>
+<h1>为模型添加注解，实现MongoDB持久化</h1>
+<p>当使用JPA的时候，我们需要将Java实体类映射到关系型表和列上。JPA规范提供了一些支持对象-关系映射的注解，而有一些JPA实现，如Hibernate，也添加了自己的映射注解。</p>
+<p>但是，MongoDB并没有提供对象-文档映射的注解。Spring Data MongoDB填补了这一空白，提供了一些将Java类型映射为MongoDB文档的注解。下表描述了这些注解。</p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@Document</td>
+<td>标示映射到MongoDB文档上的领域对象</td>
+</tr>
+<tr>
+<td>@Id</td>
+<td>标示某个域为ID域</td>
+</tr>
+<tr>
+<td>@DbRef</td>
+<td>标示某个域要引用其他的文档，这个文档有可能位于另外一个数据库中</td>
+</tr>
+<tr>
+<td>@Field</td>
+<td>为文档域指定自定义的元数据</td>
+</tr>
+<tr>
+<td>@Version</td>
+<td>标示某个属性用作版本域</td>
+</tr>
+</tbody>
+</table>
+<p>@Document和@Id注解类似于JPA的@Entity和@Id注解。我们将会经常使用这两个注解，对于要以文档形式保存到MongoDB数据库的每个Java类型都会使用这两个注解。例如，如下的程序清单展现了如何为Order类添加注解，它会被持久化到MongoDB中。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851167_20200322101404273_18149.png" alt></p>
+<p>我们可以看到，Order类添加了@Document注解，这样它就能够借助MongoTemplate或自动生成的Repository进行持久化。其id属性上使用了@Id注解，用来指定它作为文档的ID。除此之外，customer属性上使用了@Field注解，这样的话，当文档持久化的时候customer属性将会映射为名为client的域。</p>
+<p>注意，其他的属性并没有添加注解。 <strong>除非将属性设置为瞬时态（transient）的，否则Java对象中所有的域都会持久化为文档中的域。并且如果我们不使用@Field注解进行设置的话，那么文档域中的名字将会与对应的Java属性相同。</strong></p>
+<p>同时，需要注意的是items属性，它指的是订单中具体条目的集合。在传统的关系型数据库中，这些条目将会保存在另外的一个数据库表中，通过外键进行应用，items域上很可能还会使用JPA的@OneToMany注解。但在这里，情形完全不同。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851167_20200322101403751_8131.png" alt></p>
+<p>如我前面所述，文档可以与其他的文档产生关联，但这并不是文档数据库所擅长的功能。在本例购买订单与行条目之间的关联关系中，行条目只是同一个订单文档里面内嵌的一部分。因此，没有必要为这种关联关系添加任何注解。实际上，Item类本身并没有任何注解：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851167_20200322101403426_21046.png" alt></p>
+<p>我们没有必要为Item添加@Document注解，也没有必要为它的域指定@Id。这是因为我们不会单独将Item持久化为文档。它始终会是Order文档中Item列表的一个成员，并且会作为文档中的嵌入元素。</p>
+<p>当然，如果你想指定Item中的某个域如何持久化到文档中，那么可以为对应的Item属性添加@Field注解。不过在本例中，并没有必要这样做。</p>
+<p>我们现在已经为Java对象添加了MongoDB持久化的注解。接下来，看一下如何使用MongoTemplate来存储它们。</p>
+<h1>使用MongoTemplate访问MongoDB</h1>
+<p>我们已经在配置类中配置了MongoTemplate bean，不管是显式声明还是扩展AbstractMongoConfiguration都能实现相同的效果。接下来，需要做的就是将其注入到使用它的地方：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851167_20200322101402897_8225.png" alt></p>
+<p>注意，在这里我们将MongoTemplate注入到一个类型为MongoOperations的属性中。 <strong>MongoOperations是MongoTemplate所实现的接口，不使用具体实现是一个好的做法，尤其是在注入的时候</strong> 。</p>
+<p>MongoOperations暴了多个使用MongoDB文档数据库的方法。在这里，我们不可能讨论所有的方法，但是可以看一下最为常用的几个操作，比如计算文档集合中有多少条文档。使用注入的MongoOperations，我们可以得到Order集合并调用 <strong>count()</strong> 来得到数量：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851166_20200322101402686_12596.png" alt></p>
+<p>现在，假设要保存一个新的Order。为了完成这个任务，我们可以调用 <strong>save()方法</strong> ：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851166_20200322101402475_247.png" alt></p>
+<p>save()方法的第一个参数是新创建的Order，第二个参数是要保存的文档存储的名称。</p>
+<p>另外，我们还可以调用 <strong>findById()方法</strong> 来根据ID查找订单：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851166_20200322101402265_28366.png" alt></p>
+<p>对于更高级的查询，我们需要 <strong>构造Query对象并将其传递给find()方法</strong> 。例如，要查找所有client域等于“Chuck Wagon”的订单，可以使用如下的代码：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851166_20200322101402055_19698.png" alt></p>
+<p>在本例中，用来构造Query对象的Criteria只检查了一个域，但是它也可以用来构造更加有意思的查询。比如，我们想要查询Chuck所有通过Web创建的订单：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851166_20200322101401742_32057.png" alt></p>
+<p>如果你想移除某一个文档的话，那么就应该使用 <strong>remove()方法</strong> ：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851165_20200322101401530_2863.png" alt></p>
+<p>如我前面所述，MongoOperations有多个操作文档数据的方法。我建议你查看一下其JavaDoc文档，以了解通过MongoOperations都能完成什么功能。</p>
+<p>通常来讲，我们会将MongoOperations注入到自己设计的Repository类中，并使用它的操作来实现Repository方法。但是，如果你不愿意编写Repository的话，那么Spring Data MongoDB能够自动在运行时生成Repository实现。下面，我们来看一下是如何实现的。</p>
+<h1>自动化的MongoDB Repository实现</h1>
+<p>为了理解如何使用Spring Data MongoDB来创建Repository，让我们先回忆一下如何使用Spring Data JPA的。首先我们创建了一个扩展自JpaRepository的SpitterRepository接口。然后启用了Spring Data JPA Repository功能。这样的结果就是Spring Data JPA能够自动创建接口的实现，其中包括了多个内置的方法以及我们所添加的遵循命名约定的方法。</p>
+<p>我们已经通过@EnableMongoRepositories注解启用了Spring Data MongoDB的Repository功能，接下来需要做的就是创建一个接口，Repository实现要基于这个接口来生成。不过，在这里，我们不再扩展JpaRepository，而是要扩展MongoRepository。如下程序清单中的OrderRepository扩展了MongoRepository，为Order文档提供了基本的CRUD操作。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851165_20200322101401322_371.png" alt></p>
+<p>因为OrderRepository扩展了MongoRepository，因此它就会传递性地扩展Repository标记接口。回忆一下我们在学习Spring Data JPA时所了解的知识，任何扩展Repository的接口将会在运行时自动生成实现。在本例中，并不会实现与关系型数据库交互的JPA Repository，而是会为OrderRepository生成读取和写入数据到MongoDB文档数据库的实现。</p>
+<p>MongoRepository接口有两个参数，第一个是带有@Document注解的对象类型，也就是该Repository要处理的类型。第二个参数是带有@Id注解的属性类型。</p>
+<p><strong>尽管OrderRepository本身并没有定义任何方法，但是它会继承多个方法，包括对Order文档进行CRUD操作的方法</strong> 。下表描述了OrderRepository继承的所有方法。</p>
+<table>
+<thead>
+<tr>
+<th>方　　法</th>
+<th>描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>long count();</code></td>
+<td>返回指定Repository类型的文档数量</td>
+</tr>
+<tr>
+<td><code>void delete(Iterable&lt;? extends T);</code></td>
+<td>删除与指定对象关联的所有文档</td>
+</tr>
+<tr>
+<td><code>void delete(T);</code></td>
+<td>删除与指定对象关联的文档</td>
+</tr>
+<tr>
+<td><code>void delete(ID);</code></td>
+<td>根据ID删除某一个文档</td>
+</tr>
+<tr>
+<td><code>void deleteAll();</code></td>
+<td>删除指定Repository类型的所有文档</td>
+</tr>
+<tr>
+<td><code>boolean exists(Object);</code></td>
+<td>如果存在与指定对象相关联的文档，则返回true</td>
+</tr>
+<tr>
+<td><code>boolean exists(ID);</code></td>
+<td>如果存在指定ID的文档，则返回true</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>List&lt;T&gt; findAll(Iterable&lt;ID&gt;);</code></td>
+<td>返回指定文档ID对应的所有文档</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>List&lt;T&gt; findAll(Sort);</code></td>
+<td>为指定的Repository类型，返回排序后的所有文档列表</td>
+</tr>
+<tr>
+<td><code>T findOne(ID);</code></td>
+<td>为指定的ID返回单个文档</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>save(&lt;S&gt;);</code></td>
+<td>为给定的对象保存一条文档</td>
+</tr>
+</tbody>
+</table>
+<p>表中的方法使用了传递进来和方法返回的泛型。OrderRepository扩展了<code>MongoRepository&lt;Order, String&gt;</code> ，那么T就映射为Order，ID映射为String，而S映射为所有扩展Order的类型。</p>
+<h2 id="添加自定义的查询方法">添加自定义的查询方法</h2>
+<p>通常来讲，CRUD操作是很有用的，但我们有时候可能希望Repository提供除内置方法以外的其他方法。</p>
+<p>我们了解Spring Data JPA支持方法命名约定，它能够帮助Spring Data为遵循约定的方法自动生成实现。实际上，相同的约定也适用于Spring Data MongoDB。这意味着我们可以为OrderRepository添加自定义的方法：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851165_20200322101401107_19985.png" alt></p>
+<p>这里我们有四个新的方法，每一个都是查找满足特定条件的Order对象。其中第一个用来获取customer属性等于传入值的Order列表；第二个方法获取customer属性like传入值的Order列表；接下来方法会返回customer和type属性等于传入值的Order对象；最后一个方法与前一个类似，只不过customer在对比的时候使用的是<em>like</em>而不是<em>equals</em>。</p>
+<p>其中，find这个查询动词并不是固定的。如果喜欢的话，我们还可以使用get作为查询动词：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851165_20200322101400793_10756.png" alt></p>
+<p>如果read更适合的话，你还可以使用这个动词：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851165_20200322101400585_28136.png" alt></p>
+<p>除此之外，还有一个特殊的动词用来为匹配的对象计数：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851164_20200322101400374_7697.png" alt></p>
+<p>与Spring Data JPA类似，在查询动词与By之前，我们有很大的灵活性。例如，我们可以标示要查找什么内容：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851164_20200322101400164_18423.png" alt></p>
+<p>其中，Orders这个词没并没有什么特殊之处，它不会影响要获取的内容。我们也可以将方法按照如下的方式命名：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851164_20200322101359956_1282.png" alt></p>
+<p>其实，并不是必须要返回<code>List&lt;Order&gt;</code> ，如果只想要一个Order对象的话，我们可以只需简单地返回Order：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851164_20200322101359744_19544.png" alt></p>
+<p>这里，所返回的就是原本List中的第一个Order对象。如果没有匹配元素的话，方法将会返回null。</p>
+<h2 id="指定自定义查询语句">指定自定义查询语句</h2>
+<p>在Spring JPA中，@Query注解可以为Repository方法指定自定义的查询。@Query能够像在JPA中那样用在MongoDB上。唯一的区别在于针对MongoDB时，@Query会接受一个JSON查询，而不是JPA查询。</p>
+<p>例如，假设我们想要查询给定类型的订单，并且要求customer的名称为“Chuck Wagon”。OrderRepository中如下的方法声明能够完成所需的任务：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851164_20200322101359534_11331.png" alt></p>
+<p>@Query中给定的JSON将会与所有的Order文档进行匹配，并返回匹配的文档。需要注意的是，type属性映射成了“?0”，这表明type属性应该与查询方法的第零个参数相等。如果有多个参数的话，它们可以通过“?1”、“?2”等方式进行引用。</p>
+<h2 id="混合自定义功能">混合自定义功能</h2>
+<p>在在Spring JPA中中，我们学习了如何将完全自定义的方法混合到自动生成的Repository中。对于JPA来说，这还涉及到创建一个中间接口来声明自定义的方法，为这些自定义方法创建实现类并修改自动化的Repository接口，使其扩展中间接口。对于Spring Data MongoDB来说，这些步骤都是相同的。</p>
+<p>假设我们想要查询文档中type属性匹配给定值的Order对象。我们可以通过创建签名为<code>List&lt;Order&gt; findByType(String t)</code>的方法，很容易实现这个功能。但是，如果给定的类型是“NET”，那我们就查找type值为“WEB”的Order对象。要实现这个功能的话，这就有些困难了，即便使用@Query注解也不容易实现。不过，混合实现的做法能够完成这项任务。</p>
+<p>首先，定义中间接口：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851164_20200322101359323_16835.png" alt></p>
+<p>这非常简单。接下来，我们要编写混合实现，具体实现如下面的程序清单所示。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851163_20200322101359009_14320.jpg" alt></p>
+<p>可以看到，混合实现中注入了MongoOperations（也就是MongoTemplate所实现的接口）。findOrdersByType()方法使用MongoOperations对数据库进行了查询，查找匹配条件的文档。</p>
+<p>剩下的工作就是修改OrderRepository，让其扩展中间接口OrderOperations：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851163_20200322101358690_31828.png" alt></p>
+<p><strong>将这些关联起来的关键点在于实现类的名称为OrderRepositoryImpl。这个名字前半部分与OrderRepository相同，只是添加了“Impl”后缀。</strong> 当Spring Data MongoDB生成Repository实现时，它会查找这个类并将其混合到自动生成的实现中。</p>
+<p>如果你不喜欢“Impl”后缀的话，那么可以配置Spring Data MongoDB，让其按照名字查找具备不同后缀的类。我们需要做的就是设置@EnableMongoRepositories的属性（在Spring配置类中）：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851163_20200322101358480_25700.png" alt></p>
+<p>如果使用XML配置的话，我们可以设置 <code>&lt;mongo:repositories&gt;</code> 的repository-impl-postfix属性：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584851163_20200322101358260_25785.png" alt></p>
+<p>不管采用哪种方式，我们现在都让Spring Data MongoDB查找名为OrderRepositoryStuff的类，而不再查找OrderRepositoryImpl。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>45-使用MONGODB持久化文档数据</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">配置并启用MongoDB</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">为模型添加注解，实现MongoDB持久化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">使用MongoTemplate访问MongoDB</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">自动化的MongoDB Repository实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#添加自定义的查询方法"><span class="nav-text">添加自定义的查询方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定自定义查询语句"><span class="nav-text">指定自定义查询语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#混合自定义功能"><span class="nav-text">混合自定义功能</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

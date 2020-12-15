@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="YARN的全称是Yet Another Resource Negotiator，意为另一种资源调度者。 从Apache Hadoop 2.0开始， Hadoop包含 YARN。资源调度系统的进化YARN是Hadoop 2.x中的资源管理系统，它是一个通用的资源管理模块，可为各类应用程序进行资源管理和调度。YARN不仅限于MapReduce一种框架使用，也可以供其他框架使用，比如Hive、Spark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;15-YARN.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="YARN的全称是Yet Another Resource Negotiator，意为另一种资源调度者。 从Apache Hadoop 2.0开始， Hadoop包含 YARN。资源调度系统的进化YARN是Hadoop 2.x中的资源管理系统，它是一个通用的资源管理模块，可为各类应用程序进行资源管理和调度。YARN不仅限于MapReduce一种框架使用，也可以供其他框架使用，比如Hive、Spark">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885482_20200322215234528_28526.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885482_20200322215234304_17005.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885481_20200322215233988_23885.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885481_20200322215233253_7702.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885481_20200322215233035_31076.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885481_20200322215232818_22872.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.012Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584885482_20200322215234528_28526.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/15-YARN">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>15-YARN</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>YARN的全称是Yet Another Resource Negotiator，意为另一种资源调度者。 从Apache Hadoop 2.0开始， Hadoop包含 YARN。</p><h1>资源调度系统的进化</h1><p>YARN是Hadoop 2.x中的资源管理系统，它是一个通用的资源管理模块，可为各类应用程序进行资源管理和调度。YARN不仅限于MapReduce一种框架使用，也可以供其他框架使用，比如Hive、Spark、Storm等。由于YARN的通用性，下一代MapReduce的核心已经从简单的支持单一应用的计算框架MapReduce转移到通用的资源管理系统YARN。</p><a id="more"></a>
+
+
+<p>为了让大家更进一步理解以 YARN 为核心的软件栈（Hadoop 2.x）,我们将与以 MapReduce 为核心的软件栈（Hadoop 1.x）进行对比，如下图。在Yarn中我们把job的概念换成了application，因为在新的Hadoop2.x中，运行的应用不只是MapReduce了，还有可能是其它应用如一个DAG（有向无环图Directed Acyclic Graph，例如storm应用）。Yarn的另一个目标就是拓展Hadoop，使得它不仅仅可以支持MapReduce计算，还能很方便的管理诸如Hive、Hbase、Pig、Spark/Shark等应用。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885482_20200322215234528_28526.png" alt></p>
+<h2 id="MRv1（1-x中MapReduce）">MRv1（1.x中MapReduce）</h2>
+<p>在介绍Yarn之前，我们先回头看一下Hadoop1.x对MapReduce job的调度管理方式。在Hadoop 1.x版本中，MapReduce(也称MRv1)既要负责资源管理又要负责作业处理。<strong>MapReduce（MRv1）运行时环境由（一个）JobTracker和（若干个）TaskTracker两类服务组成。其中，JobTracker负责资源管理和所有作业的控制，而TaskTracker负责接收来自JobTracker的命令并执行它。</strong> 该框架在扩展性、容错性和多框架支持等方面存在不足，这也促使了MRv2的产生。</p>
+<p>注：</p>
+<ol>
+<li>
+<p><strong>JobTracker</strong> 可以看作yarm中的ResourceManager，主要功能：作业控制和资源管理。</p>
+</li>
+<li>
+<p><strong>TaskTracker</strong> 可以看作NodeManager，主要功能：本地节点管理和任务执行。</p>
+</li>
+<li>
+<p>在hadoop中每个应用程序被表示成一个作业（job），每个作业又被分成多个任务（task）。</p>
+</li>
+</ol>
+<h2 id="MRv2（2-x中MapReduce）">MRv2（2.x中MapReduce）</h2>
+<p>MRv2是在运行于资源管理框架YARN之上的计算框架MapReduce。它的运行时环境不再由JobTracker和TaskTracker等服务组成，而是变为通用资源管理系统YARN和作业控制进程ApplicationMaster。 简言之，MRv1仅是一个独立的离线计算框架，而MRv2可以分拆为YARN（通用资源管理框架），以及运行于YARN之上的MapReduce。不仅如此，YARN还可以对诸如Hive、Hbase、Pig、Spark/Shark等多种框架进行统一管理。</p>
+<h1>YARN的架构</h1>
+<p>YARN的架构还是经典的主从（master/slave）结构，如下图所示。大体上看，YARN服务由一个ResourceManager（RM）和多个NodeManager（NM）构成，ResourceManager为主节点（master），NodeManager为从节点（slave）。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885482_20200322215234304_17005.png" alt></p>
+<p>简单地说，YARN 主要由 ResourceManager、NodeManager、ApplicationMaster和 Container 等几个组件构成。</p>
+<h2 id="ResourceManager（RM）">ResourceManager（RM）</h2>
+<p>RM是一个全局的资源管理器,负责整个系统的资源管理和分配。RM有两个主要组件：调度器(Scheduler)和应用程序管理器(ApplicationsManager)。</p>
+<h3 id="调度器-Scheduler">调度器(Scheduler)</h3>
+<p>Scheduler是ResourceManager专门进行资源管理的一个组件，负责根据容量，队列等的熟悉约束，向各种运行的应用程序分配资源。</p>
+<p>调度程序是纯调度器，它不执行监视或跟踪应用程序的状态。此外，由于应用程序故障或硬件故障，它不能保证重新启动失败的任务。</p>
+<p>调度程序根据应用程序的资源需求执行其调度功能;它基于包含诸如内存，cpu，磁盘，网络等元素的资源容器的抽象概念。</p>
+<p>YARN提供了多种直接可用的调度器,比如FairScheduler和CapacityScheduler等。</p>
+<h3 id="应用程序管理器-Applications-Manager">应用程序管理器(Applications Manager)</h3>
+<p>ApplicationsManager负责接受作业提交，协商并初始化一个容器来执行应用程序特定的ApplicationMaster，并提供服务，以便在失败时重新启动ApplicationMaster容器。</p>
+<p>每个应用程序ApplicationMaster有责任从调度程序协商适当的资源容器，跟踪其状态并监视进度。</p>
+<h2 id="ApplicationMaster（AM）">ApplicationMaster（AM）</h2>
+<p>ApplicationMaster是对运行在Yarn中某个应用的抽象，它其实就是某个类型应用的实例。当用户提交一个应用程序时，需要提供一个用以跟踪和管理这个程序的ApplicationMaster（AM）。它的主要功能就是向ResourceManager（全局的）申请计算资源（Containers），并且和NodeManager交互来执行和监控具体的task。</p>
+<p>AM主要功能包括:</p>
+<ul>
+<li>与RM调度器协商以获取资源(用Container表示);</li>
+<li>将得到的任务进一步分配给内部的任务;</li>
+<li>与NM通信以启动/停止任务;</li>
+<li>监控所有任务运行状态,并在任务运行失败时重新为任务申请资源以重启任务。</li>
+</ul>
+<p>ApplicationMaster负责一个应用程序生命周期内的所有工作。但注意每一个应用程序（不是每一种）都有一个ApplicationMaster，它可以运行在ResourceManager以外的机器上。</p>
+<h2 id="NodeManager（NM）">NodeManager（NM）</h2>
+<p>NM是每个节点上的资源和任务管理器,一方面,它会定时地向RM汇报本节点上的资源使用情况和各个Container的运行状态;另一方面,它接收并处理来自AM的Container启动/停止等各种请求。</p>
+<p>NM功能比较专一，就是负责Container状态的维护，并向RM保持心跳。</p>
+<h2 id="Container">Container</h2>
+<p>Container是YARN对计算机资源的抽象，它封装了某个节点上的多维度资源，如内存、CPU、磁盘、网络等。</p>
+<p>当AM向RM申请资源时，RM为AM返回的资源便是用Container表示的。YARN会为每个任务分配一个Container，且该任务只能使用该Container中描述的资源。</p>
+<p>需要注意的是，Container不同于MRv1中的slot，它是一个动态资源划分单位，是根据应用程序的需求动态生成的。目前YARN仅支持CPU和内存两种资源，且使用了轻量级资源隔离机制Cgroups进行资源隔离。</p>
+<h1>YARN工作流程</h1>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885481_20200322215233988_23885.png" alt></p>
+<p>（1）客户端程序向ResourceManager提交应用并请求一个ApplicationMaster实例。</p>
+<p>（2）ResourceManager找到可以运行一个Container的NodeManager，并在这个Container中启动ApplicationMaster实例。</p>
+<p>（3）ApplicationMaster向ResourceManager进行注册，注册之后客户端就可以查询ResourceManager获得自己ApplicationMaster的详细信息，以后就可以和自己的ApplicationMaster直接交互了。</p>
+<p>（4）在平常的操作过程中，ApplicationMaster根据resource-request协议向ResourceManager发送resource-request请求。</p>
+<p>（5）当Container被成功分配之后，ApplicationMaster通过向NodeManager发送container-launch-specification信息来启动Container， container-launch-specification信息包含了能够让Container和ApplicationMaster交流所需要的资料。</p>
+<p>（6）应用程序的代码在启动的Container中运行，并把运行的进度、状态等信息通过application-specific协议发送给ApplicationMaster。</p>
+<p>（7）在应用程序运行期间，提交应用的客户端主动和ApplicationMaster交流获得应用的运行状态、进度更新等信息，交流的协议也是application-specific协议。</p>
+<p>（8）一但应用程序执行完成并且所有相关工作也已经完成，ApplicationMaster向ResourceManager取消注册然后关闭，用到所有的Container也归还给系统。</p>
+<h1>YARN资源调度器</h1>
+<p>打个比方，Hadoop相当于一台虚拟计算机（由多台计算机构造的集群），那么HDFS就是这台虚拟计算机的文件系统，管理磁盘资源；而YARN负责管理虚拟计算机的CPU和内存资源。在YARN上跑的MapReduce程序就是在这台虚拟计算机跑的应用程序，需要磁盘、内存和CPU等资源。所以，我们可以这样认为：HDFS+YARN=Cluster OS（集群操作系统）。</p>
+<p>Yarn的资源调度目前支持内存和CPU两种资源。Yarn支持三种调度方式：FIFO、FAIR和DRF，分别是指先来先服务、公平调度和主资源公平调度。</p>
+<h2 id="FIFO（First-in-first-out）调度器">FIFO（First in first out）调度器</h2>
+<p>FIFO（First in first out）：先按照优先级高低调度，如果优先级相同，则按照提交时间先后顺序调度，如果提交时间相同，则按照（队列或者应用程序）名称大小（字符串比较）调度，不支持有子队列的情况。</p>
+<p>在进行资源分配的时候，先给队列中最头上的应用进行分配资源，待最头上的应用需求满足后再给下一个分配，以此类推。</p>
+<p>FIFO Scheduler是最简单也是最容易理解的调度器，也不需要任何配置，但它并不适用于共享集群。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885481_20200322215233253_7702.png" alt></p>
+<p>从图中可以看出，在FIFO 调度器中，小任务会被大任务阻塞。大的应用可能会占用所有集群资源，这就导致其它应用被阻塞。在共享集群中，更适合采用Capacity Scheduler或Fair Scheduler，这两个调度器都允许大任务和小任务在提交的同时获得一定的系统资源。</p>
+<p>单队列组织方式，将所有的应用程序放到一个队列中。 局限性明显：资源利用率低，无法交叉运行作业。不够灵活，比如紧急的作业无法插队。</p>
+<h2 id="Fair调度器">Fair调度器</h2>
+<p>FAIR：按照内存资源使用量比率调度，即按照used_memory/minShare大小调度（核心思想是按照该调度算法决定调度顺序，但还需考虑一些边界情况）；</p>
+<p>在Fair调度器中，我们不需要预先占用一定的系统资源，Fair调度器会为所有运行的job动态的调整系统资源。如下图所示，当第一个大job提交时，只有这一个job在运行，此时它获得了所有集群资源；当第二个小任务提交后，Fair调度器会分配一半资源给这个小任务，让这两个任务公平的共享集群资源。</p>
+<p>需要注意的是，在下图Fair调度器中，从第二个任务提交到获得资源会有一定的延迟，因为它需要等待第一个任务释放占用的Container。小任务执行完成之后也会释放自己占用的资源，大任务又获得了全部的系统资源。最终的效果就是Fair调度器即得到了高的资源利用率又能保证小任务及时完成。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885481_20200322215233035_31076.png" alt></p>
+<h2 id="Capacity调度器">Capacity调度器</h2>
+<p>对于Capacity调度器，有一个专门的队列用来运行小任务，但是为小任务专门设置一个队列会预先占用一定的集群资源，这就导致大任务的执行时间会落后于使用FIFO调度器时的时间。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584885481_20200322215232818_22872.png" alt></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Hadoop%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">HADOOP学习笔记</a></li>
+            <li>15-YARN</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">资源调度系统的进化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MRv1（1-x中MapReduce）"><span class="nav-text">MRv1（1.x中MapReduce）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MRv2（2-x中MapReduce）"><span class="nav-text">MRv2（2.x中MapReduce）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">YARN的架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ResourceManager（RM）"><span class="nav-text">ResourceManager（RM）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#调度器-Scheduler"><span class="nav-text">调度器(Scheduler)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用程序管理器-Applications-Manager"><span class="nav-text">应用程序管理器(Applications Manager)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ApplicationMaster（AM）"><span class="nav-text">ApplicationMaster（AM）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NodeManager（NM）"><span class="nav-text">NodeManager（NM）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Container"><span class="nav-text">Container</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">YARN工作流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">YARN资源调度器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FIFO（First-in-first-out）调度器"><span class="nav-text">FIFO（First in first out）调度器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fair调度器"><span class="nav-text">Fair调度器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Capacity调度器"><span class="nav-text">Capacity调度器</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

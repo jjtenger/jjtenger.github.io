@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="multipart表单数据multipart数据格式一般表单提交所形成的请求结果是很简单的，就是以“&amp;amp;”符分割的多个name-value对。例如，当在Spittr应用中提交注册表单时，请求会如下所示：尽管这种编码形式很简单，并且对于典型的基于文本的表单提交也足够满足要求，但是对于传送二进制数据，如上传图片，就显得力不从心了。与之不同的是，multipart格式的数据会将一个表单拆分为多个部">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;35-SpringMVC%E5%A4%84%E7%90%86%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="multipart表单数据multipart数据格式一般表单提交所形成的请求结果是很简单的，就是以“&amp;amp;”符分割的多个name-value对。例如，当在Spittr应用中提交注册表单时，请求会如下所示：尽管这种编码形式很简单，并且对于典型的基于文本的表单提交也足够满足要求，但是对于传送二进制数据，如上传图片，就显得力不从心了。与之不同的是，multipart格式的数据会将一个表单拆分为多个部">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808505_20200322003257706_31489.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808503_20200322003257395_9081.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808502_20200322003256872_27172.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808502_20200322003256556_16748.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808502_20200322003256345_10141.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808501_20200322003256134_510.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808500_20200322003255823_23384.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808499_20200322003255509_7062.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808499_20200322003255096_26774.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808498_20200322003254886_13122.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808497_20200322003254574_27084.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808496_20200322003254159_18077.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808495_20200322003253948_20104.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808495_20200322003253534_24770.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808491_20200322003253325_20915.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808491_20200322003252609_25330.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808490_20200322003252297_29611.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808489_20200322003251973_30159.png">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.040Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584808505_20200322003257706_31489.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/35-SpringMVC%E5%A4%84%E7%90%86%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>35-SPRINGMVC处理文件上传</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>multipart表单数据</h1><h2 id="multipart数据格式">multipart数据格式</h2><p>一般表单提交所形成的请求结果是很简单的，就是以“&amp;”符分割的多个name-value对。例如，当在Spittr应用中提交注册表单时，请求会如下所示：</p><p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808505_20200322003257706_31489.png" alt></p><p>尽管这种编码形式很简单，并且对于典型的基于文本的表单提交也足够满足要求，但是对于传送二进制数据，如上传图片，就显得力不从心了。与之不同的是，multipart格式的数据会将一个表单拆分为多个部分（part），每个部分对应一个输入域。在一般的表单输入域中，它所对应的部分中会放置文本型数据，但是如果上传文件的话，它所对应的部分可以是二进制，下面展现了multipart的请求体：</p><a id="more"></a>
+
+
+
+
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808503_20200322003257395_9081.png" alt></p>
+<p>在这个multipart的请求中，我们可以看到profilePicture部分与其他部分明显不同。除了其他内容以外，它还有自己的Content-Type头，表明它是一个JPEG图片。尽管不一定那么明显，但profilePicture部分的请求体是二进制数据，而不是简单的文本。</p>
+<h2 id="multipart类型表单">multipart类型表单</h2>
+<p>假设我们允许用户在注册Spittr应用的时候上传一张图片，那么我们需要修改表单，以允许用户选择要上传的图片。如下的代码片段来源于Thymeleaf注册表单视图（registrationForm.html），着重强调了表单所需的修改：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808502_20200322003256872_27172.png" alt></p>
+<p><strong><code>&lt;form&gt;</code>标签现在将enctype属性设置为multipart/form-data，这会告诉浏览器以multipart数据的形式提交表单，而不是以表单数据的形式进行提交。在multipart中，每个输入域都会对应一个part。</strong></p>
+<p>除了注册表单中已有的输入域，我们还添加了一个新的 <code>&lt;input&gt;</code> 域，其type为file。这能够让用户选择要上传的图片文件。accept属性用来将文件类型限制为JPEG、PNG以及GIF图片。根据其name属性，图片数据将会发送到multipart请求中的profilePicture part之中。</p>
+<p>尽管multipart请求看起来很复杂，但在Spring MVC中处理它们却很容易。在编写控制器方法处理文件上传之前，我们必须要配置一个multipart解析器，通过它来告诉DispatcherServlet该如何读取multipart请求。</p>
+<h1>配置multipart解析器</h1>
+<p>DispatcherServlet并没有实现任何解析multipart请求数据的功能。它将该任务委托给了Spring中MultipartResolver策略接口的实现，通过这个实现类来解析multipart请求中的内容。从Spring 3.1开始，Spring内置了两个MultipartResolver的实现供我们选择：</p>
+<ul>
+<li>CommonsMultipartResolver：使用Jakarta Commons FileUpload解析multipart请求；</li>
+<li>StandardServletMultipartResolver：依赖于Servlet 3.0对multipart请求的支持（始于Spring 3.1）。</li>
+</ul>
+<p>一般来讲，在这两者之间，StandardServletMultipartResolver可能会是优选的方案。它使用Servlet所提供的功能支持，并不需要依赖任何其他的项目。如果我们需要将应用部署到Servlet 3.0之前的容器中，或者还没有使用Spring 3.1或更高版本，那么可能就需要CommonsMultipartResolver了。</p>
+<h2 id="使用StandardServletMultipartResolver">使用StandardServletMultipartResolver</h2>
+<p>兼容Servlet 3.0的StandardServletMultipartResolver没有构造器参数，也没有要设置的属性。这样，在Spring应用上下文中，将其声明为bean就会非常简单，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808502_20200322003256556_16748.png" alt></p>
+<p>既然这个@Bean方法如此简单，你可能就会怀疑我们到底该如何限制StandardServletMultipartResolver的工作方式呢。如果我们想要限制用户上传文件的大小，该怎么实现？如果我们想要指定文件在上传时，临时写入目录在什么位置的话，该如何实现？因为没有属性和构造器参数，StandardServletMultipartResolver的功能看起来似乎有些受限。</p>
+<p>其实并不是这样，我们是有办法配置StandardServletMultipartResolver的限制条件的。只不过<strong>不是在Spring中配置StandardServletMultipartResolver，而是要在Servlet中指定multipart的配置。至少，我们必须要指定在文件上传的过程中，所写入的临时文件路径</strong>。如果不设定这个最基本配置的话，StandardServlet-MultipartResolver就无法正常工作。具体来讲，我们必须要在web.xml或Servlet初始化类中，将multipart的具体细节作为DispatcherServlet配置的一部分。</p>
+<p>如果我们配置DispatcherServlet的Servlet初始化类继承了Abstract AnnotationConfigDispatcherServletInitializer或AbstractDispatcher-ServletInitializer的话，我们可以通过重载customizeRegistration()方法（它会得到一个Dynamic作为参数）来配置multipart的具体细节：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808502_20200322003256345_10141.png" alt></p>
+<p>如果我们的DispatcherServlet初始化类是直接实现了WebApplicationInitializer接口，那么我们需要创建DispatcherServlet实例并将其注册到Servlet上下文中。</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808501_20200322003256134_510.png" alt></p>
+<p>到目前为止，我们所使用是只有一个参数的MultipartConfigElement构造器，这个参数指定的是文件系统中的一个绝对目录，上传文件将会临时写入该目录中。但是，我们还可以通过其他的构造器来限制上传文件的大小。除了临时路径的位置，其他的构造器所能接受的参数如下：</p>
+<ul>
+<li>上传文件的最大容量（以字节为单位）。默认是没有限制的。</li>
+<li>整个multipart请求的最大容量（以字节为单位），不会关心有多少个part以及每个part的大小。默认是没有限制的。</li>
+<li>在上传的过程中，如果文件大小达到了一个指定最大容量（以字节为单位），将会写入到临时文件路径中。默认值为0，也就是所有上传的文件都会写入到磁盘上。</li>
+</ul>
+<p>例如，假设我们想限制文件的大小不超过2MB，整个请求不超过4MB，而且所有的文件都要写到磁盘中。下面的代码使用MultipartConfigElement设置了这些临界值：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808500_20200322003255823_23384.png" alt></p>
+<p>如果我们使用更为传统的web.xml来配置MultipartConfigElement的话，那么可以使用 <code>&lt;servlet&gt;</code> 中的 <code>&lt;multipart-config&gt;</code> 元素，如下所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808499_20200322003255509_7062.png" alt></p>
+<p><code>&lt;multipart-config&gt;</code> 的默认值与MultipartConfigElement相同。与MultipartConfigElement一样，必须要配置的是 <code>&lt;location&gt;</code> 。</p>
+<h2 id="使用CommonsMultipartResolver解析器">使用CommonsMultipartResolver解析器</h2>
+<p>通常来讲，StandardServletMultipartResolver会是最佳的选择，但是如果我们需要将应用部署到非Servlet 3.0的容器中，那么就得需要替代的方案。如果喜欢的话，我们可以编写自己的MultipartResolver实现。不过，除非想要在处理multipart请求的时候执行特定的逻辑，否则的话，没有必要这样做。Spring内置了CommonsMultipartResolver，可以作为StandardServletMultipartResolver的替代方案。</p>
+<p>将CommonsMultipartResolver声明为Spring bean的最简单方式如下：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808499_20200322003255096_26774.png" alt></p>
+<p>与StandardServletMultipartResolver有所不同，CommonsMultipart-Resolver不会强制要求设置临时文件路径。默认情况下，这个路径就是Servlet容器的临时目录。不过，通过设置uploadTempDir属性，我们可以将其指定为一个不同的位置：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808498_20200322003254886_13122.png" alt></p>
+<p>实际上，我们可以按照相同的方式指定其他的multipart上传细节，也就是设置CommonsMultipartResolver的属性。例如，如下的配置就等价于我们在前文通过MultipartConfigElement所配置的StandardServletMultipartResolver：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808497_20200322003254574_27084.png" alt></p>
+<p>在这里，我们将最大的文件容量设置为2MB，最大的内存大小设置为0字节。这两个属性直接对应于MultipartConfigElement的第二个和第四个构造器参数，表明不能上传超过2MB的文件，并且不管文件的大小如何，所有的文件都会写到磁盘中。但是与MultipartConfigElement有所不同，我们无法设定multipart请求整体的最大容量。</p>
+<p>此外注意，与StandardServletMultipartResolver不同，CommonsMultipartResolver的相关参数是与Spring配置一起设置的。</p>
+<h1>multipart请求处理</h1>
+<p>现在已经在Spring中（或Servlet容器中）配置好了对mutipart请求的处理，那么接下来我们就可以编写控制器方法来接收上传的文件。要实现这一点，最常见的方式就是在某个控制器方法参数上添加 <strong>@RequestPart注解</strong>。</p>
+<p>现在，我们需要修改SpitterController中的processRegistration()方法，使其能够接受上传的图片。其中一种方式是添加byte数组参数，并为其添加@RequestPart注解。如下为示例：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808496_20200322003254159_18077.png" alt></p>
+<p>当注册表单提交的时候，profilePicture属性将会给定一个byte数组，这个数组中包含了请求中对应part的数据（通过@RequestPart指定）。如果用户提交表单的时候没有选择文件，那么这个数组会是空（而不是null）。获取到图片数据后，processRegistration()方法剩下的任务就是将文件保存到某个位置。</p>
+<p>我们将会稍后讨论如何保存文件。但首先，想一下，对于提交的图片数据我们都了解哪些信息呢。或者，更为重要的是，我们还不知道些什么呢？尽管我们已经得到了byte数组形式的图片数据，并且根据它能够得到图片的大小，但是对于其他内容我们就一无所知了。我们不知道文件的类型是什么，甚至不知道原始的文件名是什么。你需要判断如何将byte数组转换为可存储的文件。</p>
+<h2 id="使用MultipartFile">使用MultipartFile</h2>
+<p>使用上传文件的原始byte比较简单但是功能有限。因此，Spring还提供了MultipartFile接口，它为处理multipart数据提供了内容更为丰富的对象。如下的程序清单展现了MultipartFile接口的概况。</p>
+<p><strong>程序清单 Spring所提供的MultipartFile接口，用来处理上传的文件</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808495_20200322003253948_20104.png" alt></p>
+<p>我们可以看到，MultipartFile提供了获取上传文件byte的方式，但是它所提供的功能并不仅限于此，还能获得原始的文件名、大小以及内容类型。它还提供了一个InputStream，用来将文件数据以流的方式进行读取。</p>
+<p>除此之外，MultipartFile还提供了一个便利的transferTo()方法，它能够帮助我们将上传的文件写入到文件系统中。作为样例，我们可以在process-Registration()方法中添加如下的几行代码，从而将上传的图片文件写入到文件系统中：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808495_20200322003253534_24770.png" alt></p>
+<p>将文件保存到本地文件系统中是非常简单的，但是这需要我们对这些文件进行管理。我们需要确保有足够的空间，确保当出现硬件故障时，文件进行了备份，还需要在集群的多个服务器之间处理这些图片文件的同步。</p>
+<p>另外一种方案就是让别人来负责处理这些事情。多加几行代码，我们就能将图片保存到云端。例如，如下的程序清单所展现的saveImage()方法能够将上传的文件保存到Amazon S3中，我们在processRegistration()中可以调用该方法。</p>
+<p><strong>程序清单 将MultipartFile保存到Amazon S3中</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808491_20200322003253325_20915.png" alt></p>
+<p>saveImage()方法所做的第一件事就是构建Amazon Web Service（AWS）凭证。为了完成这一点，你需要有一个S3 Access Key和S3 Secret Access Key。当注册S3服务的时候，Amazon会将其提供给你。它们会通过值注入的方式提供给Spitter-Controller。</p>
+<p>AWS凭证准备好后，saveImage()方法创建了一个JetS3t的RestS3Service实例，可以通过它来操作S3文件系统。它获取spitterImages bucket的引用并创建用来包含图片的S3Object对象，接下来将图片数据填充到S3Object。</p>
+<p>在调用putObject()方法将图片数据写到S3之前，saveImage()方法设置了S3Object的权限，从而允许所有的用户查看它。这是很重要的——如果没有它的话，这些图片对我们应用程序的用户就是不可见的。最后，如果出现任何问题的话，将会抛出ImageUploadException异常。</p>
+<h2 id="使用Part">使用Part</h2>
+<p>如果你需要将应用部署到Servlet 3.0的容器中，那么会有MultipartFile的一个替代方案。Spring MVC也能接受javax.servlet.http.Part作为控制器方法的参数。如果使用Part来替换MultipartFile的话，那么processRegistration()的方法签名将会变成如下的形式：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808491_20200322003252609_25330.png" alt></p>
+<p>就主体来言（不开玩笑地说），Part接口与MultipartFile并没有太大的差别。在如下的程序清单中，我们可以看到Part接口的有一些方法其实是与MultipartFile相对应的。</p>
+<p><strong>程序清单 Part接口：Spring MultipartFile的替代方案</strong></p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808490_20200322003252297_29611.png" alt></p>
+<p>在很多情况下，Part方法的名称与MultipartFile方法的名称是完全相同的。有一些比较类似，但是稍有差异，比如getSubmittedFileName()对应于getOriginalFilename()。类似地，write()对应于transferTo()，借助该方法我们能够将上传的文件写入文件系统中：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584808489_20200322003251973_30159.png" alt></p>
+<p>值得一提的是，如果在编写控制器方法的时候，通过Part参数的形式接受文件上传，那么就没有必要配置MultipartResolver了（如果使用默认的上传配置话）。只有使用MultipartFile的时候，我们才需要MultipartResolver。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>35-SPRINGMVC处理文件上传</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">multipart表单数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#multipart数据格式"><span class="nav-text">multipart数据格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multipart类型表单"><span class="nav-text">multipart类型表单</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">配置multipart解析器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用StandardServletMultipartResolver"><span class="nav-text">使用StandardServletMultipartResolver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用CommonsMultipartResolver解析器"><span class="nav-text">使用CommonsMultipartResolver解析器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">multipart请求处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用MultipartFile"><span class="nav-text">使用MultipartFile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Part"><span class="nav-text">使用Part</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

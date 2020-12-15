@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Spring 3引入了Spring表达式语言（Spring Expression Language，SpEL），它能够以一种强大和简洁的方式将值装配到bean属性和构造器参数中，在这个过程中所使用的表达式会在运行时计算得到值。使用SpEL，你可以实现超乎想象的装配效果，这是使用其他的装配技术难以做到的（甚至是不可能的）。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;16-SpEL.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="Spring 3引入了Spring表达式语言（Spring Expression Language，SpEL），它能够以一种强大和简洁的方式将值装配到bean属性和构造器参数中，在这个过程中所使用的表达式会在运行时计算得到值。使用SpEL，你可以实现超乎想象的装配效果，这是使用其他的装配技术难以做到的（甚至是不可能的）。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.036Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/16-SpEL">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>16-SPEL</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <p>Spring 3引入了Spring表达式语言（Spring Expression Language，SpEL），它能够以一种强大和简洁的方式将值装配到bean属性和构造器参数中，在这个过程中所使用的表达式会在运行时计算得到值。使用SpEL，你可以实现超乎想象的装配效果，这是使用其他的装配技术难以做到的（甚至是不可能的）。</p><a id="more"></a>
+<p>SpEL拥有很多特性，包括：</p>
+<ul>
+<li>使用bean的ID来引用bean；</li>
+<li>调用方法和访问对象的属性；</li>
+<li>对值进行算术、关系和逻辑运算；</li>
+<li>正则表达式匹配；</li>
+<li>集合操作。</li>
+</ul>
+<p>在本书后面的内容中你可以看到，SpEL能够用在依赖注入以外的其他地方。例如，Spring Security支持使用SpEL表达式定义安全限制规则。另外，如果你在Spring MVC应用中使用Thymeleaf模板作为视图的话，那么这些模板可以使用SpEL表达式引用模型数据。</p>
+<p><strong>SpEL是单独模块，只依赖于core模块，不依赖于其他模块，可以单独使用。</strong></p>
+<p><strong>注：SpEL表达式中的关键字是不区分大小写的。</strong></p>
+<h1>SpEL求值步骤及相关接口</h1>
+<p>（1）创建解析器：使用ExpressionParser接口表示解析器，并提供SpelExpressionParser默认实现；</p>
+<p>（2）解析表达式：使用ExpressionParser的parseExpression方法解析表达式字符串为表达式对象；表达式对象使用Expression接口表示，其默认实现为SpelExpression；</p>
+<p>（3）构造上下文：EvaluationContext接口表示表达式求值的上下文环境，默认实现类为StandardEvaluationContext；</p>
+<p>通过上下文可以：定义变量（setVariable方法）、注册静态方法（registerFunction方法）、设置根对象（setRootObject方法）等等；</p>
+<p>其中根对象（root对象）是默认的活动上下文对象，而活动上下文对象（this对象）代表了当前表达式操作的对象。</p>
+<p>（4）求值：通过Expression接口的getValue方法根据上下文获得表达式值。</p>
+<p>代码示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.junit.Assert;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.EvaluationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.Expression;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.ExpressionParser;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.spel.standard.SpelExpressionParser;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.spel.support.StandardEvaluationContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpELHelloTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">helloWorld</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="comment">//创建解析器</span></span><br><span class="line">       ExpressionParser parser = <span class="keyword">new</span> SpelExpressionParser();</span><br><span class="line">       <span class="comment">//获取预解析表达式对象</span></span><br><span class="line">       Expression expression = parser.parseExpression(<span class="string">"('Hello' + ' World').concat(#end)"</span>);</span><br><span class="line">       <span class="comment">//创建表达式求值上下文</span></span><br><span class="line">       EvaluationContext context = <span class="keyword">new</span> StandardEvaluationContext();</span><br><span class="line">       <span class="comment">//通过上下文设置表达式变量</span></span><br><span class="line">       context.setVariable(<span class="string">"end"</span>, <span class="string">"!"</span>);</span><br><span class="line">       <span class="comment">//变量求值</span></span><br><span class="line">       Assert.assertEquals(<span class="string">"Hello World!"</span>, expression.getValue(context));</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ExpressionParser接口：解析器">ExpressionParser接口：解析器</h2>
+<p>ExpressionParser接口：<strong>表示解析器</strong>，默认实现是org.springframework.expression.spel.standard包中的<strong>SpelExpressionParser类</strong>，<strong>使用parseExpression方法</strong>将字符串表达式转换为Expression对象。</p>
+<p><strong>解析器</strong>：用于将字符串表达式解析为表达式对象，从我们角度来看是“谁来干”。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.expression.Expression;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.ExpressionParser;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.ParseException;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* SpEL使用ExpressionParser接口表示解析器，并提供默认实现SpelExpressionParser</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ExpressionParser</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//解析相应的表达式为Expression对象</span></span><br><span class="line">   <span class="function">Expression <span class="title">parseExpression</span><span class="params">(String expressionString)</span> <span class="keyword">throws</span> ParseException</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//根据表达式模版解析相应的表达式为Expression对象</span></span><br><span class="line">   <span class="function">Expression <span class="title">parseExpression</span><span class="params">(String expressionString, ParserContext context)</span> <span class="keyword">throws</span> ParseException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Expression接口：表达式对象">Expression接口：表达式对象</h2>
+<p>Expression接口：<strong>表示表达式对象</strong>，默认实现是org.springframework.expression.spel.standard包中的<strong>SpelExpression</strong>，<strong>提供getValue方法用于获取表达式值，提供setValue方法用于设置对象值</strong>。</p>
+<p><strong>表达式</strong>：表达式是表达式语言的核心，所以表达式语言都是围绕表达式进行的，从我们角度来看是“干什么”。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.expression.EvaluationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.EvaluationException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.Expression;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 预解析表达式字符串的包装对象，为任意语言像OGNL或者EL的表达式求值提供一个通用的抽象。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Expression</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//根据上下文获得表达式值</span></span><br><span class="line">   <span class="function">Object <span class="title">getValue</span><span class="params">()</span> <span class="keyword">throws</span> EvaluationException</span>;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//设置上下文变量值</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">setValue</span><span class="params">(EvaluationContext context, Object rootObject, Object value)</span> <span class="keyword">throws</span> EvaluationException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="EvaluationContext接口：构造上下文">EvaluationContext接口：构造上下文</h2>
+<p>EvaluationContext接口：<strong>表示上下文环境</strong>，默认实现是org.springframework.expression.spel.support包中的<strong>StandardEvaluationContext类</strong>，<strong>使用setRootObject方法来设置根对象</strong>，<strong>使用setVariable方法来注册自定义变量</strong>，<strong>使用registerFunction来注册自定义函数</strong>等等。</p>
+<p><strong>上下文</strong>：表达式对象执行的环境，该环境可能定义变量、定义自定义函数、提供类型转换等等，从我们角度看是“在哪干”。</p>
+<p><strong>根对象及活动上下文对象</strong>：根对象是默认的活动上下文对象，活动上下文对象表示了当前表达式操作的对象，从我们角度看是“对谁干”。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.expression.EvaluationContext;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 字符串表达式求值的上下文接口。用来定义表达式求值的相关参数，如根对象、变量、自定义函数等等</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* 根对象默认为当前上下文对象。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">EvaluationContext</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//注册自定义变量</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">setVariable</span><span class="params">(String name, Object value)</span></span>;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>模版表达式</h1>
+<p>模板表达式用于标识SpEL表达式（区分SpEL表达式和普通字符串）。每个表达式块由“前缀+表达式+后缀”形式组成，如“${1+2}”即表达式块。</p>
+<p>通过ParserContext接口定义模版表达式（通过指定表达式前缀和后缀），并通过ExpressionParser接口中的parseExpression(String expressionString, ParserContext context)方法使用模版。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.junit.Assert;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.EvaluationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.ParserContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.spel.standard.SpelExpressionParser;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.spel.support.StandardEvaluationContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TemplateTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testTemplateExpression</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       SpelExpressionParser parser = <span class="keyword">new</span> SpelExpressionParser();</span><br><span class="line">       ParserContext parserContext = <span class="keyword">new</span> ParserContext() &#123;</span><br><span class="line"> </span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">           &#125;</span><br><span class="line"> </span><br><span class="line">           <span class="function"><span class="keyword">public</span> String <span class="title">getExpressionPrefix</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="string">"$&#123;"</span>;</span><br><span class="line">           &#125;</span><br><span class="line"> </span><br><span class="line">           <span class="function"><span class="keyword">public</span> String <span class="title">getExpressionSuffix</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="string">"&#125;"</span>;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;;</span><br><span class="line">       EvaluationContext context = <span class="keyword">new</span> StandardEvaluationContext();</span><br><span class="line">       context.setVariable(<span class="string">"v0"</span>, <span class="number">1</span>);</span><br><span class="line">       context.setVariable(<span class="string">"v1"</span>, <span class="number">2</span>);</span><br><span class="line">       String result = parser.parseExpression(<span class="string">"Error $&#123; #v0 &#125; $&#123; #v1 &#125;"</span>, parserContext).getValue(context, String.class);</span><br><span class="line">       Assert.assertEquals(<span class="string">"Error 1 2"</span>, result);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ParserContext接口">ParserContext接口</h2>
+<p>定义模版表达式。</p>
+<p>通过ExpressionParser.parseExpression(String expressionString, ParserContext context)方法中使用模版。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.expression.ParserContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ParserContext</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义字符串表达式是不是模板</span></span><br><span class="line">   <span class="comment">//模板表达式就是由字面量与一个或多个表达式块组成，每个表达式块由“前缀+表达式+后缀”形式组成</span></span><br><span class="line">   <span class="function"><span class="keyword">boolean</span> <span class="title">isTemplate</span><span class="params">()</span></span>;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义表达式块的前缀</span></span><br><span class="line">   <span class="function">String <span class="title">getExpressionPrefix</span><span class="params">()</span></span>;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">//定义表达式块的后缀</span></span><br><span class="line">   <span class="function">String <span class="title">getExpressionSuffix</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>SpEL表达式注入</h1>
+<p>Spring配置文件中使用SpEL表达式：在值注入（配置 <code>&lt;constructor-arg&gt;</code> 、 <code>&lt;property&gt;</code> 标签的value属性或使用@Value注解）时，通过默认模版&quot;#{SpEL表达式}&quot;使用。</p>
+<p>ApplicationContext容器(参见AbstractApplicationContext)会通过<strong>BeanExpressionResolver</strong>接口解析注入的SpEL表达式，默认委托给内部BeanFactory的<strong>StandardBeanExpressionResolver</strong>实现类。<strong>其中&quot;#root&quot;根对象默认可以认为是内部BeanFactory，获取根对象属性其实是获取容器中的Bean，因此可以在表达式中直接使用BeanName引用Bean，当然也可以使用&quot;@bean&quot;引用。</strong></p>
+<p>如果想修改容器默认的表达式模版，可以使用BeanFactoryPostProcessor（容器后置处理器）接口提供postProcessBeanFactory回调方法，在IoC容器创建好但还未进行任何Bean初始化时获取到StandardBeanExpressionResolver对象，修改模版默认的前后缀。参见BeanFactoryPostProcessor。</p>
+<h2 id="相关接口">相关接口</h2>
+<h3 id="BeanExpressionResolver接口及实现">BeanExpressionResolver接口及实现</h3>
+<p>Spring在IoC容器中使用BeanExpressionResolver接口实现来求值SpEL表达式。</p>
+<p>其默认实现类为StandardBeanExpressionResolver。它的核心方法evaluate()实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">evaluate</span><span class="params">(String value, BeanExpressionContext evalContext)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (!StringUtils.hasLength(value)) &#123;</span><br><span class="line">       <span class="keyword">return</span> value;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">try</span> &#123;</span><br><span class="line">       Expression expr = <span class="keyword">this</span>.expressionCache.get(value);</span><br><span class="line">       <span class="keyword">if</span> (expr == <span class="keyword">null</span>) &#123;</span><br><span class="line">           expr = <span class="keyword">this</span>.expressionParser.parseExpression(value, <span class="keyword">this</span>.beanExpressionParserContext);</span><br><span class="line">           <span class="keyword">this</span>.expressionCache.put(value, expr);</span><br><span class="line">       &#125;</span><br><span class="line">       StandardEvaluationContext sec = <span class="keyword">this</span>.evaluationCache.get(evalContext);</span><br><span class="line">       <span class="keyword">if</span> (sec == <span class="keyword">null</span>) &#123;</span><br><span class="line">           sec = <span class="keyword">new</span> StandardEvaluationContext();</span><br><span class="line">           sec.setRootObject(evalContext);</span><br><span class="line">           sec.addPropertyAccessor(<span class="keyword">new</span> BeanExpressionContextAccessor());</span><br><span class="line">           sec.addPropertyAccessor(<span class="keyword">new</span> BeanFactoryAccessor());</span><br><span class="line">           sec.addPropertyAccessor(<span class="keyword">new</span> MapAccessor());</span><br><span class="line">           sec.addPropertyAccessor(<span class="keyword">new</span> EnvironmentAccessor());</span><br><span class="line">           sec.setBeanResolver(<span class="keyword">new</span> BeanFactoryResolver(evalContext.getBeanFactory()));</span><br><span class="line">           sec.setTypeLocator(<span class="keyword">new</span> StandardTypeLocator(evalContext.getBeanFactory().getBeanClassLoader()));</span><br><span class="line">           ConversionService conversionService = evalContext.getBeanFactory().getConversionService();</span><br><span class="line">           <span class="keyword">if</span> (conversionService != <span class="keyword">null</span>) &#123;</span><br><span class="line">               sec.setTypeConverter(<span class="keyword">new</span> StandardTypeConverter(conversionService));</span><br><span class="line">           &#125;</span><br><span class="line">           customizeEvaluationContext(sec);</span><br><span class="line">           <span class="keyword">this</span>.evaluationCache.put(evalContext, sec);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> expr.getValue(sec);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">       <span class="keyword">throw</span> <span class="keyword">new</span> BeanExpressionException(<span class="string">"Expression parsing failed"</span>, ex);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上方法中将查找容器Bean功能委托给内部BeanResolver接口对象。</p>
+<h3 id="BeanResolver接口">BeanResolver接口</h3>
+<p>该接口通过IoC容器中注册的Bean id查找Bean。默认实现类为BeanFactoryResolver。</p>
+<h2 id="xml配置使用SpEL">xml配置使用SpEL</h2>
+<p>测试代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.junit.Assert;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">XmlSpELTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testXmlExpression</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"spEL.xml"</span>);</span><br><span class="line">       String hello1 = ctx.getBean(<span class="string">"hello1"</span>, String.class);</span><br><span class="line">       String hello2 = ctx.getBean(<span class="string">"hello2"</span>, String.class);</span><br><span class="line">       String hello3 = ctx.getBean(<span class="string">"hello3"</span>, String.class);</span><br><span class="line">       Assert.assertEquals(<span class="string">"Hello World!"</span>, hello1);</span><br><span class="line">       Assert.assertEquals(<span class="string">"Hello World!"</span>, hello2);</span><br><span class="line">       Assert.assertEquals(<span class="string">"Hello World!"</span>, hello3);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:context</span>=<span class="string">"http://www.springframework.org/schema/context"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--  XML配置文件中使用SpEL--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"worldTest"</span> <span class="attr">class</span>=<span class="string">"java.lang.String"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">"#&#123;' World!'&#125;"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 模板默认以前缀“#&#123;”开头，以后缀“&#125;”结尾，且不允许嵌套--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"hello1"</span> <span class="attr">class</span>=<span class="string">"java.lang.String"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">"#&#123;'Hello'&#125;#&#123;worldTest&#125;"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 直接引用bean--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"hello2"</span> <span class="attr">class</span>=<span class="string">"java.lang.String"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">"#&#123;'Hello' + worldTest&#125;"</span>/&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- 不支持嵌套的 --&gt;</span></span><br><span class="line">             <span class="comment">&lt;!--&lt;constructor-arg value="#&#123;'Hello'#&#123;world&#125;&#125;"/&gt;--&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!-- 也可以使用“@bean”引用--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"hello3"</span> <span class="attr">class</span>=<span class="string">"java.lang.String"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">"#&#123;'Hello' + @worldTest&#125;"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="注解配置使用SpEL">注解配置使用SpEL</h2>
+<p>注解Bean：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 基于注解风格的SpEL配置</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*      使用<span class="doctag">@Value</span>注解来指定SpEL表达式，该注解可以放到字段、方法及方法参数上。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AnnotationSpELBean</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Value</span>(<span class="string">"#&#123;'Hello' + worldAnno&#125;"</span>)</span><br><span class="line">   <span class="keyword">private</span> String value;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">getValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> value;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(String value)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.value = value;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.junit.Assert;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AnnotationSpELTest</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testAnnotationExpression</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"spEL.xml"</span>);</span><br><span class="line">       AnnotationSpELBean helloBean1 = ctx.getBean(<span class="string">"helloBean1"</span>, AnnotationSpELBean.class);</span><br><span class="line">       <span class="comment">//“helloBean1 ”值是SpEL表达式的值</span></span><br><span class="line">       Assert.assertEquals(<span class="string">"Hello World!"</span>, helloBean1.getValue());</span><br><span class="line"> </span><br><span class="line">       AnnotationSpELBean helloBean2 = ctx.getBean(<span class="string">"helloBean2"</span>, AnnotationSpELBean.class);</span><br><span class="line">       <span class="comment">//“helloBean2”是通过setter注入的值，这说明setter注入将覆盖@Value的值</span></span><br><span class="line">       Assert.assertEquals(<span class="string">"haha"</span>, helloBean2.getValue());</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:context</span>=<span class="string">"http://www.springframework.org/schema/context"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="comment">&lt;!--  基于注解风格的SpEL--&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--  配置时必须使用“&lt;context:annotation-config/&gt;”来开启对注解的支持。--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">context:annotation-config</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"worldAnno"</span> <span class="attr">class</span>=<span class="string">"java.lang.String"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">"#&#123;' World!'&#125;"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloBean1"</span> <span class="attr">class</span>=<span class="string">"AnnotationSpELBean"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloBean2"</span> <span class="attr">class</span>=<span class="string">"AnnotationSpELBean"</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"value"</span> <span class="attr">value</span>=<span class="string">"haha"</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="修改容器默认模版表达式">修改容器默认模版表达式</h2>
+<p>Spring在IoC容器内使用BeanExpressionResolver接口实现来求值SpEL表达式，那如果我们通过某种方式获取该接口实现，然后把前缀后缀修改了就可以了。</p>
+<p>此处我们使用BeanFactoryPostProcessor接口提供postProcessBeanFactory回调方法，该方法是在IoC容器创建好但还未进行任何Bean初始化时被ApplicationContext实现调用，因此在这个阶段把SpEL前缀及后缀修改掉是安全的，具体代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.javass.spring.chapter5;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.BeansException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.config.BeanFactoryPostProcessor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.config.ConfigurableListableBeanFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.expression.StandardBeanExpressionResolver;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpELBeanFactoryPostProcessor</span> <span class="keyword">implements</span> <span class="title">BeanFactoryPostProcessor</span> </span>&#123;</span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postProcessBeanFactory</span><span class="params">(ConfigurableListableBeanFactory beanFactory)</span></span></span><br><span class="line"><span class="function">       <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">       StandardBeanExpressionResolver resolver = (StandardBeanExpressionResolver) beanFactory.getBeanExpressionResolver();</span><br><span class="line">       resolver.setExpressionPrefix(<span class="string">"%&#123;"</span>);</span><br><span class="line">       resolver.setExpressionSuffix(<span class="string">"&#125;"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先通过ConfigurableListableBeanFactory的getBeanExpressionResolver方法获取BeanExpressionResolver实现，其次强制类型转换为StandardBeanExpressionResolver，其为Spring默认实现，然后改掉前缀及后缀。</p>
+<p>开始测试吧，首先准备配置文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span>  <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">"http://www.springframework.org/schema/context"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">"</span></span></span><br><span class="line"><span class="tag"><span class="string">          http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">          http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="tag"><span class="string">          http://www.springframework.org/schema/context/spring-context-3.0.xsd"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">context:annotation-config</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"cn.javass.spring.chapter5.SpELBeanFactoryPostProcessor"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"world"</span> <span class="attr">class</span>=<span class="string">"java.lang.String"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">"%&#123;' World!'&#125;"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloBean1"</span> <span class="attr">class</span>=<span class="string">"cn.javass.spring.chapter5.SpELBean"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"helloBean2"</span> <span class="attr">class</span>=<span class="string">"cn.javass.spring.chapter5.SpELBean"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"value"</span> <span class="attr">value</span>=<span class="string">"%&#123;'Hello' + world&#125;"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>配置文件和注解风格的几乎一样，只有SpEL表达式前缀变为“%{”了，<strong>并且注册了“SpELBeanFactoryPostProcessor”Bean，用于修改前缀和后缀的。</strong></p>
+<p>写测试代码测试一下吧：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testPrefixExpression</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"chapter5/el3.xml"</span>);</span><br><span class="line">   SpELBean helloBean1 = ctx.getBean(<span class="string">"helloBean1"</span>, SpELBean.class);</span><br><span class="line">   Assert.assertEquals(<span class="string">"#&#123;'Hello' + world&#125;"</span>, helloBean1.getValue());</span><br><span class="line">   SpELBean helloBean2 = ctx.getBean(<span class="string">"helloBean2"</span>, SpELBean.class);</span><br><span class="line">   Assert.assertEquals(<span class="string">"Hello World!"</span>, helloBean2.getValue());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此处helloBean1中通过@Value注入的“#{‘Hello’ + world}”结果还是“#{‘Hello’ + world}”说明不对其进行SpEL表达式求值了，而helloBean2使用“%{‘Hello’ + world}”注入，得到正确的“Hello World!”。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Spring%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">SPRING学习笔记</a></li>
+            <li>16-SPEL</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">SpEL求值步骤及相关接口</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ExpressionParser接口：解析器"><span class="nav-text">ExpressionParser接口：解析器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Expression接口：表达式对象"><span class="nav-text">Expression接口：表达式对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EvaluationContext接口：构造上下文"><span class="nav-text">EvaluationContext接口：构造上下文</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">模版表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ParserContext接口"><span class="nav-text">ParserContext接口</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">SpEL表达式注入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#相关接口"><span class="nav-text">相关接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BeanExpressionResolver接口及实现"><span class="nav-text">BeanExpressionResolver接口及实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BeanResolver接口"><span class="nav-text">BeanResolver接口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xml配置使用SpEL"><span class="nav-text">xml配置使用SpEL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注解配置使用SpEL"><span class="nav-text">注解配置使用SpEL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改容器默认模版表达式"><span class="nav-text">修改容器默认模版表达式</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

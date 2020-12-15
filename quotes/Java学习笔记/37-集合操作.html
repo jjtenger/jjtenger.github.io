@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1.比较器（Comparator）TreeSet和TreeMap都按排序顺序存储元素。然而，用比较器来精确定义采用何种“排序顺序”。通常在默认的情况下，这些类通过使用被Java称之为“ 自然顺序” 的顺序存储它们的元素，而这种顺序通常也是你所需要的（A在B的前面，1在2的前面，等等）。如果需要用不同的方法对元素进行排序，可以在构造集合或映射时指定一个Comparator对象。这样做为你提供了一种精">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JJT-个人Wiki">
+<meta property="og:url" content="https:&#x2F;&#x2F;hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com&#x2F;quotes&#x2F;Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;37-%E9%9B%86%E5%90%88%E6%93%8D%E4%BD%9C.html">
+<meta property="og:site_name" content="JJT-个人Wiki">
+<meta property="og:description" content="1.比较器（Comparator）TreeSet和TreeMap都按排序顺序存储元素。然而，用比较器来精确定义采用何种“排序顺序”。通常在默认的情况下，这些类通过使用被Java称之为“ 自然顺序” 的顺序存储它们的元素，而这种顺序通常也是你所需要的（A在B的前面，1在2的前面，等等）。如果需要用不同的方法对元素进行排序，可以在构造集合或映射时指定一个Comparator对象。这样做为你提供了一种精">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584723504_20200321005203894_14501.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584723504_20200321005203382_21039.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584723504_20200321005203171_14251.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584723503_20200321005202764_3246.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584723503_20200321005202453_14779.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584723502_20200321005202246_21640.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584723501_20200321005201938_931.jpg">
+<meta property="og:updated_time" content="2020-12-15T11:07:33.024Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;hexo-1300861231.cos.ap-shanghai.myqcloud.com&#x2F;1584723504_20200321005203894_14501.png">
+
+<link rel="canonical" href="https://hexo-pages-1300861231.cos-website.ap-shanghai.myqcloud.com/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/37-%E9%9B%86%E5%90%88%E6%93%8D%E4%BD%9C">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: false,
+    isPage: true,
+    isArchive: false
+  };
+</script>
+
+  <title> | JJT-个人Wiki
+  </title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">JJT-个人Wiki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">you see see you one day day</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVA学习笔记</a></li>
+            <li>37-集合操作</li>
+          
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1>1.比较器（Comparator）</h1><p>TreeSet和TreeMap都按排序顺序存储元素。然而，用比较器来精确定义采用何种“排序顺序”。</p><p>通常在默认的情况下，这些类通过使用被Java称之为“ 自然顺序” 的顺序存储它们的元素，而这种顺序通常也是你所需要的（A在B的前面，1在2的前面，等等）。如果需要用不同的方法对元素进行排序，可以在构造集合或映射时指定一个Comparator对象。这样做为你提供了一种精确控制如何将元素储存到排序类集和映射中的能力。</p><a id="more"></a>
+
+
+<p>Comparator接口定义了两个方法： compare( )和equals( )。</p>
+<h2 id="compare-方法">compare()方法</h2>
+<p>按顺序比较了两个元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">compare</span><span class="params">(Object obj1, Object obj2)</span></span></span><br></pre></td></tr></table></figure>
+<p>obj1和obj2是被比较的两个对象。该方法该比较这两个值，然后返回一个用于说明这两个值的相对顺序的数字。其返回值如下：</p>
+<ul>
+<li>
+<p>若返回值 &lt; 0，则表示obj1在排序后的序列中出现在obj2之前。</p>
+</li>
+<li>
+<p>若返回值 = 0，则表示obj1和obj2具有相同的排序顺序。</p>
+</li>
+<li>
+<p>若返回值 &gt; 0，则表示obj1在排序后的序列中出现在obj2之后。</p>
+</li>
+</ul>
+<p>（升序返回obj1 - obj2；降序返回obj2 - obj1）</p>
+<p>如果用于比较的对象的类型不兼容的话，该方法引发一个ClassCastException异常。</p>
+<p>通过覆盖compare( )，可以改变对象排序的方式。例如，通过创建一个颠倒比较输出的比较函数，可以实现按逆向排序。</p>
+<h2 id="equals-方法">equals()方法</h2>
+<p>测试一个对象是否与调用比较函数相等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span></span></span><br></pre></td></tr></table></figure>
+<p>obj是被用来进行相等测试的对象。如果obj和调用对象都是Comparator的对象并且使用相同的排序。该方法返回true。否则返回false。</p>
+<p>重写equals( )方法是没有必要的，大多数简单的比较函数都不这样做。</p>
+<h2 id="保持compareTo和equals同步">保持compareTo和equals同步</h2>
+<p>在Java中我们常使用Comparable接口来实现排序，其中compareTo是实现该接口方法。我们知道compareTo返回0表示两个对象相等，返回正数表示大于，返回负数表示小于。同时我们也知道equals也可以判断两个对象是否相等，那么他们两者之间是否存在关联关系呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">Student</span>&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(String id,String name,<span class="keyword">int</span> age)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(obj == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span> == obj)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(obj.getClass() != <span class="keyword">this</span>.getClass())&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        Student student = (Student)obj;</span><br><span class="line">        <span class="keyword">if</span>(!student.getName().equals(getName()))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Student student)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.age - student.age;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/** 省略getter、setter方法 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Student类实现Comparable接口和实现equals方法，其中compareTo是根据age来比对的，equals是根据name来比对的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">    List&lt;Student&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    list.add(<span class="keyword">new</span> Student(<span class="string">"1"</span>, <span class="string">"chenssy1"</span>, <span class="number">24</span>));</span><br><span class="line">    list.add(<span class="keyword">new</span> Student(<span class="string">"2"</span>, <span class="string">"chenssy1"</span>, <span class="number">26</span>));</span><br><span class="line">    </span><br><span class="line">    Collections.sort(list);   <span class="comment">//排序</span></span><br><span class="line">    </span><br><span class="line">    Student student = <span class="keyword">new</span> Student(<span class="string">"2"</span>, <span class="string">"chenssy1"</span>, <span class="number">26</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//检索student在list中的位置</span></span><br><span class="line">    <span class="keyword">int</span> index1 = list.indexOf(student);</span><br><span class="line">    <span class="keyword">int</span> index2 = Collections.binarySearch(list, student);</span><br><span class="line">    </span><br><span class="line">    System.out.println(<span class="string">"index1 = "</span> + index1);</span><br><span class="line">    System.out.println(<span class="string">"index2 = "</span> + index2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>按照常规思路来说应该两者index是一致的，因为他们检索的是同一个对象，但是非常遗憾，其运行结果：</p>
+<p>index1 = 0</p>
+<p>index2 = 1</p>
+<p>为什么会产生这样不同的结果呢？这是因为indexOf和binarySearch的实现机制不同，indexOf是基于equals来实现的只要equals返回TRUE就认为已经找到了相同的元素。而binarySearch是基于compareTo方法的，当compareTo返回0 时就认为已经找到了该元素。在我们实现的Student类中我们覆写了compareTo和equals方法，但是我们的compareTo、equals的比较依据不同，一个是基于age、一个是基于name。比较依据不同那么得到的结果很有可能会不同。所以知道了原因，我们就好修改了：将两者之间的比较依据保持一致即可。</p>
+<p>对于compareTo和equals两个方法我们可以总结为：<strong>compareTo是判断元素在排序中的位置是否相等，equals是判断元素是否相等，既然一个决定排序位置，一个决定相等，所以我们非常有必要确保当排序位置相同时，其equals也应该相等。</strong></p>
+<p><strong>Java细节：实现了compareTo方法，就有必要实现equals方法，同时还需要确保两个方法同步。</strong></p>
+<h1>2.迭代器（iterator）</h1>
+<p>迭代对于我们搞Java的来说绝对不陌生。我们常常使用JDK提供的迭代接口进行Java集合的迭代。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Iterator iterator = list.iterator();</span><br><span class="line"><span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">    String string = iterator.next();</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>迭代其实我们可以简单地理解为遍历，是一个标准化遍历各类容器里面的所有对象的方法类，它是一个很典型的设计模式。Iterator模式是用于遍历集合类的标准访问方法。它可以把访问逻辑从不同类型的集合类中抽象出来，从而避免向客户端暴露集合的内部结构。 在没有迭代器时我们都是这么进行处理的。如下：</p>
+<p>对于数组我们是使用下标来进行处理的:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] arrays = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; arrays.length ; i++)&#123;</span><br><span class="line">    <span class="keyword">int</span> a = arrays[i];</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于ArrayList是这么处理的:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; list.size() ;  i++)&#123;</span><br><span class="line">   String string = list.get(i);</span><br><span class="line">   <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于这两种方式，我们总是都事先知道集合的内部结构，访问代码和集合本身是紧密耦合的，无法将访问逻辑从集合类和客户端代码中分离出来。同时每一种集合对应一种遍历方法，客户端代码无法复用。 在实际应用中如何需要将上面将两个集合进行整合是相当麻烦的。所以为了解决以上问题，Iterator模式腾空出世，它总是用同一种逻辑来遍历集合。使得客户端自身不需要来维护集合的内部结构，所有的内部状态都由Iterator来维护。客户端从不直接和集合类打交道，它总是控制Iterator，向它发送&quot;向前&quot;，“向后”，&quot;取当前元素&quot;的命令，就可以间接遍历整个集合。</p>
+<p>上面只是对Iterator模式进行简单的说明，下面我们看看Java中Iterator接口，看他是如何来进行实现的。</p>
+<h2 id="java-util-Iterator接口">java.util.Iterator接口</h2>
+<p>在Java中Iterator为一个接口，它只提供了迭代了基本规则，在JDK中他是这样定义的：对 collection 进行迭代的迭代器。迭代器取代了 Java Collections Framework 中的 Enumeration。</p>
+<p>迭代器与枚举有两点不同：</p>
+<p>1、迭代器允许调用者利用定义良好的语义在迭代期间从迭代器所指向的 collection 移除元素。</p>
+<p>2、方法名称得到了改进。</p>
+<p>其接口定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span>  <span class="class"><span class="keyword">interface</span>  <span class="title">Iterator</span>  </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">Object <span class="title">next</span><span class="params">()</span></span>;</span><br><span class="line">　　<span class="function"><span class="keyword">void</span>  <span class="title">remove</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li>Object next()：返回迭代器当前元素的引用，返回值是Object，需要强制转换成自己需要的类型</li>
+<li>boolean hasNext()：判断容器内是否还有可供访问的元素</li>
+<li>void remove()：删除迭代器当前元素</li>
+</ul>
+<p>对于我们而言，我们只一般只需使用next()、hasNext()两个方法即可完成迭代。使用步骤如下：</p>
+<ol>
+<li>
+<p>通过调用类集的iterator( )方法获得对类集头的迭代函数。</p>
+</li>
+<li>
+<p>建立一个调用hasNext( )方法的循环，只要hasNext( )返回true，就进行循环迭代。</p>
+</li>
+<li>
+<p>在循环内部，通过调用next( )方法来得到每一个元素。</p>
+</li>
+</ol>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584723504_20200321005203894_14501.png" alt></p>
+<p>示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(Iterator it = c.iterator(); it.hasNext();  )  &#123;</span><br><span class="line">    Object o = it.next();</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此外，ListIterator扩展Iterator，只适用于那些实现List接口的类集。对于执行List的类集，也可以通过调用ListIterator来获得列表迭代函数。列表迭代函数提供了前向或后向访问类集的能力，并可让你修改元素。除此之外，ListIterator如同Iterator功能一样。</p>
+<h2 id="Iterator的实现">Iterator的实现</h2>
+<p>下面就ArrayList的Iterator实现来分析，其实如果我们理解了ArrayList、Hashset、TreeSet的数据结构，内部实现，对于他们是如何实现Iterator也会胸有成竹的。因为ArrayList的内部实现采用数组，所以我们只需要记录相应位置的索引即可，其方法的实现比较简单。</p>
+<p>在ArrayList内部首先是定义一个内部类Itr，该内部类实现Iterator接口，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而ArrayList的iterator()方法实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Iterator&lt;E&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Itr();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以通过使用ArrayList.iterator()方法返回的是Itr()内部类，所以现在我们需要关心的就是Itr()内部类的实现。</p>
+<p>在Itr内部定义了三个int型的变量：cursor、lastRet、expectedModCount。其中cursor表示下一个元素的索引位置，lastRet表示上一个元素的索引位置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> cursor;             </span><br><span class="line"><span class="keyword">int</span> lastRet = -<span class="number">1</span>;     </span><br><span class="line"><span class="keyword">int</span> expectedModCount = modCount;</span><br></pre></td></tr></table></figure>
+<p>从cursor、lastRet定义可以看出，lastRet一直比cursor少一，所以hasNext()实现方法异常简单，只需要判断cursor和lastRet是否相等即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> cursor != size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于next()实现其实也是比较简单的，只要返回cursor索引位置处的元素即可，然后修改cursor、lastRet即可，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   checkForComodification();</span><br><span class="line">   <span class="keyword">int</span> i = cursor;    <span class="comment">//记录索引位置</span></span><br><span class="line">   <span class="keyword">if</span> (i &gt;= size)    <span class="comment">//如果获取元素大于集合元素个数，则抛出异常</span></span><br><span class="line">       <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">   Object[] elementData = ArrayList.<span class="keyword">this</span>.elementData;</span><br><span class="line">   <span class="keyword">if</span> (i &gt;= elementData.length)</span><br><span class="line">       <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">   cursor = i + <span class="number">1</span>;      <span class="comment">//cursor + 1</span></span><br><span class="line">   <span class="keyword">return</span> (E) elementData[lastRet = i];  <span class="comment">//lastRet + 1 且返回cursor处元素</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>checkForComodification()主要用来判断集合的修改次数是否合法，即用来判断遍历过程中集合是否被修改过。在<a href="http://cmsblogs.com/?p=108" target="_blank" rel="noopener">ArrayList</a>中已经阐述了。modCount用于记录ArrayList集合的修改次数，初始化为0，每当集合被修改一次（结构上面的修改，内部update不算），如add、remove等方法，modCount + 1，如果modCount不变，则表示集合内容没有被修改，即快速失败机制，在Java的集合中，较大一部分集合是存在快速失败机制的。所以要保证在遍历过程中不出错误，我们就应该保证在遍历过程中不会对集合产生结构上的修改（当然remove方法除外），出现了异常错误，我们就应该认真检查程序是否出错而不是catch后不做处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">checkForComodification</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (modCount != expectedModCount)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于remove()方法的是实现，它是调用ArrayList本身的remove()方法删除lastRet位置元素，然后修改modCount即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (lastRet &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException();</span><br><span class="line">    checkForComodification();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ArrayList.<span class="keyword">this</span>.remove(lastRet);</span><br><span class="line">        cursor = lastRet;</span><br><span class="line">        lastRet = -<span class="number">1</span>;</span><br><span class="line">        expectedModCount = modCount;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IndexOutOfBoundsException ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="fail-fast机制">fail-fast机制</h2>
+<p>“快速失败”也就是fail-fast，它是Java集合的一种错误检测机制。当多个线程对集合进行结构上的改变的操作时，有可能会产生fail-fast机制。记住是有可能，而不是一定。例如：假设存在两个线程（线程1、线程2），线程1通过Iterator在遍历集合A中的元素，在某个时候线程2修改了集合A的结构（是结构上面的修改，而不是简单的修改集合元素的内容），那么这个时候程序就会抛出 ConcurrentModificationException 异常，从而产生fail-fast机制。</p>
+<p>fail-fast示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FailFastTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> List&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@desc</span>:线程one迭代list</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Project</span>:test</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@file</span>:FailFastTest.java</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Authro</span>:chenssy</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@data</span>:2014年7月26日</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">threadOne</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            Iterator&lt;Integer&gt; iterator = list.iterator();</span><br><span class="line">            <span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">                <span class="keyword">int</span> i = iterator.next();</span><br><span class="line">                System.out.println(<span class="string">"ThreadOne 遍历:"</span> + i);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">10</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@desc</span>:当i == 3时，修改list</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Project</span>:test</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@file</span>:FailFastTest.java</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Authro</span>:chenssy</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@data</span>:2014年7月26日</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">threadTwo</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">int</span> i = <span class="number">0</span> ; </span><br><span class="line">            <span class="keyword">while</span>(i &lt; <span class="number">6</span>)&#123;</span><br><span class="line">                System.out.println(<span class="string">"ThreadTwo run："</span> + i);</span><br><span class="line">                <span class="keyword">if</span>(i == <span class="number">3</span>)&#123;</span><br><span class="line">                    list.remove(i);</span><br><span class="line">                &#125;</span><br><span class="line">                i++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; <span class="number">10</span>;i++)&#123;</span><br><span class="line">            list.add(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">new</span> threadOne().start();</span><br><span class="line">        <span class="keyword">new</span> threadTwo().start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ThreadOne 遍历:0</span><br><span class="line">ThreadTwo run：0</span><br><span class="line">ThreadTwo run：1</span><br><span class="line">ThreadTwo run：2</span><br><span class="line">ThreadTwo run：3</span><br><span class="line">ThreadTwo run：4</span><br><span class="line">ThreadTwo run：5</span><br><span class="line">Exception in thread &quot;Thread-0&quot; java.util.ConcurrentModificationException</span><br><span class="line">at java.util.ArrayList$Itr.checkForComodification(Unknown Source)</span><br><span class="line">at java.util.ArrayList$Itr.next(Unknown Source)</span><br><span class="line">at test.ArrayListTest$threadOne.run(ArrayListTest.java:23)</span><br></pre></td></tr></table></figure>
+<h3 id="fail-fast产生原因">fail-fast产生原因</h3>
+<p>通过上面的示例和讲解，我初步知道fail-fast产生的原因就在于程序在对 collection 进行迭代时，某个线程对该 collection 在结构上对其做了修改，这时迭代器就会抛出 ConcurrentModificationException 异常信息，从而产生 fail-fast。</p>
+<p>要了解fail-fast机制，我们首先要对ConcurrentModificationException 异常有所了解。当方法检测到对象的并发修改，但不允许这种修改时就抛出该异常。同时需要注意的是，该异常不会始终指出对象已经由不同线程并发修改，如果单线程违反了规则，同样也有可能会抛出改异常。</p>
+<p>诚然，迭代器的快速失败行为无法得到保证，它不能保证一定会出现该错误，但是快速失败操作会尽最大努力抛出ConcurrentModificationException异常，所以因此，为提高此类操作的正确性而编写一个依赖于此异常的程序是错误的做法，正确做法是：ConcurrentModificationException 应该仅用于检测 bug。下面我将以ArrayList为例进一步分析fail-fast产生的原因。</p>
+<p>从前面我们知道fail-fast是在操作迭代器时产生的。现在我们来看看ArrayList中迭代器的源代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cursor;</span><br><span class="line">    <span class="keyword">int</span> lastRet = -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> expectedModCount = ArrayList.<span class="keyword">this</span>.modCount;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">this</span>.cursor != ArrayList.<span class="keyword">this</span>.size);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        checkForComodification();</span><br><span class="line">        <span class="comment">/** 省略此处代码 */</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.lastRet &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException();</span><br><span class="line">        checkForComodification();</span><br><span class="line">        <span class="comment">/** 省略此处代码 */</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">checkForComodification</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (ArrayList.<span class="keyword">this</span>.modCount == <span class="keyword">this</span>.expectedModCount)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面的源代码我们可以看出，迭代器在调用next()、remove()方法时都是调用checkForComodification()方法，该方法主要就是检测modCount == expectedModCount ? 若不等则抛出ConcurrentModificationException 异常，从而产生fail-fast机制。所以要弄清楚为什么会产生fail-fast机制我们就必须要用弄明白为什么modCount != expectedModCount ，他们的值在什么时候发生改变的。</p>
+<p>expectedModCount 是在Itr中定义的：int expectedModCount = ArrayList.this.modCount;所以他的值是不可能会修改的，所以会变的就是modCount。modCount是在 AbstractList 中定义的，为全局变量：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">transient</span> <span class="keyword">int</span> modCount = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p>那么他什么时候因为什么原因而发生改变呢？请看ArrayList的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E paramE)</span> </span>&#123;</span><br><span class="line">    ensureCapacityInternal(<span class="keyword">this</span>.size + <span class="number">1</span>);</span><br><span class="line">    <span class="comment">/** 省略此处代码 */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureCapacityInternal</span><span class="params">(<span class="keyword">int</span> paramInt)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.elementData == EMPTY_ELEMENTDATA)</span><br><span class="line">        paramInt = Math.max(<span class="number">10</span>, paramInt);</span><br><span class="line">    ensureExplicitCapacity(paramInt);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureExplicitCapacity</span><span class="params">(<span class="keyword">int</span> paramInt)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.modCount += <span class="number">1</span>;    <span class="comment">//修改modCount</span></span><br><span class="line">    <span class="comment">/** 省略此处代码 */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object paramObject)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">int</span> i;</span><br><span class="line">     <span class="keyword">if</span> (paramObject == <span class="keyword">null</span>)</span><br><span class="line">         <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.size; ++i) &#123;</span><br><span class="line">             <span class="keyword">if</span> (<span class="keyword">this</span>.elementData[i] != <span class="keyword">null</span>)</span><br><span class="line">                 <span class="keyword">continue</span>;</span><br><span class="line">             fastRemove(i);</span><br><span class="line">             <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">         &#125;</span><br><span class="line">     <span class="keyword">else</span></span><br><span class="line">         <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.size; ++i) &#123;</span><br><span class="line">             <span class="keyword">if</span> (!(paramObject.equals(<span class="keyword">this</span>.elementData[i])))</span><br><span class="line">                 <span class="keyword">continue</span>;</span><br><span class="line">             fastRemove(i);</span><br><span class="line">             <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">         &#125;</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">fastRemove</span><span class="params">(<span class="keyword">int</span> paramInt)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">this</span>.modCount += <span class="number">1</span>;   <span class="comment">//修改modCount</span></span><br><span class="line">     <span class="comment">/** 省略此处代码 */</span></span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     <span class="keyword">this</span>.modCount += <span class="number">1</span>;    <span class="comment">//修改modCount</span></span><br><span class="line">     <span class="comment">/** 省略此处代码 */</span></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>从上面的源代码我们可以看出，ArrayList中无论add、remove、clear方法只要是涉及了改变ArrayList元素的个数的方法都会导致modCount的改变。所以我们这里可以初步判断由于expectedModCount值与modCount的改变不同步，导致两者之间不等从而产生fail-fast机制。知道产生fail-fast产生的根本原因了，我们可以有如下场景：</p>
+<p>有两个线程（线程A，线程B），其中线程A负责遍历list、线程B修改list。线程A在遍历list过程的某个时候（此时expectedModCount = modCount=N），线程启动，同时线程B增加一个元素，这是modCount的值发生改变（modCount + 1 = N + 1）。线程A继续遍历执行next方法时，通告checkForComodification方法发现expectedModCount = N ，而modCount = N + 1，两者不等，这时就抛出ConcurrentModificationException 异常，从而产生fail-fast机制。</p>
+<p>所以，直到这里我们已经完全了解了fail-fast产生的根本原因了。知道了原因就好找解决办法了。</p>
+<h3 id="fail-fast解决办法">fail-fast解决办法</h3>
+<p>通过前面的实例、源码分析，我想各位已经基本了解了fail-fast的机制，下面我就产生的原因提出解决方案。这里有两种解决方案：</p>
+<p><strong>方案一：</strong> 在遍历过程中所有涉及到改变modCount值得地方全部加上synchronized或者直接使用Collections.synchronizedList，这样就可以解决。但是不推荐，因为增删造成的同步锁可能会阻塞遍历操作。</p>
+<p><strong>方案二：</strong> 使用CopyOnWriteArrayList来替换ArrayList。推荐使用该方案。</p>
+<h1>3.集合遍历时元素删除陷阱</h1>
+<h2 id="常见for循环遍历中删除元素">常见for循环遍历中删除元素</h2>
+<p>具体代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@ClassName</span>: ForDemo</span></span><br><span class="line"><span class="comment">* <span class="doctag">@Description</span>: TODO(通过for循环来测试，删除集合中名字为小明的元素)</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ForDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;Student&gt; studentList=<span class="keyword">new</span> ArrayList&lt;Student&gt;();</span><br><span class="line">        Student stua1=<span class="keyword">new</span> Student(<span class="string">"小红"</span>,<span class="number">20</span>);</span><br><span class="line">        Student stua2=<span class="keyword">new</span> Student(<span class="string">"小明"</span>,<span class="number">21</span>);</span><br><span class="line">        Student stua3=<span class="keyword">new</span> Student(<span class="string">"小朱"</span>,<span class="number">22</span>);</span><br><span class="line">        Student stua4=<span class="keyword">new</span> Student(<span class="string">"小明"</span>,<span class="number">24</span>);</span><br><span class="line">        Student stua5=<span class="keyword">new</span> Student(<span class="string">"小明"</span>,<span class="number">28</span>);</span><br><span class="line">        studentList.add(stua1);</span><br><span class="line">        studentList.add(stua2);</span><br><span class="line">        studentList.add(stua3);</span><br><span class="line">        studentList.add(stua4);</span><br><span class="line">        studentList.add(stua5);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;studentList.size();i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="string">"小明"</span>.equals(studentList.get(i).getName()))&#123;</span><br><span class="line">                studentList.remove(studentList.get(i));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;studentList.size();i++)&#123;</span><br><span class="line">            System.out.println(<span class="string">"去掉小明之后学生姓名"</span>+studentList.get(i).getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果如下</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584723504_20200321005203382_21039.png" alt></p>
+<p>可以看到，代码是正常执行了，但是仔细看控制台的结果，发现小明还是存在的，这是为什么呢？？？</p>
+<p>这是因为在list通过for循环遍历中删除元素之后，后面的元素会上前替补前面元素的位置，这样就有可能会导致元素遍历过程中某些元素被漏掉，结果就出现了上面的那种结果。显然通过这种方式是不能精确地删除集合中所有满足条件的元素，刚才也说过是因为元素位置发生了变化导致了这种情况，那么我们可不可以换一种思路，倒序for循环遍历呢？？将上面的代码改为倒序遍历，代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=studentList.size()-<span class="number">1</span>; i&gt;<span class="number">0</span>;i--)&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="string">"小明"</span>.equals(studentList.get(i).getName()))&#123;</span><br><span class="line">    studentList.remove(studentList.get(i));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果如下</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584723504_20200321005203171_14251.png" alt></p>
+<p>明显看出，这种思路是可以的。<strong>（此处注意：每次循环只能删除一个元素，如果执行了多次删除，代码仍然会报错！）</strong></p>
+<h2 id="利用增强for循环来进行遍历">利用增强for循环来进行遍历</h2>
+<p>增强for循环在日常开发中是比较常见的，那么我们能不能通过这种方式来实现遍历的时候删除元素呢？实践是检验真理的那个啥？？后面不记得了，试试吧，用下列代码替换上面的for循环遍历</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(Student student :studentList)&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="string">"小明"</span>.equals(student.getName()))&#123;</span><br><span class="line">        studentList.remove(student);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果如下</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584723503_20200321005202764_3246.png" alt></p>
+<p>如上所示，这是list集合中fail-fast机制，但出现在集合遍历的时候，改变元素，就会报ConcurrentModificationException，所以利用增强for循环实现该功能是不可行的。</p>
+<h2 id="利用Iterator迭代器进行循环遍历">利用Iterator迭代器进行循环遍历</h2>
+<p>循环遍历代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Iterator&lt;Student&gt; it=studentList.iterator();</span><br><span class="line"><span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="string">"小明"</span>.equals(it.next().getName()))&#123;</span><br><span class="line">        it.remove();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果如下</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584723503_20200321005202453_14779.png" alt></p>
+<p>显然也是可以达到效果的，但是这里需要注意的一点是，这里是通过iterator的remove()方法来进行删除的，而不是通过list.remove()方法来删除，如果还是用list.remove()，依旧会出现上面那种问题。</p>
+<p>通过Iterator来遍历，用list.remove()来删除，测试代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Iterator&lt;Student&gt; it=studentList.iterator();</span><br><span class="line"><span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="string">"小明"</span>.equals(it.next().getName()))&#123;</span><br><span class="line">        studentList.remove(it.next());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果如下</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584723502_20200321005202246_21640.png" alt></p>
+<h2 id="总结">总结</h2>
+<p>集合在遍历的时候，如果只是删除其中的一个元素，上述所有方法都是可以的，但是集合中其他元素的后续删除就不行了，因为前面的元素删除导致后续元素的位置发生了改变。</p>
+<h1>4.Collections类</h1>
+<p>类集框架定义了几种能用于类集和映射的算法。在Collections类中，这些算法被定义为静态方法。</p>
+<p>注意其中的几种常用方法：</p>
+<p>synchronizedList( )和synchronizedSet( )被用来获得各种类集的同步（安全线程）拷贝。没有任何一个标准类集实现是同步的。必须使用同步算法来为其提供同步。另一种观点：同步类集的迭代函数必须在synchronized块内使用。</p>
+<p>以unmodifiable开头的一组方法返回不能被改变的各种类集“视图”。这些方法当将一些进程对类集设为只读形式时很有用。</p>
+<p>Collections定义了三个静态变量：EMPTY_SET， EMPTY_LIST和EMPTY_MAP。它们都是不可改变的。</p>
+<p>min( )和max( )方法是在列表被混淆之后，对其进行操作的。两者在运行时，都不需要排序的列表。</p>
+<h1>5.同步容器</h1>
+<p>在Java中，同步容器主要包括2类：</p>
+<ul>
+<li>Vector、Stack、HashTable</li>
+<li>Collections类中提供的静态工厂方法创建的类</li>
+</ul>
+<p>Vector实现了List接口，Vector实际上就是一个数组，和ArrayList类似，但是Vector中的方法都是synchronized方法，即进行了同步措施。</p>
+<p>Stack也是一个同步容器，它的方法也用synchronized进行了同步，它实际上是继承于Vector类。</p>
+<p>HashTable实现了Map接口，它和HashMap很相似，但是HashTable进行了同步处理，而HashMap没有。</p>
+<p>Collections类是一个工具提供类，注意，它和Collection不同，Collection是一个顶层的接口。在Collections类中提供了大量的方法，比如对集合或者容器进行排序、查找等操作。最重要的是，在它里面提供了几个静态工厂方法来创建同步容器类，如下图所示：</p>
+<p><img src="https://hexo-1300861231.cos.ap-shanghai.myqcloud.com/1584723501_20200321005201938_931.jpg" alt></p>
+<h2 id="同步容器的缺陷">同步容器的缺陷</h2>
+<ol>
+<li>性能问题</li>
+</ol>
+<p>从同步容器的具体实现源码可知，同步容器中的方法采用了synchronized进行了同步，多线程操作必须竞争同一把锁，必然会影响到执行性能。</p>
+<ol start="2">
+<li>同步容器真的是安全的吗？</li>
+</ol>
+<p>对于同步容器，虽然能保证每一个时刻只能有一个线程访问它，但是不排除多线程操作之间的相互冲突。详见线程安全类</p>
+<ol start="3">
+<li>ConcurrentModificationException异常</li>
+</ol>
+<p>在对Vector等容器并发地进行迭代修改时，会报ConcurrentModificationException异常。详见fail-fast机制</p>
+<p>因此为了解决同步容器的以上问题，在Java 1.5中提供了并发容器，位于java.util.concurrent目录下。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/quotes/">QUOTES</a></li>
+            <li><a href="/quotes/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">JAVA学习笔记</a></li>
+            <li>37-集合操作</li>
+          
+  </ul>
+
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">1.比较器（Comparator）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#compare-方法"><span class="nav-text">compare()方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#equals-方法"><span class="nav-text">equals()方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保持compareTo和equals同步"><span class="nav-text">保持compareTo和equals同步</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">2.迭代器（iterator）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#java-util-Iterator接口"><span class="nav-text">java.util.Iterator接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Iterator的实现"><span class="nav-text">Iterator的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fail-fast机制"><span class="nav-text">fail-fast机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fail-fast产生原因"><span class="nav-text">fail-fast产生原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fail-fast解决办法"><span class="nav-text">fail-fast解决办法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">3.集合遍历时元素删除陷阱</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见for循环遍历中删除元素"><span class="nav-text">常见for循环遍历中删除元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用增强for循环来进行遍历"><span class="nav-text">利用增强for循环来进行遍历</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用Iterator迭代器进行循环遍历"><span class="nav-text">利用Iterator迭代器进行循环遍历</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">4.Collections类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-text">5.同步容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#同步容器的缺陷"><span class="nav-text">同步容器的缺陷</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="jiateng.jiang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jiateng.jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiateng.jiang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '100%'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
